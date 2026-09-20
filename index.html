@@ -13,16 +13,15 @@
     .brand { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:.2em; font-size:11px; color:var(--gold); }
     .socials { display:flex; gap:8px; }
     .soc { color:var(--gold); width:36px; height:36px; border:1px solid var(--line); border-radius:999px; display:grid; place-items:center; }
-    .soc:hover { background:#161616; }
     h1 { font-size:clamp(32px,6.6vw,60px); font-weight:500; letter-spacing:-.03em; line-height:.92; margin:0 0 8px; }
     .lede { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:13px; margin-bottom:18px; }
     .hero { min-height:280px; display:grid; grid-template-columns:1.45fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
     @media (max-width:760px){ .hero { grid-template-columns:1fr; } }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
-    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; z-index:5; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
-    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; box-shadow:0 8px 30px rgba(201,162,39,.35); pointer-events:none; }
-    .side { padding:24px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
+    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; z-index:5; }
+    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; pointer-events:none; }
+    .side { padding:24px; display:flex; flex-direction:column; justify-content:center; gap:10px; }
     .kicker { font-family:ui-sans-serif,system-ui,sans-serif; font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; }
     .side h2 { font-size:clamp(22px,3vw,30px); font-weight:500; }
     .meta { font-family:ui-sans-serif,system-ui,sans-serif; font-size:12px; color:var(--dim); }
@@ -32,22 +31,20 @@
     button.b { font-family:ui-sans-serif,system-ui,sans-serif; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:650; }
     .keep { background:var(--gold); color:#111; }
     .skip,.prev { background:#161616; color:var(--ink); border:1px solid var(--line); }
-    .full { background:transparent; color:var(--gold); border:1px solid var(--line); }
-    .cue,.shuf { background:#111; color:var(--gold); border:1px solid var(--line); }
+    .full,.cue,.shuf { background:#111; color:var(--gold); border:1px solid var(--line); }
     .hint { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; color:#5d5a52; }
+    .fn { display:none; max-height:170px; overflow:auto; background:#0d0d0d; border:1px solid var(--line); border-radius:10px; padding:10px; color:#c9b27a; font:11px/1.45 ui-monospace,Menlo,monospace; white-space:pre-wrap; }
+    .fn.on { display:block; }
     .shelf { margin-top:42px; }
-    .shelfhead { display:flex; align-items:baseline; gap:12px; margin-bottom:14px; }
+    .shelfhead { display:flex; gap:12px; margin-bottom:14px; }
     .uploader { font-family:ui-sans-serif,system-ui,sans-serif; font-size:12px; color:var(--dim); }
-    .uploader::before { content:"\00b7 "; color:var(--gold); }
-    .shelf h3 { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); margin-bottom:0; }
+    .shelf h3 { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card { position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; }
-    .card:hover { border-color:#3a3a36; }
-    .card.on { outline:1px solid var(--gold); }
     .card.hide { display:none; }
     .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
     .card p { font-family:ui-sans-serif,system-ui,sans-serif; font-size:13px; padding:10px 12px 14px; }
-    .card .n { position:absolute; top:8px; left:8px; font:700 10px ui-sans-serif,system-ui; letter-spacing:.08em; color:#111; background:var(--gold); border-radius:999px; padding:3px 7px; }
+    .card .n { position:absolute; top:8px; left:8px; font:700 10px ui-sans-serif,system-ui; color:#111; background:var(--gold); border-radius:999px; padding:3px 7px; }
   </style>
 </head>
 <body>
@@ -55,41 +52,17 @@
     <div class="top">
       <div class="brand">EMCIIX</div>
       <div class="socials">
-        <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X">
-          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg>
-        </a>
-        <a class="soc" href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener" aria-label="YouTube">
-          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
-        </a>
+        <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg></a>
+        <a class="soc" href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg></a>
       </div>
     </div>
     <h1>Watch the latest cut.</h1>
-    <p class="lede" id="status">Press PLAY. Space, arrows, C cue, S shuffle.</p>
-    <div class="hero" id="hero">
-      <div class="stage">
-        <img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg" />
-        <button class="go" id="play" type="button"><b>PLAY</b></button>
-      </div>
-      <div class="side">
-        <p class="kicker">Now playing · 01 / 16</p>
-        <h2>Need Hired by Me.</h2>
-        <p class="meta" id="clock">Idle · 30 seconds on this page</p>
-        <div class="bar"><i id="bar"></i></div>
-        <div class="row">
-          <button class="b prev" id="prev" type="button">Prev</button>
-          <button class="b keep" id="keep" type="button">Keep</button>
-          <button class="b skip" id="skip" type="button">Skip</button>
-          <button class="b cue" id="cue" type="button">Cue</button>
-          <button class="b shuf" id="shuf" type="button">Shuffle</button>
-          <button class="b full" id="full" type="button">Play full here</button>
-        </div>
-        <p class="hint">Cue plays the iTunes 30s preview. Shuffle jumps the catalog.</p>
-      </div>
-    </div>
+    <p class="lede" id="status">Cue runs Need Song.play on previewUrl.</p>
+    <div class="hero" id="hero"></div>
     <section class="shelf">
-      <div class="shelfhead"><h3 id="shelfTitle">MORE SONGS</h3><span class="uploader">Velc air</span></div>
+      <div class="shelfhead"><h3>MORE SONGS</h3><span class="uploader">Velc air</span></div>
       <div class="grid" id="grid">
-<article class="card on hide" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
+<article class="card hide" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
 <article class="card" data-i="1"><span class="n">02</span><img alt="" src="https://i.ytimg.com/vi/txA5vV_9XG4/hqdefault.jpg"><p>Unemployed in Love</p></article>
 <article class="card" data-i="2"><span class="n">03</span><img alt="" src="https://i.ytimg.com/vi/05AgmKvd3NI/hqdefault.jpg"><p>Make up shit</p></article>
 <article class="card" data-i="3"><span class="n">04</span><img alt="" src="https://i.ytimg.com/vi/MP9AIxzx55o/hqdefault.jpg"><p>Everybody But Me</p></article>
@@ -109,205 +82,78 @@
     </section>
   </div>
   <script>
-    var PREVIEW = 30, KEEP_KEY = "emciixGrokPlay", IDX_KEY = "emciixIdx";
-    var SONGS = [
-      ["dG8z3nQeDSI","Need Hired by Me."],
-      ["txA5vV_9XG4","Unemployed in Love"],
-      ["05AgmKvd3NI","Make up shit"],
-      ["MP9AIxzx55o","Everybody But Me"],
-      ["RFqKvFDB0Hg","I Took Credit"],
-      ["o040u9wAZns","Two phones, zero social life"],
-      ["oq1c9I9T_tw","Which phone is it? iPhone or Android"],
-      ["53Jny0alg9g","Still here"],
-      ["cWy-1DZsHDg","XCode Swift Song"],
-      ["9-nGIe8mQ0M","Wake you up Avicii"],
-      ["Id4HSb9j8RA","You're Not Alone"],
-      ["oCWCYVTs3vM","IDK What I'm Doing"],
-      ["R7BunIbGheI","One More Light On"],
-      ["m6cxgKh5QgE","Grid Run"],
-      ["qZZuGfqancc","Solar System Party"],
-      ["KhGqJCTO1Hc","Come Closer"]
-    ].map(function(p){ return {id:p[0], title:p[1]}; });
-    var hero = document.getElementById("hero");
-    var grid = document.getElementById("grid");
-    var status = document.getElementById("status");
-    var idx = 0, tick = null, open = false;
-    var audio = new Audio(); audio.preload = "none";
-    try { var saved = parseInt(localStorage.getItem(IDX_KEY), 10); if (saved >= 0 && saved < SONGS.length) idx = saved; } catch(e) {}
-    function thumb(id){ var s = SONGS[idx] || {}; if (s.art) return s.art; if (!id) return ""; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
-    function esc(s){
-      var map = {
-        "&": "&" + "amp;",
-        "<": "&" + "lt;",
-        ">": "&" + "gt;",
-        '"': "&" + "quot;",
-        "'": "&#39;"
-      };
-      return String(s).replace(/[&<>"']/g, function(c){ return map[c]; });
-    }
-    function kept(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } }
-    function save(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} }
-    function saveIdx(){ try { localStorage.setItem(IDX_KEY, String(idx)); } catch(e) {} }
-    function stop(){ if (tick) { clearInterval(tick); tick = null; } }
-    function stopAudio(){ try { audio.pause(); audio.removeAttribute("src"); } catch(e) {} }
-    function embed(id, full){ return "https://www.youtube.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30"); }
-    function pad(n){ return (n < 10 ? "0" : "") + n; }
-    function paint() {
-      var v = SONGS[idx]; if (!v || !hero) return;
-      open = kept().some(function(x){ return x.id === v.id; });
-      stop(); stopAudio(); saveIdx();
-      hero.innerHTML =
-        '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
-        '<div class="side"><p class="kicker">Now playing · ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
-        '<h2>' + esc(v.title) + '</h2>' +
-        '<p class="meta" id="clock">' + (open ? "Kept · full play on this page" : "Idle · 30 seconds on this page") + '</p>' +
-        '<div class="bar"><i id="bar"></i></div>' +
-        '<div class="row"><button class="b prev" id="prev" type="button">Prev</button>' +
-        '<button class="b keep" id="keep" type="button">Keep</button>' +
-        '<button class="b skip" id="skip" type="button">Skip</button>' +
-        '<button class="b cue" id="cue" type="button">Cue</button>' +
-        '<button class="b shuf" id="shuf" type="button">Shuffle</button>' +
-        '<button class="b full" id="full" type="button">Play full here</button></div>' +
-        '<p class="hint">Cue = iTunes 30s preview · Shuffle mixes the catalog · C cue · S shuffle</p></div>';
+    var KEEP_KEY="emciixGrokPlay", IDX_KEY="emciixIdx";
+    var SONGS=[["dG8z3nQeDSI","Need Hired by Me."],["txA5vV_9XG4","Unemployed in Love"],["05AgmKvd3NI","Make up shit"],["MP9AIxzx55o","Everybody But Me"],["RFqKvFDB0Hg","I Took Credit"],["o040u9wAZns","Two phones, zero social life"],["oq1c9I9T_tw","Which phone is it? iPhone or Android"],["53Jny0alg9g","Still here"],["cWy-1DZsHDg","XCode Swift Song"],["9-nGIe8mQ0M","Wake you up Avicii"],["Id4HSb9j8RA","You're Not Alone"],["oCWCYVTs3vM","IDK What I'm Doing"],["R7BunIbGheI","One More Light On"],["m6cxgKh5QgE","Grid Run"],["qZZuGfqancc","Solar System Party"],["KhGqJCTO1Hc","Come Closer"]].map(function(p){return {id:p[0],title:p[1]};});
+    var NEED_PREV={"Need Hired by Me.":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d7/f9/2a/d7f92a48-b931-db4d-44cf-99a0d616c5b0/mzaf_2548527538567104762.plus.aac.p.m4a","Two phones, zero social life":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a0/27/3f/a0273fa1-5e78-b6a2-db6b-3dc1201faa33/mzaf_422143831953654.plus.aac.p.m4a","Which phone is it? iPhone or Android":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0f/72/be/0f72be0f-0fd0-a132-407f-c388521c7897/mzaf_5477219283169998023.plus.aac.p.m4a","XCode Swift Song":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/5c/66/c9/5c66c914-3b12-7a41-7fa1-d616c316713c/mzaf_9178255544508059954.plus.aac.p.m4a","Wake you up Avicii":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/bc/3b/81/bc3b8103-9286-d005-0031-6b359975c895/mzaf_18433807060980902270.plus.aac.p.m4a","You're Not Alone":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/db/be/e1/dbbee17d-d612-5926-4ec4-01c53dc6b264/mzaf_11823239481588352434.plus.aac.p.m4a","IDK What I'm Doing":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/18/ba/a3/18baa312-35bb-5be7-d43d-ccbdf46bfb08/mzaf_2710147120228517860.plus.aac.p.m4a","One More Light On":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/61/16/11/611611ae-94aa-1427-c244-d46b265f91c4/mzaf_6285093454234988225.plus.aac.p.m4a","Solar System Party":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/17/7b/9a/177b9a64-b26f-7860-db1a-c619165e8909/mzaf_5220678138111183580.plus.aac.p.m4a","Come Closer":"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/01/66/a8/0166a8c9-c0fd-3dcf-ba66-169adda26460/mzaf_1346364074497420614.plus.aac.p.m4a"};
+    SONGS.forEach(function(s){ if(NEED_PREV[s.title]) s.preview=NEED_PREV[s.title]; });
+    var NEED_FN="export function Song({ onBack, themeMode = \"dark\" } = {}) {\n  /* src/Need.jsx — Need app */\n}\n\nfunction mapItunes(t, index) {\n  return {\n    id: `it-${t.trackId || index}`,\n    title: t.trackName,\n    artist: t.artistName || \"Unknown\",\n    preview: t.previewUrl,\n    appleUrl: t.trackViewUrl\n  };\n}\n\nconst play = async (track, opts = {}) => {\n  if (!track.preview) {\n    setWhy(\"No 30s. Open player for the full song.\");\n    return;\n  }\n  const a = new Audio(track.preview);\n  a.autoplay = false;\n  a.preload = \"auto\";\n  a.volume = 1;\n  audioRef.current = a;\n  await a.play();\n};";
+    var hero=document.getElementById("hero"), grid=document.getElementById("grid"), status=document.getElementById("status");
+    var idx=0, open=false, audioRef={current:null};
+    try { var saved=parseInt(localStorage.getItem(IDX_KEY),10); if(saved>=0&&saved<SONGS.length) idx=saved; } catch(e) {}
+    function thumb(id){ return id?"https://i.ytimg.com/vi/"+id+"/hqdefault.jpg":""; }
+    function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c];}); }
+    function kept(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY)||"[]"); } catch(e){ return []; } }
+    function save(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e){} }
+    function pad(n){ return (n<10?"0":"")+n; }
+    function stopNeed(){ try { if(audioRef.current){ audioRef.current.pause(); audioRef.current=null; } } catch(e){} }
+    function mapItunesFromSong(s){ return { title:s.title, artist:"Velc air", preview:s.preview||null, id:s.id }; }
+    function paint(){
+      var v=SONGS[idx]; if(!v||!hero) return;
+      open=kept().some(function(x){return x.id===v.id;});
+      stopNeed();
+      try { localStorage.setItem(IDX_KEY,String(idx)); } catch(e){}
+      hero.innerHTML='<div class="stage"><img alt="" src="'+thumb(v.id)+'"><button class="go" id="play" type="button"><b>PLAY</b></button></div><div class="side"><p class="kicker">Now playing · '+pad(idx+1)+' / '+pad(SONGS.length)+'</p><h2>'+esc(v.title)+'</h2><p class="meta" id="clock">'+(v.preview?"Need preview field ready":"No Need previewUrl")+'</p><div class="bar"><i id="bar"></i></div><div class="row"><button class="b prev" id="prev" type="button">Prev</button><button class="b keep" id="keep" type="button">Keep</button><button class="b skip" id="skip" type="button">Skip</button><button class="b cue" id="cue" type="button">Cue</button><button class="b shuf" id="shuf" type="button">Shuffle</button><button class="b full" id="full" type="button">Play full here</button></div><p class="hint">Cue = Need Song.play(track)</p><pre class="fn" id="needFn"></pre></div>';
       bind();
-      if (grid) {
-        var cards = grid.querySelectorAll(".card");
-        for (var i=0;i<cards.length;i++) {
-          cards[i].classList.toggle("on", i===idx);
-          cards[i].classList.toggle("hide", i===idx);
-        }
-      }
+      if(grid){ var cards=grid.querySelectorAll(".card"); for(var i=0;i<cards.length;i++) cards[i].classList.toggle("hide", i===idx); }
     }
-    function start(full) {
-      var v = SONGS[idx]; if (!v) return;
-      var stage = hero.querySelector(".stage");
-      if (!stage) return;
-      stopAudio();
-      if (!v.id) { cueFn(); return; }
-      stage.innerHTML = '<iframe src="' + embed(v.id, full) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
-      if (status) status.textContent = full ? "Playing on this page." : "30 second preview on this page.";
-      if (full) {
-        stop();
-        var clock = document.getElementById("clock");
-        var bar = document.getElementById("bar");
-        if (clock) clock.textContent = "Playing through here";
-        if (bar) bar.style.width = "100%";
-        return;
-      }
-      var t0 = Date.now(); stop();
-      tick = setInterval(function() {
-        var s = Math.min(PREVIEW, (Date.now()-t0)/1000);
-        var bar = document.getElementById("bar");
-        var clock = document.getElementById("clock");
-        if (bar) bar.style.width = (s/PREVIEW*100) + "%";
-        if (clock) clock.textContent = "0:" + pad(Math.floor(s)) + " / 0:30";
-        if (s >= PREVIEW) { stop(); skip(); }
-      }, 200);
+    function start(full){
+      var v=SONGS[idx]; if(!v||!v.id) return cueFn();
+      stopNeed();
+      var stage=hero.querySelector(".stage"); if(!stage) return;
+      stage.innerHTML='<iframe src="https://www.youtube.com/embed/'+v.id+'?rel=0&modestbranding=1&playsinline=1&autoplay=1'+(full?"":"&end=30")+'" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="'+esc(v.title)+'"></iframe>';
     }
-    function keepFn() {
-      var v = SONGS[idx];
-      save([{id:v.id,title:v.title,at:Date.now()}].concat(kept().filter(function(x){ return x.id !== v.id; })));
-      open = true; start(true);
+    async function play(track){
+      if(!track) return;
+      if(!track.preview){ if(status) status.textContent="No 30s. Open player for the full song."; return; }
+      stopNeed();
+      var a=new Audio(track.preview);
+      a.autoplay=false; a.preload="auto"; a.volume=1; audioRef.current=a;
+      a.ontimeupdate=function(){ var bar=document.getElementById("bar"), clock=document.getElementById("clock"); if(a.duration&&bar) bar.style.width=(a.currentTime/a.duration*100)+"%"; if(clock) clock.textContent="Need play 0:"+pad(Math.floor(a.currentTime||0)); };
+      a.onended=function(){ var clock=document.getElementById("clock"); if(clock) clock.textContent="Cue ready"; };
+      try { await a.play(); if(status) status.textContent="Need Song.play · previewUrl"; }
+      catch(e){ if(status) status.textContent="Preview blocked. Tap Cue again."; }
     }
-    function skip(){ idx = (idx + 1) % SONGS.length; paint(); }
-    function prev(){ idx = (idx - 1 + SONGS.length) % SONGS.length; paint(); }
-    function cueFn() {
-      var v = SONGS[idx]; if (!v) return;
-      stop(); stopAudio();
-      var stage = hero.querySelector(".stage");
-      if (stage) stage.innerHTML = '<img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>CUE</b></button>';
+    function cueFn(){
+      var v=SONGS[idx];
+      var fn=document.getElementById("needFn");
+      if(fn){ fn.textContent=NEED_FN; fn.classList.add("on"); }
+      var stage=hero.querySelector(".stage");
+      if(stage) stage.innerHTML='<img alt="" src="'+thumb(v.id)+'"><button class="go" id="play" type="button"><b>CUE</b></button>';
       bind();
-      if (status) status.textContent = v.preview ? "Cue · iTunes 30s preview." : "Cue · parked at start.";
-      var clock = document.getElementById("clock");
-      var bar = document.getElementById("bar");
-      if (clock) clock.textContent = v.preview ? "Cue preview" : "Cued";
-      if (bar) bar.style.width = "0";
-      if (v.preview) {
-        audio.src = v.preview;
-        audio.play().catch(function(){});
-        audio.ontimeupdate = function(){
-          if (!audio.duration) return;
-          if (bar) bar.style.width = (audio.currentTime / audio.duration * 100) + "%";
-          if (clock) clock.textContent = "Cue 0:" + pad(Math.floor(audio.currentTime));
-        };
-        audio.onended = function(){ if (clock) clock.textContent = "Cue ready"; if (bar) bar.style.width = "0"; };
-      }
+      play(mapItunesFromSong(v));
     }
-    function shuffleFn() {
-      stopAudio();
-      if (SONGS.length < 2) return;
-      var n = idx, guard = 0;
-      while (n === idx && guard++ < 20) n = Math.floor(Math.random() * SONGS.length);
-      idx = n; paint();
-      if (status) status.textContent = "Shuffled from catalog.";
+    function keepFn(){ var v=SONGS[idx]; save([{id:v.id,title:v.title,at:Date.now()}].concat(kept().filter(function(x){return x.id!==v.id;}))); open=true; start(true); }
+    function skip(){ idx=(idx+1)%SONGS.length; paint(); }
+    function prev(){ idx=(idx-1+SONGS.length)%SONGS.length; paint(); }
+    function shuffleFn(){ var n=idx; while(n===idx) n=Math.floor(Math.random()*SONGS.length); idx=n; paint(); }
+    function bind(){
+      var playBtn=document.getElementById("play"); if(playBtn) playBtn.onclick=function(){ start(open); };
+      var keep=document.getElementById("keep"); if(keep) keep.onclick=keepFn;
+      var skipBtn=document.getElementById("skip"); if(skipBtn) skipBtn.onclick=skip;
+      var prevBtn=document.getElementById("prev"); if(prevBtn) prevBtn.onclick=prev;
+      var full=document.getElementById("full"); if(full) full.onclick=function(){ start(true); };
+      var cueBtn=document.getElementById("cue"); if(cueBtn) cueBtn.onclick=cueFn;
+      var shufBtn=document.getElementById("shuf"); if(shufBtn) shufBtn.onclick=shuffleFn;
     }
-    function bind() {
-      var play = document.getElementById("play");
-      var keep = document.getElementById("keep");
-      var skipBtn = document.getElementById("skip");
-      var prevBtn = document.getElementById("prev");
-      var full = document.getElementById("full");
-      var cueBtn = document.getElementById("cue");
-      var shufBtn = document.getElementById("shuf");
-      function hitPlay(ev){ if (ev) ev.preventDefault(); start(open); }
-      if (play) { play.onclick = hitPlay; play.onpointerup = hitPlay; }
-      if (keep) keep.onclick = keepFn;
-      if (skipBtn) skipBtn.onclick = skip;
-      if (prevBtn) prevBtn.onclick = prev;
-      if (full) full.onclick = function(){ start(true); };
-      if (cueBtn) cueBtn.onclick = cueFn;
-      if (shufBtn) shufBtn.onclick = shuffleFn;
-    }
-    if (grid) {
-      grid.querySelectorAll(".card").forEach(function(el){
-        el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
-      });
-    }
+    if(grid) grid.querySelectorAll(".card").forEach(function(el){ el.onclick=function(){ idx=+el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); }; });
     document.addEventListener("keydown", function(e){
-      if (e.target && /input|textarea/i.test(e.target.tagName)) return;
-      if (e.code === "Space") { e.preventDefault(); start(open); }
-      if (e.key === "ArrowRight") skip();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "k" || e.key === "K") keepFn();
-      if (e.key === "f" || e.key === "F") start(true);
-      if (e.key === "c" || e.key === "C") cueFn();
-      if (e.key === "s" || e.key === "S") shuffleFn();
+      if(e.code==="Space"){ e.preventDefault(); start(open); }
+      if(e.key==="ArrowRight") skip();
+      if(e.key==="ArrowLeft") prev();
+      if(e.key==="c"||e.key==="C") cueFn();
+      if(e.key==="s"||e.key==="S") shuffleFn();
     });
-    function norm(s){ return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,""); }
-    function attachPreview(name, url) {
-      var n = norm(name);
-      for (var i=0;i<SONGS.length;i++) {
-        var t = norm(SONGS[i].title);
-        if (t && (t.indexOf(n) >= 0 || n.indexOf(t) >= 0 || t.slice(0,8) === n.slice(0,8))) {
-          SONGS[i].preview = url; return true;
-        }
-      }
-      return false;
-    }
-    function pullFeeds() {
-      fetch("https://itunes.apple.com/search?term=" + encodeURIComponent("Velc air") + "&entity=song&limit=50")
-        .then(function(r){ return r.json(); })
-        .then(function(d){
-          (d.results||[]).forEach(function(it){
-            if (!it.previewUrl) return;
-            if (!attachPreview(it.trackName, it.previewUrl)) {
-              SONGS.push({id:"", title:it.trackName, preview:it.previewUrl, art:it.artworkUrl100});
-            }
-          });
-        }).catch(function(){});
-      fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.youtube.com/feeds/videos.xml?channel_id=UCt8dYnrvcrZSCx9uS0aLBSQ"))
-        .then(function(r){ return r.json(); })
-        .then(function(d){
-          (d.items||[]).forEach(function(it){
-            var m = String(it.link||"").match(/[?&]v=([\w-]{11})/) || String(it.guid||"").match(/([\w-]{11})$/);
-            if (!m) return;
-            var id = m[1];
-            if (SONGS.some(function(s){ return s.id === id; })) return;
-            SONGS.push({id:id, title:it.title||id});
-          });
-        }).catch(function(){});
-    }
-    bind(); paint(); pullFeeds();
+    paint();
   </script>
 </body>
 </html>
