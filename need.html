@@ -5,43 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Need</title>
   <style>
-    :root {
-      --bg:#f2f2f7; --elev:#fff; --fg:#1c1c1e; --muted:#6e6e73; --line:rgba(60,60,67,.18);
-      --need:#007AFF; --need-ink:#fff;
-    }
+    :root { --bg:#f2f2f7; --elev:#fff; --fg:#1c1c1e; --muted:#6e6e73; --line:rgba(60,60,67,.18); --need:#007AFF; }
     * { box-sizing:border-box; margin:0; padding:0; }
-    html, body { min-height:100%; background:var(--bg); color:var(--fg); font-family:ui-sans-serif,system-ui,sans-serif; }
-    body { padding: max(28px, env(safe-area-inset-top)) 18px max(28px, env(safe-area-inset-bottom)); }
-    .lock { display:flex; align-items:center; justify-content:center; gap:10px; margin:28px 0 8px; }
+    html,body { min-height:100%; background:var(--bg); color:var(--fg); font-family:ui-sans-serif,system-ui,sans-serif; }
+    body { padding: max(24px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom)); }
+    .lock { display:flex; align-items:center; justify-content:center; gap:10px; margin:36px 0 8px; }
     .mark { width:48px; height:48px; border-radius:14px; background:var(--need); color:#fff; display:grid; place-items:center; font-weight:800; }
     h1 { font-family:Georgia,serif; font-size:34px; font-weight:600; letter-spacing:-.04em; }
-    .tag { text-align:center; color:var(--muted); margin:0 0 24px; font-weight:500; }
+    .tag { text-align:center; color:var(--muted); margin:0 0 24px; }
     .doors { max-width:400px; margin:0 auto; background:var(--elev); border:1px solid var(--line); border-radius:22px; overflow:hidden; }
     .door { width:100%; border:0; background:transparent; color:inherit; display:flex; align-items:center; gap:12px; padding:0 12px 0 14px; min-height:76px; text-align:left; cursor:pointer; }
-    .ico { width:40px; height:40px; border-radius:11px; background:#e8f1ff; color:var(--need); display:grid; place-items:center; font-size:18px; flex-shrink:0; }
+    .ico { width:40px; height:40px; border-radius:11px; background:#e8f1ff; color:var(--need); display:grid; place-items:center; font-weight:800; flex-shrink:0; }
     .copy { flex:1; padding:16px 0; border-bottom:1px solid var(--line); }
     .door:last-child .copy { border-bottom:0; }
     .title { font-size:17px; font-weight:650; }
     .sub { display:block; margin-top:3px; font-size:13px; color:var(--muted); }
     .foot { text-align:center; color:var(--muted); margin-top:22px; font-size:13px; }
+    .foot a { color:var(--need); text-decoration:none; font-weight:700; }
     .screen { max-width:430px; margin:0 auto; }
     .topbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
     .back { border:0; background:transparent; color:var(--need); font-weight:700; font-size:16px; cursor:pointer; }
     .card { background:var(--elev); border:1px solid var(--line); border-radius:18px; overflow:hidden; }
-    .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#000; }
+    .card img.cover { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#111; }
     .pad { padding:14px; }
     .row { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
     button.p { border:0; border-radius:999px; background:var(--need); color:#fff; font-weight:700; padding:8px 14px; cursor:pointer; }
     button.g { border:1px solid var(--line); background:var(--elev); color:var(--fg); border-radius:999px; padding:8px 14px; font-weight:650; cursor:pointer; }
-    iframe { width:100%; height:200px; border:0; display:block; }
+    iframe { width:100%; height:210px; border:0; display:block; background:#000; }
     .muted { color:var(--muted); }
-    textarea, .search { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font:16px ui-sans-serif,system-ui; background:#fff; color:inherit; }
+    textarea, .search { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font:16px ui-sans-serif,system-ui; background:#fff; }
     textarea { min-height:90px; }
-    .prod, .offer { width:100%; display:flex; justify-content:space-between; gap:12px; text-align:left; border:1px solid var(--line); background:#fff; color:inherit; border-radius:16px; padding:14px; margin-bottom:8px; cursor:pointer; }
-    .offer { display:block; cursor:default; }
+    .prod, .town { width:100%; display:flex; justify-content:space-between; gap:12px; text-align:left; border:1px solid var(--line); background:#fff; color:inherit; border-radius:16px; padding:14px; margin-bottom:8px; cursor:pointer; }
+    .offer { border:1px solid var(--line); background:#fff; border-radius:16px; padding:14px; margin-bottom:8px; }
     .offer a { color:var(--need); font-weight:700; text-decoration:none; display:inline-block; margin-top:8px; }
-    .prod span { display:flex; flex-direction:column; gap:4px; }
-    .list { display:flex; flex-direction:column; }
+    .prod span, .town span { display:flex; flex-direction:column; gap:4px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
+    .bar { height:4px; background:#e5e5ea; border-radius:99px; overflow:hidden; margin-top:10px; }
+    .bar i { display:block; height:100%; width:0; background:var(--need); }
   </style>
 </head>
 <body>
