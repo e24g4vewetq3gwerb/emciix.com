@@ -3,42 +3,46 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Velc air — VELC AIR</title>
+  <title>Velc air</title>
   <style>
     :root { --bg:#050505; --ink:#f4f1ea; --gold:#c9a227; --dim:#8a857a; --line:#2b2b28; }
     * { box-sizing:border-box; margin:0; padding:0; }
     body { background:var(--bg); color:var(--ink); font-family:Georgia,"Times New Roman",serif; }
-    .wrap { max-width:980px; margin:0 auto; padding:28px 20px 80px; }
-    .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
-    .socials { display:flex; align-items:center; gap:10px; }
+    .wrap { max-width:1040px; margin:0 auto; padding:24px 18px 96px; }
+    .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+    .brand { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:.2em; font-size:11px; color:var(--gold); }
+    .socials { display:flex; gap:8px; }
     .soc { color:var(--gold); width:36px; height:36px; border:1px solid var(--line); border-radius:999px; display:grid; place-items:center; }
     .soc:hover { background:#161616; }
-    .brand { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:.2em; font-size:11px; color:var(--gold); }
-    h1 { font-size:clamp(34px,7vw,64px); font-weight:500; letter-spacing:-.03em; line-height:.92; margin:0 0 8px; }
-    .lede { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:14px; margin-bottom:22px; }
-    .hero { min-height:280px; display:grid; grid-template-columns:1.4fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
-    @media (max-width:720px){ .hero { grid-template-columns:1fr; } }
+    h1 { font-size:clamp(32px,6.6vw,60px); font-weight:500; letter-spacing:-.03em; line-height:.92; margin:0 0 8px; }
+    .lede { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:13px; margin-bottom:18px; }
+    .hero { min-height:280px; display:grid; grid-template-columns:1.45fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
+    @media (max-width:760px){ .hero { grid-template-columns:1fr; } }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
     .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; }
-    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:76px; height:76px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; }
-    .side { padding:26px 24px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
-    .side h2 { font-size:26px; font-weight:500; }
+    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; box-shadow:0 8px 30px rgba(201,162,39,.35); }
+    .side { padding:24px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
+    .kicker { font-family:ui-sans-serif,system-ui,sans-serif; font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; }
+    .side h2 { font-size:clamp(22px,3vw,30px); font-weight:500; }
     .meta { font-family:ui-sans-serif,system-ui,sans-serif; font-size:12px; color:var(--dim); }
-    .bar { height:3px; background:#1c1c1c; border-radius:99px; overflow:hidden; }
+    .bar { height:4px; background:#1c1c1c; border-radius:99px; overflow:hidden; }
     .bar i { display:block; height:100%; width:0; background:var(--gold); }
     .row { display:flex; gap:8px; flex-wrap:wrap; }
     button.b { font-family:ui-sans-serif,system-ui,sans-serif; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:650; }
     .keep { background:var(--gold); color:#111; }
-    .skip { background:#161616; color:var(--ink); border:1px solid var(--line); }
+    .skip,.prev { background:#161616; color:var(--ink); border:1px solid var(--line); }
     .full { background:transparent; color:var(--gold); border:1px solid var(--line); }
-    .shelf { margin-top:48px; }
+    .hint { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; color:#5d5a52; }
+    .shelf { margin-top:42px; }
     .shelf h3 { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); margin-bottom:14px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px; }
-    .card { border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    .card { position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; }
+    .card:hover { border-color:#3a3a36; }
     .card.on { outline:1px solid var(--gold); }
     .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
     .card p { font-family:ui-sans-serif,system-ui,sans-serif; font-size:13px; padding:10px 12px 14px; }
+    .card .n { position:absolute; top:8px; left:8px; font:700 10px ui-sans-serif,system-ui; letter-spacing:.08em; color:#111; background:var(--gold); border-radius:999px; padding:3px 7px; }
   </style>
 </head>
 <body>
@@ -46,58 +50,60 @@
     <div class="top">
       <div class="brand">EMCIIX · VELC AIR</div>
       <div class="socials">
-        <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X profile">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg>
+        <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg>
         </a>
-        <a class="soc" href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener" aria-label="YouTube channel">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+        <a class="soc" href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
         </a>
       </div>
     </div>
     <h1>Watch the latest cut.</h1>
-    <p class="lede" id="status">Press PLAY. The song runs here, not on YouTube.</p>
+    <p class="lede" id="status">Press PLAY. Space, ← →, K keep, F full.</p>
     <div class="hero" id="hero">
       <div class="stage">
         <img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg" />
         <button class="go" id="play" type="button"><b>PLAY</b></button>
       </div>
       <div class="side">
+        <p class="kicker" id="kicker">Now playing · 01 / 16</p>
+        <h2 id="title">Need Hired by Me.</h2>
         <p class="meta" id="clock">Idle · 30 seconds on this page</p>
-        <h2>Need Hired by Me.</h2>
         <div class="bar"><i id="bar"></i></div>
         <div class="row">
+          <button class="b prev" id="prev" type="button">Prev</button>
           <button class="b keep" id="keep" type="button">Keep</button>
           <button class="b skip" id="skip" type="button">Skip</button>
           <button class="b full" id="full" type="button">Play full here</button>
         </div>
+        <p class="hint">Click a card to load it. Keep unlocks the full cut on this page.</p>
       </div>
     </div>
     <section class="shelf">
       <h3>ALL SONGS</h3>
       <div class="grid" id="grid">
-<article class="card on" data-i="0"><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
-<article class="card" data-i="1"><img alt="" src="https://i.ytimg.com/vi/txA5vV_9XG4/hqdefault.jpg"><p>Unemployed in Love</p></article>
-<article class="card" data-i="2"><img alt="" src="https://i.ytimg.com/vi/05AgmKvd3NI/hqdefault.jpg"><p>Make up shit</p></article>
-<article class="card" data-i="3"><img alt="" src="https://i.ytimg.com/vi/MP9AIxzx55o/hqdefault.jpg"><p>Everybody But Me</p></article>
-<article class="card" data-i="4"><img alt="" src="https://i.ytimg.com/vi/RFqKvFDB0Hg/hqdefault.jpg"><p>I Took Credit</p></article>
-<article class="card" data-i="5"><img alt="" src="https://i.ytimg.com/vi/o040u9wAZns/hqdefault.jpg"><p>Two phones, zero social life</p></article>
-<article class="card" data-i="6"><img alt="" src="https://i.ytimg.com/vi/oq1c9I9T_tw/hqdefault.jpg"><p>Which phone is it? iPhone or Android</p></article>
-<article class="card" data-i="7"><img alt="" src="https://i.ytimg.com/vi/53Jny0alg9g/hqdefault.jpg"><p>Still here</p></article>
-<article class="card" data-i="8"><img alt="" src="https://i.ytimg.com/vi/cWy-1DZsHDg/hqdefault.jpg"><p>XCode Swift Song</p></article>
-<article class="card" data-i="9"><img alt="" src="https://i.ytimg.com/vi/9-nGIe8mQ0M/hqdefault.jpg"><p>Wake you up Avicii</p></article>
-<article class="card" data-i="10"><img alt="" src="https://i.ytimg.com/vi/Id4HSb9j8RA/hqdefault.jpg"><p>You're Not Alone</p></article>
-<article class="card" data-i="11"><img alt="" src="https://i.ytimg.com/vi/oCWCYVTs3vM/hqdefault.jpg"><p>IDK What I'm Doing</p></article>
-<article class="card" data-i="12"><img alt="" src="https://i.ytimg.com/vi/R7BunIbGheI/hqdefault.jpg"><p>One More Light On</p></article>
-<article class="card" data-i="13"><img alt="" src="https://i.ytimg.com/vi/m6cxgKh5QgE/hqdefault.jpg"><p>Grid Run</p></article>
-<article class="card" data-i="14"><img alt="" src="https://i.ytimg.com/vi/qZZuGfqancc/hqdefault.jpg"><p>Solar System Party</p></article>
-<article class="card" data-i="15"><img alt="" src="https://i.ytimg.com/vi/KhGqJCTO1Hc/hqdefault.jpg"><p>Come Closer</p></article>
+<article class="card on" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
+<article class="card" data-i="1"><span class="n">02</span><img alt="" src="https://i.ytimg.com/vi/txA5vV_9XG4/hqdefault.jpg"><p>Unemployed in Love</p></article>
+<article class="card" data-i="2"><span class="n">03</span><img alt="" src="https://i.ytimg.com/vi/05AgmKvd3NI/hqdefault.jpg"><p>Make up shit</p></article>
+<article class="card" data-i="3"><span class="n">04</span><img alt="" src="https://i.ytimg.com/vi/MP9AIxzx55o/hqdefault.jpg"><p>Everybody But Me</p></article>
+<article class="card" data-i="4"><span class="n">05</span><img alt="" src="https://i.ytimg.com/vi/RFqKvFDB0Hg/hqdefault.jpg"><p>I Took Credit</p></article>
+<article class="card" data-i="5"><span class="n">06</span><img alt="" src="https://i.ytimg.com/vi/o040u9wAZns/hqdefault.jpg"><p>Two phones, zero social life</p></article>
+<article class="card" data-i="6"><span class="n">07</span><img alt="" src="https://i.ytimg.com/vi/oq1c9I9T_tw/hqdefault.jpg"><p>Which phone is it? iPhone or Android</p></article>
+<article class="card" data-i="7"><span class="n">08</span><img alt="" src="https://i.ytimg.com/vi/53Jny0alg9g/hqdefault.jpg"><p>Still here</p></article>
+<article class="card" data-i="8"><span class="n">09</span><img alt="" src="https://i.ytimg.com/vi/cWy-1DZsHDg/hqdefault.jpg"><p>XCode Swift Song</p></article>
+<article class="card" data-i="9"><span class="n">10</span><img alt="" src="https://i.ytimg.com/vi/9-nGIe8mQ0M/hqdefault.jpg"><p>Wake you up Avicii</p></article>
+<article class="card" data-i="10"><span class="n">11</span><img alt="" src="https://i.ytimg.com/vi/Id4HSb9j8RA/hqdefault.jpg"><p>You're Not Alone</p></article>
+<article class="card" data-i="11"><span class="n">12</span><img alt="" src="https://i.ytimg.com/vi/oCWCYVTs3vM/hqdefault.jpg"><p>IDK What I'm Doing</p></article>
+<article class="card" data-i="12"><span class="n">13</span><img alt="" src="https://i.ytimg.com/vi/R7BunIbGheI/hqdefault.jpg"><p>One More Light On</p></article>
+<article class="card" data-i="13"><span class="n">14</span><img alt="" src="https://i.ytimg.com/vi/m6cxgKh5QgE/hqdefault.jpg"><p>Grid Run</p></article>
+<article class="card" data-i="14"><span class="n">15</span><img alt="" src="https://i.ytimg.com/vi/qZZuGfqancc/hqdefault.jpg"><p>Solar System Party</p></article>
+<article class="card" data-i="15"><span class="n">16</span><img alt="" src="https://i.ytimg.com/vi/KhGqJCTO1Hc/hqdefault.jpg"><p>Come Closer</p></article>
       </div>
     </section>
   </div>
   <script>
-    const PREVIEW = 30;
-    const KEEP_KEY = "emciixGrokPlay";
-    const SONGS = [
+    var PREVIEW = 30, KEEP_KEY = "emciixGrokPlay", IDX_KEY = "emciixIdx";
+    var SONGS = [
       ["dG8z3nQeDSI","Need Hired by Me."],
       ["txA5vV_9XG4","Unemployed in Love"],
       ["05AgmKvd3NI","Make up shit"],
@@ -115,30 +121,34 @@
       ["qZZuGfqancc","Solar System Party"],
       ["KhGqJCTO1Hc","Come Closer"]
     ].map(function(p){ return {id:p[0], title:p[1]}; });
-    const hero = document.getElementById("hero");
-    const grid = document.getElementById("grid");
-    const status = document.getElementById("status");
-    let idx = 0, tick = null, t0 = 0, open = false;
-    const thumb = function(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; };
-    const esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({"&":"&","<":"<",">":">",'"':""","'":"&#39;"})[c]; }); };
-    const kept = function(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } };
-    const save = function(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} };
-    const stop = function(){ if (tick) { clearInterval(tick); tick = null; } };
-    function embed(id, full) {
-      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30");
-    }
+    var hero = document.getElementById("hero");
+    var grid = document.getElementById("grid");
+    var status = document.getElementById("status");
+    var idx = 0, tick = null, t0 = 0, open = false;
+    try { var saved = parseInt(localStorage.getItem(IDX_KEY), 10); if (saved >= 0 && saved < SONGS.length) idx = saved; } catch(e) {}
+    function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+    function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]; }); }
+    function kept(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } }
+    function save(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} }
+    function saveIdx(){ try { localStorage.setItem(IDX_KEY, String(idx)); } catch(e) {} }
+    function stop(){ if (tick) { clearInterval(tick); tick = null; } }
+    function embed(id, full){ return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30"); }
+    function pad(n){ return (n < 10 ? "0" : "") + n; }
     function paint() {
-      var v = SONGS[idx];
-      if (!v || !hero) return;
+      var v = SONGS[idx]; if (!v || !hero) return;
       open = kept().some(function(x){ return x.id === v.id; });
-      stop();
+      stop(); saveIdx();
       hero.innerHTML =
         '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
-        '<div class="side"><p class="meta" id="clock">' + (open ? "Kept · full play on this page" : "Idle · 30 seconds on this page") + '</p>' +
-        '<h2>' + esc(v.title) + '</h2><div class="bar"><i id="bar"></i></div>' +
-        '<div class="row"><button class="b keep" id="keep" type="button">Keep</button>' +
+        '<div class="side"><p class="kicker" id="kicker">Now playing · ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
+        '<h2 id="title">' + esc(v.title) + '</h2>' +
+        '<p class="meta" id="clock">' + (open ? "Kept · full play on this page" : "Idle · 30 seconds on this page") + '</p>' +
+        '<div class="bar"><i id="bar"></i></div>' +
+        '<div class="row"><button class="b prev" id="prev" type="button">Prev</button>' +
+        '<button class="b keep" id="keep" type="button">Keep</button>' +
         '<button class="b skip" id="skip" type="button">Skip</button>' +
-        '<button class="b full" id="full" type="button">Play full here</button></div></div>';
+        '<button class="b full" id="full" type="button">Play full here</button></div>' +
+        '<p class="hint">Space play · arrows change song · K keep · F full</p></div>';
       bind();
       if (grid) {
         var cards = grid.querySelectorAll(".card");
@@ -165,28 +175,27 @@
         var bar = document.getElementById("bar");
         var clock = document.getElementById("clock");
         if (bar) bar.style.width = (s/PREVIEW*100) + "%";
-        if (clock) clock.textContent = "0:" + String(Math.floor(s)).padStart(2,"0") + " / 0:30";
+        if (clock) clock.textContent = "0:" + pad(Math.floor(s)) + " / 0:30";
         if (s >= PREVIEW) { stop(); skip(); }
       }, 200);
     }
     function keepFn() {
       var v = SONGS[idx];
       save([{id:v.id,title:v.title,at:Date.now()}].concat(kept().filter(function(x){ return x.id !== v.id; })));
-      open = true;
-      start(true);
+      open = true; start(true);
     }
-    function skip() {
-      idx = (idx + 1) % SONGS.length;
-      paint();
-    }
+    function skip(){ idx = (idx + 1) % SONGS.length; paint(); }
+    function prev(){ idx = (idx - 1 + SONGS.length) % SONGS.length; paint(); }
     function bind() {
       var play = document.getElementById("play");
       var keep = document.getElementById("keep");
       var skipBtn = document.getElementById("skip");
+      var prevBtn = document.getElementById("prev");
       var full = document.getElementById("full");
       if (play) play.onclick = function(){ start(open); };
       if (keep) keep.onclick = keepFn;
       if (skipBtn) skipBtn.onclick = skip;
+      if (prevBtn) prevBtn.onclick = prev;
       if (full) full.onclick = function(){ start(true); };
     }
     if (grid) {
@@ -194,6 +203,14 @@
         el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
       });
     }
+    document.addEventListener("keydown", function(e){
+      if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+      if (e.code === "Space") { e.preventDefault(); start(open); }
+      if (e.key === "ArrowRight") skip();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "k" || e.key === "K") keepFn();
+      if (e.key === "f" || e.key === "F") start(true);
+    });
     bind();
     paint();
   </script>
