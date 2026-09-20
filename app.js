@@ -1,5 +1,5 @@
 var IDX_KEY = "emciixIdx";
-var NEED_SRC = "https://write-spotlight-brooks-diane.trycloudflare.com";
+var NEED_SRC = "need.html";
 var SONGS = [
   ["dG8z3nQeDSI","Need Hired by Me."],
   ["txA5vV_9XG4","Unemployed in Love"],
@@ -44,7 +44,7 @@ function paintNeed() {
   stop();
   hero.className = "hero needon";
   hero.innerHTML =
-    '<div class="phone"><iframe title="Need" src="' + NEED_SRC + '" allow="geolocation; microphone; camera; autoplay; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+    '<div class="phone"><iframe title="Need" src="' + NEED_SRC + '" allow="geolocation; microphone; camera; autoplay; clipboard-read; clipboard-write"></iframe></div>';
   var btn = document.getElementById("needBtn");
   if (btn) btn.setAttribute("aria-expanded", "true");
   if (status) status.textContent = "Need app preview.";
