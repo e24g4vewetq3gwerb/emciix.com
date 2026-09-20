@@ -4,43 +4,91 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>emciix.com — Velc air</title>
+  <link rel="preconnect" href="https://www.youtube.com" />
   <style>
-    :root { --bg:#080808; --ink:#f3f0ea; --gold:#d4af37; --gold-2:#ead07a; --mute:#8f8a80; --card:#121212; --line:#262624; --ok:#8fceaa; }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    html,body { background:radial-gradient(900px 420px at 12% -10%,rgba(212,175,55,.08),transparent 55%),var(--bg); color:var(--ink); font-family:ui-sans-serif,system-ui,sans-serif; }
-    header { max-width:1080px; margin:0 auto; padding:32px 20px 20px; display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--line); }
-    .mark { letter-spacing:.22em; font-size:11px; color:var(--gold); font-weight:700; }
-    .sub { margin-top:6px; font-size:13px; color:var(--mute); }
-    header a { color:var(--gold-2); font-size:13px; text-decoration:none; }
-    main { max-width:1080px; margin:0 auto; padding:40px 20px 96px; }
-    .kicker { color:var(--gold); font-size:11px; letter-spacing:.18em; font-weight:700; margin-bottom:10px; }
-    h1 { font-family:Georgia,serif; font-size:clamp(32px,5.4vw,56px); letter-spacing:-.03em; line-height:.94; }
-    .status { color:var(--mute); font-size:13px; margin:10px 0 22px; }
-    .mini { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(240px,.9fr); border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#0d0d0d; box-shadow:0 24px 60px rgba(0,0,0,.35); }
-    @media (max-width:760px){ .mini{grid-template-columns:1fr;} }
-    .mini-stage { position:relative; background:#000; aspect-ratio:16/9; }
-    .mini-stage img,.mini-stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
-    .play-hit { position:absolute; inset:0; border:0; background:linear-gradient(180deg,transparent,rgba(0,0,0,.45)); cursor:pointer; }
-    .play-hit span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:74px; height:74px; border-radius:999px; background:var(--gold); color:#111; display:grid; place-items:center; font-size:22px; font-weight:800; }
-    .mini-body { padding:32px 28px; display:flex; flex-direction:column; justify-content:center; gap:14px; }
-    .mini-body h2 { font-family:Georgia,serif; font-size:clamp(20px,2.5vw,28px); }
-    .clock,.hint,footer { color:var(--mute); font-size:12px; }
-    .bar { height:3px; background:#1d1d1d; border-radius:99px; overflow:hidden; }
-    .bar>i { display:block; height:100%; width:0; background:var(--gold); }
-    .acts { display:flex; gap:8px; flex-wrap:wrap; }
-    button.act { border:0; border-radius:999px; padding:10px 15px; font-weight:650; cursor:pointer; font-size:13px; }
-    button.keep { background:var(--gold); color:#111; }
-    button.skip { background:#191919; color:var(--ink); border:1px solid var(--line); }
-    button.yt { background:transparent; color:var(--gold-2); border:1px solid var(--line); }
-    .kept { color:var(--ok); font-size:12px; }
-    .shelf { margin-top:52px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:18px; }
-    article.card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; }
-    article.card.on { border-color:var(--gold); }
-    article.card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
-    article.card .body { padding:12px 14px 16px; }
-    article.card time { display:block; color:var(--mute); font-size:12px; margin-top:8px; }
-    footer { margin-top:56px; }
+    :root {
+      --bg: #080808; --ink: #f3f0ea; --gold: #d4af37; --gold-2: #ead07a;
+      --mute: #8f8a80; --card: #121212; --line: #262624; --ok: #8fceaa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background:
+        radial-gradient(900px 420px at 12% -10%, rgba(212,175,55,.08), transparent 55%),
+        radial-gradient(700px 380px at 100% 0%, rgba(255,255,255,.03), transparent 50%),
+        var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+    }
+    a { color: inherit; }
+    header {
+      max-width: 1080px; margin: 0 auto; padding: 32px 20px 20px;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .mark { letter-spacing: .22em; font-size: 11px; color: var(--gold); font-weight: 700; }
+    .sub { margin-top: 6px; font-size: 13px; color: var(--mute); }
+    header a { color: var(--gold-2); font-size: 13px; text-decoration: none; border-bottom: 1px solid transparent; }
+    header a:hover { border-bottom-color: var(--gold); }
+    main { max-width: 1080px; margin: 0 auto; padding: 40px 20px 96px; }
+    .hero-copy { margin-bottom: 22px; }
+    .kicker { color: var(--gold); font-size: 11px; letter-spacing: .18em; font-weight: 700; margin-bottom: 10px; }
+    h1 {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      font-size: clamp(32px, 5.4vw, 56px); letter-spacing: -0.03em; line-height: .94; font-weight: 600;
+    }
+    .status { color: var(--mute); font-size: 13px; margin-top: 10px; }
+    .mini {
+      display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(240px, .9fr);
+      border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+      background: #0d0d0d; box-shadow: 0 24px 60px rgba(0,0,0,.35);
+    }
+    @media (max-width: 760px) { .mini { grid-template-columns: 1fr; } }
+    .mini-stage { position: relative; background: #000; aspect-ratio: 16 / 9; }
+    .mini-stage img, .mini-stage iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover;
+    }
+    .play-hit {
+      position: absolute; inset: 0; border: 0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.45));
+      cursor: pointer; color: #111;
+    }
+    .play-hit span {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 74px; height: 74px; border-radius: 999px; background: var(--gold);
+      display: grid; place-items: center; font-size: 22px; font-weight: 800;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    }
+    .play-hit:hover span { transform: translate(-50%, -50%) scale(1.05); }
+    .mini-body { padding: 32px 28px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+    .mini-body h2 {
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: clamp(20px, 2.5vw, 28px); line-height: 1.18; letter-spacing: -0.02em; font-weight: 600;
+    }
+    .clock { color: var(--mute); font-size: 12px; }
+    .bar { height: 3px; background: #1d1d1d; border-radius: 99px; overflow: hidden; }
+    .bar > i { display: block; height: 100%; width: 0; background: var(--gold); }
+    .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    button.act { border: 0; border-radius: 999px; padding: 10px 15px; font-weight: 650; cursor: pointer; font-size: 13px; }
+    button.keep { background: var(--gold); color: #111; }
+    button.skip { background: #191919; color: var(--ink); border: 1px solid var(--line); }
+    button.yt { background: transparent; color: var(--gold-2); border: 1px solid var(--line); }
+    button.act:hover { filter: brightness(1.08); }
+    .kept { color: var(--ok); font-size: 12px; }
+    .hint { color: var(--mute); font-size: 12px; line-height: 1.45; }
+    .shelf { margin-top: 52px; }
+    .shelf .kicker { margin-bottom: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+    article.card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      overflow: hidden; cursor: pointer; transition: transform .18s ease, border-color .18s ease;
+    }
+    article.card.on { border-color: var(--gold); }
+    article.card:hover { border-color: #4a4434; transform: translateY(-2px); }
+    article.card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #111; }
+    article.card .body { padding: 12px 14px 16px; }
+    article.card h3 { font-size: 14px; line-height: 1.35; font-weight: 600; }
+    article.card time { display: block; color: var(--mute); font-size: 12px; margin-top: 8px; }
+    footer { color: var(--mute); font-size: 12px; margin-top: 56px; }
   </style>
 </head>
 <body>
@@ -52,9 +100,11 @@
     <a href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener">Channel</a>
   </header>
   <main>
-    <p class="kicker">NEWEST</p>
-    <h1>Latest from the channel</h1>
-    <p class="status" id="status">Loading the shelf…</p>
+    <div class="hero-copy">
+      <p class="kicker">NEWEST</p>
+      <h1>Latest from the channel</h1>
+      <p class="status" id="status">Loading the shelf…</p>
+    </div>
     <div class="mini" id="mini"></div>
     <section class="shelf">
       <p class="kicker">ALL UPLOADS</p>
@@ -63,10 +113,25 @@
     <footer>emciix.com</footer>
   </main>
   <script>
-    const CHANNEL="UCt8dYnrvcrZSCx9uS0aLBSQ";
-    const RSS="https://www.youtube.com/feeds/videos.xml?channel_id="+CHANNEL;
-    const PREVIEW=30, KEEP_KEY="emciixKept";
-    const FALLBACK=[["dG8z3nQeDSI","Need Hired by Me.","2026-09-19T23:36:27+00:00"],["txA5vV_9XG4","Unemployed in Love #youareoneofakind #games","2026-09-19T22:05:00+00:00"],["05AgmKvd3NI","Make up shit","2026-09-19T20:02:00+00:00"],["MP9AIxzx55o","Everybody But Me","2026-09-18T23:22:00+00:00"],["RFqKvFDB0Hg","I Took Credit","2026-09-18T20:41:00+00:00"],["o040u9wAZns","Two phones, zero social life","2026-09-18T08:33:00+00:00"],["2bbplpfoL-c","Which phone is it ? iPhone or Android","2026-09-18T07:17:00+00:00"],["53Jny0alg9g","Still here","2026-09-18T01:19:00+00:00"],["cWy-1DZsHDg","XCode Swift Song","2026-09-18T00:25:00+00:00"],["9-nGIe8mQ0M","Wake you up Avicii","2026-09-17T00:49:00+00:00"],["Id4HSb9j8RA","You're Not Alone","2026-09-16T18:13:00+00:00"],["oCWCYVTs3vM","IDK What I'm Doing","2026-09-16T17:30:00+00:00"],["R7BunIbGheI","One More Light On","2026-09-16T10:13:00+00:00"]].map(([id,title,published])=>({id,title,published}));
+    const CHANNEL = "UCt8dYnrvcrZSCx9uS0aLBSQ";
+    const RSS = "https://www.youtube.com/feeds/videos.xml?channel_id=" + CHANNEL;
+    const PREVIEW = 30;
+    const KEEP_KEY = "emciixKept";
+    const FALLBACK = [
+      ["dG8z3nQeDSI","Need Hired by Me.","2026-09-19T23:36:27+00:00"],
+      ["txA5vV_9XG4","Unemployed in Love #youareoneofakind #games","2026-09-19T22:05:00+00:00"],
+      ["05AgmKvd3NI","Make up shit","2026-09-19T20:02:00+00:00"],
+      ["MP9AIxzx55o","Everybody But Me","2026-09-18T23:22:00+00:00"],
+      ["RFqKvFDB0Hg","I Took Credit","2026-09-18T20:41:00+00:00"],
+      ["o040u9wAZns","Two phones, zero social life","2026-09-18T08:33:00+00:00"],
+      ["2bbplpfoL-c","Which phone is it ? iPhone or Android","2026-09-18T07:17:00+00:00"],
+      ["53Jny0alg9g","Still here","2026-09-18T01:19:00+00:00"],
+      ["cWy-1DZsHDg","XCode Swift Song","2026-09-18T00:25:00+00:00"],
+      ["9-nGIe8mQ0M","Wake you up Avicii","2026-09-17T00:49:00+00:00"],
+      ["Id4HSb9j8RA","You're Not Alone","2026-09-16T18:13:00+00:00"],
+      ["oCWCYVTs3vM","IDK What I'm Doing","2026-09-16T17:30:00+00:00"],
+      ["R7BunIbGheI","One More Light On","2026-09-16T10:13:00+00:00"]
+    ].map(([id,title,published])=>({id,title,published}));
     const status=document.getElementById("status"), mini=document.getElementById("mini"), grid=document.getElementById("grid");
     let queue=[], idx=0, tick=null, startedAt=0, unlocked=false;
     function titleKey(t){return String(t||"").toLowerCase().replace(/#[\w]+/g," ").replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();}
@@ -82,7 +147,7 @@
     function paintMini(){
       const v=queue[idx]; if(!v){mini.innerHTML="<div class='mini-body'><p class='hint'>Shelf empty.</p></div>";return;}
       const kept=readKept().some(x=>x.id===v.id); unlocked=kept; stopTick();
-      mini.innerHTML=`<div class="mini-stage"><img alt="" src="${thumb(v.id)}"/><button class="play-hit" type="button" id="btn-play"><span>▶</span></button></div><div class="mini-body"><p class="clock" id="clock">${kept?"Kept on this device":"Idle · 30 second preview"}</p><h2>${escapeHtml(v.title)}</h2><div class="bar"><i id="bar" style="width:${kept?100:0}%"></i></div><div class="acts"><button class="act keep" type="button" id="btn-keep">Keep</button><button class="act skip" type="button" id="btn-skip">Skip</button><button class="act yt" type="button" id="btn-yt">YouTube</button></div><p class="${kept?"kept":"hint"}" id="kept-note">${kept?"Press play for the full cut.":"Nothing starts until you press play."}</p></div>`;
+      mini.innerHTML=`<div class="mini-stage"><img alt="" src="${thumb(v.id)}"/><button class="play-hit" type="button" id="btn-play" aria-label="Preview"><span>▶</span></button></div><div class="mini-body"><p class="clock" id="clock">${kept?"Kept on this device":"Idle · 30 second preview"}</p><h2>${escapeHtml(v.title)}</h2><div class="bar"><i id="bar" style="width:${kept?100:0}%"></i></div><div class="acts"><button class="act keep" type="button" id="btn-keep">Keep</button><button class="act skip" type="button" id="btn-skip">Skip</button><button class="act yt" type="button" id="btn-yt">YouTube</button></div><p class="${kept?"kept":"hint"}" id="kept-note">${kept?"Press play for the full cut.":"Nothing starts until you press play."}</p></div>`;
       document.getElementById("btn-play").onclick=startPreview;
       document.getElementById("btn-keep").onclick=keepCurrent;
       document.getElementById("btn-skip").onclick=skipCurrent;
@@ -92,16 +157,16 @@
     function startPreview(){
       const v=queue[idx]; if(!v)return;
       const full=unlocked||readKept().some(x=>x.id===v.id);
-      mini.querySelector(".mini-stage").innerHTML=`<iframe src="${embedUrl(v.id,{autoplay:true,end:full?null:PREVIEW})}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      mini.querySelector(".mini-stage").innerHTML=`<iframe id="cue-frame" src="${embedUrl(v.id,{autoplay:true,end:full?null:PREVIEW})}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="${escapeHtml(v.title)}"></iframe>`;
       if(full){document.getElementById("clock").textContent="Playing through"; document.getElementById("bar").style.width="100%"; return;}
       startedAt=Date.now(); stopTick();
-      tick=setInterval(()=>{const sec=Math.min(PREVIEW,(Date.now()-startedAt)/1000); const bar=document.getElementById("bar"); const clock=document.getElementById("clock"); if(bar)bar.style.width=(sec/PREVIEW*100)+"%"; if(clock)clock.textContent="0:"+String(Math.floor(sec)).padStart(2,"0")+" / 0:30"; if(sec>=PREVIEW){stopTick();skipCurrent();}},200);
+      tick=setInterval(()=>{const sec=Math.min(PREVIEW,(Date.now()-startedAt)/1000); const bar=document.getElementById("bar"); const clock=document.getElementById("clock"); if(bar)bar.style.width=(sec/PREVIEW*100)+"%"; if(clock)clock.textContent="0:"+String(Math.floor(sec)).padStart(2,"0")+" / 0:30"; if(sec>=PREVIEW){stopTick(); skipCurrent();}},200);
     }
     function keepCurrent(){
       const v=queue[idx]; if(!v)return;
-      writeKept([{id:v.id,title:v.title,at:Date.now()},...readKept().filter(x=>x.id!==v.id)]);
+      writeKept([{id:v.id,title:v.title,at:Date.now()}, ...readKept().filter(x=>x.id!==v.id)]);
       unlocked=true; stopTick();
-      mini.querySelector(".mini-stage").innerHTML=`<iframe src="${embedUrl(v.id,{autoplay:true})}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      mini.querySelector(".mini-stage").innerHTML=`<iframe src="${embedUrl(v.id,{autoplay:true})}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="${escapeHtml(v.title)}"></iframe>`;
       document.getElementById("clock").textContent="Kept — playing through";
       document.getElementById("bar").style.width="100%";
       const note=document.getElementById("kept-note"); note.className="kept"; note.textContent="Saved on this device.";
