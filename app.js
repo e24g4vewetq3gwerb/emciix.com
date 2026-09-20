@@ -20,7 +20,6 @@ var SONGS = [
 var hero = document.getElementById("hero");
 var grid = document.getElementById("grid");
 var status = document.getElementById("status");
-var needOn = false;
 var idx = 0, tick = null;
 try {
   var saved = parseInt(localStorage.getItem(IDX_KEY), 10);
@@ -38,45 +37,8 @@ function esc(s){
 }
 function pad(n){ return (n < 10 ? "0" : "") + n; }
 function stop(){ if (tick) { clearInterval(tick); tick = null; } }
-function paintNeed() {
-  if (!hero) return;
-  stop();
-  hero.className = "hero needon";
-  hero.innerHTML =
-    '<div class="phone needapp">' +
-    '<div class="nh"><b>NEED</b><p>A song. A town. A price.</p></div>' +
-    '<div class="nplay"><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg">' +
-    '<div class="nrow"><span>Need Hired by Me.</span><button type="button" id="needPlay">Play</button></div>' +
-    '<div id="needStage"></div></div>' +
-    '<div class="nbody"><p class="nk">TOWN</p><p class="ntown">Sault Ste. Marie</p>' +
-    '<p class="nmeta">Walmart 446 Great Northern · No Frills 519 Korah</p>' +
-    '<p class="nk">PRICE · WEEK OF SEP 20</p>' +
-    '<p class="nline">2% milk 4 L<span>walk</span></p>' +
-    '<p class="nline">Eggs 12<span>walk</span></p>' +
-    '<p class="nline">Butter 454 g<span>walk</span></p>' +
-    '<p class="nline">Bread 675 g<span>walk</span></p>' +
-    '<p class="nline">Chicken 1 kg<span>walk</span></p></div></div>';
-  var btn = document.getElementById("needBtn");
-  if (btn) btn.setAttribute("aria-expanded", "true");
-  if (status) status.textContent = "Need preview from private git.";
-  var needPlay = document.getElementById("needPlay");
-  if (needPlay) needPlay.onclick = function(){
-    var stage = document.getElementById("needStage");
-    if (stage) stage.innerHTML = '<iframe src="https://www.youtube.com/embed/dG8z3nQeDSI?rel=0&modestbranding=1&playsinline=1&autoplay=1&end=30" allow="autoplay; encrypted-media" title="Need Hired by Me."></iframe>';
-    needPlay.textContent = "Playing";
-  };
-}
-function toggleNeed(on) {
-  var show = (typeof on === "boolean") ? on : !needOn;
-  needOn = show;
-  var btn = document.getElementById("needBtn");
-  if (btn) btn.setAttribute("aria-expanded", show ? "true" : "false");
-  if (show) paintNeed();
-  else { if (hero) hero.className = "hero"; paint(); }
-}
 function paint() {
   var v = SONGS[idx]; if (!v || !hero) return;
-  if (needOn) return;
   stop();
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
   hero.className = "hero";
@@ -97,7 +59,6 @@ function paint() {
   }
 }
 function start(full) {
-  if (needOn) return;
   var v = SONGS[idx]; if (!v) return;
   var stage = hero.querySelector(".stage"); if (!stage) return;
   stage.innerHTML = '<iframe src="https://www.youtube.com/embed/' + v.id + '?rel=0&modestbranding=1&playsinline=1&autoplay=1' + (full ? "" : "&end=30") + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
@@ -134,18 +95,14 @@ function bind() {
   if (full) full.onclick = function(){ start(true); };
 }
 var needBtn = document.getElementById("needBtn");
-if (needBtn) needBtn.onclick = function(){ toggleNeed(); };
-document.addEventListener("keydown", function(e){
-  if (e.key === "Escape") toggleNeed(false);
-});
+if (needBtn) needBtn.onclick = function(){ window.location.href = "need.html"; };
 if (grid) {
   grid.querySelectorAll(".card").forEach(function(el){
-    el.onclick = function(){ idx = +el.getAttribute("data-i"); toggleNeed(false); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
+    el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
   });
 }
 document.addEventListener("keydown", function(e){
   if (e.target && /input|textarea/i.test(e.target.tagName)) return;
-  if (needOn) return;
   if (e.code === "Space") { e.preventDefault(); start(false); }
   if (e.key === "ArrowRight") skip();
   if (e.key === "ArrowLeft") prev();
