@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Velc air</title>
+  <title>Emciix</title>
   <style>
     :root { --bg:#050505; --ink:#f4f1ea; --gold:#c9a227; --dim:#8a857a; --line:#2b2b28; }
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -20,8 +20,8 @@
     @media (max-width:760px){ .hero { grid-template-columns:1fr; } }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
-    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; }
-    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; box-shadow:0 8px 30px rgba(201,162,39,.35); }
+    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; z-index:5; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; box-shadow:0 8px 30px rgba(201,162,39,.35); pointer-events:none; }
     .side { padding:24px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
     .kicker { font-family:ui-sans-serif,system-ui,sans-serif; font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; }
     .side h2 { font-size:clamp(22px,3vw,30px); font-weight:500; }
@@ -71,8 +71,8 @@
         <button class="go" id="play" type="button"><b>PLAY</b></button>
       </div>
       <div class="side">
-        <p class="kicker" id="kicker">Now playing · 01 / 16</p>
-        <h2 id="title">Need Hired by Me.</h2>
+        <p class="kicker">Now playing · 01 / 16</p>
+        <h2>Need Hired by Me.</h2>
         <p class="meta" id="clock">Idle · 30 seconds on this page</p>
         <div class="bar"><i id="bar"></i></div>
         <div class="row">
@@ -141,7 +141,7 @@
     function saveIdx(){ try { localStorage.setItem(IDX_KEY, String(idx)); } catch(e) {} }
     function stop(){ if (tick) { clearInterval(tick); tick = null; } }
     function stopAudio(){ try { audio.pause(); audio.removeAttribute("src"); } catch(e) {} }
-    function embed(id, full){ return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30"); }
+    function embed(id, full){ return "https://www.youtube.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30"); }
     function pad(n){ return (n < 10 ? "0" : "") + n; }
     function paint() {
       var v = SONGS[idx]; if (!v || !hero) return;
@@ -149,8 +149,8 @@
       stop(); stopAudio(); saveIdx();
       hero.innerHTML =
         '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
-        '<div class="side"><p class="kicker" id="kicker">Now playing · ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
-        '<h2 id="title">' + esc(v.title) + '</h2>' +
+        '<div class="side"><p class="kicker">Now playing · ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
+        '<h2>' + esc(v.title) + '</h2>' +
         '<p class="meta" id="clock">' + (open ? "Kept · full play on this page" : "Idle · 30 seconds on this page") + '</p>' +
         '<div class="bar"><i id="bar"></i></div>' +
         '<div class="row"><button class="b prev" id="prev" type="button">Prev</button>' +
@@ -168,11 +168,9 @@
           cards[i].classList.toggle("hide", i===idx);
         }
       }
-      var st = document.getElementById("shelfTitle");
-      if (st) st.textContent = "MORE SONGS";
     }
     function start(full) {
-      var v = SONGS[idx];
+      var v = SONGS[idx]; if (!v) return;
       var stage = hero.querySelector(".stage");
       if (!stage) return;
       stopAudio();
@@ -231,8 +229,7 @@
       if (SONGS.length < 2) return;
       var n = idx, guard = 0;
       while (n === idx && guard++ < 20) n = Math.floor(Math.random() * SONGS.length);
-      idx = n;
-      paint();
+      idx = n; paint();
       if (status) status.textContent = "Shuffled from catalog.";
     }
     function bind() {
@@ -243,7 +240,8 @@
       var full = document.getElementById("full");
       var cueBtn = document.getElementById("cue");
       var shufBtn = document.getElementById("shuf");
-      if (play) play.onclick = function(){ start(open); };
+      function hitPlay(ev){ if (ev) ev.preventDefault(); start(open); }
+      if (play) { play.onclick = hitPlay; play.onpointerup = hitPlay; }
       if (keep) keep.onclick = keepFn;
       if (skipBtn) skipBtn.onclick = skip;
       if (prevBtn) prevBtn.onclick = prev;
