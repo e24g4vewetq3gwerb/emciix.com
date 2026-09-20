@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Delta on Love — Emciix Game Preview</title>
+<style>
+:root { --bg:#050505; --ink:#f4f1ea; --gold:#c9a227; --dim:#8a857a; --line:#2b2b28; --bad:#8a3b2a; --ok:#6f8f4a; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; background:var(--bg); color:var(--ink); font-family:ui-sans-serif,system-ui,sans-serif; }
+body { display:flex; flex-direction:column; min-height:100%; }
+.top { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line); gap:12px; }
+.brand { letter-spacing:.2em; font-size:11px; color:var(--gold); }
+a.back { color:var(--gold); text-decoration:none; font-size:12px; font-weight:700; }
+.shell { flex:1; display:grid; grid-template-columns:220px 1fr 240px; min-height:0; }
+@media (max-width:900px){ .shell { grid-template-columns:1fr; } .tree,.hud { display:none; } }
+.tree { border-right:1px solid var(--line); padding:14px 12px; font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--dim); }
+.tree b { display:block; color:var(--gold); font-family:ui-sans-serif,system-ui; font-size:10px; letter-spacing:.14em; margin-bottom:10px; }
+.tree .on { color:var(--gold); }
+.stagewrap { position:relative; background:#000; min-height:280px; }
+canvas { display:block; width:100%; height:100%; }
+.hud { border-left:1px solid var(--line); padding:16px; display:flex; flex-direction:column; gap:10px; }
+.kicker { font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; }
+h1 { font-family:Georgia,"Times New Roman",serif; font-size:26px; font-weight:500; }
+.lyric { min-height:4.4em; color:var(--ink); font-family:Georgia,serif; font-size:18px; line-height:1.25; }
+.meta { font-size:12px; color:var(--dim); }
+.bar { height:4px; background:#1c1c1c; border-radius:99px; overflow:hidden; }
+.bar i { display:block; height:100%; width:0; background:var(--gold); }
+.row { display:flex; gap:8px; flex-wrap:wrap; }
+button.b, label.b { font:650 13px ui-sans-serif,system-ui; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; }
+.gold { background:var(--gold); color:#111; }
+.ghost { background:#161616; color:var(--ink); border:1px solid var(--line); }
+input[type=file] { display:none; }
+.hint { font-size:11px; color:#5d5a52; }
+.overlay { position:absolute; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.55); text-align:center; padding:20px; }
+.overlay h2 { font-family:Georgia,serif; font-size:32px; margin-bottom:8px; }
+.overlay p { color:var(--dim); margin-bottom:16px; }
+.hidden { display:none; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">EMCIIX · REPO PREVIEW · GAME</div>
+    <a class="back" href="index.html">← Watch</a>
+  </div>
+  <div class="shell">
+    <aside class="tree">
+      <b>e24g4vewetq3gwerb / emciix.com</b>
+      <div>index.html</div>
+      <div>app.js</div>
+      <div class="on">delta.html ◀ preview</div>
+      <div>delta-cover.svg</div>
+      <div>need.html</div>
+      <div>Delta on Love.wav</div>
+    </aside>
+    <div class="stagewrap">
+      <canvas id="c" width="960" height="540"></canvas>
+      <div class="overlay" id="boot">
+        <div>
+          <h2>Delta on Love</h2>
+          <p>Arrow keys / A D to change lanes.<br>Grab Δ and EXCEPTION. Dodge TRANSACTION.</p>
+          <div class="row" style="justify-content:center">
+            <button class="b gold" id="play" type="button">PLAY</button>
+            <label class="b ghost" for="file">Load wav</label>
+            <input id="file" type="file" accept="audio/*" />
+          </div>
+        </div>
+      </div>
+      <div class="overlay hidden" id="done">
+        <div>
+          <h2 id="endtitle">Exception kept</h2>
+          <p id="endcopy"></p>
+          <button class="b gold" id="again" type="button">Play again</button>
+        </div>
+      </div>
+    </div>
+    <aside class="hud">
+      <p class="kicker">Now playing · 17</p>
+      <h1>Delta on Love</h1>
+      <p class="lyric" id="lyric">Look at me. Not the math.</p>
+      <p class="meta" id="clock">Idle</p>
+      <div class="bar"><i id="bar"></i></div>
+      <p class="meta" id="score">Δ 0 · hits 0</p>
+      <p class="hint">Space play · arrows move · drop the wav if it is not in /media</p>
+    </aside>
+  </div>
+  <audio id="a" preload="auto" src="media/delta-on-love.wav"></audio>
+<script>
+(function(){
+var canvas = document.getElementById("c");
+var ctx = canvas.getContext("2d");
+var audio = document.getElementById("a");
+var boot = document.getElementById("boot");
+var done = document.getElementById("done");
+var lyricEl = document.getElementById("lyric");
+var clock = document.getElementById("clock");
+var bar = document.getElementById("bar");
+var scoreEl = document.getElementById("score");
+var W = canvas.width, H = canvas.height;
+var lane = 1, targetLane = 1;
+var items = [], particles = [];
+var score = 0, hits = 0, t = 0, running = false, last = 0;
+var DURATION = 166.8;
+var LYRICS = [
+  [0, "A blank ledger. One exception."],
+  [43, "You keep a column for every favor"],
+  [50, "Ink in the margin, never later"],
+  [52, "I watched you balance what we gave"],
+  [58, "Like love was something you could save"],
+  [59, "No invoice, no receipt"],
+  [62, "Just a risk I chose to keep"],
+  [63, "I crossed the line I drew in chalk"],
+  [65, "Didn't price the late-night talk"],
+  [68, "If this was business I'd walk away"],
+  [71, "I stayed for free, I stayed anyway"],
+  [73, "Just a lesson I had to learn"],
+  [79, "You said everything is a transaction"],
+  [86, "But I made an exception"],
+  [91, "That I need you to see"],
+  [92, "It's delta on love"],
+  [97, "Not a debt"],
+  [106, "Not a deal"],
+  [108, "Look at me"],
+  [126, "Not the math"],
+  [131, "But I made an exception"],
+  [137, "It's delta on love"],
+  [152, "I made an exception"],
+  [154, "It's delta on love"]
+];
+function lyricAt(sec){
+  var line = LYRICS[0][1];
+  for (var i=0;i<LYRICS.length;i++) if (sec >= LYRICS[i][0]) line = LYRICS[i][1];
+  return line;
+}
+function spawn(kind){
+  items.push({ kind:kind, lane:Math.floor(Math.random()*3), y:-40, hit:false });
+}
+function reset(){
+  items = []; particles = []; score = 0; hits = 0; t = 0; lane = 1; targetLane = 1; last = 0;
+}
+function start(){
+  reset();
+  running = true;
+  boot.classList.add("hidden");
+  done.classList.add("hidden");
+  audio.currentTime = 0;
+  var p = audio.play();
+  if (p && p.catch) p.catch(function(){});
+  last = performance.now();
+  requestAnimationFrame(loop);
+}
+function finish(){
+  running = false;
+  try { audio.pause(); } catch(e){}
+  document.getElementById("endtitle").textContent = hits === 0 ? "Exception kept" : "Ledger updated";
+  document.getElementById("endcopy").textContent = "Δ " + score + " collected · " + hits + " transactions hit";
+  done.classList.remove("hidden");
+}
+function loop(now){
+  if (!running) return;
+  var dt = Math.min(0.05, (now - last) / 1000); last = now;
+  t = audio.readyState >= 2 && isFinite(audio.duration) && audio.duration > 1 ? audio.currentTime : t + dt;
+  if (t >= DURATION || (audio.ended && audio.readyState >= 2)) { finish(); return; }
+  if (Math.random() < 0.035 + t/DURATION*0.04) spawn(Math.random() < 0.62 ? "txn" : (Math.random() < 0.5 ? "ex" : "d"));
+  var speed = 220 + t * 1.4;
+  var px = 280 + targetLane * 140;
+  var x = 280 + lane * 140;
+  lane += (targetLane - lane) * Math.min(1, dt * 12);
+  for (var i=items.length-1;i>=0;i--){
+    var it = items[i];
+    it.y += speed * dt;
+    var ix = 280 + it.lane * 140;
+    if (!it.hit && Math.abs(it.y - 400) < 36 && Math.abs(ix - x) < 48) {
+      it.hit = true;
+      if (it.kind === "txn") hits += 1;
+      else score += it.kind === "d" ? 5 : 1;
+      for (var p=0;p<8;p++) particles.push({x:ix,y:it.y,vx:(Math.random()-0.5)*160,vy:(Math.random()-0.5)*160,life:0.4,kind:it.kind});
+    }
+    if (it.y > H + 40) items.splice(i,1);
+  }
+  for (var j=particles.length-1;j>=0;j--){
+    var pt = particles[j];
+    pt.life -= dt; pt.x += pt.vx*dt; pt.y += pt.vy*dt;
+    if (pt.life <= 0) particles.splice(j,1);
+  }
+  draw(x);
+  lyricEl.textContent = lyricAt(t);
+  var mm = Math.floor(t/60), ss = Math.floor(t%60);
+  clock.textContent = mm + ":" + (ss<10?"0":"") + ss + " / 2:47";
+  bar.style.width = Math.min(100, t/DURATION*100) + "%";
+  scoreEl.textContent = "Δ " + score + " · hits " + hits;
+  requestAnimationFrame(loop);
+}
+function draw(px){
+  ctx.fillStyle = "#050505"; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = "#2b2b28"; ctx.lineWidth = 1;
+  for (var g=0;g<18;g++){
+    var gy = ((t*80)+g*36)%H;
+    ctx.beginPath(); ctx.moveTo(200, gy); ctx.lineTo(W-80, gy); ctx.stroke();
+  }
+  ctx.fillStyle = "#c9a227"; ctx.font = "12px ui-monospace, Menlo, monospace";
+  ctx.fillText("preview · delta.html", 24, 28);
+  ctx.fillStyle = "#8a857a"; ctx.fillText("e24g4vewetq3gwerb/emciix.com", 24, 48);
+  for (var L=0;L<3;L++){
+    ctx.fillStyle = "rgba(201,162,39,0.06)";
+    ctx.fillRect(230 + L*140, 0, 100, H);
+  }
+  for (var i=0;i<items.length;i++){
+    var it = items[i]; if (it.hit) continue;
+    var ix = 280 + it.lane * 140;
+    ctx.fillStyle = it.kind==="txn" ? "#8a3b2a" : (it.kind==="d" ? "#c9a227" : "#6f8f4a");
+    ctx.fillRect(ix-34, it.y-16, 68, 32);
+    ctx.fillStyle = "#111"; ctx.font = "700 11px ui-sans-serif,system-ui"; ctx.textAlign = "center";
+    ctx.fillText(it.kind==="txn"?"TXN":(it.kind==="d"?"Δ":"EXC"), ix, it.y+4);
+    ctx.textAlign = "left";
+  }
+  ctx.fillStyle = "#c9a227";
+  ctx.beginPath(); ctx.arc(px, 400, 16, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#111"; ctx.font = "700 12px Georgia,serif"; ctx.textAlign="center"; ctx.fillText("YOU", px, 404);
+  ctx.textAlign="left";
+  for (var j=0;j<particles.length;j++){
+    var pt = particles[j];
+    ctx.globalAlpha = Math.max(0, pt.life/0.4);
+    ctx.fillStyle = pt.kind==="txn" ? "#8a3b2a" : "#c9a227";
+    ctx.fillRect(pt.x, pt.y, 3, 3);
+    ctx.globalAlpha = 1;
+  }
+}
+document.getElementById("play").onclick = start;
+document.getElementById("again").onclick = start;
+document.getElementById("file").onchange = function(){
+  var f = this.files && this.files[0]; if (!f) return;
+  audio.src = URL.createObjectURL(f);
+};
+document.addEventListener("keydown", function(e){
+  if (e.code==="Space") { e.preventDefault(); if (!running) start(); else { if (audio.paused) audio.play(); else audio.pause(); } }
+  if (e.key==="ArrowLeft" || e.key==="a" || e.key==="A") targetLane = Math.max(0, targetLane-1);
+  if (e.key==="ArrowRight" || e.key==="d" || e.key==="D") targetLane = Math.min(2, targetLane+1);
+});
+if (/full=1|auto=1/.test(location.search)) setTimeout(start, 400);
+})();
+</script>
+</body>
+</html>
