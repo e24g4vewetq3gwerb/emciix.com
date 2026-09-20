@@ -1,5 +1,4 @@
 var IDX_KEY = "emciixIdx";
-var NEED_SRC = "need.html";
 var SONGS = [
   ["dG8z3nQeDSI","Need Hired by Me."],
   ["txA5vV_9XG4","Unemployed in Love"],
@@ -44,10 +43,28 @@ function paintNeed() {
   stop();
   hero.className = "hero needon";
   hero.innerHTML =
-    '<div class="phone"><iframe title="Need" src="' + NEED_SRC + '" allow="geolocation; microphone; camera; autoplay; clipboard-read; clipboard-write"></iframe></div>';
+    '<div class="phone needapp">' +
+    '<div class="nh"><b>NEED</b><p>A song. A town. A price.</p></div>' +
+    '<div class="nplay"><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg">' +
+    '<div class="nrow"><span>Need Hired by Me.</span><button type="button" id="needPlay">Play</button></div>' +
+    '<div id="needStage"></div></div>' +
+    '<div class="nbody"><p class="nk">TOWN</p><p class="ntown">Sault Ste. Marie</p>' +
+    '<p class="nmeta">Walmart 446 Great Northern · No Frills 519 Korah</p>' +
+    '<p class="nk">PRICE · WEEK OF SEP 20</p>' +
+    '<p class="nline">2% milk 4 L<span>walk</span></p>' +
+    '<p class="nline">Eggs 12<span>walk</span></p>' +
+    '<p class="nline">Butter 454 g<span>walk</span></p>' +
+    '<p class="nline">Bread 675 g<span>walk</span></p>' +
+    '<p class="nline">Chicken 1 kg<span>walk</span></p></div></div>';
   var btn = document.getElementById("needBtn");
   if (btn) btn.setAttribute("aria-expanded", "true");
-  if (status) status.textContent = "Need app preview.";
+  if (status) status.textContent = "Need preview from private git.";
+  var needPlay = document.getElementById("needPlay");
+  if (needPlay) needPlay.onclick = function(){
+    var stage = document.getElementById("needStage");
+    if (stage) stage.innerHTML = '<iframe src="https://www.youtube.com/embed/dG8z3nQeDSI?rel=0&modestbranding=1&playsinline=1&autoplay=1&end=30" allow="autoplay; encrypted-media" title="Need Hired by Me."></iframe>';
+    needPlay.textContent = "Playing";
+  };
 }
 function toggleNeed(on) {
   var show = (typeof on === "boolean") ? on : !needOn;
