@@ -2,43 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Need Inc.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Need</title>
   <style>
-    :root { --bg:#050505; --ink:#f4f1ea; --gold:#c9a227; --dim:#8a857a; --line:#2b2b28; }
+    :root { --ink:#111; --mute:#6b675f; --line:#e6e4de; --gold:#c9a227; }
     * { box-sizing:border-box; margin:0; padding:0; }
-    body { background:var(--bg); color:var(--ink); font-family:Georgia,"Times New Roman",serif; }
-    .wrap { max-width:720px; margin:0 auto; padding:32px 18px 80px; }
-    a { color:var(--gold); }
-    .k { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); }
-    h1 { font-size:42px; font-weight:500; margin:10px 0 8px; }
-    p { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:14px; line-height:1.5; }
-    .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:22px 0; }
-    @media (max-width:640px){ .grid { grid-template-columns:1fr; } }
-    .cell { border:1px solid var(--line); border-radius:14px; padding:14px; }
-    .cell span { display:block; font-family:ui-sans-serif,system-ui,sans-serif; font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; }
-    .cell b { display:block; margin-top:8px; font-size:22px; font-weight:500; color:var(--ink); }
-    .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
-    .row a { font-family:ui-sans-serif,system-ui,sans-serif; text-decoration:none; border-radius:999px; padding:10px 14px; font-size:13px; font-weight:650; }
-    .gold { background:var(--gold); color:#111; }
-    .ghost { border:1px solid var(--line); color:var(--ink); }
+    html, body { height:100%; background:#f5f5f7; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    body { display:flex; flex-direction:column; }
+    header { padding:18px 18px 8px; }
+    header b { letter-spacing:.18em; font-size:11px; }
+    header p { color:var(--mute); font-size:12px; margin-top:4px; }
+    .play { margin:8px 18px 16px; border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#000; color:#fff; }
+    .play img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; opacity:.85; }
+    .play .row { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; }
+    .play button { border:0; border-radius:999px; background:var(--gold); color:#111; font-weight:700; padding:8px 12px; cursor:pointer; }
+    main { padding:0 18px 24px; overflow:auto; flex:1; }
+    h2 { font-size:13px; letter-spacing:.12em; color:var(--mute); font-weight:700; margin:14px 0 8px; }
+    .town { font-size:28px; font-weight:560; letter-spacing:-.03em; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    td { padding:8px 0; border-bottom:1px solid var(--line); }
+    td:last-child { text-align:right; color:var(--mute); }
+    iframe { display:none; width:100%; height:0; border:0; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <p class="k">NEED INC.</p>
-    <h1>A song, a town, a price.</h1>
-    <p>Live cut from git <b style="color:#f4f1ea">934e350</b>. Bundle <b style="color:#f4f1ea">com.emcii.need</b>.</p>
-    <div class="grid">
-      <div class="cell"><span>Android</span><b>1.0.1</b></div>
-      <div class="cell"><span>iOS</span><b>1.0.1</b></div>
-      <div class="cell"><span>Web</span><b>934e350</b></div>
-    </div>
-    <p>Firebase hosting is not live yet (cue-508120.web.app is 404). The Need GitHub repo is private, so it only opens if you are signed into that account.</p>
+  <header>
+    <b>NEED</b>
+    <p>A song. A town. A price.</p>
+  </header>
+  <div class="play">
+    <img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg" />
     <div class="row">
-      <a class="gold" href="index.html">Back to Emciix</a>
-      <a class="ghost" href="https://github.com/e24g4vewetq3gwerb/Need">Need git repo</a>
+      <div>Need Hired by Me.<br /><span style="color:#9a9a9a;font-size:11px">30 seconds</span></div>
+      <button type="button" id="go">Play</button>
     </div>
+    <iframe id="yt" allow="autoplay; encrypted-media" title="Need Hired by Me."></iframe>
   </div>
+  <main>
+    <h2>TOWN</h2>
+    <p class="town">Sault Ste. Marie</p>
+    <p style="color:#6b675f;font-size:13px;margin:6px 0 0">Walmart 446 Great Northern · No Frills 519 Korah</p>
+    <h2>PRICE · WEEK OF SEP 20</h2>
+    <table>
+      <tr><td>2% milk 4 L</td><td>walk</td></tr>
+      <tr><td>Eggs 12</td><td>walk</td></tr>
+      <tr><td>Salted butter 454 g</td><td>walk</td></tr>
+      <tr><td>White bread 675 g</td><td>walk</td></tr>
+      <tr><td>Bananas 1 kg</td><td>walk</td></tr>
+      <tr><td>Tims coffee 340 g</td><td>walk</td></tr>
+      <tr><td>Chicken breast 1 kg</td><td>walk</td></tr>
+    </table>
+  </main>
+  <script>
+    var go = document.getElementById("go");
+    var yt = document.getElementById("yt");
+    go.onclick = function(){
+      yt.style.display = "block";
+      yt.style.height = "180px";
+      yt.src = "https://www.youtube.com/embed/dG8z3nQeDSI?rel=0&modestbranding=1&playsinline=1&autoplay=1&end=30";
+      go.textContent = "Playing";
+    };
+  </script>
 </body>
 </html>
