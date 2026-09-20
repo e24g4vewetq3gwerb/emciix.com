@@ -8,6 +8,8 @@ on:
 
 jobs:
   deploy:
+    # Temporarily paused until Need SPA assets are fully on main
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
