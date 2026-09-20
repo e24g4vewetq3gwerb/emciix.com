@@ -14,10 +14,9 @@
     .soc { color:var(--gold); width:36px; height:36px; border:1px solid var(--line); border-radius:999px; display:grid; place-items:center; }
     .soc:hover { background:#161616; }
     .brand { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:.2em; font-size:11px; color:var(--gold); }
-    .build { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; color:var(--dim); }
     h1 { font-size:clamp(34px,7vw,64px); font-weight:500; letter-spacing:-.03em; line-height:.92; margin:0 0 8px; }
     .lede { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:14px; margin-bottom:22px; }
-    .hero { display:grid; grid-template-columns:1.4fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
+    .hero { min-height:280px; display:grid; grid-template-columns:1.4fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
     @media (max-width:720px){ .hero { grid-template-columns:1fr; } }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
@@ -57,7 +56,22 @@
     </div>
     <h1>Watch the latest cut.</h1>
     <p class="lede" id="status">Press PLAY. The song runs here, not on YouTube.</p>
-    <div class="hero" id="hero"></div>
+    <div class="hero" id="hero">
+      <div class="stage">
+        <img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg" />
+        <button class="go" id="play" type="button"><b>PLAY</b></button>
+      </div>
+      <div class="side">
+        <p class="meta" id="clock">Idle · 30 seconds on this page</p>
+        <h2>Need Hired by Me.</h2>
+        <div class="bar"><i id="bar"></i></div>
+        <div class="row">
+          <button class="b keep" id="keep" type="button">Keep</button>
+          <button class="b skip" id="skip" type="button">Skip</button>
+          <button class="b full" id="full" type="button">Play full here</button>
+        </div>
+      </div>
+    </div>
     <section class="shelf">
       <h3>ALL SONGS</h3>
       <div class="grid" id="grid">
@@ -100,25 +114,24 @@
       ["m6cxgKh5QgE","Grid Run"],
       ["qZZuGfqancc","Solar System Party"],
       ["KhGqJCTO1Hc","Come Closer"]
-    ].map(([id,title]) => ({id,title}));
+    ].map(function(p){ return {id:p[0], title:p[1]}; });
     const hero = document.getElementById("hero");
     const grid = document.getElementById("grid");
     const status = document.getElementById("status");
-    let idx = 0, tick = null, t0 = 0, open = false, mode = "idle";
-    const thumb = id => "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
-    const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]));
-    const kept = () => { try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } };
-    const save = list => { try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} };
-    const stop = () => { if (tick) { clearInterval(tick); tick = null; } };
+    let idx = 0, tick = null, t0 = 0, open = false;
+    const thumb = function(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; };
+    const esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({"&":"&","<":"<",">":">",'"':""","'":"&#39;"})[c]; }); };
+    const kept = function(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } };
+    const save = function(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} };
+    const stop = function(){ if (tick) { clearInterval(tick); tick = null; } };
     function embed(id, full) {
-      const q = "rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1" + (full ? "" : "&end=30");
-      return "https://www.youtube-nocookie.com/embed/" + id + "?" + q;
+      return "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30");
     }
-    function paint(auto) {
-      const v = SONGS[idx];
-      open = kept().some(x => x.id === v.id);
+    function paint() {
+      var v = SONGS[idx];
+      if (!v || !hero) return;
+      open = kept().some(function(x){ return x.id === v.id; });
       stop();
-      mode = "idle";
       hero.innerHTML =
         '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
         '<div class="side"><p class="meta" id="clock">' + (open ? "Kept · full play on this page" : "Idle · 30 seconds on this page") + '</p>' +
@@ -126,48 +139,63 @@
         '<div class="row"><button class="b keep" id="keep" type="button">Keep</button>' +
         '<button class="b skip" id="skip" type="button">Skip</button>' +
         '<button class="b full" id="full" type="button">Play full here</button></div></div>';
-      document.getElementById("play").onclick = () => start(open);
-      document.getElementById("keep").onclick = keepFn;
-      document.getElementById("skip").onclick = skip;
-      document.getElementById("full").onclick = () => start(true);
-      [...grid.querySelectorAll(".card")].forEach((el,i) => el.classList.toggle("on", i===idx));
-      if (auto) start(open);
+      bind();
+      if (grid) {
+        var cards = grid.querySelectorAll(".card");
+        for (var i=0;i<cards.length;i++) cards[i].classList.toggle("on", i===idx);
+      }
     }
     function start(full) {
-      const v = SONGS[idx];
-      mode = full ? "full" : "preview";
-      hero.querySelector(".stage").innerHTML = '<iframe src="' + embed(v.id, full) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
-      status.textContent = full ? "Playing on this page." : "30 second preview on this page.";
+      var v = SONGS[idx];
+      var stage = hero.querySelector(".stage");
+      if (!stage) return;
+      stage.innerHTML = '<iframe src="' + embed(v.id, full) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
+      if (status) status.textContent = full ? "Playing on this page." : "30 second preview on this page.";
       if (full) {
         stop();
-        document.getElementById("clock").textContent = "Playing through here";
-        document.getElementById("bar").style.width = "100%";
+        var clock = document.getElementById("clock");
+        var bar = document.getElementById("bar");
+        if (clock) clock.textContent = "Playing through here";
+        if (bar) bar.style.width = "100%";
         return;
       }
       t0 = Date.now(); stop();
-      tick = setInterval(() => {
-        const s = Math.min(PREVIEW, (Date.now()-t0)/1000);
-        const bar = document.getElementById("bar");
-        const clock = document.getElementById("clock");
+      tick = setInterval(function() {
+        var s = Math.min(PREVIEW, (Date.now()-t0)/1000);
+        var bar = document.getElementById("bar");
+        var clock = document.getElementById("clock");
         if (bar) bar.style.width = (s/PREVIEW*100) + "%";
         if (clock) clock.textContent = "0:" + String(Math.floor(s)).padStart(2,"0") + " / 0:30";
         if (s >= PREVIEW) { stop(); skip(); }
       }, 200);
     }
     function keepFn() {
-      const v = SONGS[idx];
-      save([{id:v.id,title:v.title,at:Date.now()}, ...kept().filter(x => x.id !== v.id)]);
+      var v = SONGS[idx];
+      save([{id:v.id,title:v.title,at:Date.now()}].concat(kept().filter(function(x){ return x.id !== v.id; })));
       open = true;
       start(true);
     }
     function skip() {
       idx = (idx + 1) % SONGS.length;
-      paint(false);
+      paint();
     }
-    grid.querySelectorAll(".card").forEach(el => {
-      el.onclick = () => { idx = +el.dataset.i; paint(false); window.scrollTo({top:0,behavior:"smooth"}); };
-    });
-    paint(false);
+    function bind() {
+      var play = document.getElementById("play");
+      var keep = document.getElementById("keep");
+      var skipBtn = document.getElementById("skip");
+      var full = document.getElementById("full");
+      if (play) play.onclick = function(){ start(open); };
+      if (keep) keep.onclick = keepFn;
+      if (skipBtn) skipBtn.onclick = skip;
+      if (full) full.onclick = function(){ start(true); };
+    }
+    if (grid) {
+      grid.querySelectorAll(".card").forEach(function(el){
+        el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
+      });
+    }
+    bind();
+    paint();
   </script>
 </body>
 </html>
