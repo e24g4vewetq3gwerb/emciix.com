@@ -13,14 +13,15 @@
     .brand { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:.2em; font-size:11px; color:var(--gold); }
     .socials { display:flex; gap:8px; }
     .soc { color:var(--gold); width:36px; height:36px; border:1px solid var(--line); border-radius:999px; display:grid; place-items:center; }
+    .soc:hover { background:#161616; }
     h1 { font-size:clamp(32px,6.6vw,60px); font-weight:500; letter-spacing:-.03em; line-height:.92; margin:0 0 8px; }
     .lede { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:13px; margin-bottom:18px; }
     .hero { min-height:280px; display:grid; grid-template-columns:1.45fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
     @media (max-width:760px){ .hero { grid-template-columns:1fr; } }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
-    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; z-index:5; }
-    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; pointer-events:none; }
+    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; z-index:5; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+    .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:78px; height:78px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 18px ui-sans-serif,system-ui; box-shadow:0 8px 30px rgba(201,162,39,.35); pointer-events:none; }
     .side { padding:24px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
     .kicker { font-family:ui-sans-serif,system-ui,sans-serif; font-size:10px; letter-spacing:.16em; color:var(--gold); text-transform:uppercase; }
     .side h2 { font-size:clamp(22px,3vw,30px); font-weight:500; }
@@ -29,19 +30,24 @@
     .bar i { display:block; height:100%; width:0; background:var(--gold); }
     .row { display:flex; gap:8px; flex-wrap:wrap; }
     button.b { font-family:ui-sans-serif,system-ui,sans-serif; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:650; }
+    .keep { background:var(--gold); color:#111; }
     .skip,.prev { background:#161616; color:var(--ink); border:1px solid var(--line); }
-    .full { background:var(--gold); color:#111; }
+    .full { background:transparent; color:var(--gold); border:1px solid var(--line); }
+    .cue,.shuf { background:#111; color:var(--gold); border:1px solid var(--line); }
     .hint { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; color:#5d5a52; }
     .shelf { margin-top:42px; }
-    .shelfhead { display:flex; gap:12px; margin-bottom:14px; }
+    .shelfhead { display:flex; align-items:baseline; gap:12px; margin-bottom:14px; }
     .uploader { font-family:ui-sans-serif,system-ui,sans-serif; font-size:12px; color:var(--dim); }
-    .shelf h3 { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); }
+    .uploader::before { content:"\00b7 "; color:var(--gold); }
+    .shelf h3 { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); margin-bottom:0; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card { position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; }
+    .card:hover { border-color:#3a3a36; }
+    .card.on { outline:1px solid var(--gold); }
     .card.hide { display:none; }
     .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
     .card p { font-family:ui-sans-serif,system-ui,sans-serif; font-size:13px; padding:10px 12px 14px; }
-    .card .n { position:absolute; top:8px; left:8px; font:700 10px ui-sans-serif,system-ui; color:#111; background:var(--gold); border-radius:999px; padding:3px 7px; }
+    .card .n { position:absolute; top:8px; left:8px; font:700 10px ui-sans-serif,system-ui; letter-spacing:.08em; color:#111; background:var(--gold); border-radius:999px; padding:3px 7px; }
   </style>
 </head>
 <body>
@@ -49,17 +55,41 @@
     <div class="top">
       <div class="brand">EMCIIX</div>
       <div class="socials">
-        <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg></a>
-        <a class="soc" href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg></a>
+        <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg>
+        </a>
+        <a class="soc" href="https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+        </a>
       </div>
     </div>
     <h1>Watch the latest cut.</h1>
-    <p class="lede" id="status">Press PLAY. Space, arrows to change song.</p>
-    <div class="hero" id="hero"></div>
+    <p class="lede" id="status">Press PLAY. Space, arrows, C cue, S shuffle.</p>
+    <div class="hero" id="hero">
+      <div class="stage">
+        <img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg" />
+        <button class="go" id="play" type="button"><b>PLAY</b></button>
+      </div>
+      <div class="side">
+        <p class="kicker">Now playing · 01 / 16</p>
+        <h2>Need Hired by Me.</h2>
+        <p class="meta" id="clock">Idle · 30 seconds on this page</p>
+        <div class="bar"><i id="bar"></i></div>
+        <div class="row">
+          <button class="b prev" id="prev" type="button">Prev</button>
+          <button class="b keep" id="keep" type="button">Keep</button>
+          <button class="b skip" id="skip" type="button">Skip</button>
+          <button class="b cue" id="cue" type="button">Cue</button>
+          <button class="b shuf" id="shuf" type="button">Shuffle</button>
+          <button class="b full" id="full" type="button">Play full here</button>
+        </div>
+        <p class="hint">Cue plays the iTunes 30s preview. Shuffle jumps the catalog.</p>
+      </div>
+    </div>
     <section class="shelf">
-      <div class="shelfhead"><h3>MORE SONGS</h3><span class="uploader">Velc air</span></div>
+      <div class="shelfhead"><h3 id="shelfTitle">MORE SONGS</h3><span class="uploader">Velc air</span></div>
       <div class="grid" id="grid">
-<article class="card hide" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
+<article class="card on hide" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
 <article class="card" data-i="1"><span class="n">02</span><img alt="" src="https://i.ytimg.com/vi/txA5vV_9XG4/hqdefault.jpg"><p>Unemployed in Love</p></article>
 <article class="card" data-i="2"><span class="n">03</span><img alt="" src="https://i.ytimg.com/vi/05AgmKvd3NI/hqdefault.jpg"><p>Make up shit</p></article>
 <article class="card" data-i="3"><span class="n">04</span><img alt="" src="https://i.ytimg.com/vi/MP9AIxzx55o/hqdefault.jpg"><p>Everybody But Me</p></article>
@@ -78,92 +108,6 @@
       </div>
     </section>
   </div>
-  <script>
-    var IDX_KEY = "emciixIdx";
-    var SONGS = [
-      ["dG8z3nQeDSI","Need Hired by Me."],["txA5vV_9XG4","Unemployed in Love"],["05AgmKvd3NI","Make up shit"],["MP9AIxzx55o","Everybody But Me"],["RFqKvFDB0Hg","I Took Credit"],["o040u9wAZns","Two phones, zero social life"],["oq1c9I9T_tw","Which phone is it? iPhone or Android"],["53Jny0alg9g","Still here"],["cWy-1DZsHDg","XCode Swift Song"],["9-nGIe8mQ0M","Wake you up Avicii"],["Id4HSb9j8RA","You're Not Alone"],["oCWCYVTs3vM","IDK What I'm Doing"],["R7BunIbGheI","One More Light On"],["m6cxgKh5QgE","Grid Run"],["qZZuGfqancc","Solar System Party"],["KhGqJCTO1Hc","Come Closer"]
-    ].map(function(p){ return {id:p[0], title:p[1]}; });
-    var hero = document.getElementById("hero");
-    var grid = document.getElementById("grid");
-    var status = document.getElementById("status");
-    var idx = 0, tick = null;
-    try { var saved = parseInt(localStorage.getItem(IDX_KEY), 10); if (saved >= 0 && saved < SONGS.length) idx = saved; } catch(e) {}
-    function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
-    function esc(s){
-      return String(s)
-        .replace(/&/g, "&")
-        .replace(/</g, "<")
-        .replace(/>/g, ">")
-        .replace(/\"/g, """)
-        .replace(/'/g, "&#39;");
-    }
-    function pad(n){ return (n < 10 ? "0" : "") + n; }
-    function stop(){ if (tick) { clearInterval(tick); tick = null; } }
-    function paint() {
-      var v = SONGS[idx]; if (!v || !hero) return;
-      stop();
-      try { localStorage.setItem(IDX_KEY, String(idx)); } catch(e) {}
-      hero.innerHTML =
-        '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
-        '<div class="side"><p class="kicker">Now playing · ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
-        '<h2>' + esc(v.title) + '</h2>' +
-        '<p class="meta" id="clock">Idle · 30 seconds on this page</p>' +
-        '<div class="bar"><i id="bar"></i></div>' +
-        '<div class="row"><button class="b prev" id="prev" type="button">Prev</button>' +
-        '<button class="b skip" id="skip" type="button">Skip</button>' +
-        '<button class="b full" id="full" type="button">Play full here</button></div>' +
-        '<p class="hint">Space play · arrows change song</p></div>';
-      bind();
-      if (grid) {
-        var cards = grid.querySelectorAll(".card");
-        for (var i=0;i<cards.length;i++) cards[i].classList.toggle("hide", i===idx);
-      }
-    }
-    function start(full) {
-      var v = SONGS[idx]; if (!v) return;
-      var stage = hero.querySelector(".stage"); if (!stage) return;
-      stage.innerHTML = '<iframe src="https://www.youtube.com/embed/' + v.id + '?rel=0&modestbranding=1&playsinline=1&autoplay=1' + (full ? '' : '&end=30') + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
-      if (status) status.textContent = full ? "Playing on this page." : "30 second preview on this page.";
-      if (full) {
-        stop();
-        var clock = document.getElementById("clock");
-        var bar = document.getElementById("bar");
-        if (clock) clock.textContent = "Playing through here";
-        if (bar) bar.style.width = "100%";
-        return;
-      }
-      var t0 = Date.now(); stop();
-      tick = setInterval(function() {
-        var s = Math.min(30, (Date.now()-t0)/1000);
-        var bar = document.getElementById("bar");
-        var clock = document.getElementById("clock");
-        if (bar) bar.style.width = (s/30*100) + "%";
-        if (clock) clock.textContent = "0:" + pad(Math.floor(s)) + " / 0:30";
-        if (s >= 30) { stop(); skip(); }
-      }, 200);
-    }
-    function skip(){ idx = (idx + 1) % SONGS.length; paint(); }
-    function prev(){ idx = (idx - 1 + SONGS.length) % SONGS.length; paint(); }
-    function bind() {
-      var play = document.getElementById("play");
-      var skipBtn = document.getElementById("skip");
-      var prevBtn = document.getElementById("prev");
-      var full = document.getElementById("full");
-      if (play) play.onclick = function(){ start(false); };
-      if (skipBtn) skipBtn.onclick = skip;
-      if (prevBtn) prevBtn.onclick = prev;
-      if (full) full.onclick = function(){ start(true); };
-    }
-    if (grid) grid.querySelectorAll(".card").forEach(function(el){
-      el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
-    });
-    document.addEventListener("keydown", function(e){
-      if (e.target && /input|textarea/i.test(e.target.tagName)) return;
-      if (e.code === "Space") { e.preventDefault(); start(false); }
-      if (e.key === "ArrowRight") skip();
-      if (e.key === "ArrowLeft") prev();
-    });
-    paint();
-  </script>
+  <script src="app.js" defer></script>
 </body>
 </html>
