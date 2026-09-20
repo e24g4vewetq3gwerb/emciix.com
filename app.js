@@ -1,4 +1,5 @@
 var IDX_KEY = "emciixIdx";
+var NEED_SRC = "https://write-spotlight-brooks-diane.trycloudflare.com";
 var SONGS = [
   ["dG8z3nQeDSI","Need Hired by Me."],
   ["txA5vV_9XG4","Unemployed in Love"],
@@ -17,17 +18,10 @@ var SONGS = [
   ["qZZuGfqancc","Solar System Party"],
   ["KhGqJCTO1Hc","Come Closer"]
 ].map(function(p){ return {id:p[0], title:p[1]}; });
-var NEED = {
-  repo: "https://github.com/e24g4vewetq3gwerb/Need",
-  web: "https://cue-508120.web.app",
-  git: "934e350",
-  android: "1.0.1",
-  ios: "1.0.1",
-  bundle: "com.emcii.need"
-};
 var hero = document.getElementById("hero");
 var grid = document.getElementById("grid");
 var status = document.getElementById("status");
+var needOn = false;
 var idx = 0, tick = null;
 try {
   var saved = parseInt(localStorage.getItem(IDX_KEY), 10);
@@ -46,29 +40,29 @@ function esc(s){
 function pad(n){ return (n < 10 ? "0" : "") + n; }
 function stop(){ if (tick) { clearInterval(tick); tick = null; } }
 function paintNeed() {
-  var a = document.getElementById("needAndroid");
-  var i = document.getElementById("needIos");
-  var w = document.getElementById("needWeb");
-  var g = document.getElementById("needGit");
-  if (a) a.textContent = "Android " + NEED.android;
-  if (i) i.textContent = "iOS " + NEED.ios;
-  if (w) w.textContent = "Web git " + NEED.git;
-  if (g) g.textContent = NEED.git;
+  if (!hero) return;
+  stop();
+  hero.className = "hero needon";
+  hero.innerHTML =
+    '<div class="phone"><iframe title="Need" src="' + NEED_SRC + '" allow="geolocation; microphone; camera; autoplay; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+  var btn = document.getElementById("needBtn");
+  if (btn) btn.setAttribute("aria-expanded", "true");
+  if (status) status.textContent = "Need app preview.";
 }
 function toggleNeed(on) {
-  var card = document.getElementById("needCard");
+  var show = (typeof on === "boolean") ? on : !needOn;
+  needOn = show;
   var btn = document.getElementById("needBtn");
-  if (!card) return;
-  var show = (typeof on === "boolean") ? on : !card.classList.contains("on");
-  card.classList.toggle("on", show);
   if (btn) btn.setAttribute("aria-expanded", show ? "true" : "false");
-  paintNeed();
-  if (show && status) status.textContent = "Need Inc. · Android " + NEED.android + " · iOS " + NEED.ios + " · Web " + NEED.git;
+  if (show) paintNeed();
+  else { if (hero) hero.className = "hero"; paint(); }
 }
 function paint() {
   var v = SONGS[idx]; if (!v || !hero) return;
+  if (needOn) return;
   stop();
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
+  hero.className = "hero";
   hero.innerHTML =
     '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
     '<div class="side"><p class="kicker">Now playing \u00b7 ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
@@ -86,6 +80,7 @@ function paint() {
   }
 }
 function start(full) {
+  if (needOn) return;
   var v = SONGS[idx]; if (!v) return;
   var stage = hero.querySelector(".stage"); if (!stage) return;
   stage.innerHTML = '<iframe src="https://www.youtube.com/embed/' + v.id + '?rel=0&modestbranding=1&playsinline=1&autoplay=1' + (full ? "" : "&end=30") + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
@@ -128,14 +123,15 @@ document.addEventListener("keydown", function(e){
 });
 if (grid) {
   grid.querySelectorAll(".card").forEach(function(el){
-    el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
+    el.onclick = function(){ idx = +el.getAttribute("data-i"); toggleNeed(false); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
   });
 }
 document.addEventListener("keydown", function(e){
   if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+  if (needOn) return;
   if (e.code === "Space") { e.preventDefault(); start(false); }
   if (e.key === "ArrowRight") skip();
   if (e.key === "ArrowLeft") prev();
 });
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ paintNeed(); paint(); });
-else { paintNeed(); paint(); }
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", paint);
+else paint();
