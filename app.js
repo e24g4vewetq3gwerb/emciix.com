@@ -2,7 +2,7 @@
   const CHANNEL = "UCt8dYnrvcrZSCx9uS0aLBSQ";
   const RSS = "https://www.youtube.com/feeds/videos.xml?channel_id=" + CHANNEL;
   const PREVIEW = 30;
-  const KEEP_KEY = "emciixKeptD";
+  const KEEP_KEY = "emciixKeptE";
   const FALLBACK = [
     ["dG8z3nQeDSI", "Need Hired by Me."],
     ["txA5vV_9XG4", "Unemployed in Love"],
@@ -10,13 +10,16 @@
     ["MP9AIxzx55o", "Everybody But Me"],
     ["RFqKvFDB0Hg", "I Took Credit"],
     ["o040u9wAZns", "Two phones, zero social life"],
-    ["2bbplpfoL-c", "Which phone is it ? iPhone or Android"],
+    ["oq1c9I9T_tw", "Which phone is it? iPhone or Android"],
     ["53Jny0alg9g", "Still here"],
     ["cWy-1DZsHDg", "XCode Swift Song"],
     ["9-nGIe8mQ0M", "Wake you up Avicii"],
     ["Id4HSb9j8RA", "You're Not Alone"],
     ["oCWCYVTs3vM", "IDK What I'm Doing"],
-    ["R7BunIbGheI", "One More Light On"]
+    ["R7BunIbGheI", "One More Light On"],
+    ["m6cxgKh5QgE", "Grid Run"],
+    ["qZZuGfqancc", "Solar System Party"],
+    ["KhGqJCTO1Hc", "Come Closer"]
   ].map(([id, title]) => ({ id, title }));
   const hero = document.getElementById("hero");
   const grid = document.getElementById("grid");
@@ -26,6 +29,19 @@
   const thumb = id => "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
   const yt = id => "https://www.youtube.com/watch?v=" + id;
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" }[c]));
+  const key = t => String(t || "").toLowerCase().replace(/#[\w]+/g, " ").replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+  function dedupe(list) {
+    const byId = new Map();
+    list.forEach(v => { if (v.id && !byId.has(v.id)) byId.set(v.id, v); });
+    const seen = new Set();
+    return [...byId.values()].filter(v => {
+      const k = key(v.title);
+      if (!k) return true;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
   const kept = () => { try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch (e) { return []; } };
   const save = list => { try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0, 80))); } catch (e) {} };
   const stop = () => { if (tick) { clearInterval(tick); tick = null; } };
@@ -93,22 +109,22 @@
       if (!res.ok) throw new Error("feed");
       const json = await res.json();
       const videos = (json.items || []).map(item => {
-        const m = String(item.link || "").match(/[?&]v=([\w-]{11})/);
+        const m = String(item.link || "").match(/[?&]v=([\w-]{11})/) || String(item.link || "").match(/shorts\/([\w-]{11})/);
         return { id: m ? m[1] : "", title: item.title };
       }).filter(v => v.id);
-      if (videos.length) {
-        const seen = new Set();
-        queue = videos.filter(v => { if (seen.has(v.id)) return false; seen.add(v.id); return true; });
-        if (status) status.textContent = "Live feed · BUILD D · press play";
-        paint();
-      }
+      queue = dedupe(videos.concat(FALLBACK));
+      if (status) status.textContent = queue.length + " unique songs · BUILD E · press play";
+      paint();
     } catch (e) {
-      if (status) status.textContent = "Cached shelf · BUILD D · press play";
+      queue = dedupe(FALLBACK);
+      if (status) status.textContent = queue.length + " unique songs · cached · BUILD E";
+      paint();
     } finally {
       clearTimeout(timer);
     }
   }
+  queue = dedupe(FALLBACK);
   paint();
-  if (status) status.textContent = "Cached shelf · BUILD D · press play";
+  if (status) status.textContent = queue.length + " unique songs · BUILD E · press play";
   refresh();
 })();
