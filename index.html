@@ -40,6 +40,7 @@
     .card { position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; }
     .card:hover { border-color:#3a3a36; }
     .card.on { outline:1px solid var(--gold); }
+    .card.hide { display:none; }
     .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
     .card p { font-family:ui-sans-serif,system-ui,sans-serif; font-size:13px; padding:10px 12px 14px; }
     .card .n { position:absolute; top:8px; left:8px; font:700 10px ui-sans-serif,system-ui; letter-spacing:.08em; color:#111; background:var(--gold); border-radius:999px; padding:3px 7px; }
@@ -80,9 +81,9 @@
       </div>
     </div>
     <section class="shelf">
-      <h3>ALL SONGS</h3>
+      <h3 id="shelfTitle">MORE SONGS</h3>
       <div class="grid" id="grid">
-<article class="card on" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
+<article class="card on hide" data-i="0"><span class="n">01</span><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></article>
 <article class="card" data-i="1"><span class="n">02</span><img alt="" src="https://i.ytimg.com/vi/txA5vV_9XG4/hqdefault.jpg"><p>Unemployed in Love</p></article>
 <article class="card" data-i="2"><span class="n">03</span><img alt="" src="https://i.ytimg.com/vi/05AgmKvd3NI/hqdefault.jpg"><p>Make up shit</p></article>
 <article class="card" data-i="3"><span class="n">04</span><img alt="" src="https://i.ytimg.com/vi/MP9AIxzx55o/hqdefault.jpg"><p>Everybody But Me</p></article>
@@ -152,8 +153,13 @@
       bind();
       if (grid) {
         var cards = grid.querySelectorAll(".card");
-        for (var i=0;i<cards.length;i++) cards[i].classList.toggle("on", i===idx);
+        for (var i=0;i<cards.length;i++) {
+          cards[i].classList.toggle("on", i===idx);
+          cards[i].classList.toggle("hide", i===idx);
+        }
       }
+      var st = document.getElementById("shelfTitle");
+      if (st) st.textContent = "MORE SONGS";
     }
     function start(full) {
       var v = SONGS[idx];
