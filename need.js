@@ -1,20 +1,27 @@
 var SONGS = [
-  ["dG8z3nQeDSI","Need Hired by Me."],
-  ["txA5vV_9XG4","Unemployed in Love"],
-  ["05AgmKvd3NI","Make up shit"],
-  ["MP9AIxzx55o","Everybody But Me"],
-  ["RFqKvFDB0Hg","I Took Credit"],
-  ["o040u9wAZns","Two phones, zero social life"],
-  ["oq1c9I9T_tw","Which phone is it? iPhone or Android"],
-  ["53Jny0alg9g","Still here"],
-  ["cWy-1DZsHDg","XCode Swift Song"],
-  ["9-nGIe8mQ0M","Wake you up Avicii"],
-  ["Id4HSb9j8RA","You're Not Alone"],
-  ["oCWCYVTs3vM","IDK What I'm Doing"],
-  ["R7BunIbGheI","One More Light On"],
-  ["m6cxgKh5QgE","Grid Run"],
-  ["qZZuGfqancc","Solar System Party"],
-  ["KhGqJCTO1Hc","Come Closer"]
+  {id:"dG8z3nQeDSI", title:"Need Hired by Me.", artist:"Velc air"},
+  {id:"txA5vV_9XG4", title:"Unemployed in Love", artist:"Velc air"},
+  {id:"05AgmKvd3NI", title:"Make up shit", artist:"Velc air"},
+  {id:"MP9AIxzx55o", title:"Everybody But Me", artist:"Velc air"},
+  {id:"RFqKvFDB0Hg", title:"I Took Credit", artist:"Velc air"},
+  {id:"o040u9wAZns", title:"Two phones, zero social life", artist:"Velc air"},
+  {id:"oq1c9I9T_tw", title:"Which phone is it? iPhone or Android", artist:"Velc air"},
+  {id:"53Jny0alg9g", title:"Still here", artist:"Velc air"},
+  {id:"cWy-1DZsHDg", title:"XCode Swift Song", artist:"Velc air"},
+  {id:"9-nGIe8mQ0M", title:"Wake you up Avicii", artist:"Velc air"},
+  {id:"Id4HSb9j8RA", title:"You're Not Alone", artist:"Velc air"},
+  {id:"oCWCYVTs3vM", title:"IDK What I'm Doing", artist:"Velc air"},
+  {id:"R7BunIbGheI", title:"One More Light On", artist:"Velc air"},
+  {id:"m6cxgKh5QgE", title:"Grid Run", artist:"Velc air"},
+  {id:"qZZuGfqancc", title:"Solar System Party", artist:"Velc air"},
+  {id:"KhGqJCTO1Hc", title:"Come Closer", artist:"Velc air"}
+];
+var TOWNS = [
+  {id:"sault", name:"Sault Ste. Marie", region:"Ontario", note:"Walmart 446 Great Northern \u00b7 No Frills 519 Korah"},
+  {id:"toronto", name:"Toronto", region:"Ontario", note:"Open. Leave a line."},
+  {id:"vancouver", name:"Vancouver", region:"B.C.", note:"Open. Leave a line."},
+  {id:"calgary", name:"Calgary", region:"Alberta", note:"Open. Leave a line."},
+  {id:"montreal", name:"Montreal", region:"Quebec", note:"Open. Leave a line."}
 ];
 var VENDORS = {
   "walmart-ca": { name:"Walmart", search:"https://www.walmart.ca/en/search?q={q}", country:"CA" },
@@ -48,23 +55,35 @@ var PRODUCTS = [
   P("spaghetti-900","spaghetti","900","g",[["walmart-ca",1.97,"Toronto"],["nofrills",2.49,"Toronto"],["foodbasics",1.79,"Toronto"],["walmart-us",1.28,"Chicago"]]),
   P("tomatoes-796","canned tomatoes","796","ml",[["walmart-ca",1.47,"Toronto"],["nofrills",1.99,"Toronto"],["foodbasics",1.33,"Toronto"],["walmart-us",1.12,"Chicago"]])
 ];
-var KEY = "needShop.v1";
-var shop = loadShop();
 var app = document.getElementById("app");
 var screen = "home";
 var song = 0;
-var line = "";
 var query = "";
 var openId = null;
-try { line = localStorage.getItem("needLine") || ""; } catch (e) {}
-function loadShop(){
-  try {
-    var raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return { country:"CA", watching:{}, reports:{}, targets:{} };
+var townId = "sault";
+var tick = null;
+function read(k, fb){ try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch(e){ return fb; } }
+function write(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+var shop = read("needShop.v1", { country:"CA", watching:{}, reports:{}, targets:{} });
+var kept = read("needKept.v1", []);
+var lines = read("needLines.v1", {});
+function saveShop(){ write("needShop.v1", shop); }
+function go(name, extra){
+  screen = name;
+  if (name === "item" && extra) openId = extra;
+  if (name === "place" && extra) townId = extra;
+  var hash = name === "home" ? "" : (name === "item" ? "shop/"+openId : (name === "place" && extra ? "place/"+extra : name));
+  if (location.hash.replace("#","") !== hash) location.hash = hash;
+  draw();
 }
-function saveShop(){ try { localStorage.setItem(KEY, JSON.stringify(shop)); } catch (e) {} }
+function fromHash(){
+  var h = (location.hash || "").replace(/^#/, "");
+  if (!h) { screen = "home"; return; }
+  if (h === "song" || h === "shop" || h === "place") { screen = h; return; }
+  if (h.indexOf("shop/") === 0) { screen = "item"; openId = h.slice(5); return; }
+  if (h.indexOf("place/") === 0) { screen = "place"; townId = h.slice(6); return; }
+}
+window.addEventListener("hashchange", function(){ fromHash(); draw(); });
 function money(n, country){
   var v = Number(n);
   if (!isFinite(v)) return "";
@@ -82,16 +101,10 @@ function taxRate(country, city){
   if (/vancouver/.test(p)) return 0.12;
   return 0.13;
 }
-function productById(id){
-  for (var i=0;i<PRODUCTS.length;i++) if (PRODUCTS[i].id===id) return PRODUCTS[i];
-  return null;
-}
+function productById(id){ for (var i=0;i<PRODUCTS.length;i++) if (PRODUCTS[i].id===id) return PRODUCTS[i]; return null; }
+function townById(id){ for (var i=0;i<TOWNS.length;i++) if (TOWNS[i].id===id) return TOWNS[i]; return TOWNS[0]; }
 function fold(s){ return String(s||"").toLowerCase(); }
-function matches(p, q){
-  if (!q) return true;
-  var n = fold(q);
-  return fold(p.name).indexOf(n)!==-1 || fold(p.id).indexOf(n)!==-1;
-}
+function matches(p, q){ if (!q) return true; var n = fold(q); return fold(p.name).indexOf(n)!==-1 || fold(p.id).indexOf(n)!==-1; }
 function rowsFor(p){
   var out = [];
   var offers = p.offers || [];
@@ -99,23 +112,23 @@ function rowsFor(p){
     var o = offers[i];
     var v = VENDORS[o[0]];
     if (!v || v.country !== shop.country) continue;
-    out.push({ vendorId:o[0], store:v.name, price:o[1], city:o[2], source:"typical", url:v.search.replace("{q}", encodeURIComponent(p.name)) });
+    out.push({ store:v.name, price:o[1], city:o[2], source:"typical", url:v.search.replace("{q}", encodeURIComponent(p.name)) });
   }
   var reps = shop.reports[p.id] || [];
   for (var j=0;j<reps.length;j++){
     var r = reps[j];
     if (r.country && r.country !== shop.country) continue;
-    out.push({ vendorId:"", store:r.store, price:r.price, city:r.city, source:"you", url:"" });
+    out.push({ store:r.store, price:r.price, city:r.city, source:"you", url:"" });
   }
   out.sort(function(a,b){ return a.price - b.price; });
   return out;
 }
-function bestOf(p){
-  var rows = rowsFor(p);
-  return rows.length ? rows[0] : null;
-}
-function go(name){ screen = name; if (name!=="item") openId = null; draw(); }
+function bestOf(p){ var rows = rowsFor(p); return rows.length ? rows[0] : null; }
+function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+function bar(title){ return '<div class="topbar"><button class="back" type="button" id="back">Need</button><b>'+title+'</b></div>'; }
+function stop(){ if (tick) { clearInterval(tick); tick = null; } }
 function draw(){
+  stop();
   if (screen==="song") return songScreen();
   if (screen==="place") return placeScreen();
   if (screen==="shop") return shopScreen();
@@ -128,53 +141,74 @@ function homeScreen(){
     '<p class="tag">A song. A town. A price.</p>' +
     '<div class="doors">' +
     door("Song","30-second preview. Keep or skip.","song") +
-    door("This place","Sault Ste. Marie. Read a town. Leave a line.","place") +
+    door("This place", townById(townId).name + " is open.","place") +
     door("Shop","Live store prices. Search. Watch. Log a shelf.","shop") +
-    '</div>' +
+    "</div>" +
     '<p class="foot">No account. Pick one.</p>' +
-    '<p class="foot"><a href="index.html" style="color:#007AFF;text-decoration:none;font-weight:700">Back to Emciix</a></p>';
-  bindDoors();
+    '<p class="foot"><a href="index.html">Back to Emciix</a></p>';
+  var doors = app.querySelectorAll(".door");
+  for (var i=0;i<doors.length;i++) doors[i].onclick = function(){ go(this.getAttribute("data-to")); };
 }
 function door(title, copy, to){
   return '<button class="door" data-to="'+to+'" type="button"><span class="ico">+</span><span class="copy"><span class="title">'+title+'</span><span class="sub">'+copy+'</span></span></button>';
 }
-function bindDoors(){
-  var doors = app.querySelectorAll(".door");
-  for (var i=0;i<doors.length;i++) doors[i].onclick = function(){ go(this.getAttribute("data-to")); };
-}
-function bar(title){
-  return '<div class="topbar"><button class="back" type="button" id="back">Need</button><b>'+title+'</b></div>';
-}
-function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
 function songScreen(){
   var s = SONGS[song];
+  var saved = kept.indexOf(s.id) !== -1;
   app.innerHTML =
     '<div class="screen">'+bar("Song")+
-    '<div class="card"><img alt="" src="'+thumb(s[0])+'">'+ 
-    '<div class="pad"><div class="row"><div><b>'+s[1]+'</b><div class="muted">'+(song+1)+' / '+SONGS.length+' · 30 seconds</div></div>'+
+    '<div class="card"><img class="cover" alt="" src="'+thumb(s.id)+'">'+ 
+    '<div class="pad"><div class="row"><div><b>'+s.title+'</b><div class="muted">'+s.artist+' \u00b7 '+(song+1)+' / '+SONGS.length+' \u00b7 30 seconds</div></div>'+
     '<button class="p" type="button" id="play">Play</button></div>'+
+    '<div class="bar"><i id="bar"></i></div>'+
     '<div id="stage"></div>'+
-    '<div class="row" style="margin-top:12px"><button class="g" type="button" id="prev">Skip back</button>'+
-    '<button class="g" type="button" id="next">Skip</button></div></div></div></div>';
+    '<div class="row" style="margin-top:12px">'+
+    '<button class="g" type="button" id="prev">Skip back</button>'+
+    '<button class="g" type="button" id="keep">'+(saved?"Kept":"Keep")+'</button>'+
+    '<button class="g" type="button" id="next">Skip</button></div>'+
+    '<p class="muted" style="margin-top:10px"><a href="https://www.youtube.com/watch?v='+s.id+'" target="_blank" rel="noopener" style="color:#007AFF;text-decoration:none;font-weight:700">Open full on YouTube</a></p>'+
+    '</div></div></div>';
   document.getElementById("back").onclick = function(){ go("home"); };
   document.getElementById("play").onclick = function(){
-    document.getElementById("stage").innerHTML = '<iframe src="https://www.youtube.com/embed/'+s[0]+'?rel=0&modestbranding=1&playsinline=1&autoplay=1&end=30" allow="autoplay; encrypted-media" title="'+s[1]+'"></iframe>';
+    document.getElementById("stage").innerHTML = '<iframe src="https://www.youtube.com/embed/'+s.id+'?rel=0&modestbranding=1&playsinline=1&autoplay=1&end=30" allow="autoplay; encrypted-media" title="'+s.title+'"></iframe>';
+    var t0 = Date.now();
+    stop();
+    tick = setInterval(function(){
+      var sec = Math.min(30, (Date.now()-t0)/1000);
+      var el = document.getElementById("bar");
+      if (el) el.style.width = (sec/30*100)+"%";
+      if (sec >= 30) { stop(); song = (song+1)%SONGS.length; songScreen(); }
+    }, 200);
   };
   document.getElementById("next").onclick = function(){ song = (song+1)%SONGS.length; songScreen(); };
   document.getElementById("prev").onclick = function(){ song = (song-1+SONGS.length)%SONGS.length; songScreen(); };
+  document.getElementById("keep").onclick = function(){
+    if (kept.indexOf(s.id) === -1) kept.push(s.id);
+    write("needKept.v1", kept);
+    songScreen();
+  };
 }
 function placeScreen(){
+  var t = townById(townId);
+  var towns = "";
+  for (var i=0;i<TOWNS.length;i++){
+    var x = TOWNS[i];
+    towns += '<button class="g" type="button" data-town="'+x.id+'">'+x.name+'</button>';
+  }
   app.innerHTML =
     '<div class="screen">'+bar("This place")+
-    '<div class="card"><div class="pad"><b>Sault Ste. Marie</b>'+
-    '<p class="muted" style="margin:6px 0 12px">Ontario. Leave a line for the town.</p>'+
-    '<textarea id="line" placeholder="What does this place need?">'+String(line).replace(/</g,"")+'</textarea>'+
+    '<div class="chips">'+towns+'</div>'+
+    '<div class="card"><div class="pad"><b>'+t.name+'</b>'+
+    '<p class="muted" style="margin:6px 0 12px">'+t.region+'. '+t.note+'</p>'+
+    '<textarea id="line" placeholder="What does this place need?">'+(lines[t.id]||"").replace(/</g,"")+'</textarea>'+
     '<div class="row" style="margin-top:12px"><button class="p" type="button" id="save">Keep line</button></div>'+
     '<p class="muted" id="saved" style="margin-top:10px"></p></div></div></div>';
   document.getElementById("back").onclick = function(){ go("home"); };
+  var chips = app.querySelectorAll("[data-town]");
+  for (var j=0;j<chips.length;j++) chips[j].onclick = function(){ go("place", this.getAttribute("data-town")); };
   document.getElementById("save").onclick = function(){
-    line = document.getElementById("line").value || "";
-    try { localStorage.setItem("needLine", line); } catch (e) {}
+    lines[t.id] = document.getElementById("line").value || "";
+    write("needLines.v1", lines);
     document.getElementById("saved").textContent = "Kept on this phone.";
   };
 }
@@ -184,57 +218,52 @@ function shopScreen(){
   for (var i=0;i<list.length;i++){
     var p = list[i];
     var best = bestOf(p);
-    var watch = shop.watching[p.id] ? " · watching" : "";
+    var watch = shop.watching[p.id] ? " \u00b7 watching" : "";
     var price = best ? money(best.price, shop.country) : "No price yet";
-    var where = best ? (best.store + (best.city?" · "+best.city:"")) : "";
-    cards += '<button class="prod" type="button" data-id="'+p.id+'"><span><b>'+p.name+'</b><span class="muted">'+p.size+' '+p.unit+(where?" · "+where:"")+watch+'</span></span><b>'+price+'</b></button>';
+    var where = best ? (best.store + (best.city?" \u00b7 "+best.city:"")) : "";
+    cards += '<button class="prod" type="button" data-id="'+p.id+'"><span><b>'+p.name+'</b><span class="muted">'+p.size+' '+p.unit+(where?" \u00b7 "+where:"")+watch+'</span></span><b>'+price+'</b></button>';
   }
   app.innerHTML =
     '<div class="screen">'+bar("Shop")+
-    '<div class="row" style="margin-bottom:10px">'+
-    '<button class="g" type="button" id="ca">Canada</button>'+
-    '<button class="g" type="button" id="us">United States</button></div>'+
-    '<input class="search" id="q" type="search" placeholder="Milk, eggs, Tide, UPC…" value="'+String(query).replace(/"/g,"")+'" />'+
+    '<div class="chips"><button class="g" type="button" id="ca">Canada</button><button class="g" type="button" id="us">United States</button></div>'+
+    '<input class="search" id="q" type="search" placeholder="Milk, eggs, Tide\u2026" value="'+String(query).replace(/"/g,"")+'" />'+
     '<p class="muted" style="margin:8px 0 12px">Typical shelf rates. Log what you saw. Watch a price. Open the store.</p>'+
-    '<div class="list">'+cards+'</div></div>';
+    '<div>'+cards+'</div></div>';
   document.getElementById("back").onclick = function(){ go("home"); };
   document.getElementById("ca").onclick = function(){ shop.country="CA"; saveShop(); shopScreen(); };
   document.getElementById("us").onclick = function(){ shop.country="US"; saveShop(); shopScreen(); };
-  document.getElementById("q").oninput = function(){ query = this.value; };
-  document.getElementById("q").onchange = function(){ query = this.value; shopScreen(); };
   document.getElementById("q").onkeydown = function(e){ if (e.key==="Enter") { query = this.value; shopScreen(); } };
+  document.getElementById("q").onchange = function(){ query = this.value; shopScreen(); };
   var prods = app.querySelectorAll(".prod");
-  for (var k=0;k<prods.length;k++){
-    prods[k].onclick = function(){ openId = this.getAttribute("data-id"); go("item"); };
-  }
+  for (var k=0;k<prods.length;k++) prods[k].onclick = function(){ go("item", this.getAttribute("data-id")); };
 }
 function itemScreen(){
   var p = productById(openId);
-  if (!p) return shopScreen();
+  if (!p) return go("shop");
   var rows = rowsFor(p);
   var html = "";
   for (var i=0;i<rows.length;i++){
     var r = rows[i];
     var taxed = r.price * (1 + taxRate(shop.country, r.city));
     var link = r.url ? '<a href="'+r.url+'" target="_blank" rel="noopener">Search '+r.store+'</a>' : "";
-    html += '<div class="offer"><div class="row"><div><b>'+r.store+(r.city?" · "+r.city:"")+'</b>'+
-      '<div class="muted">'+(r.source==="you"?"you saw":"typical")+(r.source!=="you"?" · "+money(taxed, shop.country)+" after typical tax":"")+'</div></div>'+
-      '<b>'+money(r.price, shop.country)+'</b></div>'+link+'</div>';
+    html += '<div class="offer"><div class="row"><div><b>'+r.store+(r.city?" \u00b7 "+r.city:"")+'</b>'+
+      '<div class="muted">'+(r.source==="you"?"you saw":"typical")+(r.source!=="you"?" \u00b7 "+money(taxed, shop.country)+" after typical tax":"")+'</div></div>'+
+      "<b>"+money(r.price, shop.country)+"</b></div>"+link+"</div>";
   }
   var watched = !!shop.watching[p.id];
   var tgt = shop.targets[p.id] || "";
   app.innerHTML =
     '<div class="screen">'+bar(p.name)+
-    '<p class="muted" style="margin:-6px 0 12px">'+p.size+' '+p.unit+' · '+shop.country+'</p>'+
+    '<p class="muted" style="margin:-6px 0 12px">'+p.size+" "+p.unit+" \u00b7 "+shop.country+"</p>"+
     html+
     '<div class="card" style="margin-top:14px"><div class="pad"><b>I saw this</b>'+
-    '<p class="muted" style="margin:6px 0 10px">Shelf tag on this phone. Not a flyer.</p>'+
+    '<p class="muted" style="margin:6px 0 10px">Shelf tag on this phone.</p>'+
     '<input class="search" id="priceIn" inputmode="decimal" placeholder="Price" />'+
     '<input class="search" id="storeIn" placeholder="Store" style="margin-top:8px" />'+
     '<input class="search" id="cityIn" placeholder="City" style="margin-top:8px" />'+
     '<button class="p" type="button" id="log" style="margin-top:10px">Log sighting</button></div></div>'+
     '<div class="card" style="margin-top:12px"><div class="pad"><b>Watch</b>'+
-    '<p class="muted" style="margin:6px 0 10px">Ping this phone when a logged price beats your target.</p>'+
+    '<p class="muted" style="margin:6px 0 10px">This phone when a logged price beats your target.</p>'+
     '<input class="search" id="targetIn" inputmode="decimal" placeholder="Target price" value="'+tgt+'" />'+
     '<div class="row" style="margin-top:10px"><button class="p" type="button" id="watch">'+(watched?"Watching":"Watch")+'</button>'+
     '<button class="g" type="button" id="clearw">Clear</button></div></div></div></div>';
@@ -268,4 +297,5 @@ function itemScreen(){
     itemScreen();
   };
 }
+fromHash();
 draw();
