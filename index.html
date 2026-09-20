@@ -12,29 +12,14 @@
     .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; gap:12px; flex-wrap:wrap; }
     .brandrow { display:flex; align-items:center; gap:10px; }
     .brand { font-family:ui-sans-serif,system-ui,sans-serif; letter-spacing:.2em; font-size:11px; color:var(--gold); }
-    .needbtn { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--gold); background:transparent; color:var(--gold); border-radius:999px; padding:8px 12px; cursor:pointer; }
-    .needbtn[aria-expanded="true"] { background:var(--gold); color:#111; }
+    .needbtn { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--gold); background:transparent; color:var(--gold); border-radius:999px; padding:8px 12px; text-decoration:none; }
+    .needbtn:hover { background:var(--gold); color:#111; }
     .socials { display:flex; gap:8px; }
     .soc { color:var(--gold); width:36px; height:36px; border:1px solid var(--line); border-radius:999px; display:grid; place-items:center; }
     h1 { font-size:clamp(32px,6.6vw,60px); font-weight:500; letter-spacing:-.03em; line-height:.92; margin:0 0 8px; }
     .lede { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:13px; margin-bottom:18px; }
     .hero { min-height:280px; display:grid; grid-template-columns:1.45fr .9fr; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#0a0a0a; }
     @media (max-width:760px){ .hero { grid-template-columns:1fr; } }
-    .hero.needon { grid-template-columns:1fr; min-height:640px; place-items:center; padding:28px 0; background:#070707; }
-    .phone { width:min(390px,92vw); height:720px; border:1px solid var(--line); border-radius:36px; overflow:auto; background:#f5f5f7; color:#111; box-shadow:0 20px 60px #000; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
-    .needapp { padding:18px 16px 28px; }
-    .nh b { letter-spacing:.18em; font-size:11px; }
-    .nh p { color:#6b675f; font-size:12px; margin:4px 0 12px; }
-    .nplay { background:#000; color:#fff; border-radius:16px; overflow:hidden; }
-    .nplay img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; opacity:.85; }
-    .nrow { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; font-size:13px; }
-    .nrow button { border:0; border-radius:999px; background:var(--gold); color:#111; font-weight:700; padding:7px 11px; cursor:pointer; }
-    #needStage iframe { width:100%; height:160px; border:0; display:block; }
-    .nk { font-size:11px; letter-spacing:.12em; color:#6b675f; font-weight:700; margin:16px 0 6px; }
-    .ntown { font-size:26px; font-weight:560; letter-spacing:-.03em; }
-    .nmeta { color:#6b675f; font-size:12px; margin-top:4px; }
-    .nline { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e6e4de; font-size:13px; }
-    .nline span { color:#6b675f; }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
     .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; z-index:5; }
@@ -67,7 +52,7 @@
     <div class="top">
       <div class="brandrow">
         <div class="brand">EMCIIX</div>
-        <button class="needbtn" id="needBtn" type="button" aria-expanded="false">Need Inc.</button>
+        <a class="needbtn" href="need.html">Need Inc.</a>
       </div>
       <div class="socials">
         <a class="soc" href="https://x.com/emciixcom" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.59l-5.16-6.74L5.2 22H1.94l8.02-9.16L1.5 2h6.76l4.66 6.18L18.244 2zm-1.16 18h1.81L7.01 3.91H5.07L17.084 20z"/></svg></a>
