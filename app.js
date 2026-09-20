@@ -28,7 +28,7 @@
   let idx = 0, tick = null, t0 = 0, open = false;
   const thumb = id => "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
   const yt = id => "https://www.youtube.com/watch?v=" + id;
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" }[c]));
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const key = t => String(t || "").toLowerCase().replace(/#[\w]+/g, " ").replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
   function dedupe(list) {
     const byId = new Map();

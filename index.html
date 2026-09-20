@@ -131,7 +131,7 @@
     var idx = 0, tick = null, t0 = 0, open = false;
     try { var saved = parseInt(localStorage.getItem(IDX_KEY), 10); if (saved >= 0 && saved < SONGS.length) idx = saved; } catch(e) {}
     function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
-    function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]; }); }
+    function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
     function kept(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } }
     function save(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} }
     function saveIdx(){ try { localStorage.setItem(IDX_KEY, String(idx)); } catch(e) {} }
