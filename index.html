@@ -89,7 +89,14 @@
     var idx = 0, tick = null;
     try { var saved = parseInt(localStorage.getItem(IDX_KEY), 10); if (saved >= 0 && saved < SONGS.length) idx = saved; } catch(e) {}
     function thumb(id){ return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
-    function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]; }); }
+    function esc(s){
+      return String(s)
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/\"/g, """)
+        .replace(/'/g, "&#39;");
+    }
     function pad(n){ return (n < 10 ? "0" : "") + n; }
     function stop(){ if (tick) { clearInterval(tick); tick = null; } }
     function paint() {
