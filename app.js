@@ -17,6 +17,14 @@ var SONGS = [
   ["qZZuGfqancc","Solar System Party"],
   ["KhGqJCTO1Hc","Come Closer"]
 ].map(function(p){ return {id:p[0], title:p[1]}; });
+var NEED = {
+  repo: "https://github.com/e24g4vewetq3gwerb/Need",
+  web: "https://cue-508120.web.app",
+  git: "934e350",
+  android: "1.0.1",
+  ios: "1.0.1",
+  bundle: "com.emcii.need"
+};
 var hero = document.getElementById("hero");
 var grid = document.getElementById("grid");
 var status = document.getElementById("status");
@@ -37,6 +45,26 @@ function esc(s){
 }
 function pad(n){ return (n < 10 ? "0" : "") + n; }
 function stop(){ if (tick) { clearInterval(tick); tick = null; } }
+function paintNeed() {
+  var a = document.getElementById("needAndroid");
+  var i = document.getElementById("needIos");
+  var w = document.getElementById("needWeb");
+  var g = document.getElementById("needGit");
+  if (a) a.textContent = "Android " + NEED.android;
+  if (i) i.textContent = "iOS " + NEED.ios;
+  if (w) w.textContent = "Web git " + NEED.git;
+  if (g) g.textContent = NEED.git;
+}
+function toggleNeed(on) {
+  var card = document.getElementById("needCard");
+  var btn = document.getElementById("needBtn");
+  if (!card) return;
+  var show = (typeof on === "boolean") ? on : !card.classList.contains("on");
+  card.classList.toggle("on", show);
+  if (btn) btn.setAttribute("aria-expanded", show ? "true" : "false");
+  paintNeed();
+  if (show && status) status.textContent = "Need Inc. · Android " + NEED.android + " · iOS " + NEED.ios + " · Web " + NEED.git;
+}
 function paint() {
   var v = SONGS[idx]; if (!v || !hero) return;
   stop();
@@ -93,6 +121,11 @@ function bind() {
   if (prevBtn) prevBtn.onclick = prev;
   if (full) full.onclick = function(){ start(true); };
 }
+var needBtn = document.getElementById("needBtn");
+if (needBtn) needBtn.onclick = function(){ toggleNeed(); };
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape") toggleNeed(false);
+});
 if (grid) {
   grid.querySelectorAll(".card").forEach(function(el){
     el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
@@ -104,5 +137,5 @@ document.addEventListener("keydown", function(e){
   if (e.key === "ArrowRight") skip();
   if (e.key === "ArrowLeft") prev();
 });
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", paint);
-else paint();
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ paintNeed(); paint(); });
+else { paintNeed(); paint(); }
