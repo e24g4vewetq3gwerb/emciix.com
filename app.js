@@ -41,7 +41,6 @@ function paint() {
   var v = SONGS[idx]; if (!v || !hero) return;
   stop();
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
-  hero.className = "hero";
   hero.innerHTML =
     '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
     '<div class="side"><p class="kicker">Now playing \u00b7 ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
@@ -94,8 +93,6 @@ function bind() {
   if (prevBtn) prevBtn.onclick = prev;
   if (full) full.onclick = function(){ start(true); };
 }
-var needBtn = document.getElementById("needBtn");
-if (needBtn) needBtn.onclick = function(){ window.location.href = "need.html"; };
 if (grid) {
   grid.querySelectorAll(".card").forEach(function(el){
     el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
