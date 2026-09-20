@@ -1,130 +1,199 @@
-(function () {
-  const CHANNEL = "UCt8dYnrvcrZSCx9uS0aLBSQ";
-  const RSS = "https://www.youtube.com/feeds/videos.xml?channel_id=" + CHANNEL;
-  const PREVIEW = 30;
-  const KEEP_KEY = "emciixKeptE";
-  const FALLBACK = [
-    ["dG8z3nQeDSI", "Need Hired by Me."],
-    ["txA5vV_9XG4", "Unemployed in Love"],
-    ["05AgmKvd3NI", "Make up shit"],
-    ["MP9AIxzx55o", "Everybody But Me"],
-    ["RFqKvFDB0Hg", "I Took Credit"],
-    ["o040u9wAZns", "Two phones, zero social life"],
-    ["oq1c9I9T_tw", "Which phone is it? iPhone or Android"],
-    ["53Jny0alg9g", "Still here"],
-    ["cWy-1DZsHDg", "XCode Swift Song"],
-    ["9-nGIe8mQ0M", "Wake you up Avicii"],
-    ["Id4HSb9j8RA", "You're Not Alone"],
-    ["oCWCYVTs3vM", "IDK What I'm Doing"],
-    ["R7BunIbGheI", "One More Light On"],
-    ["m6cxgKh5QgE", "Grid Run"],
-    ["qZZuGfqancc", "Solar System Party"],
-    ["KhGqJCTO1Hc", "Come Closer"]
-  ].map(([id, title]) => ({ id, title }));
-  const hero = document.getElementById("hero");
-  const grid = document.getElementById("grid");
-  const status = document.getElementById("status");
-  let queue = FALLBACK.slice();
-  let idx = 0, tick = null, t0 = 0, open = false;
-  const thumb = id => "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
-  const yt = id => "https://www.youtube.com/watch?v=" + id;
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const key = t => String(t || "").toLowerCase().replace(/#[\w]+/g, " ").replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
-  function dedupe(list) {
-    const byId = new Map();
-    list.forEach(v => { if (v.id && !byId.has(v.id)) byId.set(v.id, v); });
-    const seen = new Set();
-    return [...byId.values()].filter(v => {
-      const k = key(v.title);
-      if (!k) return true;
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-  }
-  const kept = () => { try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch (e) { return []; } };
-  const save = list => { try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0, 80))); } catch (e) {} };
-  const stop = () => { if (tick) { clearInterval(tick); tick = null; } };
-  const embed = (id, full) => "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&autoplay=1" + (full ? "" : "&end=30");
-  function paint() {
-    const v = queue[idx];
-    if (!v || !hero) return;
-    open = kept().some(x => x.id === v.id);
-    stop();
-    hero.innerHTML =
-      '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
-      '<div class="side"><p class="meta" id="clock">' + (open ? "Kept on this device" : "Idle · 30 seconds") + "</p>" +
-      "<h2>" + esc(v.title) + "</h2>" +
-      '<div class="bar"><i id="bar"></i></div>' +
-      '<div class="row"><button class="b keep" id="keep" type="button">Keep</button>' +
-      '<button class="b skip" id="skip" type="button">Skip</button>' +
-      '<a class="b out" href="' + yt(v.id) + '" target="_blank" rel="noopener">YouTube</a></div></div>';
-    document.getElementById("play").onclick = play;
-    document.getElementById("keep").onclick = keepFn;
-    document.getElementById("skip").onclick = skip;
+var PREVIEW = 30, KEEP_KEY = "emciixGrokPlay", IDX_KEY = "emciixIdx";
+    var SONGS = [
+      ["dG8z3nQeDSI","Need Hired by Me."],
+      ["txA5vV_9XG4","Unemployed in Love"],
+      ["05AgmKvd3NI","Make up shit"],
+      ["MP9AIxzx55o","Everybody But Me"],
+      ["RFqKvFDB0Hg","I Took Credit"],
+      ["o040u9wAZns","Two phones, zero social life"],
+      ["oq1c9I9T_tw","Which phone is it? iPhone or Android"],
+      ["53Jny0alg9g","Still here"],
+      ["cWy-1DZsHDg","XCode Swift Song"],
+      ["9-nGIe8mQ0M","Wake you up Avicii"],
+      ["Id4HSb9j8RA","You're Not Alone"],
+      ["oCWCYVTs3vM","IDK What I'm Doing"],
+      ["R7BunIbGheI","One More Light On"],
+      ["m6cxgKh5QgE","Grid Run"],
+      ["qZZuGfqancc","Solar System Party"],
+      ["KhGqJCTO1Hc","Come Closer"]
+    ].map(function(p){ return {id:p[0], title:p[1]}; });
+    var hero = document.getElementById("hero");
+    var grid = document.getElementById("grid");
+    var status = document.getElementById("status");
+    var idx = 0, tick = null, open = false;
+    var audio = new Audio(); audio.preload = "none";
+    try { var saved = parseInt(localStorage.getItem(IDX_KEY), 10); if (saved >= 0 && saved < SONGS.length) idx = saved; } catch(e) {}
+    function thumb(id){ var s = SONGS[idx] || {}; if (s.art) return s.art; if (!id) return ""; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+    function esc(s){
+      var map = {
+        "&": "&" + "amp;",
+        "<": "&" + "lt;",
+        ">": "&" + "gt;",
+        '"': "&" + "quot;",
+        "'": "&#39;"
+      };
+      return String(s).replace(/[&<>"']/g, function(c){ return map[c]; });
+    }
+    function kept(){ try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch(e) { return []; } }
+    function save(list){ try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} }
+    function saveIdx(){ try { localStorage.setItem(IDX_KEY, String(idx)); } catch(e) {} }
+    function stop(){ if (tick) { clearInterval(tick); tick = null; } }
+    function stopAudio(){ try { audio.pause(); audio.removeAttribute("src"); } catch(e) {} }
+    function embed(id, full){ return "https://www.youtube.com/embed/" + id + "?rel=0&modestbranding=1&playsinline=1&autoplay=1" + (full ? "" : "&end=30"); }
+    function pad(n){ return (n < 10 ? "0" : "") + n; }
+    function paint() {
+      var v = SONGS[idx]; if (!v || !hero) return;
+      open = kept().some(function(x){ return x.id === v.id; });
+      stop(); stopAudio(); saveIdx();
+      hero.innerHTML =
+        '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div>' +
+        '<div class="side"><p class="kicker">Now playing · ' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</p>' +
+        '<h2>' + esc(v.title) + '</h2>' +
+        '<p class="meta" id="clock">' + (open ? "Kept · full play on this page" : "Idle · 30 seconds on this page") + '</p>' +
+        '<div class="bar"><i id="bar"></i></div>' +
+        '<div class="row"><button class="b prev" id="prev" type="button">Prev</button>' +
+        '<button class="b keep" id="keep" type="button">Keep</button>' +
+        '<button class="b skip" id="skip" type="button">Skip</button>' +
+        '<button class="b cue" id="cue" type="button">Cue</button>' +
+        '<button class="b shuf" id="shuf" type="button">Shuffle</button>' +
+        '<button class="b full" id="full" type="button">Play full here</button></div>' +
+        '<p class="hint">Cue = iTunes 30s preview · Shuffle mixes the catalog · C cue · S shuffle</p></div>';
+      bind();
+      if (grid) {
+        var cards = grid.querySelectorAll(".card");
+        for (var i=0;i<cards.length;i++) {
+          cards[i].classList.toggle("on", i===idx);
+          cards[i].classList.toggle("hide", i===idx);
+        }
+      }
+    }
+    function start(full) {
+      var v = SONGS[idx]; if (!v) return;
+      var stage = hero.querySelector(".stage");
+      if (!stage) return;
+      stopAudio();
+      if (!v.id) { cueFn(); return; }
+      stage.innerHTML = '<iframe src="' + embed(v.id, full) + '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="' + esc(v.title) + '"></iframe>';
+      if (status) status.textContent = full ? "Playing on this page." : "30 second preview on this page.";
+      if (full) {
+        stop();
+        var clock = document.getElementById("clock");
+        var bar = document.getElementById("bar");
+        if (clock) clock.textContent = "Playing through here";
+        if (bar) bar.style.width = "100%";
+        return;
+      }
+      var t0 = Date.now(); stop();
+      tick = setInterval(function() {
+        var s = Math.min(PREVIEW, (Date.now()-t0)/1000);
+        var bar = document.getElementById("bar");
+        var clock = document.getElementById("clock");
+        if (bar) bar.style.width = (s/PREVIEW*100) + "%";
+        if (clock) clock.textContent = "0:" + pad(Math.floor(s)) + " / 0:30";
+        if (s >= PREVIEW) { stop(); skip(); }
+      }, 200);
+    }
+    function keepFn() {
+      var v = SONGS[idx];
+      save([{id:v.id,title:v.title,at:Date.now()}].concat(kept().filter(function(x){ return x.id !== v.id; })));
+      open = true; start(true);
+    }
+    function skip(){ idx = (idx + 1) % SONGS.length; paint(); }
+    function prev(){ idx = (idx - 1 + SONGS.length) % SONGS.length; paint(); }
+    function cueFn() {
+      var v = SONGS[idx]; if (!v) return;
+      stop(); stopAudio();
+      var stage = hero.querySelector(".stage");
+      if (stage) stage.innerHTML = '<img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>CUE</b></button>';
+      bind();
+      if (status) status.textContent = v.preview ? "Cue · iTunes 30s preview." : "Cue · parked at start.";
+      var clock = document.getElementById("clock");
+      var bar = document.getElementById("bar");
+      if (clock) clock.textContent = v.preview ? "Cue preview" : "Cued";
+      if (bar) bar.style.width = "0";
+      if (v.preview) {
+        audio.src = v.preview;
+        audio.play().catch(function(){});
+        audio.ontimeupdate = function(){
+          if (!audio.duration) return;
+          if (bar) bar.style.width = (audio.currentTime / audio.duration * 100) + "%";
+          if (clock) clock.textContent = "Cue 0:" + pad(Math.floor(audio.currentTime));
+        };
+        audio.onended = function(){ if (clock) clock.textContent = "Cue ready"; if (bar) bar.style.width = "0"; };
+      }
+    }
+    function shuffleFn() {
+      stopAudio();
+      if (SONGS.length < 2) return;
+      var n = idx, guard = 0;
+      while (n === idx && guard++ < 20) n = Math.floor(Math.random() * SONGS.length);
+      idx = n; paint();
+      if (status) status.textContent = "Shuffled from catalog.";
+    }
+    function bind() {
+      var play = document.getElementById("play");
+      var keep = document.getElementById("keep");
+      var skipBtn = document.getElementById("skip");
+      var prevBtn = document.getElementById("prev");
+      var full = document.getElementById("full");
+      var cueBtn = document.getElementById("cue");
+      var shufBtn = document.getElementById("shuf");
+      function hitPlay(ev){ if (ev) ev.preventDefault(); start(open); }
+      if (play) { play.onclick = hitPlay; play.onpointerup = hitPlay; }
+      if (keep) keep.onclick = keepFn;
+      if (skipBtn) skipBtn.onclick = skip;
+      if (prevBtn) prevBtn.onclick = prev;
+      if (full) full.onclick = function(){ start(true); };
+      if (cueBtn) cueBtn.onclick = cueFn;
+      if (shufBtn) shufBtn.onclick = shuffleFn;
+    }
     if (grid) {
-      grid.innerHTML = queue.map((item, i) =>
-        '<article class="card' + (i === idx ? " on" : "") + '" data-i="' + i + '"><img alt="" src="' + thumb(item.id) + '"><p>' + esc(item.title) + "</p></article>"
-      ).join("");
-      grid.querySelectorAll(".card").forEach(el => {
-        el.onclick = () => { idx = +el.dataset.i; paint(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+      grid.querySelectorAll(".card").forEach(function(el){
+        el.onclick = function(){ idx = +el.getAttribute("data-i"); paint(); window.scrollTo({top:0,behavior:"smooth"}); };
       });
     }
-  }
-  function play() {
-    const v = queue[idx];
-    hero.querySelector(".stage").innerHTML = '<iframe src="' + embed(v.id, open) + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-    if (open) return;
-    t0 = Date.now();
-    stop();
-    tick = setInterval(() => {
-      const s = Math.min(PREVIEW, (Date.now() - t0) / 1000);
-      const bar = document.getElementById("bar");
-      const clock = document.getElementById("clock");
-      if (bar) bar.style.width = (s / PREVIEW * 100) + "%";
-      if (clock) clock.textContent = "0:" + String(Math.floor(s)).padStart(2, "0") + " / 0:30";
-      if (s >= PREVIEW) { stop(); skip(); }
-    }, 200);
-  }
-  function keepFn() {
-    const v = queue[idx];
-    save([{ id: v.id, title: v.title, at: Date.now() }, ...kept().filter(x => x.id !== v.id)]);
-    open = true;
-    stop();
-    hero.querySelector(".stage").innerHTML = '<iframe src="' + embed(v.id, true) + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-    const clock = document.getElementById("clock");
-    const bar = document.getElementById("bar");
-    if (clock) clock.textContent = "Kept · full play";
-    if (bar) bar.style.width = "100%";
-  }
-  function skip() {
-    idx = (idx + 1) % Math.max(queue.length, 1);
-    paint();
-  }
-  async function refresh() {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 4000);
-    try {
-      const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(RSS), { cache: "no-store", signal: ctrl.signal });
-      if (!res.ok) throw new Error("feed");
-      const json = await res.json();
-      const videos = (json.items || []).map(item => {
-        const m = String(item.link || "").match(/[?&]v=([\w-]{11})/) || String(item.link || "").match(/shorts\/([\w-]{11})/);
-        return { id: m ? m[1] : "", title: item.title };
-      }).filter(v => v.id);
-      queue = dedupe(videos.concat(FALLBACK));
-      if (status) status.textContent = queue.length + " unique songs · BUILD E · press play";
-      paint();
-    } catch (e) {
-      queue = dedupe(FALLBACK);
-      if (status) status.textContent = queue.length + " unique songs · cached · BUILD E";
-      paint();
-    } finally {
-      clearTimeout(timer);
+    document.addEventListener("keydown", function(e){
+      if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+      if (e.code === "Space") { e.preventDefault(); start(open); }
+      if (e.key === "ArrowRight") skip();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "k" || e.key === "K") keepFn();
+      if (e.key === "f" || e.key === "F") start(true);
+      if (e.key === "c" || e.key === "C") cueFn();
+      if (e.key === "s" || e.key === "S") shuffleFn();
+    });
+    function norm(s){ return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,""); }
+    function attachPreview(name, url) {
+      var n = norm(name);
+      for (var i=0;i<SONGS.length;i++) {
+        var t = norm(SONGS[i].title);
+        if (t && (t.indexOf(n) >= 0 || n.indexOf(t) >= 0 || t.slice(0,8) === n.slice(0,8))) {
+          SONGS[i].preview = url; return true;
+        }
+      }
+      return false;
     }
-  }
-  queue = dedupe(FALLBACK);
-  paint();
-  if (status) status.textContent = queue.length + " unique songs · BUILD E · press play";
-  refresh();
-})();
+    function pullFeeds() {
+      fetch("https://itunes.apple.com/search?term=" + encodeURIComponent("Velc air") + "&entity=song&limit=50")
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          (d.results||[]).forEach(function(it){
+            if (!it.previewUrl) return;
+            if (!attachPreview(it.trackName, it.previewUrl)) {
+              SONGS.push({id:"", title:it.trackName, preview:it.previewUrl, art:it.artworkUrl100});
+            }
+          });
+        }).catch(function(){});
+      fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.youtube.com/feeds/videos.xml?channel_id=UCt8dYnrvcrZSCx9uS0aLBSQ"))
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          (d.items||[]).forEach(function(it){
+            var m = String(it.link||"").match(/[?&]v=([\w-]{11})/) || String(it.guid||"").match(/([\w-]{11})$/);
+            if (!m) return;
+            var id = m[1];
+            if (SONGS.some(function(s){ return s.id === id; })) return;
+            SONGS.push({id:id, title:it.title||id});
+          });
+        }).catch(function(){});
+    }
+    bind(); paint(); pullFeeds();
