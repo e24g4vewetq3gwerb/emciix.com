@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Velc air — BUILD C</title>
+  <title>Velc air — BUILD D</title>
   <style>
     :root { --bg:#050505; --ink:#f4f1ea; --gold:#c9a227; --dim:#8a857a; --line:#2b2b28; }
     * { box-sizing:border-box; margin:0; padding:0; }
@@ -18,7 +18,7 @@
     @media (max-width:720px){ .hero { grid-template-columns:1fr; } }
     .stage { position:relative; aspect-ratio:16/9; background:#000; }
     .stage img, .stage iframe { position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; }
-    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; }
+    .go { position:absolute; inset:0; border:0; background:transparent; cursor:pointer; color:inherit; text-decoration:none; }
     .go b { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:76px; height:76px; border-radius:50%; background:var(--gold); color:#111; display:grid; place-items:center; font:700 20px ui-sans-serif,system-ui; }
     .side { padding:26px 24px; display:flex; flex-direction:column; justify-content:center; gap:12px; }
     .side h2 { font-size:26px; font-weight:500; }
@@ -26,14 +26,14 @@
     .bar { height:3px; background:#1c1c1c; border-radius:99px; overflow:hidden; }
     .bar i { display:block; height:100%; width:0; background:var(--gold); }
     .row { display:flex; gap:8px; flex-wrap:wrap; }
-    button.b { font-family:ui-sans-serif,system-ui,sans-serif; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:650; }
+    button.b, a.b { font-family:ui-sans-serif,system-ui,sans-serif; border:0; border-radius:999px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:650; text-decoration:none; display:inline-block; }
     .keep { background:var(--gold); color:#111; }
     .skip { background:#161616; color:var(--ink); border:1px solid var(--line); }
     .out { background:transparent; color:var(--gold); border:1px solid var(--line); }
     .shelf { margin-top:48px; }
     .shelf h3 { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); margin-bottom:14px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px; }
-    .card { border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; }
+    .card { border:1px solid var(--line); border-radius:12px; overflow:hidden; cursor:pointer; background:#0c0c0c; color:inherit; text-decoration:none; display:block; }
     .card.on { outline:1px solid var(--gold); }
     .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
     .card p { font-family:ui-sans-serif,system-ui,sans-serif; font-size:13px; padding:10px 12px 14px; line-height:1.35; }
@@ -43,98 +43,33 @@
   <div class="wrap">
     <div class="top">
       <div class="brand">EMCIIX · VELC AIR</div>
-      <div class="build">BUILD C · 2026-09-19</div>
+      <div class="build">BUILD D · 2026-09-19</div>
     </div>
     <h1>Watch the latest cut.</h1>
-    <p class="lede" id="status">Quiet start. Press play for 30 seconds.</p>
-    <div class="hero" id="hero"></div>
+    <p class="lede" id="status">Cached shelf is on screen. Live feed loads after.</p>
+    <div class="hero" id="hero">
+      <div class="stage">
+        <img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg" />
+        <a class="go" href="https://www.youtube.com/watch?v=dG8z3nQeDSI" target="_blank" rel="noopener"><b>PLAY</b></a>
+      </div>
+      <div class="side">
+        <p class="meta">Need Hired by Me.</p>
+        <h2>Need Hired by Me.</h2>
+        <div class="row">
+          <a class="b out" href="https://www.youtube.com/watch?v=dG8z3nQeDSI" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
+    </div>
     <section class="shelf">
       <h3>ALL UPLOADS</h3>
-      <div class="grid" id="grid"></div>
+      <div class="grid" id="grid">
+        <a class="card on" href="https://www.youtube.com/watch?v=dG8z3nQeDSI" target="_blank" rel="noopener"><img alt="" src="https://i.ytimg.com/vi/dG8z3nQeDSI/hqdefault.jpg"><p>Need Hired by Me.</p></a>
+        <a class="card" href="https://www.youtube.com/watch?v=txA5vV_9XG4" target="_blank" rel="noopener"><img alt="" src="https://i.ytimg.com/vi/txA5vV_9XG4/hqdefault.jpg"><p>Unemployed in Love</p></a>
+        <a class="card" href="https://www.youtube.com/watch?v=05AgmKvd3NI" target="_blank" rel="noopener"><img alt="" src="https://i.ytimg.com/vi/05AgmKvd3NI/hqdefault.jpg"><p>Make up shit</p></a>
+        <a class="card" href="https://www.youtube.com/watch?v=MP9AIxzx55o" target="_blank" rel="noopener"><img alt="" src="https://i.ytimg.com/vi/MP9AIxzx55o/hqdefault.jpg"><p>Everybody But Me</p></a>
+      </div>
     </section>
   </div>
-  <script>
-    const CHANNEL = "UCt8dYnrvcrZSCx9uS0aLBSQ";
-    const RSS = "https://www.youtube.com/feeds/videos.xml?channel_id=" + CHANNEL;
-    const PREVIEW = 30;
-    const KEEP_KEY = "emciixKeptC";
-    const FALLBACK = [
-      ["dG8z3nQeDSI","Need Hired by Me.","2026-09-19"],
-      ["txA5vV_9XG4","Unemployed in Love","2026-09-19"],
-      ["05AgmKvd3NI","Make up shit","2026-09-19"],
-      ["MP9AIxzx55o","Everybody But Me","2026-09-18"],
-      ["RFqKvFDB0Hg","I Took Credit","2026-09-18"],
-      ["o040u9wAZns","Two phones, zero social life","2026-09-18"],
-      ["2bbplpfoL-c","Which phone is it ? iPhone or Android","2026-09-18"],
-      ["53Jny0alg9g","Still here","2026-09-18"],
-      ["cWy-1DZsHDg","XCode Swift Song","2026-09-18"],
-      ["9-nGIe8mQ0M","Wake you up Avicii","2026-09-17"],
-      ["Id4HSb9j8RA","You're Not Alone","2026-09-16"],
-      ["oCWCYVTs3vM","IDK What I'm Doing","2026-09-16"],
-      ["R7BunIbGheI","One More Light On","2026-09-16"]
-    ].map(([id,title,published]) => ({id,title,published}));
-    const hero = document.getElementById("hero");
-    const grid = document.getElementById("grid");
-    const status = document.getElementById("status");
-    let queue = [], idx = 0, tick = null, t0 = 0, open = false;
-    const thumb = id => "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
-    const yt = id => "https://www.youtube.com/watch?v=" + id;
-    const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]));
-    const kept = () => { try { return JSON.parse(localStorage.getItem(KEEP_KEY) || "[]"); } catch { return []; } };
-    const save = list => { try { localStorage.setItem(KEEP_KEY, JSON.stringify(list.slice(0,80))); } catch(e) {} };
-    const stop = () => { if (tick) { clearInterval(tick); tick = null; } };
-    const embed = (id, full) => "https://www.youtube-nocookie.com/embed/" + id + "?rel=0&modestbranding=1&autoplay=1" + (full ? "" : "&end=30");
-    function paint() {
-      const v = queue[idx]; if (!v) return;
-      open = kept().some(x => x.id === v.id); stop();
-      hero.innerHTML = '<div class="stage"><img alt="" src="' + thumb(v.id) + '"><button class="go" id="play" type="button"><b>PLAY</b></button></div><div class="side"><p class="meta" id="clock">' + (open ? "Kept on this device" : "Idle · 30 seconds") + '</p><h2>' + esc(v.title) + '</h2><div class="bar"><i id="bar"></i></div><div class="row"><button class="b keep" id="keep" type="button">Keep</button><button class="b skip" id="skip" type="button">Skip</button><button class="b out" id="out" type="button">YouTube</button></div></div>';
-      document.getElementById("play").onclick = play;
-      document.getElementById("keep").onclick = keepFn;
-      document.getElementById("skip").onclick = skip;
-      document.getElementById("out").onclick = () => window.open(yt(v.id), "_blank", "noopener");
-      grid.innerHTML = queue.map((item, i) => '<article class="card' + (i===idx?' on':'') + '" data-i="' + i + '"><img alt="" src="' + thumb(item.id) + '"><p>' + esc(item.title) + '</p></article>').join("");
-      grid.querySelectorAll(".card").forEach(el => el.onclick = () => { idx = +el.dataset.i; paint(); });
-    }
-    function play() {
-      const v = queue[idx];
-      hero.querySelector(".stage").innerHTML = '<iframe src="' + embed(v.id, open) + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-      if (open) return;
-      t0 = Date.now(); stop();
-      tick = setInterval(() => {
-        const s = Math.min(PREVIEW, (Date.now() - t0) / 1000);
-        const bar = document.getElementById("bar"); const clock = document.getElementById("clock");
-        if (bar) bar.style.width = (s / PREVIEW * 100) + "%";
-        if (clock) clock.textContent = "0:" + String(Math.floor(s)).padStart(2,"0") + " / 0:30";
-        if (s >= PREVIEW) { stop(); skip(); }
-      }, 200);
-    }
-    function keepFn() {
-      const v = queue[idx];
-      save([{id:v.id,title:v.title,at:Date.now()}, ...kept().filter(x => x.id !== v.id)]);
-      open = true; stop();
-      hero.querySelector(".stage").innerHTML = '<iframe src="' + embed(v.id, true) + '" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-      document.getElementById("clock").textContent = "Kept · full play";
-      document.getElementById("bar").style.width = "100%";
-    }
-    function skip() { idx = (idx + 1) % Math.max(queue.length, 1); paint(); }
-    async function load() {
-      let videos = [];
-      try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(RSS), { cache: "no-store" });
-        if (res.ok) {
-          const json = await res.json();
-          videos = (json.items || []).map(item => {
-            const m = String(item.link || "").match(/[?&]v=([\w-]{11})/);
-            return { id: m ? m[1] : "", title: item.title, published: item.pubDate };
-          }).filter(v => v.id);
-        }
-      } catch (e) {}
-      const seen = new Set();
-      queue = (videos.length ? videos : FALLBACK).filter(v => { if (seen.has(v.id)) return false; seen.add(v.id); return true; });
-      status.textContent = (videos.length ? "Live feed" : "Cached shelf") + " · BUILD C · press play";
-      paint();
-    }
-    load();
-  </script>
+  <script src="app.js" defer></script>
 </body>
 </html>
