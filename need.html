@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Need Inc.</title>
+  <style>
+    :root { --bg:#050505; --ink:#f4f1ea; --gold:#c9a227; --dim:#8a857a; --line:#2b2b28; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); color:var(--ink); font-family:Georgia,"Times New Roman",serif; }
+    .wrap { max-width:720px; margin:0 auto; padding:32px 18px 80px; }
+    a { color:var(--gold); }
+    .k { font-family:ui-sans-serif,system-ui,sans-serif; font-size:11px; letter-spacing:.16em; color:var(--gold); }
+    h1 { font-size:42px; font-weight:500; margin:10px 0 8px; }
+    p { font-family:ui-sans-serif,system-ui,sans-serif; color:var(--dim); font-size:14px; line-height:1.5; }
+    .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:22px 0; }
+    @media (max-width:640px){ .grid { grid-template-columns:1fr; } }
+    .cell { border:1px solid var(--line); border-radius:14px; padding:14px; }
+    .cell span { display:block; font-family:ui-sans-serif,system-ui,sans-serif; font-size:10px; letter-spacing:.14em; color:var(--dim); text-transform:uppercase; }
+    .cell b { display:block; margin-top:8px; font-size:22px; font-weight:500; color:var(--ink); }
+    .row { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+    .row a { font-family:ui-sans-serif,system-ui,sans-serif; text-decoration:none; border-radius:999px; padding:10px 14px; font-size:13px; font-weight:650; }
+    .gold { background:var(--gold); color:#111; }
+    .ghost { border:1px solid var(--line); color:var(--ink); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="k">NEED INC.</p>
+    <h1>A song, a town, a price.</h1>
+    <p>Live cut from git <b style="color:#f4f1ea">934e350</b>. Bundle <b style="color:#f4f1ea">com.emcii.need</b>.</p>
+    <div class="grid">
+      <div class="cell"><span>Android</span><b>1.0.1</b></div>
+      <div class="cell"><span>iOS</span><b>1.0.1</b></div>
+      <div class="cell"><span>Web</span><b>934e350</b></div>
+    </div>
+    <p>Firebase hosting is not live yet (cue-508120.web.app is 404). The Need GitHub repo is private, so it only opens if you are signed into that account.</p>
+    <div class="row">
+      <a class="gold" href="index.html">Back to Emciix</a>
+      <a class="ghost" href="https://github.com/e24g4vewetq3gwerb/Need">Need git repo</a>
+    </div>
+  </div>
+</body>
+</html>
