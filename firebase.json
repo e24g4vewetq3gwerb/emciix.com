@@ -1,13 +1,10 @@
 {
   "hosting": {
-    "public": ".",
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**",
-      ".github/**",
-      "DEPLOY.md",
-      "README.md"
+      "**/node_modules/**"
     ],
     "cleanUrls": true,
     "trailingSlash": false,
@@ -33,19 +30,19 @@
           },
           {
             "key": "Permissions-Policy",
-            "value": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+            "value": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), autoplay=(self \"https://www.youtube.com\" \"https://www.youtube-nocookie.com\")"
           },
           {
             "key": "Cross-Origin-Opener-Policy",
-            "value": "same-origin"
+            "value": "same-origin-allow-popups"
           },
           {
             "key": "Cross-Origin-Resource-Policy",
-            "value": "same-origin"
+            "value": "cross-origin"
           },
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://i.ytimg.com data:; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://api.rss2json.com; upgrade-insecure-requests"
+            "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com https://*.mzstatic.com https://is1-ssl.mzstatic.com https://is2-ssl.mzstatic.com https://is3-ssl.mzstatic.com https://is4-ssl.mzstatic.com https://is5-ssl.mzstatic.com; media-src 'self' blob: https://*.apple.com https://audio-ssl.itunes.apple.com https://*.mzstatic.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://youtube.com; connect-src 'self' https://api.rss2json.com https://itunes.apple.com https://*.apple.com; upgrade-insecure-requests"
           },
           {
             "key": "X-XSS-Protection",
