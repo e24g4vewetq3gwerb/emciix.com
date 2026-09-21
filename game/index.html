@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#04040C">
+  <title>ONE FEELING, ONE PROMISE — Rhythm Game</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <main id="app">
+    <section id="start" class="panel">
+      <div class="dots">● ● ●</div>
+      <h1>ONE FEELING,<br>ONE PROMISE</h1>
+      <p>EMCIIX · HOPE NODE · SEC-01</p>
+      <p class="hint">Tap a lane or press D / F / J</p>
+      <button id="startBtn">TAP TO START</button>
+      <small id="status">Loading chart…</small>
+    </section>
+    <section id="game" class="hidden">
+      <header><b>EMCIIX</b><strong>ONE FEELING, ONE PROMISE</strong><span id="time">0:00</span></header>
+      <div class="hud"><span>SCORE <b id="score">0</b></span><span>COMBO <b id="combo">0X</b></span><span>HEALTH <b id="health">100%</b></span></div>
+      <div id="lanes" class="lanes"><div data-lane="0"><i>A</i></div><div data-lane="1"><i>SYNC</i></div><div data-lane="2"><i>B</i></div><div id="notes"></div><div id="lyric"></div></div>
+      <div class="pads"><button data-lane="0">A <small>D</small></button><button data-lane="1">SYNC <small>F</small></button><button data-lane="2">B <small>J</small></button></div>
+    </section>
+    <section id="result" class="panel hidden"><h1>RESULTS</h1><p>SCORE <b id="finalScore">0</b></p><button id="again">PLAY AGAIN</button></section>
+  </main>
+  <audio id="audio" preload="auto" src="audio/one-feeling-one-promise.mp3"></audio>
+  <script src="game.js"></script>
+</body>
+</html>
