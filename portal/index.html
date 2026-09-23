@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="/portal/assets/index-DLVCRiHz.js?v=defaults-1"></script>
+  <script type="module" crossorigin src="/portal/assets/index-DLVCRiHz.js?v=planet-up-1"></script>
   <link rel="stylesheet" crossorigin href="/portal/assets/index-C17i1khB.css">
   <style>
     #warp-planet {
@@ -24,30 +24,44 @@
       text-decoration: none;
       touch-action: manipulation;
       visibility: hidden;
-      background: url("/portal/assets/planet.png") center / cover no-repeat;
+      background: url("/portal/assets/planet.png?v=up-1") center / cover no-repeat;
       pointer-events: auto;
       will-change: transform;
       transform: translate3d(-200px, -200px, 0) scale(0.2);
     }
-    #warp-moon {
+    #warp-atmo {
       position: fixed;
-      z-index: 19;
+      z-index: 18;
       left: 0;
       top: 0;
-      width: 22px;
-      height: 22px;
-      margin: -11px 0 0 -11px;
+      width: 180px;
+      height: 180px;
+      margin: -90px 0 0 -90px;
       border-radius: 50%;
       pointer-events: none;
       visibility: hidden;
-      background: radial-gradient(circle at 32% 30%, #f7f3ea, #b7aa96 42%, #3a342c 78%);
-      box-shadow: inset -4px -3px 6px rgba(0, 0, 0, 0.45);
+      background: radial-gradient(circle, rgba(255, 176, 70, 0) 46%, rgba(255, 168, 60, 0.5) 58%, rgba(255, 120, 40, 0) 74%);
+      will-change: transform;
+    }
+    #warp-moon {
+      position: fixed;
+      z-index: 21;
+      left: 0;
+      top: 0;
+      width: 48px;
+      height: 48px;
+      margin: -24px 0 0 -24px;
+      border-radius: 50%;
+      pointer-events: none;
+      visibility: hidden;
+      background: url("/portal/assets/moon.png?v=up-1") center / cover no-repeat;
       will-change: transform;
     }
   </style>
 </head>
 <body>
 <div id="root"></div>
+<span id="warp-atmo" aria-hidden="true"></span>
 <a id="warp-planet" data-hud href="https://emciix.com/game/play" aria-label="Open the game"></a>
 <span id="warp-moon" aria-hidden="true"></span>
 <script>
