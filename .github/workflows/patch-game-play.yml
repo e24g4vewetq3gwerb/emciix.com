@@ -12,6 +12,7 @@ on:
       - scripts/patch-hosting.mjs
       - views-boot.js
       - shelf-boot.js
+      - stats-boot.js
       - index.html
       - app.js
       - need/assets/index-Bsi7rUKP.js
