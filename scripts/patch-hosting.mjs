@@ -4,6 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync, copyFileSync } from
 import { dirname } from "node:path";
 
 const PROJECT = "emciix-com";
+const LOGIN_V = "login-3";
 
 function copyAudio(titled, dest) {
   if (existsSync(dest)) return dest;
@@ -32,14 +33,13 @@ function materializePlayIndex() {
   const src = "game/play/index.html";
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
+  html = html.replace(/start-login\.js\?v=login-\d+/g, "start-login.js?v=" + LOGIN_V);
+  html = html.replace(/start-login\.css\?v=login-\d+/g, "start-login.css?v=" + LOGIN_V);
   if (!html.includes("start-login.js")) {
     html = html.replace(
       /<script[^>]+\/game\/play\/game\.js[^>]*><\/script>/,
-      '<script src="/game/play/start-login.js?v=login-2"></script>\n  $&'
+      '<script src="/game/play/start-login.js?v=' + LOGIN_V + '"></script>\n  $&'
     );
-  } else {
-    html = html.replace("start-login.js?v=login-1", "start-login.js?v=login-2");
-    html = html.replace("start-login.css?v=login-1", "start-login.css?v=login-2");
   }
   if (!html.includes("session-guest.js")) {
     html = html.replace("</body>", "  <script type=\"module\" src=\"/game/play/session-guest.js?v=name-1\"></script>\n</body>");
@@ -57,7 +57,7 @@ function materializePlayIndex() {
     ["vacant-chairs.css", "/game/play/vacant-chairs.css?v=chairs-1"],
     ["start-hub.css", "/game/play/start-hub.css?v=hub-1"],
     ["session-name.css", "/game/play/session-name.css?v=name-1"],
-    ["start-login.css", "/game/play/start-login.css?v=login-2"],
+    ["start-login.css", "/game/play/start-login.css?v=" + LOGIN_V],
   ];
   for (const [key, href] of links) {
     if (!html.includes(key)) html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"" + href + "\" />\n</head>");
