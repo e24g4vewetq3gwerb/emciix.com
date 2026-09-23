@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync, existsSync, copyFileSync } from
 import { dirname } from "node:path";
 
 const PROJECT = "emciix-com";
-const LOGIN_V = "login-3";
+const LOGIN_V = "login-4";
 
 function copyAudio(titled, dest) {
   if (existsSync(dest)) return dest;
