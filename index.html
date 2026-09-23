@@ -45,22 +45,22 @@
       --line: rgba(208, 209, 210, 0.16);
       --hairline: rgba(208, 209, 210, 0.10);
       --separator: #393c41;
-      --accent: #3e6ae1;
-      --accent-hover: #5b82ea;
-      --accent-soft: rgba(62, 106, 225, 0.16);
-      --accent-border: rgba(62, 106, 225, 0.45);
-      --accent-on: #ffffff;
-      --blue: #3e6ae1;
-      --indigo: #3e6ae1;
-      --magenta: #3e6ae1;
-      --magenta-soft: rgba(62, 106, 225, 0.16);
-      --magenta-border: rgba(62, 106, 225, 0.40);
-      --pink: #3e6ae1;
-      --orange: #3e6ae1;
+      --accent: #8e8e93;
+      --accent-hover: #aeaeb2;
+      --accent-soft: rgba(142, 142, 147, 0.18);
+      --accent-border: rgba(174, 174, 178, 0.45);
+      --accent-on: #171a20;
+      --blue: #8e8e93;
+      --indigo: #8e8e93;
+      --magenta: #8e8e93;
+      --magenta-soft: rgba(142, 142, 147, 0.18);
+      --magenta-border: rgba(174, 174, 178, 0.40);
+      --pink: #8e8e93;
+      --orange: #8e8e93;
       --yellow: #ffffff;
       --yellow-soft: rgba(255, 255, 255, 0.08);
       --yellow-border: rgba(255, 255, 255, 0.28);
-      --teal: #3e6ae1;
+      --teal: #8e8e93;
       --gray: #8e8e8e;
       --gray2: #5c5e62;
       --gray3: #393c41;
@@ -68,19 +68,19 @@
       --gray5: #22262c;
       --gray6: #171a20;
       --gold: #ffffff;
-      --live: #3e6ae1;
-      --live-soft: rgba(62, 106, 225, 0.16);
-      --live-ink: #ffffff;
-      --player-pill: #3e6ae1;
-      --player-pill-ink: #ffffff;
+      --live: #8e8e93;
+      --live-soft: rgba(142, 142, 147, 0.18);
+      --live-ink: #171a20;
+      --player-pill: #3a3a3c;
+      --player-pill-ink: #f5f5f7;
       --danger: #e31937;
       --shadow: none;
       --shadow-sm: none;
       --glow-cya: none;
       --glow-mag: none;
       --glow-yel: none;
-      --grad-bar: #3e6ae1;
-      --grad-accent: #3e6ae1;
+      --grad-bar: #8e8e93;
+      --grad-accent: #8e8e93;
       --radius: 18px;
       --radius-sm: 14px;
       --radius-lg: 22px;
@@ -101,22 +101,22 @@
       --label: #5c5e62;
       --line: #eeeeee;
       --hairline: #f4f4f4;
-      --accent: #3e6ae1;
-      --accent-hover: #3457c2;
-      --accent-soft: rgba(62, 106, 225, 0.10);
-      --accent-border: rgba(62, 106, 225, 0.35);
+      --accent: #636366;
+      --accent-hover: #48484a;
+      --accent-soft: rgba(99, 99, 102, 0.12);
+      --accent-border: rgba(99, 99, 102, 0.35);
       --accent-on: #ffffff;
-      --magenta: #3e6ae1;
-      --magenta-soft: rgba(62, 106, 225, 0.10);
-      --magenta-border: rgba(62, 106, 225, 0.28);
+      --magenta: #636366;
+      --magenta-soft: rgba(99, 99, 102, 0.12);
+      --magenta-border: rgba(99, 99, 102, 0.28);
       --yellow: #171a20;
       --yellow-soft: rgba(23, 26, 32, 0.06);
       --yellow-border: rgba(23, 26, 32, 0.16);
       --gold: #171a20;
-      --live: #3e6ae1;
-      --live-soft: rgba(62, 106, 225, 0.10);
-      --live-ink: #1B7A32;
-      --player-pill: #1D9BF0;
+      --live: #636366;
+      --live-soft: rgba(99, 99, 102, 0.12);
+      --live-ink: #1d1d1f;
+      --player-pill: #3a3a3c;
       --player-pill-ink: #ffffff;
       --danger: #ff3b30;
       --shadow: 0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -479,15 +479,16 @@
     .markbtn:hover { opacity:1; filter:brightness(1.06); }
     .markbtn:active { transform:scale(0.98); }
     html[data-theme="dark"] .markbtn {
-      background:#1D9BF0; color:#ffffff;
+      background:#3a3a3c; color:#f5f5f7;
+      box-shadow:none;
     }
     html[data-theme="light"] .markbtn {
       background:#F0F0F5; color:#1d1d1f;
       box-shadow:none;
     }
     html[data-theme="dark"] .markbtn {
-      background:#1D9BF0; color:#ffffff;
-      box-shadow:0 1px 3px rgba(29,155,240,0.35);
+      background:#3a3a3c; color:#f5f5f7;
+      box-shadow:none;
     }
     .socials { display:flex; gap:8px; }
     .soc {
@@ -1956,7 +1957,7 @@
 
     .stats { margin-top:var(--section-gap); }
     .stats-grid {
-      display:grid; grid-template-columns:1fr 1fr; gap:16px;
+      display:grid; grid-template-columns:1fr; gap:16px;
     }
     @media (max-width:760px){
       .stats-grid { grid-template-columns:1fr; }
@@ -2614,22 +2615,6 @@
 
     <section class="stats" id="charts" aria-label="Site stats">
       <div class="stats-grid">
-        <div class="statpanel pop">
-          <div class="stathead">
-            <div>
-              <div class="stattitle-row">
-                <h3 class="stattitle">By popularity</h3>
-                <span class="statkicker">Charts</span>
-              </div>
-              <div class="statmeta">
-                <div class="statfoot" id="popFoot"></div>
-                <p class="statsub" id="popSub">Velc air · YouTube views</p>
-              </div>
-            </div>
-            <span class="statbadge">Views</span>
-          </div>
-          <div class="chart" id="popChart" role="list"></div>
-        </div>
         <div class="statpanel city">
           <div class="stathead">
             <div>
