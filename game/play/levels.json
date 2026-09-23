@@ -252,5 +252,18 @@
     "youtube": "",
     "sideLeft": "TABS",
     "sideRight": "STAY OPEN"
+  },
+  {
+    "id": "no-room-for-me",
+    "title": "No Room for Me",
+    "short": "NO ROOM",
+    "blurb": "AI sings better. Keep the last lane open.",
+    "theme": "room",
+    "chart": "/game/play/levels/no-room-for-me/chart.json",
+    "lyrics": "/game/play/levels/no-room-for-me/lyrics.json",
+    "audio": "/game/play/levels/no-room-for-me/audio/no-room-for-me.mp3",
+    "youtube": "",
+    "sideLeft": "NO ROOM",
+    "sideRight": "FOR ME"
   }
 ]
