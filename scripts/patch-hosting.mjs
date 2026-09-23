@@ -32,6 +32,9 @@ function materializePlayIndex() {
   const src = "game/play/index.html";
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
+  if (!html.includes("session-guest.js")) {
+    html = html.replace("</body>", "  <script type=\"module\" src=\"/game/play/session-guest.js?v=name-1\"></script>\n</body>");
+  }
   const scripts = [
     ["universe-boot.js", "/game/play/universe-boot.js?v=vacant-1"],
     ["vacant-mode.js", "/game/play/vacant-mode.js?v=chairs-1"],
@@ -72,29 +75,9 @@ function materializeGameJs() {
   return dest;
 }
 
-function materializeScores() {
-  const src = "game/play/firebase-scores.js";
-  if (!existsSync(src)) return null;
-  let s = readFileSync(src, "utf8");
-  if (!s.includes("signInAnonymously")) {
-    s = s.replace("  signInWithCredential,\n", "  signInWithCredential,\n  signInAnonymously,\n");
-  }
-  if (!s.includes("publishNamedSession")) {
-    s = s.replace(
-      "const api = {",
-      "async function publishNamedSession(name, totalScore) {\n  let user = auth.currentUser;\n  if (!user) {\n    const cred = await signInAnonymously(auth);\n    user = cred.user;\n  }\n  const label = String(name || \"Player\").trim().slice(0, 24) || \"Player\";\n  await publishPublicRank(user, label, totalScore, null);\n  try { if (typeof updateDisplayName === \"function\") await updateDisplayName(label); } catch (_) {}\n  return user;\n}\n\nconst api = {"
-    );
-    s = s.replace("  publishPublicRank,\n  uploadAvatar,", "  publishPublicRank,\n  publishNamedSession,\n  uploadAvatar,");
-  }
-  const dest = "/tmp/firebase-scores-named.js";
-  writeFileSync(dest, s);
-  return dest;
-}
-
 const universeCss = materializeUniverseCss();
 const playIndex = materializePlayIndex();
 const gameJs = materializeGameJs();
-const scoresJs = materializeScores();
 
 const PATCHES = [
   ["index.html", "/index.html"],
@@ -103,8 +86,7 @@ const PATCHES = [
   ["game/play/levels.json", "/game/play/levels.json"],
 ];
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
-if (scoresJs) PATCHES.push([scoresJs, "/game/play/firebase-scores.js"]);
-["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/vacant-chairs.css"].forEach((p) => {
+["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/vacant-chairs.css"].forEach((p) => {
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
