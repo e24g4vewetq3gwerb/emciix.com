@@ -2395,6 +2395,91 @@
     }
     .statpanel.city .chartempty-card a { color:var(--accent-on); background:var(--sp-accent); }
     .chartempty-card a:hover { opacity:.9; }
+
+    /* Song shelf cleared */
+    #songs { display:none !important; }
+
+    /* Need pair uses the portal palette: black space, amber streaks, cool star white */
+    html[data-theme="dark"] .needprev {
+      --ink: #e6f0ff;
+      --dim: rgba(230, 240, 255, 0.62);
+      --label: rgba(230, 240, 255, 0.42);
+      --line: rgba(255, 176, 70, 0.28);
+      --surface: #070605;
+      --surface-2: #100e0b;
+      --accent: #ffdb6b;
+      --accent-hover: #ffb046;
+      --accent-soft: rgba(255, 176, 70, 0.16);
+      --accent-border: rgba(255, 176, 70, 0.45);
+      --accent-on: #1a1206;
+      --magenta: #ffb046;
+      --magenta-soft: rgba(255, 168, 60, 0.16);
+      --magenta-border: rgba(255, 168, 60, 0.45);
+      --yellow: #ff7828;
+      --yellow-soft: rgba(255, 120, 40, 0.16);
+      --yellow-border: rgba(255, 120, 40, 0.5);
+    }
+    html[data-theme="dark"] .needprev .needprev-entry,
+    html[data-theme="dark"] .needprev .needprev-city.statpanel,
+    html[data-theme="dark"] .needprev .statpanel.city {
+      --sp-accent: #ffdb6b;
+      --sp-accent-2: #ff7828;
+      --sp-accent-dim: rgba(255, 176, 70, 0.16);
+      --sp-chip-border: rgba(255, 176, 70, 0.45);
+      --sp-track: rgba(255, 176, 70, 0.14);
+      --sp-hover: rgba(255, 176, 70, 0.1);
+      --sp-rank-fill: #ffdb6b;
+      --sp-rank-num: #1a1206;
+      --sp-rank-outline: rgba(255, 176, 70, 0.45);
+      --sp-title: #e6f0ff;
+      --sp-dim: rgba(230, 240, 255, 0.62);
+      --sp-line: rgba(255, 176, 70, 0.28);
+      background: #070605;
+      border-color: rgba(255, 176, 70, 0.34);
+      box-shadow: 0 0 0 1px rgba(255, 120, 40, 0.08), 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+    html[data-theme="dark"] .needprev .needprev-list,
+    html[data-theme="dark"] .needprev .needprev-row {
+      background: #100e0b;
+      border-color: rgba(255, 176, 70, 0.2);
+    }
+    html[data-theme="dark"] .needprev .needprev-row:hover {
+      background: rgba(255, 176, 70, 0.1);
+    }
+    html[data-theme="dark"] .needprev .needprev-ico,
+    html[data-theme="dark"] .needprev .needprev-row[data-dest] .needprev-ico {
+      color: #ffdb6b;
+      border-color: rgba(255, 176, 70, 0.45);
+      background: rgba(255, 176, 70, 0.12);
+    }
+    html[data-theme="dark"] .needprev .needprev-mark {
+      border-color: rgba(255, 176, 70, 0.4);
+      box-shadow: 0 0 18px rgba(255, 168, 60, 0.28);
+    }
+    html[data-theme="dark"] .needprev .bartrack i,
+    html[data-theme="dark"] .needprev .statpanel.city .bartrack i {
+      background: linear-gradient(90deg, #ff7828, #ffdb6b) !important;
+    }
+    html[data-theme="dark"] .needprev .place-status-chip.is-hot {
+      color: #ffdb6b;
+      border-color: rgba(255, 176, 70, 0.55);
+      background: rgba(255, 176, 70, 0.16);
+    }
+    html[data-theme="dark"] .needprev .place-status-chip.is-quiet {
+      color: #e6f0ff;
+      border-color: rgba(230, 240, 255, 0.28);
+      background: rgba(230, 240, 255, 0.08);
+    }
+    html[data-theme="dark"] .needprev .livepill,
+    html[data-theme="dark"] .needprev .livepill b {
+      background: rgba(255, 176, 70, 0.12);
+      border-color: rgba(255, 176, 70, 0.4);
+      color: #ffdb6b;
+    }
+    html[data-theme="dark"] .needprev .livedot {
+      background: #ffdb6b;
+      box-shadow: 0 0 0 3px rgba(255, 176, 70, 0.25);
+    }
   </style>
 
 </head>
