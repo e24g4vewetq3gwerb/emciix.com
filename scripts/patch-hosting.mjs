@@ -4,9 +4,8 @@ import { readFileSync } from "node:fs";
 
 const PROJECT = "emciix-com";
 const PATCHES = [
-  ["game/play/index.html", "/game/play/index.html"],
-  ["game/play/game.js", "/game/play/game.js"],
-  ["game/play/favicon.svg", "/game/play/favicon.svg"],
+  ["portal/index.html", "/portal/index.html"],
+  ["portal/assets/favicon-portal.svg", "/portal/assets/favicon-portal.svg"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;
