@@ -20,7 +20,7 @@ copyAudio("game/play/levels/watch-it-brppp/Watch it brppp.mp3", "game/play/level
 
 function materializeUniverseCss() {
   const dest = "/tmp/game-with-vacant.css";
-  const extras = ["game/play/theme-vacant.css", "game/play/vacant-chairs.css", "game/play/start-hub.css", "game/play/session-name.css"].filter(existsSync);
+  const extras = ["game/play/theme-vacant.css", "game/play/vacant-chairs.css", "game/play/start-hub.css", "game/play/session-name.css", "game/play/start-login.css"].filter(existsSync);
   if (!existsSync("game/play/game.css")) return null;
   const chunks = [readFileSync("game/play/game.css")];
   for (const extra of extras) chunks.push(Buffer.from("\n"), readFileSync(extra));
@@ -32,6 +32,12 @@ function materializePlayIndex() {
   const src = "game/play/index.html";
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
+  if (!html.includes("start-login.js")) {
+    html = html.replace(
+      /<script[^>]+\/game\/play\/game\.js[^>]*><\/script>/,
+      '<script src="/game/play/start-login.js?v=login-1"></script>\n  $&'
+    );
+  }
   if (!html.includes("session-guest.js")) {
     html = html.replace("</body>", "  <script type=\"module\" src=\"/game/play/session-guest.js?v=name-1\"></script>\n</body>");
   }
@@ -48,6 +54,7 @@ function materializePlayIndex() {
     ["vacant-chairs.css", "/game/play/vacant-chairs.css?v=chairs-1"],
     ["start-hub.css", "/game/play/start-hub.css?v=hub-1"],
     ["session-name.css", "/game/play/session-name.css?v=name-1"],
+    ["start-login.css", "/game/play/start-login.css?v=login-1"],
   ];
   for (const [key, href] of links) {
     if (!html.includes(key)) html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"" + href + "\" />\n</head>");
@@ -86,7 +93,7 @@ const PATCHES = [
   ["game/play/levels.json", "/game/play/levels.json"],
 ];
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
-["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/vacant-chairs.css"].forEach((p) => {
+["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css"].forEach((p) => {
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
