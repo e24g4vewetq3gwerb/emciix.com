@@ -1,16 +1,6 @@
-.start-login{margin-top:.75rem;width:100%;text-align:left}
-.start-login-toggle{width:100%}
-.start-login-toggle.hidden{display:none}
-.start-login-methods{
-  display:none;
-  gap:.45rem;
-  margin-top:.45rem;
-}
-.start-login.open .start-login-methods{display:flex}
-.start-login .auth-signin-row.hidden{display:none}
-.start-login .auth-signin-row .start-action-btn{flex:1 1 120px}
-.start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.35rem}
-.start-login .auth-chip.hidden{display:none}
-.start-login .auth-chip-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;background:#111}
-.start-login .auth-error{margin:.4rem 0 0;color:#ff6b8a;font-size:.7rem}
-.start-login .auth-error.hidden{display:none}
+.start-login{margin-top:.75rem;width:100%;text-align:left;display:flex;flex-direction:column;gap:.35rem}
+.start-login-kicker{margin:0;font-size:.58rem;letter-spacing:.18em;color:#00f5ff}
+.start-login .session-name-label{margin-top:.2rem}
+.start-login .session-name-input{width:100%;box-sizing:border-box}
+.start-login #btn-local-login{margin-top:.35rem}
+.start-login .auth-signin-row.hidden,.start-login .auth-chip.hidden,.start-login .auth-error.hidden,.start-login .hidden{display:none !important}
