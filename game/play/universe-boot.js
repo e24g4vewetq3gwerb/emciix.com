@@ -66,15 +66,14 @@
     }
     if (layer.dataset.universe === theme) return;
     layer.dataset.universe = theme;
-    if (theme === "vacant" || theme === "room" || theme === "tell") {
-      var badge = theme === "tell" ? "PERFECT · TELL ME MORE" : "UNIVERSE · VACANT";
+    if (theme === "vacant" || theme === "room") {
       layer.innerHTML =
         '<div class="vacant-haze"></div>' +
         '<div class="vacant-spot"></div>' +
         '<div class="vacant-rows"></div>' +
         '<div class="vacant-chair"><i></i><b></b></div>' +
         '<div class="vacant-dust"></div>' +
-        '<div class="vacant-badge">' + badge + '</div>';
+        '<div class="vacant-badge">UNIVERSE · VACANT</div>';
     } else {
       layer.innerHTML = "";
     }

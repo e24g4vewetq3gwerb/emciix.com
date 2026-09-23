@@ -292,20 +292,5 @@
     "youtube": "",
     "sideLeft": "WATCH IT",
     "sideRight": "BRPPP"
-  },
-  {
-    "id": "tell-me-more",
-    "title": "Tell Me More",
-    "short": "TELL ME",
-    "blurb": "Open the preview, step through the portal, and play it in perfect mode.",
-    "theme": "tell",
-    "universe": "VACANT",
-    "perfect": true,
-    "chart": "/game/play/levels/tell-me-more/chart.json",
-    "lyrics": "/game/play/levels/tell-me-more/lyrics.json",
-    "audio": "/game/play/levels/tell-me-more/audio/tell-me-more.mp3",
-    "youtube": "",
-    "sideLeft": "TELL ME",
-    "sideRight": "MR44"
   }
 ]
