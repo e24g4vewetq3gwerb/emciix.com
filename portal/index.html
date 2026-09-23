@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>(function(){try{if(/[?&]preview=1(?:&|$)/.test(location.search))document.documentElement.classList.add("portal-embed");}catch(e){}})();</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>portal</title>
@@ -57,10 +58,33 @@
       background: url("/portal/assets/moon.png?v=up-1") center / cover no-repeat;
       will-change: transform;
     }
+    html.portal-embed .panel-4,
+    html.portal-embed .sky-hint,
+    html.portal-embed .page-tabs,
+    html.portal-embed .play-row { display: none !important; }
+    #embed-fly {
+      display: none;
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      border: 1px solid rgba(255,255,255,.35);
+      background: #f2f2f4;
+      color: #121212;
+      border-radius: 999px;
+      padding: .55rem 1.6rem;
+      font: 600 .85rem/1 system-ui, sans-serif;
+      letter-spacing: .12em;
+      text-decoration: none;
+      pointer-events: none;
+    }
+    html.portal-embed #embed-fly { display: inline-block; }
   </style>
 </head>
 <body>
 <div id="root"></div>
+<span id="embed-fly">Fly</span>
 <span id="warp-atmo" aria-hidden="true"></span>
 <a id="warp-planet" data-hud href="https://emciix.com/game/play" aria-label="Open the game"></a>
 <script>
