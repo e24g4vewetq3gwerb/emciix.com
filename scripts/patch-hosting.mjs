@@ -1,9 +1,19 @@
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, existsSync, copyFileSync } from "node:fs";
 import { dirname } from "node:path";
 
 const PROJECT = "emciix-com";
+
+function copyAudio(titled, dest) {
+  if (existsSync(dest)) return dest;
+  if (existsSync(titled)) {
+    mkdirSync(dirname(dest), { recursive: true });
+    copyFileSync(titled, dest);
+    return dest;
+  }
+  return existsSync(dest) ? dest : null;
+}
 
 function materializeLevel22Audio() {
   const dest = "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3";
@@ -19,13 +29,11 @@ function materializeLevel22Audio() {
     writeFileSync(dest, Buffer.from(b64, "base64"));
     return true;
   }
-  if (existsSync(titled)) {
-    mkdirSync(dirname(dest), { recursive: true });
-    writeFileSync(dest, readFileSync(titled));
-    return true;
-  }
-  return existsSync(dest);
+  return !!copyAudio(titled, dest);
 }
+
+copyAudio("game/play/levels/glitch-by-glitch/Glitch by Glitch.mp3", "game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3");
+copyAudio("game/play/levels/watch-it-brppp/Watch it brppp.mp3", "game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3");
 
 function materializeUniverseCss() {
   const dest = "/tmp/game-with-vacant.css";
@@ -72,6 +80,10 @@ const PATCHES = [
   ["game/play/levels.json", "/game/play/levels.json"],
   ["game/play/levels/no-room-for-me/chart.json", "/game/play/levels/no-room-for-me/chart.json"],
   ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
+  ["game/play/levels/glitch-by-glitch/chart.json", "/game/play/levels/glitch-by-glitch/chart.json"],
+  ["game/play/levels/glitch-by-glitch/lyrics.json", "/game/play/levels/glitch-by-glitch/lyrics.json"],
+  ["game/play/levels/watch-it-brppp/chart.json", "/game/play/levels/watch-it-brppp/chart.json"],
+  ["game/play/levels/watch-it-brppp/lyrics.json", "/game/play/levels/watch-it-brppp/lyrics.json"],
 ];
 
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
@@ -83,6 +95,18 @@ if (existsSync("game/play/levels/no-room-for-me/No Room for Me.mp3")) {
 }
 if (existsSync("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3")) {
   PATCHES.push(["game/play/levels/no-room-for-me/audio/no-room-for-me.mp3", "/game/play/levels/no-room-for-me/audio/no-room-for-me.mp3"]);
+}
+if (existsSync("game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3")) {
+  PATCHES.push(["game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3", "/game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3"]);
+}
+if (existsSync("game/play/levels/glitch-by-glitch/Glitch by Glitch.mp3")) {
+  PATCHES.push(["game/play/levels/glitch-by-glitch/Glitch by Glitch.mp3", "/game/play/levels/glitch-by-glitch/Glitch by Glitch.mp3"]);
+}
+if (existsSync("game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3")) {
+  PATCHES.push(["game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3", "/game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3"]);
+}
+if (existsSync("game/play/levels/watch-it-brppp/Watch it brppp.mp3")) {
+  PATCHES.push(["game/play/levels/watch-it-brppp/Watch it brppp.mp3", "/game/play/levels/watch-it-brppp/Watch it brppp.mp3"]);
 }
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
 if (existsSync("game/play/theme-vacant.css")) PATCHES.push(["game/play/theme-vacant.css", "/game/play/theme-vacant.css"]);
