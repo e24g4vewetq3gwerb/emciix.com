@@ -9,6 +9,8 @@ on:
       - game/play/index.html
       - game/play/game.js
       - game/play/favicon.svg
+      - game/play/levels.json
+      - game/play/levels/no-room-for-me/**
       - scripts/patch-hosting.mjs
       - views-boot.js
       - shelf-boot.js
