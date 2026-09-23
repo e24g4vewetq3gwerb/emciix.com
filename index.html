@@ -1863,10 +1863,21 @@
     }
     .playlist-sub { display:none; }
     .playlist-go { margin-left:auto; font-size:22px; line-height:1; color:var(--dim); }
-    .call-dot {
-      width:22px; height:22px; border-radius:50%; flex:none;
-      border:2px solid var(--ink); opacity:.9;
+    .galactic-call { cursor:text; }
+    .galactic-label {
+      appearance:none; border:0; background:transparent; color:inherit; padding:0;
+      font:600 18px/1 var(--font); letter-spacing:-0.02em; white-space:nowrap; cursor:pointer;
     }
+    .caller-profile {
+      flex:1; min-width:0; border:0; outline:none; background:transparent;
+      color:var(--ink); font:500 16px/1.2 var(--font); padding:0;
+    }
+    .caller-profile::placeholder { color:var(--dim); }
+    .call-dot {
+      width:22px; height:22px; border-radius:50%; flex:none; padding:0;
+      border:2px solid var(--ink); background:transparent; opacity:.9; cursor:pointer;
+    }
+    .galactic-call.is-saved .call-dot { background:var(--ink); }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card {
       position:relative;
@@ -2507,15 +2518,41 @@
           </span>
           <span class="playlist-go" aria-hidden="true">›</span>
         </a>
-        <a class="playlist-only" href="/portal" aria-label="Galactic call">
-          <span class="playlist-copy">
-            <strong>Galactic call:</strong>
-          </span>
-          <span class="call-dot" aria-hidden="true"></span>
-          <span class="playlist-go" aria-hidden="true">›</span>
-        </a>
+        <form class="playlist-only galactic-call" id="galacticCall">
+          <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
+          <button type="submit" class="call-dot" aria-label="Save caller profile"></button>
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder="Caller profile" autocomplete="nickname" maxlength="80" required />
+        </form>
       </div>
     </section>
+    <script>
+    (function () {
+      var form = document.getElementById("galacticCall");
+      var input = document.getElementById("callerProfile");
+      var ask = document.getElementById("galacticAsk");
+      if (!form || !input) return;
+      var key = "emciix-caller-profile";
+      try {
+        var saved = localStorage.getItem(key);
+        if (saved) { input.value = saved; form.classList.add("is-saved"); }
+      } catch (e) {}
+      function askForProfile() {
+        input.focus();
+        if (!input.value) input.placeholder = "Caller profile";
+      }
+      if (ask) ask.addEventListener("click", askForProfile);
+      form.addEventListener("click", function (event) {
+        if (event.target === form) askForProfile();
+      });
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var value = (input.value || "").trim();
+        if (!value) { askForProfile(); return; }
+        try { localStorage.setItem(key, value); } catch (err) {}
+        form.classList.add("is-saved");
+      });
+    })();
+    </script>
 
     <section class="needprev" id="need-preview" aria-label="Need Inc. app preview">
       <div class="needprev-wrap">
