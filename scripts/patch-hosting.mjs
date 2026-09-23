@@ -223,7 +223,26 @@ async function pruneStorage() {
 await pruneStorage();
 
 
-const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: current.config || {} });
+function widenConnect(config) {
+  const extra = ["https://api.fxtwitter.com", "https://invidious.darkness.services"];
+  const blocks = config && Array.isArray(config.headers) ? config.headers : [];
+  for (const block of blocks) {
+    const list = block && Array.isArray(block.headers) ? block.headers : [];
+    for (const header of list) {
+      if (!header || header.key !== "Content-Security-Policy" || typeof header.value !== "string") continue;
+      const match = header.value.match(/connect-src[^;]*/);
+      if (!match) continue;
+      let src = match[0];
+      for (const origin of extra) {
+        if (!src.includes(origin)) src += " " + origin;
+      }
+      header.value = header.value.replace(match[0], src);
+    }
+  }
+  return config || {};
+}
+
+const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: widenConnect(current.config || {}) });
 const newVersion = created.name;
 const populated = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + ":populateFiles", { files });
 const required = new Set(populated.uploadRequiredHashes || []);
