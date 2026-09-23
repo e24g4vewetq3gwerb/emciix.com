@@ -9,6 +9,9 @@ const PATCHES = [
   ["views-boot.js", "/views-boot.js"],
   ["shelf-boot.js", "/shelf-boot.js"],
   ["stats-boot.js", "/stats-boot.js"],
+  ["game/play/levels.json", "/game/play/levels.json"],
+  ["game/play/levels/no-room-for-me/chart.json", "/game/play/levels/no-room-for-me/chart.json"],
+  ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;
