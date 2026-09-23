@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 
 const PROJECT = "emciix-com";
 const PATCHES = [
-  ["portal/invite.html", "/portal/invite.html"],
+  ["portal/index.html", "/portal/index.html"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;
