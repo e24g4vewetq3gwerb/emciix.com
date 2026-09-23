@@ -35,8 +35,25 @@ function materializeUniverseCss() {
   return dest;
 }
 
+function materializePlayIndex() {
+  const src = "game/play/index.html";
+  if (!existsSync(src)) return null;
+  let html = readFileSync(src, "utf8");
+  if (!html.includes("universe-boot.js")) {
+    html = html.replace(
+      "</body>",
+      "  <script src=\"/game/play/universe-boot.js?v=vacant-1\" defer></script>\n</body>",
+    );
+  }
+  html = html.replace("game.css?v=levels-visual-1", "game.css?v=vacant-1");
+  const dest = "/tmp/play-index-vacant.html";
+  writeFileSync(dest, html);
+  return dest;
+}
+
 materializeLevel22Audio();
 const universeCss = materializeUniverseCss();
+const playIndex = materializePlayIndex();
 
 const PATCHES = [
   ["index.html", "/index.html"],
@@ -50,6 +67,10 @@ const PATCHES = [
   ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
 ];
 
+if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
+if (existsSync("game/play/universe-boot.js")) {
+  PATCHES.push(["game/play/universe-boot.js", "/game/play/universe-boot.js"]);
+}
 if (existsSync("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3")) {
   PATCHES.push([
     "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3",
