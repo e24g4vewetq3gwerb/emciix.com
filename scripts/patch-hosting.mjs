@@ -8,6 +8,7 @@ const PATCHES = [
   ["app.js", "/app.js"],
   ["views-boot.js", "/views-boot.js"],
   ["shelf-boot.js", "/shelf-boot.js"],
+  ["stats-boot.js", "/stats-boot.js"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;
