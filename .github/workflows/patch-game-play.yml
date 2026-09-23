@@ -8,6 +8,9 @@ on:
     paths:
       - game/play/index.html
       - game/play/game.js
+      - game/play/game.css
+      - game/play/theme-room.css
+      - game/play/theme-vacant.css
       - game/play/favicon.svg
       - game/play/levels.json
       - game/play/levels/no-room-for-me/**

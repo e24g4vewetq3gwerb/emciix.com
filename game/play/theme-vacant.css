@@ -1,0 +1,267 @@
+/* Level 22 — VACANT universe
+   A closed concert hall. Rows of occupied seats, one empty chair in the aisle,
+   a cold spotlight that never finds the singer. */
+#universe-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#app[data-theme="vacant"],
+#app[data-theme="room"] {
+  --vacant-ink: #05030a;
+  --vacant-spot: #d7ecff;
+  --vacant-ice: #7ec8ff;
+  --vacant-brass: #c9a36a;
+  --vacant-rose: #c45b7a;
+  --vacant-seat: #1a1018;
+  background:
+    radial-gradient(ellipse 36% 26% at 50% 8%, rgba(215, 236, 255, 0.2), transparent 62%),
+    radial-gradient(ellipse 90% 50% at 50% 118%, #120814, transparent 58%),
+    linear-gradient(180deg, #07040c 0%, #05030a 46%, #0c0710 100%);
+  color: #e8e0d2;
+}
+
+#app[data-theme="vacant"] #game,
+#app[data-theme="room"] #game {
+  position: relative;
+  z-index: 1;
+  border-color: rgba(215, 236, 255, 0.35);
+  background:
+    radial-gradient(ellipse at 50% -8%, rgba(215, 236, 255, 0.1), transparent 46%),
+    linear-gradient(180deg, rgba(10, 7, 16, 0.86), rgba(6, 3, 10, 0.94));
+  box-shadow:
+    0 0 60px rgba(126, 200, 255, 0.1),
+    inset 0 0 90px rgba(0, 0, 0, 0.5);
+}
+
+#app[data-theme="vacant"] .title-box,
+#app[data-theme="room"] .title-box {
+  border-color: var(--vacant-brass);
+  border-radius: 4px 28px 4px 28px;
+  background: rgba(8, 5, 12, 0.92);
+  box-shadow: 0 0 24px rgba(201, 163, 106, 0.28);
+}
+#app[data-theme="vacant"] .title-box h2,
+#app[data-theme="vacant"] #start-overlay h1,
+#app[data-theme="room"] .title-box h2,
+#app[data-theme="room"] #start-overlay h1 {
+  color: #f4ead4;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 22px rgba(215, 236, 255, 0.35);
+}
+#app[data-theme="vacant"] .sub,
+#app[data-theme="vacant"] .level-label,
+#app[data-theme="room"] .sub,
+#app[data-theme="room"] .level-label {
+  color: #c9a36a;
+}
+#app[data-theme="vacant"] .overlay,
+#app[data-theme="room"] .overlay {
+  background:
+    radial-gradient(ellipse 50% 34% at 50% 10%, rgba(215, 236, 255, 0.14), transparent 58%),
+    rgba(4, 2, 8, 0.78);
+}
+#app[data-theme="vacant"] .start-action-btn,
+#app[data-theme="room"] .start-action-btn {
+  border-color: var(--vacant-brass);
+  color: #f4ead4;
+  background: rgba(12, 8, 16, 0.85);
+}
+#app[data-theme="vacant"] #start-btn,
+#app[data-theme="room"] #start-btn {
+  background: linear-gradient(180deg, #2a1c14, #120c10);
+  box-shadow: 0 0 18px rgba(201, 163, 106, 0.35);
+}
+
+#app[data-theme="vacant"] .lane,
+#app[data-theme="room"] .lane {
+  background: linear-gradient(180deg, rgba(215, 236, 255, 0.05), rgba(8, 4, 12, 0.4));
+  border-color: rgba(215, 236, 255, 0.18);
+}
+#app[data-theme="vacant"] .lane-sync,
+#app[data-theme="room"] .lane-sync {
+  box-shadow: inset 0 0 24px rgba(215, 236, 255, 0.08);
+}
+#app[data-theme="vacant"] .lane-label,
+#app[data-theme="room"] .lane-label { color: #d7ecff; }
+#app[data-theme="vacant"] .side-panel,
+#app[data-theme="room"] .side-panel { border-color: rgba(201, 163, 106, 0.45); }
+#app[data-theme="vacant"] .pad-a,
+#app[data-theme="room"] .pad-a { border-color: var(--vacant-ice); }
+#app[data-theme="vacant"] .pad-sync,
+#app[data-theme="room"] .pad-sync { border-color: var(--vacant-brass); }
+#app[data-theme="vacant"] .pad-b,
+#app[data-theme="room"] .pad-b { border-color: var(--vacant-rose); }
+
+#app[data-theme="vacant"] .note,
+#app[data-theme="room"] .note {
+  border-radius: 3px 10px 3px 10px;
+  box-shadow: 0 0 10px rgba(215, 236, 255, 0.35);
+}
+
+.vacant-haze {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to top,
+      transparent 0 18px,
+      rgba(215, 236, 255, 0.015) 18px 19px
+    );
+  mask-image: linear-gradient(180deg, transparent 8%, #000 38%, #000 78%, transparent 100%);
+}
+.vacant-spot {
+  position: absolute;
+  left: 50%;
+  top: -8%;
+  width: 70%;
+  height: 70%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(215, 236, 255, 0.28), transparent 62%);
+  filter: blur(8px);
+  animation: vacant-breathe 4.6s ease-in-out infinite;
+}
+.vacant-rows {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 6%;
+  height: 42%;
+  background:
+    repeating-linear-gradient(
+      to top,
+      rgba(26, 16, 24, 0.0) 0 10px,
+      rgba(90, 70, 80, 0.22) 10px 12px,
+      rgba(12, 8, 14, 0.55) 12px 22px
+    );
+  transform: perspective(420px) rotateX(58deg);
+  transform-origin: 50% 100%;
+  border-top: 1px solid rgba(215, 236, 255, 0.08);
+  opacity: 0.7;
+}
+.vacant-chair {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  width: 46px;
+  height: 58px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 0 16px rgba(215, 236, 255, 0.45));
+}
+.vacant-chair i {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 0;
+  height: 16px;
+  border-radius: 8px 8px 2px 2px;
+  background: linear-gradient(180deg, #f4ead4, #c9a36a);
+}
+.vacant-chair b {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 16px;
+  bottom: 8px;
+  border-radius: 2px 2px 6px 6px;
+  background:
+    linear-gradient(180deg, transparent 0 8px, #1a1018 8px),
+    linear-gradient(90deg, #c9a36a 0 3px, transparent 3px 100%);
+  box-shadow: inset 0 0 0 2px #c9a36a;
+}
+.vacant-dust {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(215, 236, 255, 0.55) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(201, 163, 106, 0.45) 0 1px, transparent 2px);
+  background-size: 90px 140px, 130px 180px;
+  background-position: 10% 20%, 70% 40%;
+  animation: vacant-drift 16s linear infinite;
+  opacity: 0.35;
+}
+.vacant-badge {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.22em;
+  color: #c9a36a;
+  text-shadow: 0 0 10px rgba(201, 163, 106, 0.5);
+  opacity: 0.9;
+}
+
+@keyframes vacant-breathe {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.04); }
+}
+@keyframes vacant-drift {
+  from { background-position: 10% 20%, 70% 40%; }
+  to { background-position: 18% -40%, 62% -20%; }
+}
+
+.level-tile.theme-vacant,
+.level-tile.theme-room {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  grid-template-rows: auto 1fr auto;
+  column-gap: 0.55rem;
+  align-items: center;
+  min-height: 104px;
+  padding: 0.65rem 0.7rem;
+  border-color: #c9a36a;
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(215, 236, 255, 0.18), transparent 55%),
+    linear-gradient(180deg, #161018, #07040c);
+  box-shadow: 0 0 16px rgba(201, 163, 106, 0.28);
+}
+.level-tile.theme-vacant .lt-art.vacant-art {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+  width: 52px;
+  height: 72px;
+  position: relative;
+}
+.level-tile.theme-vacant .vacant-art i,
+.level-tile.theme-vacant .vacant-art b {
+  display: block;
+  position: absolute;
+  left: 10px;
+  right: 10px;
+}
+.level-tile.theme-vacant .vacant-art i {
+  top: 8px;
+  height: 12px;
+  border-radius: 8px 8px 2px 2px;
+  background: #f4ead4;
+}
+.level-tile.theme-vacant .vacant-art b {
+  top: 20px;
+  bottom: 10px;
+  border: 2px solid #c9a36a;
+  border-radius: 2px 2px 6px 6px;
+  box-shadow: 0 0 10px rgba(215, 236, 255, 0.35);
+}
+.level-tile.theme-vacant .lt-num,
+.level-tile.theme-vacant .lt-title,
+.level-tile.theme-vacant .lt-best,
+.level-tile.theme-room .lt-num,
+.level-tile.theme-room .lt-title,
+.level-tile.theme-room .lt-best { grid-column: 2; }
+.level-tile.theme-vacant .lt-num,
+.level-tile.theme-room .lt-num { color: #d7ecff; }
+
+#confirm-overlay[data-theme="vacant"] .overlay-card,
+#confirm-overlay[data-theme="room"] .overlay-card {
+  border-color: #c9a36a;
+  box-shadow: 0 0 22px rgba(215, 236, 255, 0.22);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(215, 236, 255, 0.12), transparent 50%),
+    #0b0710;
+}
+#confirm-overlay[data-theme="vacant"] h1,
+#confirm-overlay[data-theme="room"] h1 { color: #f4ead4; }

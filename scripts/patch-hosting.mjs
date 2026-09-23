@@ -23,18 +23,20 @@ function materializeLevel22Audio() {
   return true;
 }
 
-function materializeRoomCss() {
-  const dest = "/tmp/game-with-room.css";
-  if (!existsSync("game/play/game.css") || !existsSync("game/play/theme-room.css")) return null;
-  writeFileSync(
-    dest,
-    Buffer.concat([readFileSync("game/play/game.css"), Buffer.from("\n"), readFileSync("game/play/theme-room.css")]),
-  );
+function materializeUniverseCss() {
+  const dest = "/tmp/game-with-vacant.css";
+  const extras = ["game/play/theme-vacant.css"].filter(existsSync);
+  if (!existsSync("game/play/game.css") || extras.length === 0) return null;
+  const chunks = [readFileSync("game/play/game.css")];
+  for (const extra of extras) {
+    chunks.push(Buffer.from("\n"), readFileSync(extra));
+  }
+  writeFileSync(dest, Buffer.concat(chunks));
   return dest;
 }
 
 materializeLevel22Audio();
-const roomCss = materializeRoomCss();
+const universeCss = materializeUniverseCss();
 
 const PATCHES = [
   ["index.html", "/index.html"],
@@ -42,6 +44,7 @@ const PATCHES = [
   ["views-boot.js", "/views-boot.js"],
   ["shelf-boot.js", "/shelf-boot.js"],
   ["stats-boot.js", "/stats-boot.js"],
+  ["game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
   ["game/play/levels/no-room-for-me/chart.json", "/game/play/levels/no-room-for-me/chart.json"],
   ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
@@ -53,7 +56,10 @@ if (existsSync("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3")) {
     "/game/play/levels/no-room-for-me/audio/no-room-for-me.mp3",
   ]);
 }
-if (roomCss) PATCHES.push([roomCss, "/game/play/game.css"]);
+if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
+if (existsSync("game/play/theme-vacant.css")) {
+  PATCHES.push(["game/play/theme-vacant.css", "/game/play/theme-vacant.css"]);
+}
 if (existsSync("game/play/theme-room.css")) {
   PATCHES.push(["game/play/theme-room.css", "/game/play/theme-room.css"]);
 }
@@ -157,6 +163,10 @@ console.log("existing files", Object.keys(files).length);
 
 const uploads = new Map();
 for (const [local, remote] of PATCHES) {
+  if (!existsSync(local)) {
+    console.log("skip missing", local);
+    continue;
+  }
   const { gz, hash } = gzipHash(local);
   const key = files[remote] != null ? remote : files[remote.slice(1)] != null ? remote.slice(1) : remote;
   files[key] = hash;
