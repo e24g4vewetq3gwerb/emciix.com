@@ -9,6 +9,12 @@ on:
       - game/play/index.html
       - game/play/game.js
       - game/play/game.css
+      - game/play/start-hub.css
+      - game/play/start-hub.js
+      - game/play/start-login.css
+      - game/play/start-login.js
+      - game/play/session-name.css
+      - game/play/session-name.js
       - game/play/theme-room.css
       - game/play/theme-vacant.css
       - game/play/vacant-mode.js
