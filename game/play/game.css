@@ -2267,3 +2267,10 @@ html, body {
 .upgrade-node.track-perfect[aria-pressed="true"] { background: rgba(255,255,255,.14); }
 .upgrade-detail-name.perfect { color: #fff; }
 .upgrade-shop-row.track-perfect { border-color: rgba(255,255,255,.45); }
+
+.upgrade-node.track-echo { border-color: #9ad7ff; box-shadow: 0 0 14px rgba(154,215,255,.28); }
+.upgrade-node.track-shield { border-color: #b7f5c8; box-shadow: 0 0 14px rgba(183,245,200,.25); }
+.upgrade-node.track-rush { border-color: #ffb45a; box-shadow: 0 0 14px rgba(255,180,90,.28); }
+.upgrade-detail-name.echo { color: #9ad7ff; }
+.upgrade-detail-name.shield { color: #b7f5c8; }
+.upgrade-detail-name.rush { color: #ffb45a; }
