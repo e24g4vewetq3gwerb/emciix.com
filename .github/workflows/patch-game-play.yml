@@ -1,0 +1,29 @@
+name: Patch game play start screen
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - game/play/index.html
+      - game/play/game.css
+      - scripts/patch-hosting.mjs
+      - .github/workflows/patch-game-play.yml
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Patch live hosting files
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: node scripts/patch-hosting.mjs

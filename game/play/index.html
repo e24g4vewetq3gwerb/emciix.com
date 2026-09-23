@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#04040C" />
+  <title>ONE FEELING, ONE PROMISE — Rhythm Game</title>
+  <link rel="stylesheet" href="/game/play/game.css?v=rank-slot-1" />
+</head>
+<body>
+  <div id="app">
+    <div id="start-overlay" class="overlay">
+      <div class="start-layout">
+        <div class="overlay-card start-main borderless">
+          <div class="dots" aria-hidden="true">
+            <span class="dot mag"></span><span class="dot cya"></span><span class="dot yel"></span><span class="dot cya"></span><span class="dot mag"></span>
+          </div>
+          <h1>ONE FEELING,<br />ONE PROMISE</h1>
+          <p class="sub">EMCIIX · HOPE NODE · SEC-01</p>
+          <p class="level-label" id="level-label">Level 1</p>
+          <p class="level-best hidden" id="level-best">BEST · 0 · D</p>
+          <p class="hint">Tap lanes or press D / F / J<br /><span class="dim">(← ↓ → also work)</span></p>
+          <div class="start-actions">
+            <button id="start-btn" type="button" class="start-action-btn">TAP TO START</button>
+            <button id="levels-btn-start" type="button" class="start-action-btn btn-secondary">LEVELS</button>
+            <button id="upgrade-btn-start" type="button" class="start-action-btn btn-secondary">UPGRADE</button>
+          </div>
+          <p class="loading" id="load-status">Loading chart…</p>
+          <button type="button" id="start-bgm-mute" class="start-bgm-mute" aria-pressed="false" aria-label="Mute menu music" title="Mute">
+            <span class="start-bgm-mute-icon" aria-hidden="true">🔊</span>
+            <span class="start-bgm-mute-label">MUTE</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="game" class="game hidden" aria-live="polite">
+      <header class="top-bar">
+        <div class="meta-left">
+          <span class="tag cya">EMCIIX</span>
+          <span class="tag yel">HOPE NODE</span>
+          <span class="tag mag">SEC-01</span>
+        </div>
+        <div class="header-pill" id="section-pill">HOPE NODE [SEC-01]</div>
+        <div class="title-box">
+          <div class="dots sm" aria-hidden="true">
+            <span class="dot mag"></span><span class="dot cya"></span><span class="dot yel"></span><span class="dot mag"></span><span class="dot cya"></span>
+          </div>
+          <h2>ONE FEELING, ONE PROMISE</h2>
+        </div>
+        <div class="timer-box" id="timer">0:00</div>
+        <div class="meta-right" id="meta-right">
+          <span class="tag cya" id="meta-level">LEVEL 1/19</span>
+          <span class="tag yel" id="meta-bpm">BPM —</span>
+          <span class="tag mag" id="meta-next">NEXT · MAKE UP</span>
+        </div>
+      </header>
+
+      <div class="playfield-wrap">
+        <aside class="side-panel left neon-mag">
+          <div class="side-scroll" id="side-left-scroll"></div>
+          <div class="side-label" id="side-left-label">ONE<br />FEELING</div>
+        </aside>
+
+        <main class="playfield">
+          <div class="lanes" id="lanes">
+            <div class="lane lane-a" data-lane="0">
+              <div class="lane-label">A</div>
+              <div class="lane-track"></div>
+              <div class="hit-flash"></div>
+            </div>
+            <div class="lane lane-sync" data-lane="1">
+              <div class="lane-label">SYNC</div>
+              <div class="lane-track"></div>
+              <div class="hit-flash"></div>
+            </div>
+            <div class="lane lane-b" data-lane="2">
+              <div class="lane-label">B</div>
+              <div class="lane-track"></div>
+              <div class="hit-flash"></div>
+            </div>
+            <div class="notes-layer" id="notes-layer"></div>
+            <div class="lyric-strip" id="lyric-strip" aria-live="polite"></div>
+            <div class="hit-bar">
+              <div class="hit-marker"></div>
+            </div>
+            <div class="judge" id="judge"></div>
+            <div class="chain-box" id="chain-box">CHAIN<br /><span id="chain-val">0</span></div>
+            <div class="fever-bar"><div class="fever-fill" id="fever-fill"></div></div>
+          </div>
+        </main>
+
+        <aside class="side-panel right neon-yel">
+          <div class="side-scroll circles" id="side-right-scroll"></div>
+          <div class="side-label" id="side-right-label">KEEP IT<br />CLEAN</div>
+        </aside>
+      </div>
+
+      <footer class="bottom-bar">
+        <button type="button" class="corner-btn mag" id="btn-prev" aria-label="Previous level" title="Previous level">‹</button>
+        <div class="score-row">
+          <div class="stat-box score neon-yel">
+            <span class="stat-label">SCORE</span>
+            <span class="stat-val" id="score">0</span>
+          </div>
+          <div class="fever-tag hidden" id="fever-tag">FEVER x2</div>
+          <div class="stat-box combo neon-cya">
+            <span class="stat-label">COMBO</span>
+            <span class="stat-val" id="combo">0X</span>
+          </div>
+        </div>
+        <div class="transport">
+          <button type="button" class="nav-btn" id="btn-back" aria-label="Restart">‹</button>
+          <button type="button" class="nav-btn play" id="btn-pause" aria-label="Pause">❚❚</button>
+          <button type="button" class="nav-btn" id="btn-fwd" aria-label="Skip tip">›</button>
+        </div>
+        <button type="button" class="corner-btn yel" id="btn-next" aria-label="Next level" title="Next level">›</button>
+        <div class="health-row">
+          <span class="health-label">HEALTH</span>
+          <div class="health-bar"><div class="health-fill" id="health-fill"></div></div>
+          <span class="nos-pill hidden" id="nos-pill">NOS</span>
+        </div>
+        <div id="nos-banner" class="nos-banner hidden" aria-live="polite">
+          <span class="nos-tag">NOS</span>
+          <span id="nos-hint">HIT PERFECTS</span>
+        </div>
+        <div class="footer-tags">
+          <span>NEON LOCK</span>
+          <span class="mag">SECTOR ONLINE</span>
+        </div>
+      </footer>
+
+      <div class="pad-row" id="pad-row">
+        <button type="button" class="pad pad-a" data-lane="0">A<span>D</span></button>
+        <button type="button" class="pad pad-sync" data-lane="1">SYNC<span>F</span></button>
+        <button type="button" class="pad pad-b" data-lane="2">B<span>J</span></button>
+      </div>
+    </div>
+
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h1>PAUSED</h1>
+        <button id="pause-resume" type="button">RESUME</button>
+        <button id="pause-restart" type="button" class="btn-secondary">RESTART</button>
+        <button id="levels-btn-pause" type="button" class="btn-secondary">LEVELS</button>
+        <button id="upgrade-btn-pause" type="button" class="btn-secondary">UPGRADE</button>
+      </div>
+    </div>
+
+    <div id="results-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h1>RESULTS</h1>
+        <div class="res-rank-wrap">
+          <div class="res-rank" id="res-rank">D</div>
+          <div class="res-acc" id="res-acc">0%</div>
+        </div>
+        <p class="res-best" id="res-best">BEST 0</p>
+        <p class="res-new-best hidden" id="res-new-best">NEW BEST!</p>
+        <div class="results-grid">
+          <div><span class="dim">SCORE</span><strong id="res-score">0</strong></div>
+          <div><span class="dim">MAX COMBO</span><strong id="res-combo">0</strong></div>
+          <div><span class="dim">PERFECT</span><strong id="res-perfect">0</strong></div>
+          <div><span class="dim">GREAT</span><strong id="res-great">0</strong></div>
+          <div><span class="dim">GOOD</span><strong id="res-good">0</strong></div>
+          <div><span class="dim">MISS</span><strong id="res-miss">0</strong></div>
+        </div>
+        <button id="next-level-btn" type="button" class="hidden">NEXT LEVEL →</button>
+        <button id="retry-btn" type="button">PLAY AGAIN</button>
+        <button id="levels-btn-results" type="button" class="btn-secondary">LEVELS</button>
+        <button id="upgrade-btn-results" type="button" class="btn-secondary">UPGRADE</button>
+      </div>
+    </div>
+
+    <div id="levels-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="levels-title">
+      <div class="overlay-card levels-card">
+        <h1 id="levels-title">LEVELS</h1>
+        <div class="levels-header-meta">
+          <p class="sync-status" id="sync-status">Local only</p>
+          <p class="levels-points hidden" id="levels-points" aria-label="Saved points">POINTS · <strong id="levels-points-val">0</strong></p>
+        </div>
+        <div class="levels-grid" id="levels-grid"></div>
+        <button id="levels-close" type="button" class="btn-secondary">BACK</button>
+      </div>
+    </div>
+
+
+    <div id="upgrade-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="upgrade-title">
+      <div class="overlay-card upgrade-card">
+        <h1 id="upgrade-title">PLAYER UPGRADE</h1>
+        <div class="upgrade-tabs" role="tablist" aria-label="Upgrade layout">
+          <button type="button" class="upgrade-tab active" data-layout="a" role="tab" aria-selected="true">A TREE</button>
+          <button type="button" class="upgrade-tab" data-layout="b" role="tab" aria-selected="false">B SHOP</button>
+          <button type="button" class="upgrade-tab" data-layout="c" role="tab" aria-selected="false">C RADAR</button>
+        </div>
+        <p class="upgrade-points" id="upgrade-points" aria-live="polite">
+          <span class="dim">SPENDABLE</span>
+          <strong id="upgrade-points-val">0</strong>
+        </p>
+
+        <!-- Layout A: skill tree -->
+        <div class="upgrade-panel" id="upgrade-panel-a" data-layout="a">
+          <div class="upgrade-tree">
+            <button type="button" class="upgrade-node track-focus" data-track="focus" aria-pressed="true">
+              <span class="upgrade-node-name">FOCUS</span>
+              <span class="upgrade-node-lv" data-lv-for="focus">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-power" data-track="power" aria-pressed="false">
+              <span class="upgrade-node-name">POWER</span>
+              <span class="upgrade-node-lv" data-lv-for="power">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-flow" data-track="flow" aria-pressed="false">
+              <span class="upgrade-node-name">FLOW</span>
+              <span class="upgrade-node-lv" data-lv-for="flow">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-pulse" data-track="pulse" aria-pressed="false">
+              <span class="upgrade-node-name">PULSE</span>
+              <span class="upgrade-node-lv" data-lv-for="pulse">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-reach" data-track="reach" aria-pressed="false">
+              <span class="upgrade-node-name">REACH</span>
+              <span class="upgrade-node-lv" data-lv-for="reach">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-vault" data-track="vault" aria-pressed="false">
+              <span class="upgrade-node-name">VAULT</span>
+              <span class="upgrade-node-lv" data-lv-for="vault">Lv 0/5</span>
+            </button>
+          </div>
+          <div class="upgrade-detail" id="upgrade-detail-a">
+            <p class="upgrade-detail-name" id="upgrade-a-name">FOCUS</p>
+            <p class="upgrade-detail-blurb" id="upgrade-a-blurb">Widen hit timing</p>
+            <p class="upgrade-detail-cost">Cost · <strong id="upgrade-a-cost">800</strong></p>
+            <button type="button" class="upgrade-buy" id="upgrade-a-buy" data-track="focus">BUY</button>
+          </div>
+        </div>
+
+        <!-- Layout B: split shop -->
+        <div class="upgrade-panel hidden" id="upgrade-panel-b" data-layout="b">
+          <div class="upgrade-shop">
+            <aside class="upgrade-shop-hero">
+              <div class="upgrade-star" aria-hidden="true">
+                <span class="upgrade-star-core"></span>
+              </div>
+              <p class="upgrade-ready">READY</p>
+              <div class="upgrade-pills">
+                <span class="upgrade-pill cya">POINTS · <strong id="upgrade-b-points">0</strong></span>
+                <span class="upgrade-pill yel">NOS · <strong id="upgrade-b-nos">READY</strong></span>
+              </div>
+            </aside>
+            <div class="upgrade-shop-rows" id="upgrade-shop-rows">
+              <div class="upgrade-shop-row track-flow" data-track="flow" data-shop="aegis">
+                <span class="upgrade-shop-icon" aria-hidden="true">◈</span>
+                <div class="upgrade-shop-meta">
+                  <strong>AEGIS SHIELD</strong>
+                  <span>NOS recovery / miss soften</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="flow">900</span>
+                <button type="button" class="upgrade-buy" data-track="flow">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-power" data-track="power" data-shop="overdrive">
+                <span class="upgrade-shop-icon" aria-hidden="true">⚡</span>
+                <div class="upgrade-shop-meta">
+                  <strong>OVERDRIVE</strong>
+                  <span>Fever / score boost</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="power">1000</span>
+                <button type="button" class="upgrade-buy" data-track="power">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-power" data-track="power" data-shop="star">
+                <span class="upgrade-shop-icon" aria-hidden="true">★</span>
+                <div class="upgrade-shop-meta">
+                  <strong>STAR MULTIPLIER</strong>
+                  <span class="upgrade-star-mult" id="upgrade-star-mult">Score ×1.00</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="power">1000</span>
+                <button type="button" class="upgrade-buy" data-track="power">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-focus" data-track="focus" data-shop="window">
+                <span class="upgrade-shop-icon" aria-hidden="true">▣</span>
+                <div class="upgrade-shop-meta">
+                  <strong>LANE WINDOW</strong>
+                  <span>Widen hit timing</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="focus">800</span>
+                <button type="button" class="upgrade-buy" data-track="focus">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-pulse" data-track="pulse" data-shop="armor">
+                <span class="upgrade-shop-icon" aria-hidden="true">◆</span>
+                <div class="upgrade-shop-meta">
+                  <strong>COMBO ARMOR</strong>
+                  <span>Combo armor on GOOD hits</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="pulse">1100</span>
+                <button type="button" class="upgrade-buy" data-track="pulse">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-reach" data-track="reach" data-shop="slow">
+                <span class="upgrade-shop-icon" aria-hidden="true">↓</span>
+                <div class="upgrade-shop-meta">
+                  <strong>SLOW FALL</strong>
+                  <span>Notes fall a bit slower</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="reach">950</span>
+                <button type="button" class="upgrade-buy" data-track="reach">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-vault" data-track="vault" data-shop="vault">
+                <span class="upgrade-shop-icon" aria-hidden="true">◇</span>
+                <div class="upgrade-shop-meta">
+                  <strong>PERFECT VAULT</strong>
+                  <span>Extra points on PERFECT</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="vault">1200</span>
+                <button type="button" class="upgrade-buy" data-track="vault">BUY</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layout C: radar -->
+        <div class="upgrade-panel hidden" id="upgrade-panel-c" data-layout="c">
+          <div class="upgrade-radar-wrap">
+            <svg class="upgrade-radar" viewBox="0 0 200 180" aria-hidden="true">
+              <polygon class="upgrade-radar-guide" points="100,18 178,150 22,150" fill="none" />
+              <polygon class="upgrade-radar-fill" id="upgrade-radar-fill" points="100,100 100,100 100,100" />
+              <circle class="upgrade-radar-dot track-focus" cx="100" cy="18" r="5" />
+              <circle class="upgrade-radar-dot track-power" cx="178" cy="150" r="5" />
+              <circle class="upgrade-radar-dot track-flow" cx="22" cy="150" r="5" />
+              <text class="upgrade-radar-label focus" x="100" y="12" text-anchor="middle">FOCUS</text>
+              <text class="upgrade-radar-label power" x="186" y="168" text-anchor="end">POWER</text>
+              <text class="upgrade-radar-label flow" x="14" y="168" text-anchor="start">FLOW</text>
+            </svg>
+            <div class="upgrade-radar-buys">
+              <button type="button" class="upgrade-buy track-focus" data-track="focus">
+                FOCUS <span data-lv-for="focus">0/5</span> · <span data-cost-for="focus">800</span>
+              </button>
+              <button type="button" class="upgrade-buy track-power" data-track="power">
+                POWER <span data-lv-for="power">0/5</span> · <span data-cost-for="power">1000</span>
+              </button>
+              <button type="button" class="upgrade-buy track-flow" data-track="flow">
+                FLOW <span data-lv-for="flow">0/5</span> · <span data-cost-for="flow">900</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button id="upgrade-close" type="button" class="btn-secondary">BACK</button>
+      </div>
+    </div>
+
+    <div id="confirm-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <div class="overlay-card confirm-card">
+        <p class="confirm-kicker" id="confirm-kicker">LEVEL 2 / 18</p>
+        <h1 id="confirm-title">MAKE UP SHIT</h1>
+        <p class="confirm-blurb" id="confirm-blurb">What this level is about.</p>
+        <div class="confirm-actions">
+          <button id="confirm-yes" type="button" class="confirm-yes">YES — JUMP</button>
+          <button id="confirm-no" type="button" class="confirm-no">NO</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <audio id="audio" preload="auto" src="/game/play/audio/one-feeling-one-promise.mp3"></audio>
+  <audio id="start-bgm" loop preload="none"></audio>
+  <script>window.EmciixScoresBoot="loading";window.addEventListener("error",function(e){if(e&&e.filename&&String(e.filename).indexOf("firebase")!==-1){window.EmciixScoresBoot=String(e.message||"error");}},true);</script>
+  <script type="module" src="/game/play/firebase-scores.js?v=rank-slot-1"></script>
+  <script src="/game/play/game.js?v=rank-slot-1" defer></script>
+</body>
+</html>
