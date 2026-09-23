@@ -1,0 +1,113 @@
+/* Level 22 — Empty Hall universe */
+#app[data-theme="room"] {
+  --room-ink: #0b0614;
+  --room-gold: #e8c37a;
+  --room-rose: #c45b7a;
+  --room-void: #16081c;
+  background:
+    radial-gradient(ellipse 42% 28% at 50% 18%, rgba(232, 195, 122, 0.22), transparent 70%),
+    radial-gradient(ellipse 80% 70% at 50% 120%, rgba(20, 6, 18, 1), transparent 55%),
+    linear-gradient(180deg, #120814 0%, #07040c 48%, #140810 100%);
+}
+#app[data-theme="room"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 78%, rgba(196, 91, 122, 0.08), transparent 22%),
+    radial-gradient(circle at 82% 76%, rgba(196, 91, 122, 0.08), transparent 22%),
+    repeating-linear-gradient(90deg, transparent 0 46px, rgba(232, 195, 122, 0.035) 46px 47px);
+  opacity: 0.9;
+  z-index: 0;
+}
+#app[data-theme="room"] #game {
+  border-color: rgba(232, 195, 122, 0.55);
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(232, 195, 122, 0.16), transparent 42%),
+    rgba(8, 4, 12, 0.92);
+  box-shadow: 0 0 40px rgba(232, 195, 122, 0.12), inset 0 0 80px rgba(0, 0, 0, 0.45);
+}
+#app[data-theme="room"] .title-box {
+  border-color: var(--room-gold);
+  border-radius: 999px 18px 18px 999px;
+  background: rgba(16, 8, 18, 0.94);
+  box-shadow: 0 0 22px rgba(232, 195, 122, 0.28);
+}
+#app[data-theme="room"] .title-box h2,
+#app[data-theme="room"] #start-overlay h1 {
+  color: #f3e2b8;
+  text-shadow: 0 0 18px rgba(232, 195, 122, 0.45);
+}
+#app[data-theme="room"] .overlay {
+  background:
+    radial-gradient(ellipse 50% 36% at 50% 12%, rgba(232, 195, 122, 0.16), transparent 60%),
+    rgba(7, 4, 12, 0.94);
+}
+#app[data-theme="room"] .overlay-card {
+  border-color: var(--room-gold);
+  background: rgba(12, 6, 16, 0.94);
+  box-shadow: 0 0 28px rgba(232, 195, 122, 0.22);
+}
+#app[data-theme="room"] #start-btn,
+#app[data-theme="room"] .overlay-card button {
+  border-color: var(--room-rose);
+  background: rgba(196, 91, 122, 0.16);
+  box-shadow: 0 0 16px rgba(196, 91, 122, 0.35);
+}
+#app[data-theme="room"] .lane-a { border-color: #7a4a88; box-shadow: 0 0 12px rgba(122, 74, 136, 0.35); }
+#app[data-theme="room"] .lane-sync { border-color: var(--room-gold); box-shadow: 0 0 14px rgba(232, 195, 122, 0.35); }
+#app[data-theme="room"] .lane-b { border-color: var(--room-rose); box-shadow: 0 0 12px rgba(196, 91, 122, 0.35); }
+#app[data-theme="room"] .lane-a .lane-label { color: #c9a4d4; }
+#app[data-theme="room"] .lane-sync .lane-label { color: var(--room-gold); }
+#app[data-theme="room"] .lane-b .lane-label { color: #f0a3b6; }
+#app[data-theme="room"] .side-panel.left { border-color: #7a4a88; }
+#app[data-theme="room"] .side-panel.right { border-color: var(--room-gold); }
+#app[data-theme="room"] .lyric-strip {
+  border-color: var(--room-gold);
+  background: rgba(18, 8, 16, 0.94);
+  box-shadow: 0 0 16px rgba(232, 195, 122, 0.28);
+}
+#app[data-theme="room"] .hit-bar {
+  border-color: var(--room-gold);
+  background: rgba(80, 24, 40, 0.85);
+}
+#app[data-theme="room"] .pad-a { border-color: #7a4a88; }
+#app[data-theme="room"] .pad-sync { border-color: var(--room-gold); }
+#app[data-theme="room"] .pad-b { border-color: var(--room-rose); }
+
+.level-tile.theme-room {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  grid-template-rows: auto 1fr auto;
+  column-gap: 0.55rem;
+  align-items: center;
+  min-height: 104px;
+  padding: 0.65rem 0.7rem;
+  border-color: #e8c37a;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(232, 195, 122, 0.22), transparent 55%),
+    linear-gradient(180deg, #1a0c16, #0b0610);
+  box-shadow: 0 0 16px rgba(232, 195, 122, 0.28);
+}
+.level-tile.theme-room::before {
+  content: "";
+  grid-row: 1 / span 3;
+  grid-column: 1;
+  width: 52px;
+  height: 72px;
+  border-radius: 50% 50% 12px 12px;
+  background:
+    radial-gradient(circle at 50% 18%, #f3e2b8 0 7px, transparent 8px),
+    linear-gradient(180deg, transparent 28%, #2a1420 28% 58%, #e8c37a 58% 62%, #1a0c14 62%);
+  box-shadow: 0 0 14px rgba(232, 195, 122, 0.45);
+}
+.level-tile.theme-room .lt-num,
+.level-tile.theme-room .lt-title,
+.level-tile.theme-room .lt-best { grid-column: 2; }
+.level-tile.theme-room .lt-num { color: #e8c37a; }
+
+#confirm-overlay[data-theme="room"] .overlay-card {
+  border-color: #e8c37a;
+  box-shadow: 0 0 22px rgba(232, 195, 122, 0.3);
+}
