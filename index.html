@@ -1842,27 +1842,31 @@
       color:var(--dim); margin-left:auto; white-space:nowrap;
     }
     .hero-tabs {
-      display:grid; grid-template-columns:minmax(148px,220px) minmax(0,1fr); gap:10px;
+      display:grid; grid-template-columns:minmax(210px,280px) minmax(0,1fr); gap:12px;
       align-items:stretch;
     }
     .playlist-only {
-      display:flex; align-items:center; gap:10px;
-      min-height:0; text-decoration:none; color:inherit;
+      display:flex; align-items:center; gap:12px;
+      min-height:52px; text-decoration:none; color:inherit;
       border:1px solid var(--line); border-radius:999px;
       background:var(--surface); box-shadow:var(--shadow-sm);
-      padding:7px 14px;
+      padding:12px 18px;
     }
     .playlist-only:hover { border-color:var(--accent-border); }
     .playlist-copy { display:flex; align-items:baseline; gap:8px; min-width:0; white-space:nowrap; }
     .playlist-kicker {
-      font:600 10px/1 var(--font); letter-spacing:.14em;
+      font:600 12px/1 var(--font); letter-spacing:.14em;
       text-transform:uppercase; color:var(--dim);
     }
     .playlist-only strong {
-      font:600 13px/1 var(--font); letter-spacing:-0.02em;
+      font:600 18px/1 var(--font); letter-spacing:-0.02em;
     }
     .playlist-sub { display:none; }
-    .playlist-go { margin-left:auto; font-size:16px; line-height:1; color:var(--dim); }
+    .playlist-go { margin-left:auto; font-size:22px; line-height:1; color:var(--dim); }
+    .call-dot {
+      width:22px; height:22px; border-radius:50%; flex:none;
+      border:2px solid var(--ink); opacity:.9;
+    }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card {
       position:relative;
@@ -2503,11 +2507,11 @@
           </span>
           <span class="playlist-go" aria-hidden="true">›</span>
         </a>
-        <a class="playlist-only" href="/portal" aria-label="Open the portal">
+        <a class="playlist-only" href="/portal" aria-label="Galactic call">
           <span class="playlist-copy">
-            <span class="playlist-kicker">Portal</span>
-            <strong>Fly</strong>
+            <strong>Galactic call:</strong>
           </span>
+          <span class="call-dot" aria-hidden="true"></span>
           <span class="playlist-go" aria-hidden="true">›</span>
         </a>
       </div>
