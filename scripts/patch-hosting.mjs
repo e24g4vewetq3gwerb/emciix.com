@@ -225,20 +225,30 @@ await pruneStorage();
 
 function widenConnect(config) {
   const extra = ["https://api.fxtwitter.com", "https://invidious.darkness.services"];
-  const blocks = config && Array.isArray(config.headers) ? config.headers : [];
-  for (const block of blocks) {
-    const list = block && Array.isArray(block.headers) ? block.headers : [];
-    for (const header of list) {
-      if (!header || header.key !== "Content-Security-Policy" || typeof header.value !== "string") continue;
-      const match = header.value.match(/connect-src[^;]*/);
-      if (!match) continue;
-      let src = match[0];
-      for (const origin of extra) {
-        if (!src.includes(origin)) src += " " + origin;
-      }
-      header.value = header.value.replace(match[0], src);
+  let hits = 0;
+  function walk(node) {
+    if (!node || typeof node !== "object") return;
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+      return;
+    }
+    for (const key of Object.keys(node)) {
+      const value = node[key];
+      if (typeof value === "string" && value.includes("connect-src")) {
+        const match = value.match(/connect-src[^;]*/);
+        if (match) {
+          let src = match[0];
+          for (const origin of extra) {
+            if (!src.includes(origin)) src += " " + origin;
+          }
+          node[key] = value.replace(match[0], src);
+          hits += 1;
+        }
+      } else if (value && typeof value === "object") walk(value);
     }
   }
+  walk(config);
+  console.log("csp widened", hits, "config keys", Object.keys(config || {}));
   return config || {};
 }
 
