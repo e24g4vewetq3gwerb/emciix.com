@@ -89,9 +89,9 @@ function materializeHome() {
   const src = "index.html";
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
-  html = html.replace(/portal-preview\.js\?v=prev-\d+/g, "portal-preview.js?v=prev-2");
+  html = html.replace(/portal-preview\.js\?v=prev-\d+/g, "portal-preview.js?v=prev-3");
   if (!html.includes("portal-preview.js")) {
-    html = html.replace("</body>", '  <script src="/portal-preview.js?v=prev-2" defer></script>\n</body>');
+    html = html.replace("</body>", '  <script src="/portal-preview.js?v=prev-3" defer></script>\n</body>');
   }
   const dest = "/tmp/home-portal.html";
   writeFileSync(dest, html);
@@ -110,7 +110,7 @@ const PATCHES = [
   ["game/play/levels.json", "/game/play/levels.json"],
 ];
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
-["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js"].forEach((p) => {
+["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js","portal/index.html","portal/assets/index-DLVCRiHz.js"].forEach((p) => {
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
