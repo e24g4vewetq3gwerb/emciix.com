@@ -313,7 +313,7 @@ function setHeroMode(mode, opts) {
         .catch(function () {});
       return;
     }
-    withTimeout(fetchViewsMap(), 2500)
+    withTimeout(fetchViewsMap(), 12000)
       .then(function (views) {
         applyCatalogOrder({ rebuild: true });
         if (!userPicked() || opts.jump) applyMostPopularTrack(views || getViewCounts());
@@ -1020,8 +1020,8 @@ function rebuildGrid() {
 
 function getViewCounts() {
   try {
-    if (window.EmciixYtViewCounts && typeof window.EmciixYtViewCounts === "object") {
-      return window.EmciixYtViewCounts;
+    if (window.EmciixLiveYtViews && Object.keys(window.EmciixLiveYtViews).length) {
+      return window.EmciixLiveYtViews;
     }
   } catch (e) {}
   return null;
@@ -1112,22 +1112,28 @@ function applyMostPopularTrack(views) {
   return true;
 }
 function fetchViewsMap() {
-  var cached = getViewCounts();
-  if (cached && Object.keys(cached).length) {
-    return Promise.resolve(cached);
+  try {
+    if (window.EmciixLiveYtViews && Object.keys(window.EmciixLiveYtViews).length) {
+      return Promise.resolve(window.EmciixLiveYtViews);
+    }
+  } catch (e) {}
+  var ids = [];
+  for (var i = 0; i < SONGS.length; i++) {
+    if (SONGS[i] && SONGS[i].id) ids.push(SONGS[i].id);
   }
-  return fetch("/views.json", { cache: "no-store" })
-    .then(function (r) {
-      if (!r.ok) throw new Error("views.json " + r.status);
-      return r.json();
-    })
-    .then(function (data) {
-      if (!data || !data.views) throw new Error("views empty");
-      var existing = getViewCounts();
-      if (existing && Object.keys(existing).length) return existing;
-      try { window.EmciixYtViewCounts = data.views; } catch (e) {}
-      return data.views;
-    });
+  if (!ids.length) return Promise.reject(new Error("no songs"));
+  var url = "https://emciix-yt-views.vercel.app/views?ids=" + encodeURIComponent(ids.join(",")) + "&t=" + Date.now();
+  function once() {
+    return fetch(url, { cache: "no-store", mode: "cors" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.views || !Object.keys(data.views).length) throw new Error("live views empty");
+        window.EmciixLiveYtViews = data.views;
+        window.EmciixYtViewCounts = data.views;
+        return data.views;
+      });
+  }
+  return once().catch(function () { return once(); });
 }
 function ensureLatestInCatalog(track) {
   if (!track || !track.id) return false;
@@ -1371,7 +1377,7 @@ function bootPlayer() {
     return;
   }
   // Player146: honor Popular|New preference for initial order
-  withTimeout(fetchViewsMap(), 2500)
+  withTimeout(fetchViewsMap(), 12000)
     .then(function (views) {
       if (deepLinkLocked || userPicked()) return false;
       applyCatalogOrder({ rebuild: true });
