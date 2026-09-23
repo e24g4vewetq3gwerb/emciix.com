@@ -17,6 +17,8 @@ on:
       - game/play/favicon.svg
       - game/play/levels.json
       - game/play/levels/no-room-for-me/**
+      - game/play/levels/glitch-by-glitch/**
+      - game/play/levels/watch-it-brppp/**
       - scripts/patch-hosting.mjs
       - views-boot.js
       - shelf-boot.js
