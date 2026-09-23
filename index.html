@@ -25,38 +25,53 @@
 
   <style>
     /* Apple HIG system palette — Player146
-       Light: #f5f5f7 / #ffffff / #1d1d1f · accent #1d1d1f (on white)
-       Dark:  #000000 / #1c1c1e / #f5f5f7 · accent #ffffff (on black)
-       Semantic Live/Lit kept lightly (system red/purple/orange), not OFOP HUD */
+    /* Apple system dark — grouped black, elevated gray, system blue */
     :root,
     html[data-theme="dark"] {
       --bg: #000000;
       --surface: #1c1c1e;
       --surface-2: #2c2c2e;
+      --surface-3: #3a3a3c;
+      --grouped: #000000;
+      --fill: rgba(120, 120, 128, 0.36);
+      --fill-2: rgba(120, 120, 128, 0.32);
+      --fill-3: rgba(118, 118, 128, 0.24);
       --panel-cya: #1c1c1e;
       --panel-mag: #1c1c1e;
       --panel-yel: #1c1c1e;
-      --ink: #f5f5f7;
-      --dim: #98989d;
-      --label: #8e8e93;
+      --ink: #ffffff;
+      --dim: rgba(235, 235, 245, 0.60);
+      --label: rgba(235, 235, 245, 0.30);
       --line: rgba(84, 84, 88, 0.65);
-      --hairline: rgba(84, 84, 88, 0.45);
-      --accent: #ffffff;
-      --accent-hover: #e5e5ea;
-      --accent-soft: rgba(255, 255, 255, 0.14);
-      --accent-border: rgba(255, 255, 255, 0.42);
-      --accent-on: #000000;
+      --hairline: rgba(84, 84, 88, 0.36);
+      --separator: #38383a;
+      --accent: #0a84ff;
+      --accent-hover: #409cff;
+      --accent-soft: rgba(10, 132, 255, 0.18);
+      --accent-border: rgba(10, 132, 255, 0.45);
+      --accent-on: #ffffff;
+      --blue: #0a84ff;
+      --indigo: #5e5ce6;
       --magenta: #bf5af2;
-      --magenta-soft: rgba(191, 90, 242, 0.16);
+      --magenta-soft: rgba(191, 90, 242, 0.18);
       --magenta-border: rgba(191, 90, 242, 0.40);
-      --yellow: #ff9f0a;
-      --yellow-soft: rgba(255, 159, 10, 0.16);
-      --yellow-border: rgba(255, 159, 10, 0.40);
-      --gold: #ffffff;
-      --live: #30D158;
+      --pink: #ff375f;
+      --orange: #ff9f0a;
+      --yellow: #ffd60a;
+      --yellow-soft: rgba(255, 214, 10, 0.16);
+      --yellow-border: rgba(255, 214, 10, 0.40);
+      --teal: #64d2ff;
+      --gray: #8e8e93;
+      --gray2: #636366;
+      --gray3: #48484a;
+      --gray4: #3a3a3c;
+      --gray5: #2c2c2e;
+      --gray6: #1c1c1e;
+      --gold: #f5f5f7;
+      --live: #30d158;
       --live-soft: rgba(48, 209, 88, 0.18);
-      --live-ink: #30D158;
-      --player-pill: #1D9BF0;
+      --live-ink: #30d158;
+      --player-pill: #0a84ff;
       --player-pill-ink: #ffffff;
       --danger: #ff453a;
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
@@ -64,8 +79,8 @@
       --glow-cya: none;
       --glow-mag: none;
       --glow-yel: none;
-      --grad-bar: linear-gradient(90deg, #ffffff, #d1d1d6);
-      --grad-accent: linear-gradient(90deg, #ffffff, #c7c7cc);
+      --grad-bar: linear-gradient(90deg, #0a84ff, #64d2ff);
+      --grad-accent: linear-gradient(90deg, #0a84ff, #5e5ce6);
       --radius: 16px;
       --radius-sm: 12px;
       --radius-lg: 18px;
@@ -804,10 +819,13 @@
       transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
       animation: none;
     }
-    html[data-theme="light"] .go b,
+    html[data-theme="light"] .go b {
+      background:#1d1d1f; color:#ffffff;
+      box-shadow:0 8px 24px rgba(0,0,0,0.18);
+    }
     html[data-theme="dark"] .go b {
-      background:#C9A227; color:#1d1d1f;
-      box-shadow:0 8px 24px rgba(201,162,39,0.28);
+      background:#ffffff; color:#000000;
+      box-shadow:0 8px 24px rgba(0,0,0,0.45);
     }
     .go:hover b { transform:translate(-50%,0) scale(1.05); filter:brightness(1.06); }
     .go:active b { transform:translate(-50%,0) scale(.95); }
@@ -1073,7 +1091,7 @@
       flex:0 0 auto;
       position:relative;
       display:inline-grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr;
       align-items:stretch;
       align-self:center;
       gap:0;
@@ -1559,7 +1577,7 @@
     .modetabs {
       position:relative;
       display:inline-grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr;
       align-items:stretch;
       flex:0 1 auto; min-width:0;
       gap:0;
@@ -2219,26 +2237,26 @@
     }
     html[data-theme="dark"] .place-status-chip.is-quiet,
     html.dark .place-status-chip.is-quiet {
-      color: #7ff0b2;
-      border-color: rgba(61, 214, 140, 0.52);
-      background: rgba(61, 214, 140, 0.14);
+      color: #30d158;
+      border-color: rgba(48, 209, 88, 0.45);
+      background: rgba(48, 209, 88, 0.16);
     }
     html[data-theme="dark"] .place-status-chip.is-hot,
     html.dark .place-status-chip.is-hot {
-      color: #ff9c86;
-      border-color: rgba(255, 107, 74, 0.55);
-      background: rgba(255, 107, 74, 0.14);
+      color: #ff9f0a;
+      border-color: rgba(255, 159, 10, 0.5);
+      background: rgba(255, 159, 10, 0.16);
     }
     @media (prefers-color-scheme: dark) {
       html:not([data-theme="light"]) .place-status-chip.is-quiet {
         border-color: rgba(61, 214, 140, 0.52);
         background: rgba(61, 214, 140, 0.14);
-        color: #7ff0b2;
+        color: #30d158;
       }
       html:not([data-theme="light"]) .place-status-chip.is-hot {
         border-color: rgba(255, 107, 74, 0.55);
         background: rgba(255, 107, 74, 0.14);
-        color: #ff9c86;
+        color: #ff9f0a;
       }
     }
     /* Soft green “N today” chip — after Lit/Calm, before right-side count */
@@ -2615,7 +2633,7 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=Player146"></script>
+  <script src="app.js?v=hero-popular-1"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player146"></script>
   <script src="views-boot.js?v=shelf-views-1"></script>

@@ -13,6 +13,8 @@ on:
       - views-boot.js
       - shelf-boot.js
       - index.html
+      - app.js
+      - need/assets/index-Bsi7rUKP.js
       - portal/**
       - .github/workflows/patch-game-play.yml
 
