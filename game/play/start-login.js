@@ -1,92 +1,66 @@
 (function () {
-  const USER_KEY = "emciix-local-user";
-  const PASS_KEY = "emciix-local-pass";
-  const NAME_KEY = "emciix-player-name";
-
-  function readUser() {
-    try { return String(localStorage.getItem(USER_KEY) || "").trim(); }
-    catch (_) { return ""; }
-  }
-
-  async function hashPass(pass) {
-    const text = String(pass || "");
-    if (!text) return "";
-    try {
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("emciix:" + text));
-      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-    } catch (_) {
-      return "local:" + text.length + ":" + text.slice(0, 1);
-    }
-  }
-
   function mount() {
     const card = document.querySelector("#start-overlay .start-main");
     if (!card) return;
-    document.querySelectorAll(".session-name").forEach((el) => el.remove());
-    const old = document.querySelector(".start-login");
-    if (old) old.remove();
+    document.querySelectorAll(".session-name, .start-login").forEach((el) => el.remove());
 
     const box = document.createElement("div");
-    box.className = "start-login local-only";
+    box.className = "start-login";
     box.innerHTML =
-      '<p class="start-login-kicker">LOGIN</p>' +
-      '<label class="session-name-label" for="local-user">USERNAME</label>' +
-      '<input id="local-user" class="session-name-input" maxlength="24" autocomplete="username" placeholder="Username" />' +
-      '<label class="session-name-label" for="local-pass">PASSWORD</label>' +
-      '<input id="local-pass" class="session-name-input" type="password" maxlength="64" autocomplete="current-password" placeholder="Password" />' +
-      '<button type="button" id="btn-local-login" class="start-action-btn">LOGIN</button>' +
-      '<p class="session-name-status" id="local-login-status"></p>' +
-      '<div class="auth-signin-row hidden" id="auth-signin-row">' +
-        '<button type="button" id="btn-google-signin" class="hidden"></button>' +
-        '<button type="button" id="btn-x-signin" class="hidden"></button>' +
+      '<button type="button" id="btn-login-toggle" class="start-action-btn start-login-toggle">LOGIN</button>' +
+      '<div class="auth-signin-row start-login-methods" id="auth-signin-row">' +
+        '<button type="button" id="btn-google-signin" class="start-action-btn">GOOGLE</button>' +
+        '<button type="button" id="btn-x-signin" class="start-action-btn btn-x">X</button>' +
       '</div>' +
       '<div class="auth-chip hidden" id="auth-chip">' +
-        '<strong id="auth-chip-name"></strong>' +
-        '<span id="auth-points-val">0</span>' +
-        '<button type="button" id="btn-google-signout" class="hidden"></button>' +
+        '<img id="auth-chip-avatar" class="auth-chip-avatar" alt="" width="28" height="28" data-placeholder="1" />' +
+        '<div class="auth-chip-meta">' +
+          '<strong id="auth-chip-name">Signed in</strong>' +
+          '<span id="auth-points-val">0</span> PTS' +
+        '</div>' +
+        '<button type="button" id="btn-google-signout" class="start-action-btn btn-secondary">LOG OUT</button>' +
       '</div>' +
       '<p class="auth-error hidden" id="auth-error"></p>';
     card.appendChild(box);
 
-    const userEl = box.querySelector("#local-user");
-    const passEl = box.querySelector("#local-pass");
-    const status = box.querySelector("#local-login-status");
-    userEl.value = readUser();
+    const toggle = box.querySelector("#btn-login-toggle");
+    const methods = box.querySelector("#auth-signin-row");
+    const chip = box.querySelector("#auth-chip");
+    toggle.addEventListener("click", () => {
+      box.classList.toggle("open");
+    });
 
-    async function saveLocal() {
-      const user = String(userEl.value || "").trim().slice(0, 24);
-      const pass = String(passEl.value || "");
-      if (!user || !pass) {
-        status.textContent = "Username and password required";
+    function sync() {
+      const inChip = chip && !chip.classList.contains("hidden");
+      toggle.classList.toggle("hidden", !!inChip);
+      if (inChip) box.classList.remove("open");
+    }
+    if (chip && window.MutationObserver) {
+      new MutationObserver(sync).observe(chip, { attributes: true, attributeFilter: ["class"] });
+    }
+    sync();
+
+    async function run(which) {
+      const err = box.querySelector("#auth-error");
+      const api = window.EmciixScores;
+      if (!api) {
+        if (err) { err.textContent = "Auth not ready — wait a second"; err.classList.remove("hidden"); }
         return;
       }
-      const digest = await hashPass(pass);
       try {
-        localStorage.setItem(USER_KEY, user);
-        localStorage.setItem(PASS_KEY, digest);
-        localStorage.setItem(NAME_KEY, user);
-      } catch (_) {}
-      status.textContent = "Saved on this device · " + user;
-      passEl.value = "";
-      const pub = window.EmciixPublishNamed || (window.EmciixScores && window.EmciixScores.publishNamedSession);
-      if (pub) {
-        try {
-          const raw = localStorage.getItem("emciix-rhythm-bests");
-          const bests = raw ? JSON.parse(raw) : {};
-          const pts = Object.values(bests || {}).reduce((s, b) => s + (Number(b && b.score) || 0), 0);
-          await pub(user, pts);
-        } catch (_) {}
+        if (err) { err.textContent = ""; err.classList.add("hidden"); }
+        if (which === "x") await api.signInX();
+        else await api.signInGoogle();
+      } catch (e) {
+        if (err) {
+          err.textContent = String((e && e.message) || e || "Sign-in failed");
+          err.classList.remove("hidden");
+        }
       }
     }
-
-    box.querySelector("#btn-local-login").addEventListener("click", () => {
-      saveLocal().catch(console.warn);
-    });
-    passEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") saveLocal().catch(console.warn);
-    });
+    box.querySelector("#btn-google-signin").addEventListener("click", () => { run("google"); });
+    box.querySelector("#btn-x-signin").addEventListener("click", () => { run("x"); });
   }
-
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();
 })();
