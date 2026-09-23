@@ -8,7 +8,7 @@
   "no-room-for-me": {
     "title": "No Room for Me",
     "driveId": null,
-    "src": "/video/no-room-for-me.mp4",
+    "src": "/video/no-room-for-me.mp4?cut=2",
     "source": "local"
   }
 }

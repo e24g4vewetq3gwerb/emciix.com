@@ -90,7 +90,7 @@ var DRIVE_MAP = {
   "MP9AIxzx55o": { title: "Everybody But Me", driveId: "1aNUO8Ek2famuDx4bhqa74iWiPxnbNUXj", src: "/media/everybody-but-me.mp4", source: "drive" },
   "RFqKvFDB0Hg": { title: "I JUST UPDATE", driveId: "1tEura8vNcKqvkdrh_Gevmq858sYaTPkF", src: "/media/i-just-update.mp4", source: "drive" },
   "Id4HSb9j8RA": { title: "You're Not Alone", driveId: null, src: "/media/youre-not-alone.mp4", source: "local" },
-  "no-room-for-me": { title: "No Room for Me", driveId: null, src: "/video/no-room-for-me.mp4", source: "local" }
+  "no-room-for-me": { title: "No Room for Me", driveId: null, src: "/video/no-room-for-me.mp4?cut=2", source: "local" }
 };
 var driveMapReady = true;
 function loadDriveMap() {
