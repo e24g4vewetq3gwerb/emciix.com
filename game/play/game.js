@@ -58,7 +58,7 @@
     },
     perfect: {
       name: "PERFECT",
-      blurb: "One tap hits all 3 lanes",
+      blurb: "One tap hits all 3. Auto-catch before a miss.",
       costs: [19200],
       color: "perfect",
     },
@@ -1384,7 +1384,9 @@
         n.el.style.left = x + "px";
         n.el.style.top = (yPct / 100) * h + "px";
       }
-      if (!n.missed && tNow > n.t + missWin) {
+      if (!n.missed && perfectUnlocked() && tNow >= n.t + missWin - 0.02) {
+        autoCapture(n);
+      } else if (!n.missed && tNow > n.t + missWin) {
         registerMiss(n);
       }
     }
@@ -1474,6 +1476,35 @@
         nosAltLast = lane;
       }
     }
+    updateHUD(audio.currentTime || 0);
+  }
+
+  function autoCapture(n) {
+    if (!n || n.hit || n.missed) return;
+    n.hit = true;
+    if (n.el) {
+      n.el.classList.add("hit");
+      const el = n.el;
+      setTimeout(() => { if (el.parentNode) el.remove(); }, 80);
+      n.el = null;
+    }
+    const label = "perfect";
+    let pts = SCORE[label];
+    if (fever) pts *= 2;
+    pts = Math.round(pts * powerScoreMult());
+    const vaultLv = clampLevel(upgradesState && upgradesState.vault);
+    if (vaultLv > 0) pts += Math.floor(SCORE.perfect * 0.08 * vaultLv);
+    score += pts;
+    combo += 1;
+    chain += 1;
+    maxCombo = Math.max(maxCombo, combo);
+    if (!nosActive) health = Math.min(1, health + 0.02);
+    counts[label]++;
+    if (combo >= feverComboThreshold()) fever = true;
+    showJudge(label);
+    flashLane(n.lane, true);
+    tryNosActivity(n.lane, label);
+    maybeStartNos();
     updateHUD(audio.currentTime || 0);
   }
 
