@@ -7,7 +7,8 @@ on:
       - main
     paths:
       - game/play/index.html
-      - game/play/game.css
+      - game/play/game.js
+      - game/play/favicon.svg
       - scripts/patch-hosting.mjs
       - .github/workflows/patch-game-play.yml
 
