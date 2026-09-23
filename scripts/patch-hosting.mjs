@@ -110,7 +110,7 @@ const PATCHES = [
   ["game/play/levels.json", "/game/play/levels.json"],
 ];
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
-["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js","portal/index.html","portal/assets/index-DLVCRiHz.js"].forEach((p) => {
+["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js","portal/index.html","portal/invite.html","portal/assets/index-DLVCRiHz.js","portal/assets/index-C17i1khB.css","portal/assets/planet.png","portal/assets/moon.png","portal/assets/favicon-portal.svg","portal/assets/favicon-CozO3afC.svg"].forEach((p) => {
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
