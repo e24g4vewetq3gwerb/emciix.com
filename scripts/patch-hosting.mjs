@@ -117,6 +117,9 @@ if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
 ["video/no-room-for-me.mp4","video/no-room.html","media/drive-map.json","covers/no-room-for-me.jpg"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
+["game/play/levels/tell-me-more/chart.json","game/play/levels/tell-me-more/lyrics.json","game/play/levels/tell-me-more/audio/tell-me-more.mp3"].forEach((file) => {
+  if (existsSync(file)) PATCHES.push([file, "/" + file]);
+});
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
