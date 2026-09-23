@@ -7,16 +7,16 @@ const PROJECT = "emciix-com";
 
 function materializeLevel22Audio() {
   const dest = "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3";
-  const parts = [
-    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64.1",
-    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64.2",
-    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64.3",
-  ];
-  if (!parts.every((p) => existsSync(p))) {
+  const parts = [];
+  for (let i = 1; i <= 12; i++) {
+    parts.push("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64." + i);
+  }
+  const present = parts.filter((p) => existsSync(p));
+  if (present.length < 2) {
     console.log("level 22 audio parts missing; skip decode");
     return existsSync(dest);
   }
-  const b64 = parts.map((p) => readFileSync(p, "utf8").replace(/\s+/g, "")).join("");
+  const b64 = present.map((p) => readFileSync(p, "utf8").replace(/\s+/g, "")).join("");
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, Buffer.from(b64, "base64"));
   console.log("decoded", dest, readFileSync(dest).length);
