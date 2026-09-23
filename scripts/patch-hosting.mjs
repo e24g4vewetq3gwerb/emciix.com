@@ -4,16 +4,8 @@ import { readFileSync } from "node:fs";
 
 const PROJECT = "emciix-com";
 const PATCHES = [
-  ["game/play/index.html", "/game/play/index.html"],
-  ["game/play/game.css", "/game/play/game.css"],
-  ["game/play/game.js", "/game/play/game.js"],
-  ["game/play/levels.json", "/game/play/levels.json"],
-  ["game/play/levels/which-device-is-that/chart.json", "/game/play/levels/which-device-is-that/chart.json"],
   ["game/play/levels/which-device-is-that/lyrics.json", "/game/play/levels/which-device-is-that/lyrics.json"],
-  ["game/play/levels/which-device-is-that/audio/which-device-is-that.mp3", "/game/play/levels/which-device-is-that/audio/which-device-is-that.mp3"],
-  ["game/play/levels/tabs-i-cant-close/chart.json", "/game/play/levels/tabs-i-cant-close/chart.json"],
   ["game/play/levels/tabs-i-cant-close/lyrics.json", "/game/play/levels/tabs-i-cant-close/lyrics.json"],
-  ["game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3", "/game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;
