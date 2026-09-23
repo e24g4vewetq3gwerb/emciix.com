@@ -56,6 +56,12 @@
       costs: [1200, 2400, 4800, 9600, 19200],
       color: "vault",
     },
+    perfect: {
+      name: "PERFECT",
+      blurb: "One tap hits all 3 lanes",
+      costs: [19200],
+      color: "perfect",
+    },
   };
   const SECTIONS = [
     [0.0, 30.0, "ONE FEELING", "LIVE TAKE", "HOPE NODE"],
@@ -247,6 +253,7 @@
       pulse: 0,
       reach: 0,
       vault: 0,
+      perfect: 0,
       spent: 0,
       layout: layout === "b" || layout === "c" ? layout : "a",
     };
@@ -1996,16 +2003,42 @@
     const lane = KEY_MAP[e.code];
     if (lane === undefined) return;
     e.preventDefault();
+    strike(lane);
+  }
+
+  function perfectUnlocked() {
+    return clampLevel(upgradesState.perfect) >= 1;
+  }
+
+  function setPad(lane, down) {
     const pad = $('.pad[data-lane="' + lane + '"]');
-    if (pad) pad.classList.add("pressed");
+    if (pad) pad.classList.toggle("pressed", !!down);
+  }
+
+  function strike(lane) {
+    if (perfectUnlocked()) {
+      for (let i = 0; i < 3; i++) {
+        setPad(i, true);
+        judgeHit(i);
+      }
+      return;
+    }
+    setPad(lane, true);
     judgeHit(lane);
+  }
+
+  function releaseStrike(lane) {
+    if (perfectUnlocked()) {
+      for (let i = 0; i < 3; i++) setPad(i, false);
+      return;
+    }
+    setPad(lane, false);
   }
 
   function onKeyUp(e) {
     const lane = KEY_MAP[e.code];
     if (lane === undefined) return;
-    const pad = $('.pad[data-lane="' + lane + '"]');
-    if (pad) pad.classList.remove("pressed");
+    releaseStrike(lane);
   }
 
   function bindPads() {
@@ -2013,8 +2046,7 @@
       const lane = Number(pad.dataset.lane);
       const down = (ev) => {
         ev.preventDefault();
-        pad.classList.add("pressed");
-        judgeHit(lane);
+        strike(lane);
       };
       const up = () => pad.classList.remove("pressed");
       pad.addEventListener("pointerdown", down);
@@ -2026,7 +2058,7 @@
     $$(".lane").forEach((laneEl) => {
       laneEl.addEventListener("pointerdown", (ev) => {
         ev.preventDefault();
-        judgeHit(Number(laneEl.dataset.lane));
+        strike(Number(laneEl.dataset.lane));
       });
     });
   }
