@@ -765,15 +765,16 @@
       min-height:0; display:grid; grid-template-columns:1.45fr .9fr;
       border:1px solid var(--accent-border); border-radius:var(--radius-lg); overflow:hidden;
       background:var(--panel-cya); opacity:1;
-      transition: opacity .35s ease, box-shadow .35s ease, border-color .35s ease;
+      min-height: 280px;
+      transition: box-shadow .35s ease, border-color .35s ease;
       box-shadow:var(--shadow), var(--glow-cya);
-      animation: heroRise .55s ease .06s both;
+      animation: none;
     }
     html[data-theme="light"] .hero {
       border-color:var(--line);
       box-shadow:var(--shadow);
     }
-    .hero { transition: opacity .42s cubic-bezier(.22,.61,.36,1); }
+    .hero { transition: opacity .42s cubic-bezier(.22,.61,.36,1), box-shadow .35s ease, border-color .35s ease; }
     .hero.is-fading { opacity:0; }
     .stage { transition: opacity .42s cubic-bezier(.22,.61,.36,1); }
     .stage.is-fading { opacity:0; }
@@ -938,7 +939,7 @@
       border-radius:0 var(--radius-lg) var(--radius-lg) 0;
       background:var(--surface);
       border-left:1px solid var(--line);
-      animation: sideIn .35s ease both;
+      animation: none;
     }
     html[data-theme="light"] .side {
       background:#fff;
@@ -1280,7 +1281,7 @@
       /* Equal rhythm: gap 1 (hero→Need) == gap 2 (Need→shelf) */
       margin:var(--section-gap) 0; position:relative; z-index:1; width:100%;
       padding:0;
-      animation: heroRise .55s ease .1s both;
+      animation: none;
     }
     .needprev-wrap {
       position:relative; width:100%; margin:0; padding:0;
@@ -2651,7 +2652,7 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=rank-round-1"></script>
+  <script src="app.js?v=no-bounce-1"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player146"></script>
   <script src="views-boot.js?v=rank-round-1"></script>
