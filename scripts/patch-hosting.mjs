@@ -52,7 +52,13 @@ function materializePlayIndex() {
       "  <script src=\"/game/play/universe-boot.js?v=vacant-1\" defer></script>\n</body>",
     );
   }
-  html = html.replace("game.css?v=levels-visual-1", "game.css?v=vacant-1");
+  if (!html.includes("vacant-mode.js")) {
+    html = html.replace(
+      "</body>",
+      "  <script src=\"/game/play/vacant-mode.js?v=chairs-1\" defer></script>\n</body>",
+    );
+  }
+  html = html.replace("game.css?v=levels-visual-1", "game.css?v=vacant-2");
   const dest = "/tmp/play-index-vacant.html";
   writeFileSync(dest, html);
   return dest;
@@ -77,6 +83,9 @@ const PATCHES = [
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
 if (existsSync("game/play/universe-boot.js")) {
   PATCHES.push(["game/play/universe-boot.js", "/game/play/universe-boot.js"]);
+}
+if (existsSync("game/play/vacant-mode.js")) {
+  PATCHES.push(["game/play/vacant-mode.js", "/game/play/vacant-mode.js"]);
 }
 if (existsSync("game/play/levels/no-room-for-me/No Room for Me.mp3")) {
   PATCHES.push([
