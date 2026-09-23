@@ -376,14 +376,14 @@ function cardHtml(s, i, playing) {
 }
 function syncUrl() {
   try {
-    var v = SONGS[idx];
-    if (!v) return;
     var url = new URL(location.href);
-    url.searchParams.set("v", v.id);
-    if (url.hash && /^#t=\d+/i.test(url.hash)) url.hash = "";
-    var next = url.pathname + url.search + (url.hash || "");
+    var hashIsTrack = url.hash && /^#t=\d+/i.test(url.hash);
+    if (!url.searchParams.has("v") && !hashIsTrack) return;
+    url.searchParams.delete("v");
+    if (hashIsTrack) url.hash = "";
+    var next = url.pathname + (url.search || "") + (url.hash || "");
     if (next !== location.pathname + location.search + location.hash) {
-      history.replaceState({ v: v.id, i: idx }, "", next);
+      history.replaceState({ i: idx }, "", next || "/");
     }
   } catch (e) {}
 }
