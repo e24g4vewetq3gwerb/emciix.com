@@ -1106,7 +1106,7 @@ function heroKickerIdx() {
 }
 function applyMostPopularTrack(views) {
   var i = findMostPopularIdx(views);
-  if (i < 0) return false;
+  if (i < 0 || i === idx) return false;
   idx = i;
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
   return true;
@@ -1377,7 +1377,7 @@ function bootPlayer() {
       applyCatalogOrder({ rebuild: true });
       if (heroMode === "popular") {
         if (applyMostPopularTrack(views || getViewCounts())) {
-          paint({ animate: true });
+          paint({ soft: true, animate: false });
           if (status && !isPlayingNow()) status.textContent = "Songs";
           return true;
         }
