@@ -2071,3 +2071,47 @@ html, body {
   .start-rank-col { width: min(100%, 420px); }
   .start-bgm-mute { align-self: center; }
 }
+
+/* iPhone SE and other short screens: keep the mute button fully on screen */
+@media (max-height: 760px) {
+  #start-overlay {
+    align-items: safe center;
+    justify-content: center;
+    padding: 0.55rem 0.8rem 0.7rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #start-overlay .start-layout {
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    flex: 0 0 auto;
+  }
+  #start-overlay .overlay-card.start-main,
+  #start-overlay .start-main.borderless {
+    min-height: 0;
+    overflow: visible;
+    justify-content: flex-start;
+    flex: 0 0 auto;
+    padding: 0.2rem 0.1rem 0.35rem;
+  }
+  #start-overlay h1 {
+    margin: 0.3rem 0 0.25rem;
+    font-size: 1.35rem;
+  }
+  #start-overlay .sub { margin-bottom: 0.4rem; }
+  #start-overlay .hint { margin-bottom: 0.55rem; }
+  #start-overlay .loading { margin-top: 0.4rem; }
+  #start-overlay .level-best { margin: 0.15rem 0 0.3rem; }
+  #start-overlay .start-actions { gap: 0.4rem; margin-top: 0.15rem; }
+  #start-overlay .start-action-btn {
+    min-height: 2.65rem;
+    height: 2.65rem;
+  }
+  #start-overlay .start-bgm-mute {
+    width: 100%;
+    margin-top: 0.45rem;
+    margin-bottom: 0.2rem;
+    box-sizing: border-box;
+  }
+}
