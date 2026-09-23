@@ -15,7 +15,10 @@
 
   function viewsMap() {
     try {
-      return window.EmciixYtViewCounts || {};
+      if (window.EmciixLiveYtViews && Object.keys(window.EmciixLiveYtViews).length) {
+        return window.EmciixLiveYtViews;
+      }
+      return {};
     } catch (e) {
       return {};
     }

@@ -130,6 +130,7 @@
       });
     }
     if (changed || hard) {
+      try { window.EmciixLiveYtViews = views; } catch (e) {}
       try { window.EmciixYtViewCounts = views; } catch (e) {}
       apply();
       try { if (window.EmciixApplyCatalogOrder) window.EmciixApplyCatalogOrder({ rebuild: true }); } catch (e) {}
@@ -216,18 +217,23 @@
     return null;
   }
 
-  function fetchApiViews(ids) {
+  function fetchApiViews(ids, attempt) {
     if (!ids || !ids.length) return Promise.resolve(null);
+    attempt = attempt || 0;
     var url = VIEWS_API + "?ids=" + encodeURIComponent(ids.join(",")) + "&t=" + Date.now();
     return fetch(url, { cache: "no-store", mode: "cors" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        if (!data || !data.views) return null;
-        var keys = Object.keys(data.views);
-        if (!keys.length) return null; // empty = API failed, not "zero views"
+        if (!data || !data.views || !Object.keys(data.views).length) {
+          if (attempt < 2) return fetchApiViews(ids, attempt + 1);
+          return null;
+        }
         return data.views;
       })
-      .catch(function () { return null; });
+      .catch(function () {
+        if (attempt < 2) return fetchApiViews(ids, attempt + 1);
+        return null;
+      });
   }
 
   function parseViewCount(html) {
@@ -510,6 +516,7 @@
       }
       return pullYoutubePageViews();
     }).then(function () {
+      try { window.EmciixLiveYtViews = views; } catch (e) {}
       try { window.EmciixYtViewCounts = views; } catch (e) {}
       try { if (window.EmciixApplyCatalogOrder) window.EmciixApplyCatalogOrder({ rebuild: true }); } catch (e) {}
       try { if (window.EmciixShelfRefresh) window.EmciixShelfRefresh(); } catch (e) {}
