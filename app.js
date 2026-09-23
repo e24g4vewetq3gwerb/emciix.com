@@ -1045,9 +1045,7 @@ function heroKickerLabel() {
   return "Now playing";
 }
 function heroModeTabsHtml() {
-  return '<div class="modeflip uploadbar" id="modeFlip" role="group" aria-label="Catalog order">' +
-    '<button type="button" class="modeflip-btn is-on" id="modePopular" data-mode="popular" aria-pressed="true">Popular</button>' +
-    '</div>';
+  return "";
 }
 function syncModeSwitchUi() {
   var flip = document.getElementById("modeFlip");
