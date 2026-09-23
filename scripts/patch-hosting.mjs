@@ -114,6 +114,9 @@ if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
+["video/no-room-for-me.mp4","video/no-room.html"].forEach((file) => {
+  if (existsSync(file)) PATCHES.push([file, "/" + file]);
+});
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
