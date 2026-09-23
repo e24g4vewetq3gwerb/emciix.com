@@ -88,6 +88,19 @@
     if (el) el.textContent = text || "";
   }
 
+  function cityIsLive(c) {
+    var at = Number(c && c.at) || 0;
+    return at > 0 && at >= Date.now() - DAY_MS;
+  }
+
+  // Opens only count while the city was active in the last 24h.
+  // Otherwise a one-time visit from days ago stays stuck at 2%.
+  function liveOpens(c) {
+    if (!cityIsLive(c)) return 0;
+    var n = Number(c && c.n) || 0;
+    return n > 0 ? n : 0;
+  }
+
   function sharePct(n, total) {
     if (!total || total < 1) return 0;
     return Math.max(0, Math.round((n / total) * 100));
@@ -275,10 +288,12 @@
   function cityRowHtml(c, idx, max, totalChat, totalOpen) {
     var chatN = c.chat || 0;
     var openN = c.n || 0;
-    var barPct = Math.max(2, Math.round(((chatN || openN * 0.15) / max) * 100));
-    if (chatN < 1 && openN < 1) barPct = 2;
+    var liveN = liveOpens(c);
+    var barPct = max > 0 ? Math.round((chatN / max) * 100) : 0;
+    if (chatN < 1) barPct = liveN && totalOpen ? Math.round((liveN / totalOpen) * 100) : 0;
+    if (barPct < 0) barPct = 0;
     var chatShare = sharePct(chatN, totalChat);
-    var openShare = sharePct(openN, totalOpen);
+    var openShare = sharePct(liveOpens(c), totalOpen);
     var top = idx < 3 ? " top" : "";
     var tip = c.name + (c.region ? ", " + c.region : "");
     var chip = c.region
@@ -295,9 +310,7 @@
     // Chat pill = text/message line count (ranking metric)
     var chatHtml =
       '<span class="share">' + fmt(chatN) + " chat</span>";
-    var openHtml = openN
-      ? '<span class="share">' + openShare + "% open</span>"
-      : "";
+    var openHtml = '<span class="share">' + openShare + "% open</span>";
     var placeAttr = c.id ? ' data-place-id="' + esc(c.id) + '"' : "";
     var seeded = latestChatLabel({ body: c.lastBody || "", handle: c.handle || "" });
     var hasSeed = !!(c.lastBody && String(c.lastBody).trim());
@@ -419,9 +432,11 @@
     var max = 0;
     var total = 0;
     var totalChat = 0;
+    var totalOpen = 0;
     for (var i = 0; i < cities.length; i++) {
       total += cities[i].n || 0;
       totalChat += cities[i].chat || 0;
+      totalOpen += liveOpens(cities[i]);
       var cScore = cities[i].chat || 0;
       if (cScore > max) max = cScore;
     }
@@ -448,12 +463,12 @@
     var foot = cityFootText(total, totalChat);
     var rowsHtml = show
       .map(function (c, idx) {
-        return cityRowHtml(c, idx, max, totalChat, total);
+        return cityRowHtml(c, idx, max, totalChat, totalOpen);
       })
       .join("");
     var needRowsHtml = needShow
       .map(function (c, idx) {
-        return cityRowHtml(c, idx, max, totalChat, total);
+        return cityRowHtml(c, idx, max, totalChat, totalOpen);
       })
       .join("");
     if (el) {
