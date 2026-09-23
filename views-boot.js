@@ -182,13 +182,27 @@
 
   function songIds() {
     var ids = [];
+    var seen = Object.create(null);
     try {
       if (typeof SONGS !== "undefined") {
         for (var i = 0; i < SONGS.length; i++) {
-          if (SONGS[i] && SONGS[i].id) ids.push(SONGS[i].id);
+          if (SONGS[i] && SONGS[i].id && !seen[SONGS[i].id]) {
+            seen[SONGS[i].id] = 1;
+            ids.push(SONGS[i].id);
+          }
         }
       }
     } catch (e) {}
+    if (!ids.length) {
+      var cards = document.querySelectorAll("#grid .card[data-id]");
+      for (var c = 0; c < cards.length; c++) {
+        var id = cards[c].getAttribute("data-id");
+        if (id && !seen[id]) {
+          seen[id] = 1;
+          ids.push(id);
+        }
+      }
+    }
     return ids;
   }
 
@@ -451,32 +465,49 @@
       .catch(function () { return { added: 0, ok: false, source: "uploads" }; });
   }
 
+  function pullYoutubePageViews() {
+    var ids = songIds();
+    var got = Object.create(null);
+    var j = 0;
+    var pending = 0;
+    var limit = 4;
+    if (!ids.length) return Promise.resolve(got);
+    return new Promise(function (resolve) {
+      function finish() {
+        mergeViews(got, { hard: true });
+        resolve(got);
+      }
+      function pump() {
+        while (pending < limit && j < ids.length) {
+          (function (id) {
+            pending++;
+            fetchOneViaProxy(id).then(function (n) {
+              if (n != null) {
+                got[id] = n;
+                var one = Object.create(null);
+                one[id] = n;
+                mergeViews(one, { preferMax: "live" });
+              }
+              pending--;
+              if (j >= ids.length && pending === 0) finish();
+              else pump();
+            });
+          })(ids[j++]);
+        }
+        if (j >= ids.length && pending === 0) finish();
+      }
+      pump();
+    });
+  }
+
   function hardSync() {
     if (syncBusy) return Promise.resolve();
     syncBusy = true;
-    setSyncUi("syncing", "Syncing YouTube views…");
-    var uploadResult = { added: 0, ok: true };
     return Promise.resolve()
       .then(function () { return syncChannelUploads(); })
-      .then(function (res) {
-        uploadResult = res || { added: 0, ok: false };
-        return loadLive(true);
-      })
-      .then(function () { return loadJson(0, true); })
-      .then(function () {
-        if (!uploadResult.ok) {
-          setSyncUi("idle", "Uploads sync failed — tap to retry");
-        } else if (uploadResult.added > 0) {
-          setSyncUi("idle", "Added " + uploadResult.added + " · views refreshed");
-        } else {
-          setSyncUi("idle", "views refreshed");
-        }
-        syncBusy = false;
-      })
-      .catch(function () {
-        setSyncUi("idle", "Sync failed — tap to retry");
-        syncBusy = false;
-      });
+      .then(function () { return pullYoutubePageViews(); })
+      .then(function () { syncBusy = false; })
+      .catch(function () { syncBusy = false; });
   }
 
   window.EmciixSyncYtViews = hardSync;
@@ -488,9 +519,8 @@
     btn.addEventListener("click", function () { hardSync(); });
   }
 
-  setTimeout(bindSyncBtn, 0);
+  loadJson(0, false);
   setTimeout(apply, 400);
-  // Same action as the Sync button: uploads + hard view refresh.
   hardSync();
   setInterval(function () { loadJson(0, false); }, JSON_EVERY_MS);
   setInterval(function () { loadLive(false); }, LIVE_EVERY_MS);

@@ -11,6 +11,8 @@ on:
       - game/play/favicon.svg
       - scripts/patch-hosting.mjs
       - views-boot.js
+      - shelf-boot.js
+      - index.html
       - portal/**
       - .github/workflows/patch-game-play.yml
 
