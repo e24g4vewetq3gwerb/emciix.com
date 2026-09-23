@@ -16,9 +16,6 @@
   };
   const SCORE = { perfect: 300, great: 200, good: 100, miss: 0 };
   const BESTS_KEY = "emciix-rhythm-bests";
-  const SAVE_KEY = "emciix-savepoint";
-  function readSaveIndex(list) { try { const raw = localStorage.getItem(SAVE_KEY); if (!raw) return 0; const data = JSON.parse(raw); if (!data || !list || !list.length) return 0; if (data.id) { const i = list.findIndex((l) => l && l.id === data.id); if (i >= 0) return i; } const idx = Math.floor(Number(data.index) || 0); return Math.max(0, Math.min(list.length - 1, idx)); } catch (_) { return 0; } }
-  function writeSavePoint(index, meta) { try { localStorage.setItem(SAVE_KEY, JSON.stringify({ index: index, id: meta && meta.id ? meta.id : "", title: meta && meta.title ? meta.title : "", at: Date.now() })); } catch (_) {} }
   const UPGRADES_GUEST_KEY = "emciix-upgrades";
   const UPGRADE_LAYOUT_KEY = "emciix-upgrade-layout";
   const MAX_UPGRADE_LV = 5;
@@ -1259,7 +1256,6 @@
     if (!levels.length) throw new Error("no levels");
     levelIndex = Math.max(0, Math.min(index, levels.length - 1));
     levelMeta = levels[levelIndex];
-    writeSavePoint(levelIndex, levelMeta);
     loadStatus.textContent = "Loading level " + (levelIndex + 1) + "…";
     const [chartRes, lyricRes] = await Promise.all([
       fetch(levelMeta.chart),
@@ -1296,29 +1292,7 @@
     const res = await fetch("/game/play/levels.json");
     if (!res.ok) throw new Error("levels.json missing");
     levels = await res.json();
-    let resume = 0;
-    let portalIn = false;
-    try {
-      const q = new URLSearchParams(location.search);
-      const want = q.get("level");
-      if (want) {
-        const found = levels.findIndex((l) => l && l.id === want);
-        if (found >= 0) resume = found;
-      } else {
-        resume = readSaveIndex(levels);
-      }
-      portalIn = q.get("perfect") === "1";
-    } catch (_) {}
-    await loadLevel(resume);
-    if (levelMeta && levelMeta.perfect && startBtn) startBtn.textContent = "PERFECT MODE";
-    if (levelMeta && levelMeta.perfect && loadStatus) loadStatus.textContent = "PERFECT MODE — tap to start";
-    if (portalIn) {
-      await startGame();
-      if (!playing) {
-        if (startBtn) startBtn.textContent = "PERFECT MODE";
-        if (loadStatus) loadStatus.textContent = "PERFECT MODE — tap to start";
-      }
-    }
+    await loadLevel(0);
   }
 
   function sectionAt(t) {
@@ -2095,7 +2069,6 @@
   }
 
   function perfectUnlocked() {
-    if (levelMeta && levelMeta.perfect) return true;
     return clampLevel(upgradesState.perfect) >= 1;
   }
 
