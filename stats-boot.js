@@ -88,17 +88,15 @@
     if (el) el.textContent = text || "";
   }
 
-  function cityIsLive(c) {
-    var at = Number(c && c.at) || 0;
-    return at > 0 && at >= Date.now() - DAY_MS;
-  }
-
-  // Opens only count while the city was active in the last 24h.
-  // Otherwise a one-time visit from days ago stays stuck at 2%.
-  function liveOpens(c) {
-    if (!cityIsLive(c)) return 0;
+  // How open the city is right now. 100% if it was opened just now,
+  // half each day, gone after a week. Not a share of lifetime opens.
+  function openFreshPct(c) {
     var n = Number(c && c.n) || 0;
-    return n > 0 ? n : 0;
+    var at = Number(c && c.at) || 0;
+    if (n < 1 || at <= 0) return 0;
+    var days = Math.max(0, Date.now() - at) / 86400000;
+    if (days >= 7) return 0;
+    return Math.max(0, Math.round(100 * Math.pow(0.5, days)));
   }
 
   function sharePct(n, total) {
@@ -288,12 +286,10 @@
   function cityRowHtml(c, idx, max, totalChat, totalOpen) {
     var chatN = c.chat || 0;
     var openN = c.n || 0;
-    var liveN = liveOpens(c);
-    var barPct = max > 0 ? Math.round((chatN / max) * 100) : 0;
-    if (chatN < 1) barPct = liveN && totalOpen ? Math.round((liveN / totalOpen) * 100) : 0;
-    if (barPct < 0) barPct = 0;
+    var openShare = openFreshPct(c);
     var chatShare = sharePct(chatN, totalChat);
-    var openShare = sharePct(liveOpens(c), totalOpen);
+    var barPct = max > 0 ? Math.round((chatN / max) * 100) : 0;
+    if (chatN < 1) barPct = openShare;
     var top = idx < 3 ? " top" : "";
     var tip = c.name + (c.region ? ", " + c.region : "");
     var chip = c.region
@@ -432,11 +428,9 @@
     var max = 0;
     var total = 0;
     var totalChat = 0;
-    var totalOpen = 0;
     for (var i = 0; i < cities.length; i++) {
       total += cities[i].n || 0;
       totalChat += cities[i].chat || 0;
-      totalOpen += liveOpens(cities[i]);
       var cScore = cities[i].chat || 0;
       if (cScore > max) max = cScore;
     }
@@ -463,12 +457,12 @@
     var foot = cityFootText(total, totalChat);
     var rowsHtml = show
       .map(function (c, idx) {
-        return cityRowHtml(c, idx, max, totalChat, totalOpen);
+        return cityRowHtml(c, idx, max, totalChat, 0);
       })
       .join("");
     var needRowsHtml = needShow
       .map(function (c, idx) {
-        return cityRowHtml(c, idx, max, totalChat, totalOpen);
+        return cityRowHtml(c, idx, max, totalChat, 0);
       })
       .join("");
     if (el) {
