@@ -1206,7 +1206,7 @@
     if (sideRightLabel && levelMeta) {
       sideRightLabel.innerHTML = String(levelMeta.sideRight || "KEEP IT<br />CLEAN").replace(/ /g, "<br />");
     }
-    document.title = "🚀 Emciix";
+    document.title = "Emciix";
     const app = document.getElementById("app");
     if (app) app.dataset.theme = (levelMeta && levelMeta.theme) || "";
     const metaLevel = $("#meta-level");
