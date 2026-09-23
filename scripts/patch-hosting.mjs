@@ -1,8 +1,41 @@
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { dirname } from "node:path";
 
 const PROJECT = "emciix-com";
+
+function materializeLevel22Audio() {
+  const dest = "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3";
+  const parts = [
+    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64.1",
+    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64.2",
+    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64.3",
+  ];
+  if (!parts.every((p) => existsSync(p))) {
+    console.log("level 22 audio parts missing; skip decode");
+    return existsSync(dest);
+  }
+  const b64 = parts.map((p) => readFileSync(p, "utf8").replace(/\s+/g, "")).join("");
+  mkdirSync(dirname(dest), { recursive: true });
+  writeFileSync(dest, Buffer.from(b64, "base64"));
+  console.log("decoded", dest, readFileSync(dest).length);
+  return true;
+}
+
+function materializeRoomCss() {
+  const dest = "/tmp/game-with-room.css";
+  if (!existsSync("game/play/game.css") || !existsSync("game/play/theme-room.css")) return null;
+  writeFileSync(
+    dest,
+    Buffer.concat([readFileSync("game/play/game.css"), Buffer.from("\n"), readFileSync("game/play/theme-room.css")]),
+  );
+  return dest;
+}
+
+materializeLevel22Audio();
+const roomCss = materializeRoomCss();
+
 const PATCHES = [
   ["index.html", "/index.html"],
   ["app.js", "/app.js"],
@@ -13,6 +46,17 @@ const PATCHES = [
   ["game/play/levels/no-room-for-me/chart.json", "/game/play/levels/no-room-for-me/chart.json"],
   ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
 ];
+
+if (existsSync("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3")) {
+  PATCHES.push([
+    "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3",
+    "/game/play/levels/no-room-for-me/audio/no-room-for-me.mp3",
+  ]);
+}
+if (roomCss) PATCHES.push([roomCss, "/game/play/game.css"]);
+if (existsSync("game/play/theme-room.css")) {
+  PATCHES.push(["game/play/theme-room.css", "/game/play/theme-room.css"]);
+}
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) {
