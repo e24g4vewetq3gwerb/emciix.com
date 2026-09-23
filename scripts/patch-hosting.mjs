@@ -61,14 +61,44 @@ function materializePlayIndex() {
     html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"/game/play/vacant-chairs.css?v=chairs-1\" />\n</head>");
   }
   html = html.replace("game.css?v=levels-visual-1", "game.css?v=vacant-2");
+  html = html.replace("game.js\",", "game.js?v=save-1\",");
+  html = html.replace("game.js?v=Player", "game.js?v=save-1");
   const dest = "/tmp/play-index-vacant.html";
   writeFileSync(dest, html);
+  return dest;
+}
+
+function materializeGameJs() {
+  const src = "game/play/game.js";
+  if (!existsSync(src)) return null;
+  let s = readFileSync(src, "utf8");
+  if (!s.includes("emciix-savepoint")) {
+    s = s.replace(
+      '  const BESTS_KEY = "emciix-rhythm-bests";',
+      '  const BESTS_KEY = "emciix-rhythm-bests";\n  const SAVE_KEY = "emciix-savepoint";\n  function readSaveIndex(list) {\n    try {\n      const raw = localStorage.getItem(SAVE_KEY);\n      if (!raw) return 0;\n      const data = JSON.parse(raw);\n      if (!data || !list || !list.length) return 0;\n      if (data.id) {\n        const i = list.findIndex((l) => l && l.id === data.id);\n        if (i >= 0) return i;\n      }\n      const idx = Math.floor(Number(data.index) || 0);\n      return Math.max(0, Math.min(list.length - 1, idx));\n    } catch (_) { return 0; }\n  }\n  function writeSavePoint(index, meta) {\n    try {\n      localStorage.setItem(SAVE_KEY, JSON.stringify({ index: index, id: meta && meta.id ? meta.id : "", title: meta && meta.title ? meta.title : "", at: Date.now() }));\n    } catch (_) {}\n  }'
+    );
+    s = s.replace(
+      "    levels = await res.json();\n    await loadLevel(0);",
+      "    levels = await res.json();\n    const resume = readSaveIndex(levels);\n    await loadLevel(resume);\n    if (resume > 0 && loadStatus) {\n      const title = (levels[resume] && (levels[resume].short || levels[resume].title)) || (\"Level \" + (resume + 1));\n      loadStatus.textContent = \"Save point · \" + title + \" — tap to start\";\n    }"
+    );
+    s = s.replace(
+      "    levelIndex = Math.max(0, Math.min(index, levels.length - 1));\n    levelMeta = levels[levelIndex];",
+      "    levelIndex = Math.max(0, Math.min(index, levels.length - 1));\n    levelMeta = levels[levelIndex];\n    writeSavePoint(levelIndex, levelMeta);"
+    );
+    s = s.replace(
+      '      btn.className = "level-tile" + (idx === levelIndex ? " current" : "");',
+      '      btn.className = "level-tile" + (idx === levelIndex ? " current" : "") + (idx === readSaveIndex(levels) ? " saved" : "");'
+    );
+  }
+  const dest = "/tmp/game-savepoint.js";
+  writeFileSync(dest, s);
   return dest;
 }
 
 materializeLevel22Audio();
 const universeCss = materializeUniverseCss();
 const playIndex = materializePlayIndex();
+const gameJs = materializeGameJs();
 
 const PATCHES = [
   ["index.html", "/index.html"],
@@ -76,7 +106,7 @@ const PATCHES = [
   ["views-boot.js", "/views-boot.js"],
   ["shelf-boot.js", "/shelf-boot.js"],
   ["stats-boot.js", "/stats-boot.js"],
-  ["game/play/game.js", "/game/play/game.js"],
+  [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
   ["game/play/levels/no-room-for-me/chart.json", "/game/play/levels/no-room-for-me/chart.json"],
   ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
