@@ -559,7 +559,7 @@ function paintStageOnly() {
   if (hero.classList.contains("is-playing") || stage.classList.contains("is-playing")) {
     if (titleEl) titleEl.textContent = v.title;
     if (hudIdx) hudIdx.textContent = heroKickerIdx();
-    if (stageHud) stageHud.textContent = pad(idx + 1) + " / " + pad(SONGS.length);
+    if (stageHud) stageHud.textContent = heroKickerIdx();
     syncModeSwitchUi();
     updateShelfPlayingState();
     syncUrl();
@@ -571,9 +571,7 @@ function paintStageOnly() {
   destroyNativeVideo();
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
   hero.classList.remove("is-playing");
-  var stageTitleHtml = COVER[v.id]
-    ? ""
-    : ('<span class="stagetitle" aria-hidden="true">' + esc(v.title) + "</span>");
+  var stageTitleHtml = "";
   stage.innerHTML =
     '<span class="stagehud" aria-hidden="true">' +
     pad(idx + 1) +
@@ -622,9 +620,7 @@ function paintNow() {
   destroyNativeVideo();
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
   hero.classList.remove("is-playing");
-  var stageTitleHtml = COVER[v.id]
-    ? ''
-    : ('<span class="stagetitle" aria-hidden="true">' + esc(v.title) + '</span>');
+  var stageTitleHtml = "";
   hero.innerHTML =
     '<div class="stage"><span class="stagehud" aria-hidden="true">' + pad(idx+1) + ' / ' + pad(SONGS.length) + '</span>' +
     '<img alt="" src="' + thumb(v.id) + '">' +
@@ -1102,6 +1098,18 @@ function keepMostViewedOnHero(opts) {
 }
 try { window.EmciixKeepMostViewed = keepMostViewedOnHero; } catch (e) {}
 function heroKickerIdx() {
+  try {
+    var id = SONGS[idx] && SONGS[idx].id;
+    var cards = grid ? grid.querySelectorAll(".card") : [];
+    var shown = 0;
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].classList.contains("filtered")) continue;
+      shown++;
+      if (id && cards[i].getAttribute("data-id") === id) {
+        return pad(shown) + " / " + pad(SONGS.length);
+      }
+    }
+  } catch (e) {}
   return pad(idx + 1) + " / " + pad(SONGS.length);
 }
 function applyMostPopularTrack(views) {

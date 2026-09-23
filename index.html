@@ -794,7 +794,7 @@
     }
     .stage img, .stage iframe, .stage video, .stage #ytplayer { position:absolute; inset:0; width:100%; height:100%; border:0; z-index:1; object-fit:cover; background:#000; }
     .stage iframe, .stage video, .stage #ytplayer { object-fit:cover; border:0; }
-    .stage img { object-fit:contain; background:#000; filter:brightness(.42); }
+    .stage img { object-fit:contain; background:#000; filter:none; }
     .stage #ytplayer iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
     .go {
       position:absolute; inset:0; border:0;
@@ -854,8 +854,9 @@
       }
       .stage img, .stage iframe, .stage video, .stage #ytplayer {
         position:absolute; inset:0; width:100%; height:100%;
-        object-fit:cover;
       }
+      .stage img { object-fit:contain; }
+      .stage iframe, .stage video, .stage #ytplayer { object-fit:cover; }
     }
     @media (max-width:760px){
       .stage { border-radius:var(--radius-lg) var(--radius-lg) 0 0; aspect-ratio:16/9; }
@@ -1862,7 +1863,8 @@
     }
     .card.filtered { display:none; }
     .card .thumbwrap { position:relative; display:block; }
-    .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+    .card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#000; }
+    .card img[src*="i.ytimg.com"] { object-fit:contain; }
     .card .playchip {
       position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.92);
       font:600 12px var(--font); letter-spacing:-0.01em;
@@ -2637,11 +2639,11 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=live-rank-1"></script>
+  <script src="app.js?v=art-rank-1"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player146"></script>
   <script src="views-boot.js?v=live-rank-1"></script>
-  <script src="shelf-boot.js?v=live-rank-1"></script>
+  <script src="shelf-boot.js?v=art-rank-1"></script>
   <script src="stats-boot.js?v=live-chart-1"></script>
 </body>
 </html>
