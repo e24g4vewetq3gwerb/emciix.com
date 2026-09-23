@@ -1,106 +1,90 @@
 #lanes.vacant-hidden { display: none !important; }
-#app.vacant-play .side-panel { opacity: 0.35; }
+#app.vacant-play .side-panel { opacity: 0.28; }
 #vacant-board {
   position: absolute;
-  inset: 8% 6% 14%;
-  z-index: 4;
+  inset: 10% 5% 12%;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 18px;
-  pointer-events: auto;
+  gap: 14px;
 }
 #vacant-board[hidden] { display: none !important; }
-#vacant-board .vb-spot {
-  position: absolute;
-  top: -6%;
-  left: calc(8% + var(--seat, 2) * 16%);
-  width: 22%;
-  height: 70%;
-  border-radius: 80% 80% 40% 40%;
-  background: radial-gradient(ellipse at 50% 10%, rgba(215,236,255,0.55), rgba(215,236,255,0.08) 46%, transparent 70%);
-  filter: blur(6px);
-  transition: left 0.28s ease;
-  pointer-events: none;
-}
 #vacant-line {
   margin: 0;
   text-align: center;
-  font-size: clamp(14px, 3.4vw, 22px);
-  letter-spacing: 0.12em;
+  font-size: clamp(14px, 3.2vw, 22px);
+  letter-spacing: 0.14em;
   color: #f4ead4;
-  text-shadow: 0 0 18px rgba(215,236,255,0.45);
-  min-height: 2.4em;
+  text-shadow: 0 0 18px rgba(215,236,255,0.4);
+  min-height: 2.2em;
 }
-#vacant-row {
-  width: 100%;
-  max-width: 560px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  z-index: 2;
-}
-.vb-seat {
-  appearance: none;
-  border: 1px solid rgba(201,163,106,0.45);
-  background: #140c12;
-  color: #c9a36a;
-  border-radius: 14px 14px 6px 6px;
-  min-height: 92px;
-  padding: 10px 4px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  font: inherit;
-  letter-spacing: 0.08em;
-  font-size: 10px;
-}
-.vb-seat i, .vb-seat b {
-  width: 28px;
-  height: 34px;
-  border-radius: 10px 10px 4px 4px;
-  background: #2a1820;
-  box-shadow: inset 0 -8px 0 #0c0608;
-}
-.vb-seat.empty {
-  border-color: #d7ecff;
-  color: #d7ecff;
-  background: rgba(20, 28, 40, 0.9);
-  box-shadow: 0 0 22px rgba(126,200,255,0.28);
-}
-.vb-seat.empty b {
-  background: transparent;
-  border: 1px dashed rgba(215,236,255,0.7);
-  box-shadow: none;
-}
-.vb-seat.taken { opacity: 0.72; }
-.vb-meter {
+.vb-stage {
+  position: relative;
   width: min(560px, 100%);
-  height: 6px;
+  height: 160px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(215,236,255,0.16), transparent 55%),
+    linear-gradient(180deg, #120c16, #07040a);
+  border: 1px solid rgba(201,163,106,0.4);
+}
+.vb-stage.in-light { box-shadow: 0 0 28px rgba(126,200,255,0.28); }
+.vb-light {
+  position: absolute;
+  top: -20%;
+  width: 34%;
+  height: 140%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 20%, rgba(215,236,255,0.7), rgba(215,236,255,0.08) 55%, transparent 70%);
+  pointer-events: none;
+}
+.vb-you {
+  position: absolute;
+  bottom: 14px;
+  width: 22px;
+  height: 42px;
+  margin-left: -11px;
+  border-radius: 10px 10px 4px 4px;
+  background: linear-gradient(180deg, #f4ead4, #c9a36a);
+  box-shadow: 0 0 16px rgba(215,236,255,0.55);
+}
+.vb-hp {
+  width: min(560px, 100%);
+  height: 7px;
   border-radius: 99px;
   background: rgba(255,255,255,0.08);
   overflow: hidden;
 }
-.vb-meter i {
+.vb-hp i {
   display: block;
-  height: 100%;
   width: 100%;
+  height: 100%;
   transform-origin: left center;
   background: linear-gradient(90deg, #c45b7a, #d7ecff);
 }
+.vb-keys {
+  width: min(560px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.vb-key {
+  appearance: none;
+  min-height: 56px;
+  border-radius: 16px;
+  border: 1px solid rgba(201,163,106,0.55);
+  background: #120c12;
+  color: #f4ead4;
+  letter-spacing: 0.16em;
+  font: inherit;
+}
+.vb-key:active { background: #2a1c18; }
 .vb-status {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   letter-spacing: 0.16em;
   font-size: 11px;
   color: #c9a36a;
-}
-#vacant-board.hit .vb-seat.empty { box-shadow: 0 0 28px rgba(126,200,255,0.7); }
-#vacant-board.miss { animation: vacantShake 0.32s ease; }
-@keyframes vacantShake {
-  0%,100% { transform: translateX(0); }
-  30% { transform: translateX(-7px); }
-  60% { transform: translateX(7px); }
 }
