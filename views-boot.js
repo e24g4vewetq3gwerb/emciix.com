@@ -500,12 +500,18 @@
     });
   }
 
+  function refreshAllViews() {
+    var ids = songIds();
+    return fetchApiViews(ids).then(function (map) {
+      if (map) mergeViews(map, { hard: true });
+      return loadJson(0, false);
+    });
+  }
+
   function hardSync() {
     if (syncBusy) return Promise.resolve();
     syncBusy = true;
-    return Promise.resolve()
-      .then(function () { return syncChannelUploads(); })
-      .then(function () { return pullYoutubePageViews(); })
+    return refreshAllViews()
       .then(function () { syncBusy = false; })
       .catch(function () { syncBusy = false; });
   }
@@ -519,22 +525,11 @@
     btn.addEventListener("click", function () { hardSync(); });
   }
 
-  loadJson(0, false);
-  setTimeout(apply, 400);
-  hardSync();
-  setInterval(function () { loadJson(0, false); }, JSON_EVERY_MS);
-  setInterval(function () { loadLive(false); }, LIVE_EVERY_MS);
-  setInterval(loadCurrent, CURRENT_EVERY_MS);
-  setInterval(function () { syncChannelUploads(); }, 5 * 60 * 1000);
+  refreshAllViews();
+  setInterval(refreshAllViews, 10000);
   document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === "visible") {
-      loadJson(0, false);
-      loadCurrent();
-      loadLive(false);
-    }
+    if (document.visibilityState === "visible") refreshAllViews();
   });
-  window.addEventListener("focus", function () {
-    loadCurrent();
-  });
+  window.addEventListener("focus", function () { refreshAllViews(); });
   document.addEventListener("DOMContentLoaded", bindSyncBtn);
 })();
