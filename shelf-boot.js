@@ -49,8 +49,10 @@
       if (vb !== va) return vb - va;
       return ia - ib;
     });
-    list.forEach(function (el) {
+    list.forEach(function (el, rank) {
       grid.appendChild(el);
+      var badge = el.querySelector(".n");
+      if (badge) badge.textContent = (rank + 1 < 10 ? "0" : "") + (rank + 1);
     });
   }
 

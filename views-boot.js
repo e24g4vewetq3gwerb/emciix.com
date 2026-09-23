@@ -132,6 +132,7 @@
     if (changed || hard) {
       try { window.EmciixYtViewCounts = views; } catch (e) {}
       apply();
+      try { if (window.EmciixApplyCatalogOrder) window.EmciixApplyCatalogOrder({ rebuild: true }); } catch (e) {}
       try { if (window.EmciixPaintPopularity) window.EmciixPaintPopularity(); } catch (e) {}
       try { if (window.EmciixSyncHeroPopular) window.EmciixSyncHeroPopular(); } catch (e) {}
       try { if (window.EmciixKeepMostViewed) window.EmciixKeepMostViewed({ animate: false }); } catch (e) {}
@@ -503,8 +504,15 @@
   function refreshAllViews() {
     var ids = songIds();
     return fetchApiViews(ids).then(function (map) {
-      if (map) mergeViews(map, { hard: true });
-      return loadJson(0, false);
+      if (map) {
+        mergeViews(map, { hard: true });
+        return true;
+      }
+      return pullYoutubePageViews();
+    }).then(function () {
+      try { window.EmciixYtViewCounts = views; } catch (e) {}
+      try { if (window.EmciixApplyCatalogOrder) window.EmciixApplyCatalogOrder({ rebuild: true }); } catch (e) {}
+      try { if (window.EmciixShelfRefresh) window.EmciixShelfRefresh(); } catch (e) {}
     });
   }
 
