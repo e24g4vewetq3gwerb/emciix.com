@@ -1,8 +1,10 @@
 .start-login{margin-top:.75rem;width:100%;text-align:left}
 .start-login-toggle{width:100%}
-.start-login-toggle.hidden{display:none}
+.start-login-toggle.hidden{display:none !important}
+#start-overlay .start-login-methods,
 .start-login-methods{
   display:none;
+  flex-direction:row;
   align-items:stretch;
   justify-content:space-between;
   gap:0;
@@ -14,21 +16,34 @@
   overflow:hidden;
   min-height:58px;
   box-sizing:border-box;
+  width:100%;
 }
-.start-login.open .start-login-methods{display:flex}
-.start-login .auth-signin-row.hidden{display:none}
+#start-overlay .start-login.open .start-login-methods,
+.start-login.open .start-login-methods{
+  display:flex !important;
+}
+#start-overlay .start-login-methods.hidden{display:none !important}
+#start-overlay .start-login-methods .login-half,
 .login-half{
-  appearance:none;
-  flex:1;
-  border:0;
-  background:transparent;
-  color:#fff;
-  font:700 .95rem/1 system-ui,sans-serif;
-  letter-spacing:.12em;
+  appearance:none !important;
+  flex:1 1 50% !important;
+  width:50% !important;
+  max-width:50% !important;
+  margin:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#fff !important;
+  font:700 .95rem/1 system-ui,sans-serif !important;
+  letter-spacing:.12em !important;
   cursor:pointer;
-  padding:.95rem 0;
+  padding:.95rem 0 !important;
+  display:block !important;
 }
-.login-half:hover{background:rgba(255,77,227,.12)}
+#start-overlay .start-login-methods .login-half:hover{
+  background:rgba(255,77,227,.12) !important;
+}
 .start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.35rem}
 .start-login .auth-chip.hidden{display:none}
 .start-login .auth-chip-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;background:#111}
