@@ -38,7 +38,8 @@
     wrap.href = "/portal";
     wrap.setAttribute("aria-label", "Open portal");
     wrap.innerHTML = '<span class="portal-preview-kicker">PORTAL</span><iframe src="/portal/?preview=1" title="Portal preview" tabindex="-1" loading="lazy"></iframe>';
-    hero.insertAdjacentElement("afterend", wrap);
+    var songs = document.getElementById("songs");
+    (songs || hero).insertAdjacentElement("afterend", wrap);
     var frame = wrap.querySelector("iframe");
     frame.addEventListener("load", function () {
       watch(frame);
