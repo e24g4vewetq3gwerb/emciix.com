@@ -234,8 +234,9 @@
     return n;
   }
 
-  // Lit = real activity in the last 24h (same window as "today"). Else Calm.
+  // Lit = ranks 1 and 2 once live chat is known, else activity in the last 24h.
   function isCityHot(c) {
+    if (c && c.forceLit) return true;
     if (effectiveToday(c) > 0) return true;
     var at = Number(c && c.at) || 0;
     if (at <= 0) return false;
@@ -574,6 +575,83 @@
     cities = sortCities((list || []).map(normalizeCity));
     citiesAreSample = !!sample;
     paintCities();
+    refreshLiveChats();
+  }
+
+  function countPlaceChats(placeId) {
+    var parent =
+      "projects/need-inc-app/databases/place/documents/places/" + encodeURIComponent(placeId);
+    var url =
+      "https://firestore.googleapis.com/v1/" + parent +
+      ":runQuery?key=AIzaSyBNPf90JMFZvacLnlcmTqviiyYGRRb-auM";
+    var requestBody = {
+      structuredQuery: {
+        from: [{ collectionId: "messages" }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: "hidden" },
+            op: "EQUAL",
+            value: { booleanValue: false }
+          }
+        },
+        orderBy: [{ field: { fieldPath: "createdAt" }, direction: "DESCENDING" }],
+        limit: 40
+      }
+    };
+    return fetch(url, {
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error("chat count " + r.status);
+        return r.json();
+      })
+      .then(function (rows) {
+        var count = 0;
+        var latest = 0;
+        (rows || []).forEach(function (row) {
+          var doc = row && row.document;
+          if (!doc) return;
+          count++;
+          var ts = doc.fields && doc.fields.createdAt && doc.fields.createdAt.timestampValue;
+          var at = ts ? Date.parse(ts) || 0 : 0;
+          if (at > latest) latest = at;
+        });
+        return { count: count, at: latest };
+      });
+  }
+
+  var chatRefreshBusy = false;
+  function refreshLiveChats() {
+    if (chatRefreshBusy || !cities.length) return;
+    chatRefreshBusy = true;
+    var targets = cities.slice();
+    Promise.all(
+      targets.map(function (c) {
+        if (!c || !c.id) return Promise.resolve();
+        return countPlaceChats(c.id)
+          .then(function (info) {
+            if (!info) return;
+            c.chat = info.count;
+            if (info.at) c.at = info.at;
+          })
+          .catch(function () {});
+      })
+    )
+      .then(function () {
+        for (var i = 0; i < cities.length; i++) cities[i].forceLit = false;
+        cities = sortCities(cities);
+        for (var j = 0; j < cities.length && j < 2; j++) {
+          if ((cities[j].chat || 0) > 0) cities[j].forceLit = true;
+        }
+        paintCities();
+      })
+      .catch(function () {})
+      .then(function () {
+        chatRefreshBusy = false;
+      });
   }
 
   function loadCities() {
@@ -830,5 +908,6 @@
   loadViews();
   loadCities();
   setInterval(loadCities, 45000);
+  setInterval(refreshLiveChats, 20000);
   setInterval(loadViews, 10000);
 })();
