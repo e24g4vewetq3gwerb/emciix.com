@@ -53,28 +53,27 @@ function gameItHtml(){
     '<span class="playgame-label">PLAY</span></button>';
 }
 var SONGS = [
-  ["Qq-D17G4L_o","Which Device Is That"],
-  ["7hnVjQgSiWM","Dale Play It"],
-  ["jP2Cm_5ZOJs","One Exception"],
-  ["vnNP4BaMxvo","Retire"],
-  ["WB04SHeEHts","One"],
-  ["OSLMClbVm9I","One exception"],
-  ["dG8z3nQeDSI","Need Hired by Me."],
-  ["txA5vV_9XG4","Unemployed in Love"],
-  ["05AgmKvd3NI","Make up shit"],
-  ["MP9AIxzx55o","Everybody But Me"],
   ["RFqKvFDB0Hg","I JUST UPDATE"],
-  ["o040u9wAZns","Two phones, zero social life"],
   ["oq1c9I9T_tw","Which phone is it? iPhone or Android"],
   ["53Jny0alg9g","Still here"],
-  ["cWy-1DZsHDg","XCode Swift Song"],
   ["9-nGIe8mQ0M","Wake you up Avicii"],
   ["Id4HSb9j8RA","You're Not Alone"],
-  ["oCWCYVTs3vM","IDK What I'm Doing"],
   ["R7BunIbGheI","One More Light On"],
+  ["NgEug_9qIxU","IDK What I'm Doing"],
+  ["pHMXzHDwOgU","Not Alone"],
   ["m6cxgKh5QgE","Grid Run"],
   ["qZZuGfqancc","Solar System Party"],
-  ["KhGqJCTO1Hc","Come Closer"]
+  ["KhGqJCTO1Hc","Come Closer"],
+  ["MP9AIxzx55o","Everybody But Me"],
+  ["txA5vV_9XG4","Unemployed in Love"],
+  ["dG8z3nQeDSI","Need Hired by Me."],
+  ["jP2Cm_5ZOJs","One Exception"],
+  ["05AgmKvd3NI","Make up shit"],
+  ["WB04SHeEHts","One"],
+  ["vnNP4BaMxvo","Retire"],
+  ["7hnVjQgSiWM","Dale Play It"],
+  ["Qq-D17G4L_o","Which Device Is That"],
+  ["3Js245_1l3o","SEVEN DAYS WAITIN"]
 ].map(function(p){ return {id:p[0], title:p[1]}; });
 var NEED = {
   repo: "https://github.com/e24g4vewetq3gwerb/Need",
