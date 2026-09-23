@@ -1449,7 +1449,7 @@ function bind() {
   var hintPlay = document.getElementById("hintPlay");
   var hintChange = document.getElementById("hintChange");
   if (play) play.onclick = function(){ start(); };
-  if (playGame) playGame.onclick = function(){ window.location.href = "/game/play/"; };
+  if (playGame) playGame.onclick = function(){ window.location.href = "https://emciix.com/portal"; };
   if (skipBtn) skipBtn.onclick = skip;
   if (prevBtn) prevBtn.onclick = prev;
   if (repeatBtn) repeatBtn.onclick = function(){
