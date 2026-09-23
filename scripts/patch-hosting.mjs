@@ -5,8 +5,6 @@ import { readFileSync } from "node:fs";
 const PROJECT = "emciix-com";
 const PATCHES = [
   ["portal/index.html", "/portal/index.html"],
-  ["portal/assets/planet.png", "/portal/assets/planet.png"],
-  ["portal/assets/favicon-portal.svg", "/portal/assets/favicon-portal.svg"],
   ["portal/assets/index-DLVCRiHz.js", "/portal/assets/index-DLVCRiHz.js"],
 ];
 
