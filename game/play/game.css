@@ -2262,3 +2262,8 @@ html, body {
   box-shadow: 0 0 22px rgba(255, 230, 40, 0.35);
 }
 #confirm-overlay[data-theme="tabs"] h1 { color: #ffe628; }
+
+.upgrade-node.track-perfect { border-color: #fff; box-shadow: 0 0 14px rgba(255,255,255,.28); }
+.upgrade-node.track-perfect[aria-pressed="true"] { background: rgba(255,255,255,.14); }
+.upgrade-detail-name.perfect { color: #fff; }
+.upgrade-shop-row.track-perfect { border-color: rgba(255,255,255,.45); }
