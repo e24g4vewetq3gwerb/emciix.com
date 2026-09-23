@@ -4,8 +4,11 @@ import { readFileSync } from "node:fs";
 
 const PROJECT = "emciix-com";
 const PATCHES = [
-  ["game/play/levels/which-device-is-that/lyrics.json", "/game/play/levels/which-device-is-that/lyrics.json"],
-  ["game/play/levels/tabs-i-cant-close/lyrics.json", "/game/play/levels/tabs-i-cant-close/lyrics.json"],
+  ["portal/index.html", "/portal/index.html"],
+  ["portal/invite.html", "/portal/invite.html"],
+  ["portal/assets/favicon-CozO3afC.svg", "/portal/assets/favicon-CozO3afC.svg"],
+  ["portal/assets/index-C17i1khB.css", "/portal/assets/index-C17i1khB.css"],
+  ["portal/assets/index-DLVCRiHz.js", "/portal/assets/index-DLVCRiHz.js"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;

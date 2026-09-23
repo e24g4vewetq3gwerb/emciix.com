@@ -10,6 +10,7 @@ on:
       - game/play/game.js
       - game/play/favicon.svg
       - scripts/patch-hosting.mjs
+      - portal/**
       - .github/workflows/patch-game-play.yml
 
 jobs:
