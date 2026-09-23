@@ -6,8 +6,6 @@ const PROJECT = "emciix-com";
 const PATCHES = [
   ["portal/index.html", "/portal/index.html"],
   ["portal/assets/index-DLVCRiHz.js", "/portal/assets/index-DLVCRiHz.js"],
-  ["portal/assets/planet.png", "/portal/assets/planet.png"],
-  ["portal/assets/moon.png", "/portal/assets/moon.png"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;
