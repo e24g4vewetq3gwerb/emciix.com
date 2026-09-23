@@ -794,7 +794,7 @@
     }
     .stage img, .stage iframe, .stage video, .stage #ytplayer { position:absolute; inset:0; width:100%; height:100%; border:0; z-index:1; object-fit:cover; background:#000; }
     .stage iframe, .stage video, .stage #ytplayer { object-fit:cover; border:0; }
-    .stage img { object-fit:contain; background:#000; filter:none; }
+    .stage img { object-fit:cover; background:#000; filter:none; }
     .stage #ytplayer iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
     .go {
       position:absolute; inset:0; border:0;
@@ -855,7 +855,7 @@
       .stage img, .stage iframe, .stage video, .stage #ytplayer {
         position:absolute; inset:0; width:100%; height:100%;
       }
-      .stage img { object-fit:contain; }
+      .stage img { object-fit:cover; }
       .stage iframe, .stage video, .stage #ytplayer { object-fit:cover; }
     }
     @media (max-width:760px){
