@@ -6,8 +6,8 @@
     const box = document.createElement("div");
     box.className = "start-login";
     box.innerHTML =
-      '<p class="start-login-kicker">LOGIN</p>' +
-      '<div class="auth-signin-row" id="auth-signin-row">' +
+      '<button type="button" id="btn-login-toggle" class="start-action-btn start-login-toggle">LOGIN</button>' +
+      '<div class="auth-signin-row start-login-methods" id="auth-signin-row">' +
         '<button type="button" id="btn-google-signin" class="start-action-btn">GOOGLE</button>' +
         '<button type="button" id="btn-x-signin" class="start-action-btn btn-x">X</button>' +
       '</div>' +
@@ -23,6 +23,22 @@
     const name = card.querySelector(".session-name");
     if (name && name.parentNode) name.parentNode.insertBefore(box, name);
     else card.appendChild(box);
+    const toggle = box.querySelector("#btn-login-toggle");
+    const methods = box.querySelector("#auth-signin-row");
+    toggle.addEventListener("click", () => {
+      box.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", box.classList.contains("open") ? "true" : "false");
+    });
+    const chip = box.querySelector("#auth-chip");
+    const sync = () => {
+      const inChip = chip && !chip.classList.contains("hidden");
+      toggle.classList.toggle("hidden", !!inChip);
+      if (inChip) box.classList.remove("open");
+    };
+    if (chip && window.MutationObserver) {
+      new MutationObserver(sync).observe(chip, { attributes: true, attributeFilter: ["class"] });
+    }
+    sync();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();

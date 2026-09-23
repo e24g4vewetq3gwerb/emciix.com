@@ -1,9 +1,15 @@
 .start-login{margin-top:.75rem;width:100%;text-align:left}
-.start-login-kicker{margin:0 0 .35rem;font-size:.58rem;letter-spacing:.18em;color:#00f5ff}
-.start-login .auth-signin-row{display:flex;gap:.45rem;flex-wrap:wrap}
+.start-login-toggle{width:100%}
+.start-login-toggle.hidden{display:none}
+.start-login-methods{
+  display:none;
+  gap:.45rem;
+  margin-top:.45rem;
+}
+.start-login.open .start-login-methods{display:flex}
 .start-login .auth-signin-row.hidden{display:none}
 .start-login .auth-signin-row .start-action-btn{flex:1 1 120px}
-.start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.35rem}
 .start-login .auth-chip.hidden{display:none}
 .start-login .auth-chip-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;background:#111}
 .start-login .auth-error{margin:.4rem 0 0;color:#ff6b8a;font-size:.7rem}
