@@ -114,7 +114,7 @@ if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
-["video/no-room-for-me.mp4","video/no-room.html"].forEach((file) => {
+["video/no-room-for-me.mp4","video/no-room.html","media/drive-map.json","covers/no-room-for-me.jpg"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
 

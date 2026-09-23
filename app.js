@@ -73,7 +73,8 @@ var SONGS = [
   ["vnNP4BaMxvo","Retire"],
   ["7hnVjQgSiWM","Dale Play It"],
   ["Qq-D17G4L_o","Which Device Is That"],
-  ["3Js245_1l3o","SEVEN DAYS WAITIN"]
+  ["3Js245_1l3o","SEVEN DAYS WAITIN"],
+  ["no-room-for-me","No Room for Me"]
 ].map(function(p){ return {id:p[0], title:p[1]}; });
 var NEED = {
   repo: "https://github.com/e24g4vewetq3gwerb/Need",
@@ -88,7 +89,8 @@ var DRIVE_MAP = {
   "txA5vV_9XG4": { title: "Unemployed in Love", driveId: "1TODHr-wBd750aziOP9npnDygWD2YD0q3", src: "/media/unemployed-in-love.mp4", source: "drive" },
   "MP9AIxzx55o": { title: "Everybody But Me", driveId: "1aNUO8Ek2famuDx4bhqa74iWiPxnbNUXj", src: "/media/everybody-but-me.mp4", source: "drive" },
   "RFqKvFDB0Hg": { title: "I JUST UPDATE", driveId: "1tEura8vNcKqvkdrh_Gevmq858sYaTPkF", src: "/media/i-just-update.mp4", source: "drive" },
-  "Id4HSb9j8RA": { title: "You're Not Alone", driveId: null, src: "/media/youre-not-alone.mp4", source: "local" }
+  "Id4HSb9j8RA": { title: "You're Not Alone", driveId: null, src: "/media/youre-not-alone.mp4", source: "local" },
+  "no-room-for-me": { title: "No Room for Me", driveId: null, src: "/video/no-room-for-me.mp4", source: "local" }
 };
 var driveMapReady = true;
 function loadDriveMap() {
@@ -143,7 +145,8 @@ var COVER = {
   "05AgmKvd3NI": "/covers/make-up-shit.jpg?v=Player110",
   "MP9AIxzx55o": "/covers/everybody-but-me.jpg?v=Player110",
   "RFqKvFDB0Hg": "/covers/i-just-update.jpg?v=Player110",
-  "o040u9wAZns": "/covers/two-phones.jpg?v=Player110"
+  "o040u9wAZns": "/covers/two-phones.jpg?v=Player110",
+  "no-room-for-me": "/covers/no-room-for-me.jpg"
 };
 function thumb(id){ return COVER[id] || ("https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"); }
 function esc(s){
@@ -360,7 +363,10 @@ function applyHeroMode(opts) {
 }
 window.EmciixSetHeroMode = setHeroMode;
 window.EmciixToggleHeroMode = toggleHeroMode;
-function ytUrl(id){ return "https://www.youtube.com/watch?v=" + id; }
+function ytUrl(id){
+  if (id === "no-room-for-me") return "/video/no-room";
+  return "https://www.youtube.com/watch?v=" + id;
+}
 function ytLinkSvg(){
   return '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M23.5 6.2a3.1 3.1 0 0 0-2.2-2.2C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.3.5A3.1 3.1 0 0 0 .5 6.2 32.4 32.4 0 0 0 0 12a32.4 32.4 0 0 0 .5 5.8 3.1 3.1 0 0 0 2.2 2.2c1.9.5 9.3.5 9.3.5s7.4 0 9.3-.5a3.1 3.1 0 0 0 2.2-2.2A32.4 32.4 0 0 0 24 12a32.4 32.4 0 0 0-.5-5.8zM9.75 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>';
 }
