@@ -57,10 +57,28 @@
       color: "vault",
     },
     perfect: {
-      name: "PERFECT",
+      name: "PERFECTOMUS",
       blurb: "One tap hits all 3. Auto-catch before a miss.",
       costs: [19200],
       color: "perfect",
+    },
+    echo: {
+      name: "ECHO",
+      blurb: "Combo adds score",
+      costs: [700, 1400, 2800, 5600, 11200],
+      color: "echo",
+    },
+    shield: {
+      name: "SHIELD",
+      blurb: "Misses cut less health",
+      costs: [850, 1700, 3400, 6800, 13600],
+      color: "shield",
+    },
+    rush: {
+      name: "RUSH",
+      blurb: "NOS fills faster",
+      costs: [1050, 2100, 4200, 8400, 16800],
+      color: "rush",
     },
   };
   const SECTIONS = [
@@ -254,6 +272,9 @@
       reach: 0,
       vault: 0,
       perfect: 0,
+      echo: 0,
+      shield: 0,
+      rush: 0,
       spent: 0,
       layout: layout === "b" || layout === "c" ? layout : "a",
     };
@@ -1450,8 +1471,16 @@
     }
   }
 
+  function echoScore(pts) {
+    const echo = clampLevel(upgradesState && upgradesState.echo);
+    if (!echo || combo <= 0) return pts;
+    return Math.round(pts * (1 + 0.05 * echo * Math.min(combo, 20) / 20));
+  }
+
   function applyNosBoost(amount) {
     if (!nosActive || !nosMode) return false;
+    const rush = clampLevel(upgradesState && upgradesState.rush);
+    amount *= 1 + 0.25 * rush;
     const before = health;
     health = Math.min(NOS_CAP, health + amount);
     endNosIfFull();
@@ -1494,7 +1523,7 @@
     pts = Math.round(pts * powerScoreMult());
     const vaultLv = clampLevel(upgradesState && upgradesState.vault);
     if (vaultLv > 0) pts += Math.floor(SCORE.perfect * 0.08 * vaultLv);
-    score += pts;
+    score += echoScore(pts);
     combo += 1;
     chain += 1;
     maxCombo = Math.max(maxCombo, combo);
@@ -1522,7 +1551,9 @@
       chain = keepCombo > 0 ? Math.min(chain, keepCombo) : 0;
       if (keepCombo < feverComboThreshold()) fever = false;
     }
-    const missPenalty = Math.max(0.02, 0.08 - 0.015 * flow);
+    const shield = clampLevel(upgradesState && upgradesState.shield);
+    let missPenalty = Math.max(0.02, 0.08 - 0.015 * flow);
+    missPenalty *= Math.max(0.4, 1 - 0.12 * shield);
     health = Math.max(0, health - missPenalty);
     if (flow > 0) {
       health = Math.min(1, health + 0.015 * flow);
@@ -1598,7 +1629,7 @@
         pulseArmor = Math.min(pulseLv, pulseArmor + 1);
       }
     }
-    score += pts;
+    score += echoScore(pts);
     combo += 1;
     chain += 1;
     maxCombo = Math.max(maxCombo, combo);
