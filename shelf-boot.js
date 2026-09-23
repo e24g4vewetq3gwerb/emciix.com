@@ -57,6 +57,15 @@
       var badge = el.querySelector(".n");
       if (badge) badge.textContent = (rank + 1 < 10 ? "0" : "") + (rank + 1);
     });
+    var playing = grid.querySelector(".card.playing");
+    var badge = playing && playing.querySelector(".n");
+    if (badge) {
+      var label = badge.textContent.trim() + " / " + (list.length < 10 ? "0" : "") + list.length;
+      var hud = document.querySelector(".stagehud");
+      var kick = document.querySelector(".kicker-idx");
+      if (hud) hud.textContent = label;
+      if (kick) kick.textContent = label;
+    }
   }
 
   function applyFilter() {
