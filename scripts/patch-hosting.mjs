@@ -188,26 +188,36 @@ for (const [local, remote] of PATCHES) {
   console.log("patch", key);
 }
 
-async function pruneReleases(keep) {
+async function pruneStorage() {
+  try {
+    await api(access, "PATCH", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/live?updateMask=retainedReleaseCount", { retainedReleaseCount: 1 });
+    console.log("retainedReleaseCount=1");
+  } catch (err) {
+    console.log("retain", String(err.message || err).slice(0, 200));
+  }
+  const liveName = versionName;
   let token = "";
-  const names = [];
+  const versions = [];
   do {
-    const url = "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/live/releases?pageSize=100" + (token ? "&pageToken=" + encodeURIComponent(token) : "");
+    const url = "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions?pageSize=100" + (token ? "&pageToken=" + encodeURIComponent(token) : "");
     const page = await api(access, "GET", url);
-    for (const rel of page.releases || []) if (rel && rel.name) names.push(rel.name);
+    for (const v of page.versions || []) versions.push(v);
     token = page.nextPageToken || "";
   } while (token);
-  for (const name of names.slice(keep)) {
+  const doomed = versions.filter((v) => v && v.name && v.name !== liveName && v.status !== "DELETED");
+  let n = 0;
+  for (const v of doomed) {
     try {
-      await api(access, "DELETE", "https://firebasehosting.googleapis.com/v1beta1/" + name);
-      console.log("deleted", name);
+      await api(access, "DELETE", "https://firebasehosting.googleapis.com/v1beta1/" + v.name);
+      n += 1;
     } catch (err) {
-      console.log("skip", String(err.message || err).slice(0, 160));
+      console.log("keep", v.name, String(err.message || err).slice(0, 120));
     }
   }
-  console.log("releases", names.length, "kept", Math.min(keep, names.length));
+  console.log("versions", versions.length, "deleted", n);
 }
-await pruneReleases(2);
+await pruneStorage();
+
 
 const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: current.config || {} });
 const newVersion = created.name;
