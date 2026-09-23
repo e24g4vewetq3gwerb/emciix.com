@@ -35,8 +35,11 @@ function materializePlayIndex() {
   if (!html.includes("start-login.js")) {
     html = html.replace(
       /<script[^>]+\/game\/play\/game\.js[^>]*><\/script>/,
-      '<script src="/game/play/start-login.js?v=login-1"></script>\n  $&'
+      '<script src="/game/play/start-login.js?v=login-2"></script>\n  $&'
     );
+  } else {
+    html = html.replace("start-login.js?v=login-1", "start-login.js?v=login-2");
+    html = html.replace("start-login.css?v=login-1", "start-login.css?v=login-2");
   }
   if (!html.includes("session-guest.js")) {
     html = html.replace("</body>", "  <script type=\"module\" src=\"/game/play/session-guest.js?v=name-1\"></script>\n</body>");
@@ -54,7 +57,7 @@ function materializePlayIndex() {
     ["vacant-chairs.css", "/game/play/vacant-chairs.css?v=chairs-1"],
     ["start-hub.css", "/game/play/start-hub.css?v=hub-1"],
     ["session-name.css", "/game/play/session-name.css?v=name-1"],
-    ["start-login.css", "/game/play/start-login.css?v=login-1"],
+    ["start-login.css", "/game/play/start-login.css?v=login-2"],
   ];
   for (const [key, href] of links) {
     if (!html.includes(key)) html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"" + href + "\" />\n</head>");
