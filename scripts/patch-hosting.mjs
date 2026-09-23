@@ -7,20 +7,27 @@ const PROJECT = "emciix-com";
 
 function materializeLevel22Audio() {
   const dest = "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3";
+  const titled = "game/play/levels/no-room-for-me/No Room for Me.mp3";
   const parts = [];
   for (let i = 1; i <= 12; i++) {
     parts.push("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3.b64." + i);
   }
   const present = parts.filter((p) => existsSync(p));
-  if (present.length < 2) {
-    console.log("level 22 audio parts missing; skip decode");
-    return existsSync(dest);
+  if (present.length >= 2) {
+    const b64 = present.map((p) => readFileSync(p, "utf8").replace(/\s+/g, "")).join("");
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, Buffer.from(b64, "base64"));
+    console.log("decoded", dest, readFileSync(dest).length);
+    return true;
   }
-  const b64 = present.map((p) => readFileSync(p, "utf8").replace(/\s+/g, "")).join("");
-  mkdirSync(dirname(dest), { recursive: true });
-  writeFileSync(dest, Buffer.from(b64, "base64"));
-  console.log("decoded", dest, readFileSync(dest).length);
-  return true;
+  if (existsSync(titled)) {
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, readFileSync(titled));
+    console.log("copied titled mp3", dest, readFileSync(dest).length);
+    return true;
+  }
+  console.log("level 22 audio missing; skip");
+  return existsSync(dest);
 }
 
 function materializeUniverseCss() {
@@ -70,6 +77,12 @@ const PATCHES = [
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
 if (existsSync("game/play/universe-boot.js")) {
   PATCHES.push(["game/play/universe-boot.js", "/game/play/universe-boot.js"]);
+}
+if (existsSync("game/play/levels/no-room-for-me/No Room for Me.mp3")) {
+  PATCHES.push([
+    "game/play/levels/no-room-for-me/No Room for Me.mp3",
+    "/game/play/levels/no-room-for-me/No Room for Me.mp3",
+  ]);
 }
 if (existsSync("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3")) {
   PATCHES.push([
