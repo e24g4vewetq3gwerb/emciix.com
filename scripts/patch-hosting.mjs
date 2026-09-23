@@ -37,7 +37,7 @@ copyAudio("game/play/levels/watch-it-brppp/Watch it brppp.mp3", "game/play/level
 
 function materializeUniverseCss() {
   const dest = "/tmp/game-with-vacant.css";
-  const extras = ["game/play/theme-vacant.css", "game/play/vacant-chairs.css"].filter(existsSync);
+  const extras = ["game/play/theme-vacant.css", "game/play/vacant-chairs.css", "game/play/start-hub.css"].filter(existsSync);
   if (!existsSync("game/play/game.css") || extras.length === 0) return null;
   const chunks = [readFileSync("game/play/game.css")];
   for (const extra of extras) {
@@ -57,12 +57,27 @@ function materializePlayIndex() {
   if (!html.includes("vacant-mode.js")) {
     html = html.replace("</body>", "  <script src=\"/game/play/vacant-mode.js?v=chairs-1\" defer></script>\n</body>");
   }
+  if (!html.includes("start-hub.js")) {
+    html = html.replace("</body>", "  <script src=\"/game/play/start-hub.js?v=hub-1\" defer></script>\n</body>");
+  }
   if (!html.includes("vacant-chairs.css")) {
     html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"/game/play/vacant-chairs.css?v=chairs-1\" />\n</head>");
   }
+  if (!html.includes("start-hub.css")) {
+    html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"/game/play/start-hub.css?v=hub-1\" />\n</head>");
+  }
+  if (!html.includes("public-rank-list")) {
+    html = html.replace(
+      '<div class="start-layout">',
+      '<div class="start-layout">\n        <aside class="public-rank-card" id="public-rank-card">\n          <span class="public-rank-kicker">SYNCED</span>\n          <h2>PUBLIC BOARD</h2>\n          <div class="public-rank-cols"><span>#</span><span>PLAYER</span><span>PTS</span></div>\n          <ol class="public-rank-list" id="public-rank-list"></ol>\n        </aside>'
+    );
+    html = html.replace(
+      '</button>\n        </div>\n      </div>\n    </div>\n\n    <div id="game"',
+      '</button>\n        </div>\n        <aside class="start-jukebox" id="start-jukebox">\n          <span class="jb-kicker">LISTEN</span>\n          <h2>MUSIC</h2>\n          <p class="jb-now" id="jukebox-now">—</p>\n          <div class="jb-controls">\n            <button type="button" id="jukebox-prev">PREV</button>\n            <button type="button" id="jukebox-play">PLAY</button>\n            <button type="button" id="jukebox-next">NEXT</button>\n          </div>\n          <div id="jukebox-list"></div>\n          <audio id="start-hub-audio" preload="none"></audio>\n        </aside>\n      </div>\n    </div>\n\n    <div id="game"'
+    );
+  }
   html = html.replace("game.css?v=levels-visual-1", "game.css?v=vacant-2");
   html = html.replace("game.js\",", "game.js?v=save-1\",");
-  html = html.replace("game.js?v=Player", "game.js?v=save-1");
   const dest = "/tmp/play-index-vacant.html";
   writeFileSync(dest, html);
   return dest;
@@ -85,10 +100,6 @@ function materializeGameJs() {
       "    levelIndex = Math.max(0, Math.min(index, levels.length - 1));\n    levelMeta = levels[levelIndex];",
       "    levelIndex = Math.max(0, Math.min(index, levels.length - 1));\n    levelMeta = levels[levelIndex];\n    writeSavePoint(levelIndex, levelMeta);"
     );
-    s = s.replace(
-      '      btn.className = "level-tile" + (idx === levelIndex ? " current" : "");',
-      '      btn.className = "level-tile" + (idx === levelIndex ? " current" : "") + (idx === readSaveIndex(levels) ? " saved" : "");'
-    );
   }
   const dest = "/tmp/game-savepoint.js";
   writeFileSync(dest, s);
@@ -108,24 +119,14 @@ const PATCHES = [
   ["stats-boot.js", "/stats-boot.js"],
   [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
-  ["game/play/levels/no-room-for-me/chart.json", "/game/play/levels/no-room-for-me/chart.json"],
-  ["game/play/levels/no-room-for-me/lyrics.json", "/game/play/levels/no-room-for-me/lyrics.json"],
-  ["game/play/levels/glitch-by-glitch/chart.json", "/game/play/levels/glitch-by-glitch/chart.json"],
-  ["game/play/levels/glitch-by-glitch/lyrics.json", "/game/play/levels/glitch-by-glitch/lyrics.json"],
-  ["game/play/levels/watch-it-brppp/chart.json", "/game/play/levels/watch-it-brppp/chart.json"],
-  ["game/play/levels/watch-it-brppp/lyrics.json", "/game/play/levels/watch-it-brppp/lyrics.json"],
 ];
 
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
 if (existsSync("game/play/universe-boot.js")) PATCHES.push(["game/play/universe-boot.js", "/game/play/universe-boot.js"]);
 if (existsSync("game/play/vacant-mode.js")) PATCHES.push(["game/play/vacant-mode.js", "/game/play/vacant-mode.js"]);
+if (existsSync("game/play/start-hub.js")) PATCHES.push(["game/play/start-hub.js", "/game/play/start-hub.js"]);
+if (existsSync("game/play/start-hub.css")) PATCHES.push(["game/play/start-hub.css", "/game/play/start-hub.css"]);
 if (existsSync("game/play/vacant-chairs.css")) PATCHES.push(["game/play/vacant-chairs.css", "/game/play/vacant-chairs.css"]);
-if (existsSync("game/play/levels/no-room-for-me/No Room for Me.mp3")) {
-  PATCHES.push(["game/play/levels/no-room-for-me/No Room for Me.mp3", "/game/play/levels/no-room-for-me/No Room for Me.mp3"]);
-}
-if (existsSync("game/play/levels/no-room-for-me/audio/no-room-for-me.mp3")) {
-  PATCHES.push(["game/play/levels/no-room-for-me/audio/no-room-for-me.mp3", "/game/play/levels/no-room-for-me/audio/no-room-for-me.mp3"]);
-}
 if (existsSync("game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3")) {
   PATCHES.push(["game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3", "/game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3"]);
 }
@@ -139,8 +140,6 @@ if (existsSync("game/play/levels/watch-it-brppp/Watch it brppp.mp3")) {
   PATCHES.push(["game/play/levels/watch-it-brppp/Watch it brppp.mp3", "/game/play/levels/watch-it-brppp/Watch it brppp.mp3"]);
 }
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
-if (existsSync("game/play/theme-vacant.css")) PATCHES.push(["game/play/theme-vacant.css", "/game/play/theme-vacant.css"]);
-if (existsSync("game/play/theme-room.css")) PATCHES.push(["game/play/theme-room.css", "/game/play/theme-room.css"]);
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
