@@ -263,6 +263,7 @@ function applyCatalogOrder(opts) {
   if (opts.rebuild !== false) rebuildGrid();
   return true;
 }
+try { window.EmciixApplyCatalogOrder = applyCatalogOrder; } catch (e) {}
 function setHeroMode(mode, opts) {
   opts = opts || {};
   var next = normalizeHeroMode(mode);
@@ -1122,6 +1123,8 @@ function fetchViewsMap() {
     })
     .then(function (data) {
       if (!data || !data.views) throw new Error("views empty");
+      var existing = getViewCounts();
+      if (existing && Object.keys(existing).length) return existing;
       try { window.EmciixYtViewCounts = data.views; } catch (e) {}
       return data.views;
     });

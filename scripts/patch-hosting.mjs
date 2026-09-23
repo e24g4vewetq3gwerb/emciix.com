@@ -5,7 +5,9 @@ import { readFileSync } from "node:fs";
 const PROJECT = "emciix-com";
 const PATCHES = [
   ["index.html", "/index.html"],
+  ["app.js", "/app.js"],
   ["views-boot.js", "/views-boot.js"],
+  ["shelf-boot.js", "/shelf-boot.js"],
 ];
 
 const token = process.env.FIREBASE_TOKEN;

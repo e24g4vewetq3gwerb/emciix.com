@@ -81,9 +81,9 @@
       --glow-yel: none;
       --grad-bar: #3e6ae1;
       --grad-accent: #3e6ae1;
-      --radius: 4px;
-      --radius-sm: 4px;
-      --radius-lg: 4px;
+      --radius: 18px;
+      --radius-sm: 14px;
+      --radius-lg: 22px;
       --section-gap: 18px;
       --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
       --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -209,29 +209,8 @@
       letter-spacing:-0.011em;
     }
     html[data-theme="dark"] body {
-      background-color: #121418;
-      background-image:
-        linear-gradient(27deg, rgba(255,255,255,.05) 0 1px, transparent 1px 5px),
-        linear-gradient(207deg, rgba(0,0,0,.55) 0 1px, transparent 1px 5px),
-        linear-gradient(45deg, #1c2026 25%, #101216 25% 50%, #1c2026 50% 75%, #101216 75%);
-      background-size: 6px 6px, 6px 6px, 8px 8px;
-      background-attachment: fixed;
-    }
-    html[data-theme="dark"] .topwrap,
-    html[data-theme="dark"] .hero,
-    html[data-theme="dark"] .side,
-    html[data-theme="dark"] .card,
-    html[data-theme="dark"] .needprev-entry,
-    html[data-theme="dark"] .needprev-city.statpanel,
-    html[data-theme="dark"] .statpanel,
-    html[data-theme="dark"] .needprev-list,
-    html[data-theme="dark"] .shelftools {
-      background-color: #171a20;
-      background-image:
-        linear-gradient(27deg, rgba(255,255,255,.055) 0 1px, transparent 1px 4px),
-        linear-gradient(207deg, rgba(0,0,0,.5) 0 1px, transparent 1px 4px),
-        linear-gradient(45deg, #22262c 25%, #14171c 25% 50%, #22262c 50% 75%, #14171c 75%);
-      background-size: 5px 5px, 5px 5px, 7px 7px;
+      background: #171a20;
+      background-image: none;
     }
     html[data-theme="light"] body {
       background-image: none;
@@ -2418,21 +2397,18 @@
     .statpanel.city .chartempty-card a { color:var(--accent-on); background:var(--sp-accent); }
     .chartempty-card a:hover { opacity:.9; }
 
-    html[data-theme="dark"] .topwrap,
-    html[data-theme="dark"] .hero,
-    html[data-theme="dark"] .side,
-    html[data-theme="dark"] .card,
-    html[data-theme="dark"] .needprev-entry,
-    html[data-theme="dark"] .needprev-city.statpanel,
-    html[data-theme="dark"] .statpanel,
-    html[data-theme="dark"] .needprev-list,
-    html[data-theme="dark"] .shelftools {
-      background-color: #171a20;
-      background-image:
-        linear-gradient(27deg, rgba(255,255,255,.055) 0 1px, transparent 1px 4px),
-        linear-gradient(207deg, rgba(0,0,0,.5) 0 1px, transparent 1px 4px),
-        linear-gradient(45deg, #22262c 25%, #14171c 25% 50%, #22262c 50% 75%, #14171c 75%);
-      background-size: 5px 5px, 5px 5px, 7px 7px;
+    .hero,
+    .card,
+    .needprev-entry,
+    .needprev-list,
+    .needprev-city.statpanel,
+    .statpanel,
+    .shelftools,
+    .chartempty-card,
+    .shelftools input[type="search"],
+    button.b,
+    .b {
+      border-radius: 18px;
     }
   </style>
 
@@ -2675,11 +2651,11 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=stay-root-1"></script>
+  <script src="app.js?v=rank-round-1"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player146"></script>
-  <script src="views-boot.js?v=views-live-1"></script>
-  <script src="shelf-boot.js?v=shelf-views-1"></script>
+  <script src="views-boot.js?v=rank-round-1"></script>
+  <script src="shelf-boot.js?v=rank-round-1"></script>
   <script src="stats-boot.js?v=Player146"></script>
 </body>
 </html>
