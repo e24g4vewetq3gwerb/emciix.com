@@ -1,10 +1,42 @@
 .start-login{margin-top:.75rem;width:100%;text-align:left}
 .start-login-toggle{width:100%}
 .start-login-toggle.hidden{display:none}
-.start-login-methods{display:none;gap:.45rem;margin-top:.45rem}
+.start-login-methods{
+  display:none;
+  align-items:center;
+  justify-content:space-evenly;
+  gap:0;
+  margin-top:.55rem;
+  padding:.7rem .9rem;
+  border:2px solid #ff4de3;
+  border-radius:22px;
+  background:rgba(18,0,28,.55);
+  box-sizing:border-box;
+}
 .start-login.open .start-login-methods{display:flex}
 .start-login .auth-signin-row.hidden{display:none}
-.start-login .auth-signin-row .start-action-btn{flex:1 1 120px}
+.login-orb{
+  appearance:none;
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  border:2px solid #fff;
+  background:transparent;
+  color:#fff;
+  font:700 1.35rem/1 system-ui,sans-serif;
+  letter-spacing:.04em;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+.login-orb:hover{background:rgba(255,255,255,.08)}
+.login-split{
+  width:2px;
+  align-self:stretch;
+  background:#ff4de3;
+  opacity:.85;
+  margin:0 .2rem;
+}
 .start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.35rem}
 .start-login .auth-chip.hidden{display:none}
 .start-login .auth-chip-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;background:#111}

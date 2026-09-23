@@ -9,8 +9,9 @@
     box.innerHTML =
       '<button type="button" id="btn-login-toggle" class="start-action-btn start-login-toggle">LOGIN</button>' +
       '<div class="auth-signin-row start-login-methods" id="auth-signin-row">' +
-        '<button type="button" id="btn-google-signin" class="start-action-btn">GOOGLE</button>' +
-        '<button type="button" id="btn-x-signin" class="start-action-btn btn-x">X</button>' +
+        '<button type="button" id="btn-google-signin" class="login-orb" aria-label="Google">G</button>' +
+        '<span class="login-split" aria-hidden="true"></span>' +
+        '<button type="button" id="btn-x-signin" class="login-orb btn-x" aria-label="X">X</button>' +
       '</div>' +
       '<div class="auth-chip hidden" id="auth-chip">' +
         '<img id="auth-chip-avatar" class="auth-chip-avatar" alt="" width="28" height="28" data-placeholder="1" />' +
@@ -24,11 +25,8 @@
     card.appendChild(box);
 
     const toggle = box.querySelector("#btn-login-toggle");
-    const methods = box.querySelector("#auth-signin-row");
     const chip = box.querySelector("#auth-chip");
-    toggle.addEventListener("click", () => {
-      box.classList.toggle("open");
-    });
+    toggle.addEventListener("click", () => box.classList.toggle("open"));
 
     function sync() {
       const inChip = chip && !chip.classList.contains("hidden");
