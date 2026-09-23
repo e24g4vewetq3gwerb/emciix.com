@@ -1207,6 +1207,8 @@
       sideRightLabel.innerHTML = String(levelMeta.sideRight || "KEEP IT<br />CLEAN").replace(/ /g, "<br />");
     }
     document.title = "🚀 Emciix";
+    const app = document.getElementById("app");
+    if (app) app.dataset.theme = (levelMeta && levelMeta.theme) || "";
     const metaLevel = $("#meta-level");
     const metaBpm = $("#meta-bpm");
     const metaNext = $("#meta-next");
@@ -1772,12 +1774,19 @@
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "level-tile" + (idx === levelIndex ? " current" : "");
+      if (meta.theme) btn.classList.add("theme-" + meta.theme);
       const shortTitle = meta.short || meta.title || ("Level " + (idx + 1));
       const best = bests[meta.id];
       const bestText = best
         ? "BEST " + best.score + " · " + (best.rank || "D")
         : "—";
+      const art = meta.theme === "device"
+        ? '<span class="lt-art device-art" aria-hidden="true"><i></i><i></i></span>'
+        : meta.theme === "tabs"
+        ? '<span class="lt-art tabs-art" aria-hidden="true"><i></i><i></i><i></i></span>'
+        : "";
       btn.innerHTML =
+        art +
         '<span class="lt-num">LVL ' + (idx + 1) + "</span>" +
         '<span class="lt-title"></span>' +
         '<span class="lt-best' + (best ? " has-best" : "") + '"></span>';
@@ -1847,11 +1856,17 @@
     }
     if (confirmTitle) confirmTitle.textContent = String(meta.title || "LEVEL").toUpperCase();
     if (confirmBlurb) confirmBlurb.textContent = defaultBlurb(meta);
-    if (confirmOverlay) confirmOverlay.classList.remove("hidden");
+    if (confirmOverlay) {
+      confirmOverlay.dataset.theme = meta.theme || "";
+      confirmOverlay.classList.remove("hidden");
+    }
   }
 
   function hideConfirm() {
-    if (confirmOverlay) confirmOverlay.classList.add("hidden");
+    if (confirmOverlay) {
+      confirmOverlay.classList.add("hidden");
+      confirmOverlay.dataset.theme = "";
+    }
     pendingLevelIndex = null;
   }
 

@@ -226,5 +226,31 @@
     "youtube": "https://www.youtube.com/watch?v=7hnVjQgSiWM",
     "sideLeft": "DALE",
     "sideRight": "PLAY IT"
+  },
+  {
+    "id": "Qq-D17G4L_o",
+    "title": "Which Device Is That",
+    "short": "WHICH DEVICE",
+    "blurb": "Two devices, one pulse. Pick the lane that answers.",
+    "theme": "device",
+    "chart": "/game/play/levels/which-device-is-that/chart.json",
+    "lyrics": "/game/play/levels/which-device-is-that/lyrics.json",
+    "audio": "/game/play/levels/which-device-is-that/audio/which-device-is-that.mp3",
+    "youtube": "https://www.youtube.com/watch?v=Qq-D17G4L_o",
+    "sideLeft": "WHICH",
+    "sideRight": "DEVICE"
+  },
+  {
+    "id": "tabs-i-cant-close",
+    "title": "Tabs I Can't Close",
+    "short": "OPEN TABS",
+    "blurb": "Every tab stays open. Don't drop the chain.",
+    "theme": "tabs",
+    "chart": "/game/play/levels/tabs-i-cant-close/chart.json",
+    "lyrics": "/game/play/levels/tabs-i-cant-close/lyrics.json",
+    "audio": "/game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3",
+    "youtube": "",
+    "sideLeft": "TABS",
+    "sideRight": "STAY OPEN"
   }
 ]
