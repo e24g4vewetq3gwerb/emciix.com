@@ -1437,7 +1437,7 @@
     /* Desktop/tablet: By city + Need Inc. — equal 50/50 columns, equal card heights */
     @media (min-width:761px){
       .needprev-wrap {
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:1fr;
         gap:12px; align-items:stretch;
         justify-content:stretch;
       }
@@ -3184,62 +3184,6 @@
 
     <section class="needprev" id="need-preview" aria-label="Need Inc. app preview">
       <div class="needprev-wrap">
-        <article class="needprev-city statpanel city" aria-label="Need Place by city preview">
-          <div class="stathead">
-            <div>
-              <div class="stattitle-row">
-                <h3 class="stattitle">By city</h3>
-                <span class="statkicker">Need</span>
-                <div class="stathead-end">
-                  <span class="statbadge live"><i></i> Live</span>
-                </div>
-              </div>
-              <div class="statmeta">
-                <span class="place-status-chip is-hot" id="needCityStatus">Lit</span>
-                <p class="statsub" id="needCitySub">Toronto, ON · 3 today · 3 chat · 3 open</p>
-              </div>
-            </div>
-          </div>
-          <p class="needprev-sample" id="needCitySample">UI preview sample · live Place stats load when available</p>
-          <div class="chart" id="needCityChart" role="list">
-            <div class="chartrow hasbar top" role="listitem" title="Toronto, ON — preview">
-              <span class="rank">1</span>
-              <span class="labcol">
-                <span class="labrow"><span class="label">Toronto</span><span class="regionchip">ON</span><span class="place-status-chip is-hot">Lit</span><span class="todaychip">3 today</span></span>
-                <span class="meta"><span class="share">3 chat</span></span>
-              </span>
-              <span class="val">3</span>
-              <div class="bartrack" aria-hidden="true"><i style="width:100%"></i></div>
-            </div>
-            <div class="chartrow hasbar top" role="listitem" title="Sault Ste. Marie, ON — preview">
-              <span class="rank">2</span>
-              <span class="labcol">
-                <span class="labrow"><span class="label">Sault Ste. Marie</span><span class="regionchip">ON</span><span class="place-status-chip is-hot">Lit</span></span>
-                <span class="meta"><span class="share">1 chat</span></span>
-              </span>
-              <span class="val">1</span>
-              <div class="bartrack" aria-hidden="true"><i style="width:33%"></i></div>
-            </div>
-            <div class="chartrow hasbar top" role="listitem" title="Montréal, QC — preview">
-              <span class="rank">3</span>
-              <span class="labcol">
-                <span class="labrow"><span class="label">Montréal</span><span class="regionchip">QC</span><span class="place-status-chip is-hot">Lit</span></span>
-                <span class="meta"><span class="share">1 chat</span></span>
-              </span>
-              <span class="val">1</span>
-              <div class="bartrack" aria-hidden="true"><i style="width:33%"></i></div>
-            </div>
-            <div class="chartrow hasbar top" role="listitem" title="Vancouver, BC — preview">
-              <span class="rank">4</span>
-              <span class="labcol">
-                <span class="labrow"><span class="label">Vancouver</span><span class="regionchip">BC</span><span class="place-status-chip is-hot">Lit</span></span>
-                <span class="meta"><span class="share">1 chat</span></span>
-              </span>
-              <span class="val">1</span>
-              <div class="bartrack" aria-hidden="true"><i style="width:33%"></i></div>
-            </div>
-          </div>
-        </article>
         <article class="needprev-entry" aria-label="Need Inc. app entry">
           <header class="needprev-entry-head">
             <img class="needprev-mark" src="/need/need-logo.png" alt="" width="52" height="52" />
