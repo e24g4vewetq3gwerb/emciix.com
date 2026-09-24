@@ -3021,7 +3021,7 @@
       }
       function applyLedger(data) {
         var rows = ((data && data.calls) || []).map(liveCall).filter(Boolean);
-        ledgerCalls = latestCalls(rows.concat(ledgerCalls));
+        ledgerCalls = latestCalls(rows);
         showLedger();
       }
       function addLive(row) {
@@ -3029,25 +3029,6 @@
         if (!row) return;
         ledgerCalls = latestCalls([row].concat(ledgerCalls));
         showLedger();
-      }
-      function pullInbox() {
-        fetch(inboxUrl + "/json?poll=1&since=12h", { cache: "no-store" }).then(function (res) {
-          if (!res.ok) throw new Error("inbox");
-          return res.text();
-        }).then(function (text) {
-          var rows = [];
-          String(text || "").split("\n").forEach(function (line) {
-            if (!line.trim()) return;
-            try {
-              var msg = JSON.parse(line);
-              if (!msg || msg.event !== "message" || !msg.message) return;
-              var extra = liveCall(JSON.parse(msg.message));
-              if (extra) rows.push(extra);
-            } catch (err) {}
-          });
-          ledgerCalls = latestCalls(rows.concat(ledgerCalls));
-          showLedger();
-        }).catch(function () {});
       }
       function pullLedger() {
         function take(url) {
@@ -3081,9 +3062,7 @@
           })
         }).catch(function () {});
       }
-      pullInbox();
       pullLedger();
-      setInterval(pullInbox, 2500);
       setInterval(pullLedger, 20000);
       try {
         var live = new EventSource(inboxUrl + "/sse");
@@ -3094,14 +3073,6 @@
             addLive(JSON.parse(msg.message));
           } catch (err) {}
         };
-      } catch (err) {}
-      try {
-        if (!sessionStorage.getItem("emciix-ledger-sent")) {
-          sessionStorage.setItem("emciix-ledger-sent", "1");
-          readCalls().forEach(function (row) {
-            if (row && row.handle && row.handle !== "x") publishCall(row);
-          });
-        }
       } catch (err) {}
     })();
     </script>
