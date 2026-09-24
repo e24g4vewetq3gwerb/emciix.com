@@ -2585,7 +2585,7 @@
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" x / youtube / linkedin" autocomplete="off" maxlength="180" required />
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle or a YouTube link" autocomplete="off" maxlength="180" required />
           <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Clear">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
@@ -2756,25 +2756,19 @@
       }
       function kindOf(value) {
         var raw = String(value || "").trim();
-        var linked = raw.match(/^in\/([A-Za-z0-9._-]{2,80})$/i);
-        if (linked) return { site: "linkedin", raw: "https://www.linkedin.com/in/" + linked[1] };
         var url = parseLink(raw);
         var site = url && siteOf(url);
-        if (site === "youtube" || site === "linkedin") return { site: site, raw: url.href };
+        if (site === "youtube") return { site: "youtube", raw: url.href };
         if (site === "x") {
           var fromUrl = asHandle(raw);
           if (fromUrl) return { site: "x", raw: fromUrl };
         }
-        var tagged = raw.match(/^(yt|youtube|in|li|linkedin)\s*:\s*(.+)$/i);
-        if (tagged) {
-          var key = tagged[1].toLowerCase();
-          return { site: key === "yt" || key === "youtube" ? "youtube" : "linkedin", raw: tagged[2].trim() };
-        }
+        var tagged = raw.match(/^(?:yt|youtube)\s*:\s*(.+)$/i);
+        if (tagged) return { site: "youtube", raw: tagged[1].trim() };
         var handle = asHandle(raw);
         if (handle) return { site: "x", raw: handle };
         var bare = raw.replace(/^@/, "");
-        if (/[.-]/.test(bare) && /^[A-Za-z0-9._-]{2,80}$/.test(bare)) return { site: "linkedin", raw: bare };
-        if (/^[A-Za-z0-9._-]{16,40}$/.test(bare)) return { site: "youtube", raw: bare };
+        if (/^[A-Za-z0-9._-]{2,40}$/.test(bare)) return { site: "youtube", raw: bare };
         return null;
       }
       async function youtubeCall(raw) {
@@ -2784,41 +2778,6 @@
         var who = card.name || raw;
         return { handle: who.replace(/\s+/g, ""), name: who, avatar: card.avatar || "", title: card.title, url: card.url || (url ? url.href : "") };
       }
-      async function linkedinCall(raw) {
-        var href = parseLink(raw);
-        if (!href) href = new URL("https://www.linkedin.com/in/" + String(raw || "").trim().replace(/^@/, "").replace(/^in\//i, ""));
-        var parts = href.pathname.split("/").filter(Boolean);
-        var slug = decodeURIComponent((parts[0] === "in" ? parts[1] : parts[0]) || "").replace(/^@/, "");
-        if (!slug) return null;
-        var profile = "https://www.linkedin.com/in/" + slug;
-        var postUrl = profile;
-        var post = "";
-        try {
-          var page = await fetch("https://r.jina.ai/" + profile + "/recent-activity/shares/");
-          var text = await page.text();
-          var cutAt = text.indexOf("Posts");
-          var cut = cutAt >= 0 ? text.slice(cutAt) : text;
-          var found = cut.match(/https:\/\/www\.linkedin\.com\/posts\/[^\s)]+/);
-          if (found) {
-            postUrl = found[0];
-            var after = cut.slice(found.index + found[0].length).replace(/^\)\s*/, "");
-            after = after.split("[...more]")[0].split("public_profile__posts")[0];
-            after = after.replace(/\[([^\]]*)\]\([^)]+\)/g, "$1");
-            after = after.replace(/\s+/g, " ").trim();
-            if (after && !/sign in to view|join now/i.test(after)) post = firstLine(after);
-          }
-        } catch (e) {}
-        var info = {};
-        try {
-          var card = await fetch("https://api.microlink.io/?url=" + encodeURIComponent(profile));
-          info = ((await card.json()) || {}).data || {};
-        } catch (e) {}
-        if (!post) post = firstLine(info.description || "");
-        if (!post) return null;
-        var name = info.author || String(info.title || "").replace(/\s*[|–-]\s*LinkedIn\s*$/i, "").split(" - ")[0].trim() || slug;
-        var image = info.image && (info.image.url || info.image) || "";
-        return { handle: slug, name: name, avatar: image, title: post, url: postUrl };
-      }
       function resetCall() {
         source = "";
         heldName = "";
@@ -2827,7 +2786,7 @@
         input.value = "";
         input.disabled = false;
         input.removeAttribute("data-title");
-        input.placeholder = " x / youtube / linkedin";
+        input.placeholder = " @handle or a YouTube link";
         if (ask) ask.textContent = "Galactic call:";
         if (photo) {
           photo.classList.remove("has-photo");
@@ -2947,8 +2906,8 @@
         input.disabled = true;
         input.placeholder = shown;
         if (ask) ask.textContent = shown;
-        var job = target.site === "youtube" ? youtubeCall(target.raw) : target.site === "linkedin" ? linkedinCall(target.raw) : xByHandle(target.raw);
-        var fallback = target.site === "youtube" ? (parseLink(target.raw) ? target.raw : "https://www.youtube.com/results?search_query=" + encodeURIComponent(target.raw)) : target.site === "linkedin" ? (parseLink(target.raw) ? target.raw : "https://www.linkedin.com/in/" + String(target.raw).replace(/^@/, "").replace(/^in\//i, "")) : "https://x.com/" + target.raw;
+        var job = target.site === "youtube" ? youtubeCall(target.raw) : xByHandle(target.raw);
+        var fallback = target.site === "youtube" ? (parseLink(target.raw) ? target.raw : "https://www.youtube.com/results?search_query=" + encodeURIComponent(target.raw)) : "https://x.com/" + target.raw;
         job.then(function (card) {
           input.disabled = false;
           var who = (card && card.handle) || target.raw;
@@ -3063,7 +3022,7 @@
       function postHref(row) {
         var href = String((row && row.url) || "");
         if (/status\/\d+/.test(href)) return href.replace(/^https:\/\/(?:twitter|fxtwitter)\.com\//i, "https://x.com/");
-        if (/youtu\.be|youtube\.com|linkedin\.com/i.test(href)) return href;
+        if (/youtu\.be|youtube\.com/i.test(href)) return href;
         return "";
       }
       function parseCallDoc(doc) {
