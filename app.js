@@ -43,7 +43,7 @@ function repeatIconSvg(){
   return '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 6h8V3l5 4-5 4V8H7a3 3 0 0 0-3 3v2H2v-2a5 5 0 0 1 5-5zm10 12H9v3l-5-4 5-4v3h8a3 3 0 0 0 3-3v-2h2v2a5 5 0 0 1-5 5z"/><text x="12" y="14.5" text-anchor="middle" font-size="8" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="700" fill="currentColor">1</text></svg>';
 }
 function gameItHtml(){
-  return '<a class="playgame" id="openGames" href="https://emciix.com/game/play" aria-label="Open Games" title="Games"><svg class="playgame-x" viewBox="0 0 100 100" aria-hidden="true"><path d="M28 28 L42 42 M72 28 L58 42 M28 72 L42 58 M72 72 L58 58"/></svg></a>';
+  return '<a class="playgame" id="openGames" href="https://emciix.com/portal" aria-label="Open portal" title="Portal"><svg class="playgame-x" viewBox="0 0 100 100" aria-hidden="true"><path d="M28 28 L42 42 M72 28 L58 42 M28 72 L42 58 M72 72 L58 58"/></svg></a>';
 }
 var SONGS = [
   ["RFqKvFDB0Hg","I JUST UPDATE"],
