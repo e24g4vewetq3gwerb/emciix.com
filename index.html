@@ -2557,7 +2557,7 @@
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
           <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder="Galactic call" autocomplete="off" maxlength="180" required />
-          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh latest post">
+          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Clear">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
           </button>
@@ -2735,9 +2735,12 @@
           photo.classList.remove("has-photo");
           photo.style.backgroundImage = "";
         }
-        if (refresh) refresh.classList.remove("is-busy");
+        if (refresh) refresh.removeAttribute("data-handle");
         form.classList.remove("is-saved");
-        try { localStorage.removeItem(key); } catch (err) {}
+        try {
+          localStorage.removeItem(key);
+          localStorage.removeItem("emciix-x-handle");
+        } catch (err) {}
         input.focus();
       }
       async function youtubeCard(url) {
@@ -2839,92 +2842,40 @@
       function runLookup(value) {
         var handle = asHandle(value);
         if (!handle) return;
-        var previous = input.getAttribute("data-title") || "";
+        var shown = "@" + handle;
         source = handle;
         form.setAttribute("data-query", handle);
         input.disabled = true;
-        if (refresh) {
-          refresh.classList.remove("is-new", "is-same");
-          refresh.classList.add("is-busy");
-        }
-        if (!previous) input.placeholder = "Galactic call";
+        input.placeholder = shown;
+        if (ask) ask.textContent = shown;
         xByHandle(handle).then(function (card) {
           input.disabled = false;
-          if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = "Galactic call";
-          if (!card || (!card.title && !card.name)) {
-            if (!previous) paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle, label: "Galactic call:" });
-            return;
-          }
-          var post = card.title || previous || "";
+          var who = (card && card.handle) || handle;
+          shown = "@" + who;
+          var post = (card && card.title) || "";
           paint({
-            name: card.name,
-            avatar: card.avatar,
-            title: [card.name, post].filter(Boolean).join(" · "),
+            name: (card && card.name) || who,
+            avatar: card && card.avatar,
+            title: post,
             post: post,
-            source: handle,
-            label: "Galactic call:"
+            source: who,
+            label: shown,
+            keepPhoto: !(card && card.avatar)
           });
-          if (!refresh) return;
-          refresh.classList.add(previous && card.title === previous ? "is-same" : "is-new");
-          setTimeout(function () { refresh.classList.remove("is-new", "is-same"); }, 900);
+          input.value = post;
+          input.placeholder = shown;
+          if (ask) ask.textContent = shown;
         }).catch(function () {
           input.disabled = false;
-          if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = "Galactic call";
-          if (!previous) paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle });
+          input.value = "";
+          input.placeholder = shown;
+          if (ask) ask.textContent = shown;
+          paint({ source: handle, label: shown, keepPhoto: true, keepName: true });
         });
-      }
-      function savedHandle() {
-        var typed = asHandle(input.value);
-        if (typed) return typed;
-        var marked = refresh && refresh.getAttribute("data-handle");
-        if (marked) return marked;
-        if (form.getAttribute("data-query")) return form.getAttribute("data-query");
-        if (source) return source;
-        try { return localStorage.getItem("emciix-x-handle") || ""; } catch (err) { return ""; }
       }
       window.emciixRefresh = function (event) {
         if (event) { event.preventDefault(); event.stopPropagation(); }
-        input.disabled = false;
-        var handle = asHandle(savedHandle());
-        if (!handle) {
-          input.value = "";
-          input.placeholder = "Galactic call";
-          if (ask) ask.textContent = "Galactic call:";
-          input.focus();
-          return;
-        }
-        if (refresh) refresh.classList.add("is-busy");
-        if (ask) ask.textContent = "Galactic call:";
-        input.value = "";
-        input.placeholder = "Galactic call";
-        var started = Date.now();
-        xByHandle(handle).then(function (card) {
-          var wait = Math.max(0, 420 - (Date.now() - started));
-          setTimeout(function () {
-            if (refresh) refresh.classList.remove("is-busy");
-            input.placeholder = "Galactic call";
-            if (!card || (!card.name && !card.title)) {
-              paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle, label: "Galactic call:" });
-              return;
-            }
-            var post = card.title || "";
-            paint({
-              name: card.name || handle,
-              avatar: card.avatar,
-              title: [card.name || handle, post].filter(Boolean).join(" · "),
-              post: post,
-              source: handle,
-              label: "Galactic call:",
-              keepPhoto: !card.avatar
-            });
-          }, wait);
-        }).catch(function () {
-          if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = "Galactic call";
-          paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle, label: "Galactic call:" });
-        });
+        resetCall();
       };
       if (refresh) refresh.addEventListener("click", window.emciixRefresh, true);
     })();
