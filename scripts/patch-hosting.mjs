@@ -224,7 +224,10 @@ await pruneStorage();
 
 
 function widenConnect(config) {
-  const extra = ["https://api.fxtwitter.com", "https://invidious.darkness.services"];
+  const extras = {
+    "connect-src": ["https://api.fxtwitter.com", "https://invidious.darkness.services"],
+    "img-src": ["https://*.ggpht.com", "https://*.licdn.com", "https://*.fbcdn.net"],
+  };
   let hits = 0;
   function walk(node) {
     if (!node || typeof node !== "object") return;
@@ -234,16 +237,20 @@ function widenConnect(config) {
     }
     for (const key of Object.keys(node)) {
       const value = node[key];
-      if (typeof value === "string" && value.includes("connect-src")) {
-        const match = value.match(/connect-src[^;]*/);
-        if (match) {
+      if (typeof value === "string" && (value.includes("connect-src") || value.includes("img-src"))) {
+        let next = value;
+        for (const directive of Object.keys(extras)) {
+          if (!next.includes(directive)) continue;
+          const match = next.match(new RegExp(directive + "[^;]*"));
+          if (!match) continue;
           let src = match[0];
-          for (const origin of extra) {
+          for (const origin of extras[directive]) {
             if (!src.includes(origin)) src += " " + origin;
           }
-          node[key] = value.replace(match[0], src);
+          next = next.replace(match[0], src);
           hits += 1;
         }
+        node[key] = next;
       } else if (value && typeof value === "object") walk(value);
     }
   }
