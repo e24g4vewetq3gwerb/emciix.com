@@ -2581,6 +2581,8 @@
         if (card.source) {
           source = card.source;
           form.setAttribute("data-query", card.source);
+          if (refresh) refresh.setAttribute("data-handle", card.source);
+          try { localStorage.setItem("emciix-x-handle", card.source); } catch (err) {}
         }
         if (card.title) input.value = card.title;
         if (card.post) input.setAttribute("data-title", card.post);
@@ -2873,16 +2875,58 @@
           if (!previous) paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle });
         });
       }
-      document.addEventListener("click", function (event) {
-        var node = event.target && event.target.closest ? event.target.closest("#callerRefresh") : null;
-        if (!node) return;
-        event.preventDefault();
-        event.stopPropagation();
+      function savedHandle() {
         var typed = asHandle(input.value);
-        var handle = typed || form.getAttribute("data-query") || source;
-        if (!handle) { focusEmpty(); return; }
-        runLookup(handle);
-      });
+        if (typed) return typed;
+        var marked = refresh && refresh.getAttribute("data-handle");
+        if (marked) return marked;
+        if (form.getAttribute("data-query")) return form.getAttribute("data-query");
+        if (source) return source;
+        try { return localStorage.getItem("emciix-x-handle") || ""; } catch (err) { return ""; }
+      }
+      window.emciixRefresh = function (event) {
+        if (event) { event.preventDefault(); event.stopPropagation(); }
+        input.disabled = false;
+        var handle = asHandle(savedHandle());
+        if (!handle) {
+          input.value = "";
+          input.placeholder = "Galactic call";
+          if (ask) ask.textContent = "Galactic call:";
+          input.focus();
+          return;
+        }
+        if (refresh) refresh.classList.add("is-busy");
+        if (ask) ask.textContent = "Galactic call:";
+        input.value = "";
+        input.placeholder = "Galactic call";
+        var started = Date.now();
+        xByHandle(handle).then(function (card) {
+          var wait = Math.max(0, 420 - (Date.now() - started));
+          setTimeout(function () {
+            if (refresh) refresh.classList.remove("is-busy");
+            input.placeholder = "Galactic call";
+            if (!card || (!card.name && !card.title)) {
+              paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle, label: "Galactic call:" });
+              return;
+            }
+            var post = card.title || "";
+            paint({
+              name: card.name || handle,
+              avatar: card.avatar,
+              title: [card.name || handle, post].filter(Boolean).join(" · "),
+              post: post,
+              source: handle,
+              label: "Galactic call:",
+              keepPhoto: !card.avatar
+            });
+          }, wait);
+        }).catch(function () {
+          if (refresh) refresh.classList.remove("is-busy");
+          input.placeholder = "Galactic call";
+          paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle, label: "Galactic call:" });
+        });
+      };
+      if (refresh) refresh.addEventListener("click", window.emciixRefresh, true);
     })();
     </script>
 
