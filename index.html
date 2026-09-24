@@ -1913,6 +1913,28 @@
     }
     .call-dot.has-photo { border:0; color:transparent; }
     .galactic-call.is-saved .call-dot:not(.has-photo) { background:transparent; }
+    .call-kicker {
+      margin:14px 0 8px; font:600 12px/1 var(--font); letter-spacing:.14em;
+      text-transform:uppercase; color:var(--dim);
+    }
+    .call-history { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+    .call-history li {
+      display:flex; align-items:center; gap:10px; min-height:48px;
+      padding:8px 14px; border:1px solid var(--line); border-radius:16px;
+      background:var(--surface);
+    }
+    .call-ava {
+      width:28px; height:28px; border-radius:50%; flex:none;
+      display:grid; place-items:center; overflow:hidden;
+      background:#111 center/cover no-repeat; border:1px solid var(--line);
+      font:700 12px/1 var(--font); color:var(--ink);
+    }
+    .call-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+    .call-who { font:600 14px/1.2 var(--font); }
+    .call-post {
+      color:var(--dim); font:500 13px/1.3 var(--font);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card {
       position:relative;
@@ -2562,6 +2584,8 @@
             <span class="planet-body" aria-hidden="true"></span>
           </button>
         </form>
+        <p class="call-kicker" id="callKicker" hidden>Latest calls</p>
+        <ol class="call-history" id="callHistory" hidden></ol>
       </div>
     </section>
     <script>
@@ -2865,6 +2889,13 @@
           input.value = post;
           input.placeholder = shown;
           if (ask) ask.textContent = shown;
+          publishCall({
+            handle: who,
+            name: (card && card.name) || who,
+            avatar: (card && card.avatar) || "",
+            post: post,
+            at: Date.now()
+          });
         }).catch(function () {
           input.disabled = false;
           input.value = "";
@@ -2878,6 +2909,99 @@
         resetCall();
       };
       if (refresh) refresh.addEventListener("click", window.emciixRefresh, true);
+      var callStore = "emciix-call-history";
+      var callUrl = "https://firestore.googleapis.com/v1/projects/emciix-com/databases/(default)/documents/galacticCalls";
+      function readCalls() {
+        try {
+          var list = JSON.parse(localStorage.getItem(callStore) || "[]");
+          return Array.isArray(list) ? list : [];
+        } catch (err) { return []; }
+      }
+      function latestCalls(list) {
+        return (list || []).filter(function (row) { return row && row.handle; }).sort(function (a, b) {
+          return (b.at || 0) - (a.at || 0);
+        }).slice(0, 5);
+      }
+      function renderCalls(list) {
+        var ol = document.getElementById("callHistory");
+        var kicker = document.getElementById("callKicker");
+        if (!ol) return;
+        var rows = latestCalls(list);
+        ol.textContent = "";
+        if (!rows.length) {
+          ol.hidden = true;
+          if (kicker) kicker.hidden = true;
+          return;
+        }
+        ol.hidden = false;
+        if (kicker) kicker.hidden = false;
+        rows.forEach(function (row) {
+          var li = document.createElement("li");
+          var ava = document.createElement("span");
+          ava.className = "call-ava";
+          if (row.avatar) ava.style.backgroundImage = "url(\"" + String(row.avatar).replace(/"/g, "") + "\")";
+          else ava.textContent = "x";
+          var copy = document.createElement("span");
+          copy.className = "call-copy";
+          var who = document.createElement("strong");
+          who.className = "call-who";
+          who.textContent = "@" + String(row.handle).replace(/^@/, "");
+          var post = document.createElement("span");
+          post.className = "call-post";
+          post.textContent = row.post || "No post";
+          copy.appendChild(who);
+          copy.appendChild(post);
+          li.appendChild(ava);
+          li.appendChild(copy);
+          ol.appendChild(li);
+        });
+      }
+      function parseCallDoc(doc) {
+        var fields = doc && doc.fields || {};
+        var at = fields.at && fields.at.integerValue != null ? parseInt(fields.at.integerValue, 10) || 0 : 0;
+        return {
+          handle: fields.handle && fields.handle.stringValue || "",
+          name: fields.name && fields.name.stringValue || "",
+          avatar: fields.avatar && fields.avatar.stringValue || "",
+          post: fields.post && fields.post.stringValue || "",
+          at: at
+        };
+      }
+      function loadCalls() {
+        renderCalls(readCalls());
+        fetch(callUrl + "?pageSize=25", { cache: "no-store" }).then(function (res) {
+          if (!res.ok) throw new Error("calls");
+          return res.json();
+        }).then(function (data) {
+          var remote = ((data && data.documents) || []).map(parseCallDoc);
+          var merged = latestCalls(remote.concat(readCalls()));
+          try { localStorage.setItem(callStore, JSON.stringify(merged)); } catch (err) {}
+          renderCalls(merged);
+        }).catch(function () {});
+      }
+      function publishCall(entry) {
+        if (!entry || !entry.handle) return;
+        entry.avatar = String(entry.avatar || "").slice(0, 480);
+        entry.post = String(entry.post || "").slice(0, 280);
+        entry.name = String(entry.name || entry.handle).slice(0, 70);
+        var merged = latestCalls([entry].concat(readCalls()));
+        try { localStorage.setItem(callStore, JSON.stringify(merged)); } catch (err) {}
+        renderCalls(merged);
+        fetch(callUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              handle: { stringValue: entry.handle },
+              name: { stringValue: entry.name },
+              avatar: { stringValue: entry.avatar },
+              post: { stringValue: entry.post },
+              at: { integerValue: String(entry.at || Date.now()) }
+            }
+          })
+        }).then(function () { loadCalls(); }).catch(function () {});
+      }
+      loadCalls();
     })();
     </script>
 
