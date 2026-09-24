@@ -2582,7 +2582,7 @@
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder="Galactic call" autocomplete="off" maxlength="180" required />
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" x handle" autocomplete="off" maxlength="180" required />
           <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Clear">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
@@ -2759,7 +2759,7 @@
         input.value = "";
         input.disabled = false;
         input.removeAttribute("data-title");
-        input.placeholder = "Galactic call";
+        input.placeholder = " x handle";
         if (ask) ask.textContent = "Galactic call:";
         if (photo) {
           photo.classList.remove("has-photo");
