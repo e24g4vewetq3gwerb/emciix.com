@@ -2944,9 +2944,6 @@
           ava.className = "call-ava";
           if (href) {
             ava.href = href;
-            ava.target = "_blank";
-            ava.rel = "noopener";
-            hoverPost(ava, href);
           }
           if (row.avatar) ava.style.backgroundImage = "url(\"" + String(row.avatar).replace(/"/g, "") + "\")";
           else ava.textContent = "x";
@@ -2956,9 +2953,6 @@
           who.className = "call-who";
           if (href) {
             who.href = href;
-            who.target = "_blank";
-            who.rel = "noopener";
-            hoverPost(who, href);
           }
           who.textContent = "@" + String(row.handle).replace(/^@/, "");
           var post = document.createElement("span");
@@ -2977,13 +2971,6 @@
           return href.replace(/^https:\/\/(?:twitter|fxtwitter)\.com\//i, "https://x.com/");
         }
         return "";
-      }
-      function hoverPost(node, href) {
-        var timer = 0;
-        node.addEventListener("mouseenter", function () {
-          timer = setTimeout(function () { window.location.href = href; }, 180);
-        });
-        node.addEventListener("mouseleave", function () { clearTimeout(timer); });
       }
       function parseCallDoc(doc) {
         var fields = doc && doc.fields || {};
