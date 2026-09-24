@@ -27,7 +27,7 @@ function keep(list) {
       seen.add(key);
       return true;
     })
-    .slice(0, 10);
+    .slice(0, 20);
 }
 
 const res = await fetch(listUrl);
