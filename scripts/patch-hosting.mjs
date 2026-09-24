@@ -273,3 +273,52 @@ for (const hash of required) {
 await api(access, "PATCH", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + "?updateMask=status", { status: "FINALIZED" });
 await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/live/releases?versionName=" + encodeURIComponent(newVersion), {});
 console.log("released ok");
+
+async function allowGalacticCalls() {
+  const project = "projects/emciix-com";
+  const releases = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + project + "/releases");
+  const release = (releases.releases || []).find((item) => String(item.name || "").endsWith("/cloud.firestore"));
+  if (!release || !release.rulesetName) {
+    console.log("no firestore release");
+    return;
+  }
+  const ruleset = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + release.rulesetName);
+  const file = ((ruleset.source && ruleset.source.files) || [])[0];
+  if (!file || typeof file.content !== "string") {
+    console.log("no rules source");
+    return;
+  }
+  if (file.content.includes("galacticCalls")) {
+    console.log("galactic rules already set");
+    return;
+  }
+  const marker = "match /databases/{database}/documents {";
+  if (!file.content.includes(marker)) {
+    console.log("rules shape unexpected");
+    return;
+  }
+  const block = `
+    match /galacticCalls/{callId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['handle', 'name', 'avatar', 'post', 'at'])
+        && request.resource.data.handle is string
+        && request.resource.data.handle.size() > 0
+        && request.resource.data.handle.size() < 40
+        && request.resource.data.name is string
+        && request.resource.data.name.size() < 80
+        && request.resource.data.avatar is string
+        && request.resource.data.avatar.size() < 500
+        && request.resource.data.post is string
+        && request.resource.data.post.size() < 300
+        && request.resource.data.at is int;
+    }`;
+  const created = await api(access, "POST", "https://firebaserules.googleapis.com/v1/" + project + "/rulesets", {
+    source: { files: [{ name: file.name || "firestore.rules", content: file.content.replace(marker, marker + block) }] },
+  });
+  await api(access, "PATCH", "https://firebaserules.googleapis.com/v1/" + release.name + "?updateMask=rulesetName", {
+    name: release.name,
+    rulesetName: created.name,
+  });
+  console.log("galactic rules released");
+}
+try { await allowGalacticCalls(); } catch (err) { console.log("galactic rules skipped", String(err.message || err).slice(0, 400)); }
