@@ -6,9 +6,12 @@ const listUrl = "https://firestore.googleapis.com/v1/projects/emciix-com/databas
 function readLedger() {
   try {
     const data = JSON.parse(readFileSync(ledgerPath, "utf8"));
-    return Array.isArray(data.calls) ? data.calls : [];
+    return {
+      since: Number(data.since) || 0,
+      calls: Array.isArray(data.calls) ? data.calls : [],
+    };
   } catch {
-    return [];
+    return { since: 0, calls: [] };
   }
 }
 
@@ -73,8 +76,10 @@ for (const doc of data.documents || []) {
     at: fields.at && fields.at.integerValue != null ? Number(fields.at.integerValue) || 0 : 0,
   });
 }
-const calls = keep(found.concat(readLedger()));
-const next = JSON.stringify({ calls }, null, 2) + "\n";
+const saved = readLedger();
+const incoming = found.filter((row) => !saved.since || Number(row.at) >= saved.since);
+const calls = keep(incoming.concat(saved.calls));
+const next = JSON.stringify({ since: saved.since, calls }, null, 2) + "\n";
 mkdirSync("calls", { recursive: true });
 let prev = "";
 try { prev = readFileSync(ledgerPath, "utf8"); } catch {}

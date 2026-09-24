@@ -1927,6 +1927,9 @@
       text-transform:uppercase; color:var(--dim);
     }
     .call-history { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+    .call-history li.call-empty {
+      color:var(--dim); justify-content:flex-start; font:600 13px/1.3 var(--font);
+    }
     .call-history li {
       display:flex; align-items:center; gap:10px; min-height:48px;
       padding:8px 14px; border:1px solid var(--line); border-radius:16px;
@@ -2951,8 +2954,12 @@
         var rows = latestCalls(list);
         ol.textContent = "";
         if (!rows.length) {
-          ol.hidden = true;
-          if (kicker) kicker.hidden = true;
+          ol.hidden = false;
+          if (kicker) kicker.hidden = false;
+          var empty = document.createElement("li");
+          empty.className = "call-empty";
+          empty.textContent = "Fresh ledger";
+          ol.appendChild(empty);
           return;
         }
         ol.hidden = false;
@@ -3019,14 +3026,17 @@
         var extra = pendingCalls.filter(function (row) { return row && !seen[row.handle + "|" + row.at]; });
         renderCalls(extra.concat(ledgerCalls));
       }
+      var ledgerSince = 0;
       function applyLedger(data) {
+        ledgerSince = Number(data && data.since) || 0;
         var rows = ((data && data.calls) || []).map(liveCall).filter(Boolean);
-        ledgerCalls = latestCalls(rows.concat(ledgerCalls));
+        ledgerCalls = latestCalls(rows);
         showLedger();
       }
       function addLive(row) {
         row = liveCall(row);
         if (!row) return;
+        if (ledgerSince && row.at < ledgerSince) return;
         ledgerCalls = latestCalls([row].concat(ledgerCalls));
         showLedger();
       }
@@ -3042,7 +3052,7 @@
               var msg = JSON.parse(line);
               if (!msg || msg.event !== "message" || !msg.message) return;
               var extra = liveCall(JSON.parse(msg.message));
-              if (extra) rows.push(extra);
+              if (extra && (!ledgerSince || extra.at >= ledgerSince)) rows.push(extra);
             } catch (err) {}
           });
           if (rows.length) {
@@ -3058,9 +3068,12 @@
             return res.json();
           });
         }
-        take(ledgerUrl + "?t=" + Date.now()).catch(function () {
-          return take("/calls/ledger.json?t=" + Date.now());
-        }).then(applyLedger).catch(function () {});
+        take("/calls/ledger.json?t=" + Date.now()).catch(function () {
+          return take(ledgerUrl + "?t=" + Date.now());
+        }).then(function (data) {
+          applyLedger(data);
+          pullInbox();
+        }).catch(function () {});
       }
       function publishCall(entry) {
         if (!entry || !entry.handle || !liveCall({ handle: entry.handle })) return;
@@ -3083,7 +3096,6 @@
           })
         }).catch(function () {});
       }
-      pullInbox();
       pullLedger();
       setInterval(pullInbox, 3000);
       setInterval(pullLedger, 15000);
