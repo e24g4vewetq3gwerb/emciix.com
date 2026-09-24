@@ -631,9 +631,10 @@ function paintNow() {
     '<div class="badgestrip">' +
     '<div id="ytViews" class="ytviews-wrap"></div>' +
     '<span id="songLive" class="liveui hero-live" hidden aria-live="polite"><i aria-hidden="true"></i><span class="lnum">0</span></span>' +
-    gameItHtml() +
     heroModeTabsHtml() +
     '</div>' +
+    '</div>' +
+    gameItHtml() +
     '</div>' +
     '<div class="side-prog">' +
     '<div class="bar"><i id="bar"></i></div>' +
