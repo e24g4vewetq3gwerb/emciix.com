@@ -1916,14 +1916,15 @@
       100% { transform:rotate(360deg) scale(1); }
     }
     .call-dot {
-      width:32px; height:32px; border-radius:50%; flex:none; padding:0;
+      min-width:44px; height:36px; padding:0 12px; border-radius:999px; flex:none;
       border:2px solid var(--ink); background:transparent center/cover no-repeat;
-      color:var(--ink); font:700 15px/1 var(--font); opacity:1; cursor:pointer;
+      color:var(--ink); font:800 13px/1 var(--font); letter-spacing:.06em;
+      text-transform:uppercase; cursor:pointer;
     }
-    .call-dot.has-photo { border:0; color:transparent; }
-    .call-modes { display:flex; align-items:center; gap:6px; flex:none; }
+    .call-dot.has-photo { width:36px; min-width:36px; padding:0; border-radius:50%; color:transparent; }
+    .call-modes { display:flex; align-items:center; gap:8px; flex:none; }
     .call-dot.is-on:not(.has-photo) { background:var(--ink); color:var(--surface); }
-    .call-yt { font-size:11px; letter-spacing:-0.04em; }
+    .call-yt { min-width:52px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card {
       position:relative;
@@ -2563,7 +2564,7 @@
             <button type="button" class="call-dot is-on" id="callerPhoto" aria-label="X handle">x</button>
             <button type="button" class="call-dot call-yt" id="callerYt" aria-label="YouTube channel">yt</button>
           </span>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle" autocomplete="off" maxlength="180" required />
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle or username" autocomplete="off" maxlength="180" required />
           <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Clear">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
@@ -2767,7 +2768,7 @@
         input.value = "";
         input.disabled = false;
         input.removeAttribute("data-title");
-        input.placeholder = " @handle";
+        input.placeholder = " @handle or username";
         mode = "x";
         if (photo) {
           photo.classList.add("is-on");
@@ -2886,7 +2887,7 @@
         mode = next === "youtube" ? "youtube" : "x";
         input.value = "";
         input.disabled = false;
-        input.placeholder = mode === "youtube" ? " YouTube channel link or artist name" : " @handle";
+        input.placeholder = mode === "youtube" ? " YouTube channel link or artist name" : " @handle or username";
         if (ask) ask.textContent = "Galactic call:";
         if (photo) photo.classList.toggle("is-on", mode !== "youtube");
         if (yt) yt.classList.toggle("is-on", mode === "youtube");
