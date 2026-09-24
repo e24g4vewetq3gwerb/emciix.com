@@ -981,7 +981,11 @@
       border:1px solid var(--line); background:var(--surface); font:600 13px/1 var(--font); white-space:nowrap;
     }
     .playlist-pill strong { font:600 13px/1 var(--font); }
-    .side .row .playlist-pill { margin-left:auto; }
+    .side .row .playlist-pill {
+      margin-left:0; flex:1 1 auto; min-width:0; justify-content:center;
+      min-height:0; padding:10px 14px; border-radius:10px; border:0;
+      background:var(--surface-2);
+    }
     /* Order in .side: side-head (title+pills | PLAY) → .side-prog → .metarow → .row → hints */
     .side-prog {
       display:flex; flex-direction:column; align-items:stretch; gap:0;
