@@ -107,112 +107,67 @@ body:has(.need-home) #app,
 }
 
 .need-now-card {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-    padding: 0 0 18px !important;
-    background: #1c1c1e !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 28px !important;
-    overflow: hidden !important;
-    text-align: left !important;
-    box-shadow: none !important;
+  background: #1c1c1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
-
-.need-now-label { display: none !important; }
-  .need-now-card > :first-child {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 18px !important;
-    width: 100% !important;
-    min-height: 280px;
-    margin: 0 !important;
-    padding: 28px 16px !important;
-    background: #f5f5f7 !important;
-    border-radius: 0 !important;
-  }
-  .need-now-card img {
-    width: min(240px, 42vw) !important;
-    height: auto !important;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 22px !important;
-  }
-  .need-now-card > :not(:first-child) {
-    width: auto !important;
-    max-width: none !important;
-    margin: 0 20px !important;
-    text-align: left !important;
-    align-self: stretch !important;
-    justify-content: flex-start !important;
-  }
-  .need-now-card h2,
-  .need-now-card p,
-  .need-now-card button,
-  .need-now-card a {
-    text-align: left !important;
-    color: #f5f5f7 !important;
-  }
-  .need-now-card h2 {
-    font-size: clamp(26px, 3vw, 34px) !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.03em !important;
-    margin: 8px 20px 0 !important;
-  }
-  .need-now-card p,
-  .need-now-card a {
-    color: #a1a1a6 !important;
-  }
-  .need-now-card .need-play {
-    width: 74px !important;
-    height: 74px !important;
-    min-width: 74px !important;
-    border-radius: 50% !important;
-    background: #fff !important;
-    color: #111 !important;
-    border: 0 !important;
-    font: 700 13px/1 var(--font, system-ui) !important;
-    letter-spacing: 0.04em !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18) !important;
-  }
-  .need-now-card .need-beam-track {
-    height: 4px !important;
-    background: rgba(255, 255, 255, 0.16) !important;
-    border-radius: 99px !important;
-    overflow: hidden;
-  }
-  .need-now-card .need-beam-track > * {
-    background: #f5f5f7 !important;
-    height: 100% !important;
-  }
-  .need-now-card div:has(> .need-skip) {
-    display: flex !important;
-    flex-flow: row nowrap !important;
-    gap: 12px !important;
-  }
-  .need-now-card .need-skip,
-  .need-now-card .need-keep {
-    position: static !important;
-    flex: 1 1 0 !important;
-    width: 0 !important;
-    min-width: 0 !important;
-    height: 48px !important;
-    border: 0 !important;
-    border-radius: 18px !important;
-    background: #2c2c2e !important;
-    color: #f5f5f7 !important;
-    font-weight: 700 !important;
-    box-shadow: none !important;
-  }
-  .need-now-card .need-chip {
-    border-radius: 999px !important;
-    border: 0 !important;
-    background: #2c2c2e !important;
-    color: #f5f5f7 !important;
-    box-shadow: none !important;
-  }
+.need-now-card .need-stage {
+  background: #f5f5f7 !important;
+  border-radius: 22px 22px 0 0 !important;
+  margin: -14px -12px 10px !important;
+  padding: 18px 8px !important;
+}
+.need-now-card .need-stage img {
+  width: min(200px, 58vw) !important;
+  height: min(200px, 58vw) !important;
+  max-width: none !important;
+  aspect-ratio: 1;
+  object-fit: cover !important;
+  border-radius: 16px !important;
+}
+.need-now-card h2 {
+  color: #f5f5f7 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+}
+.need-now-card .need-beam-track {
+  height: 4px !important;
+  max-width: none !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 0 !important;
+}
+.need-now-card .need-beam-track > * {
+  background: #f5f5f7 !important;
+}
+.need-now-card div:has(> .need-skip) {
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+.need-now-card .need-skip,
+.need-now-card .need-keep {
+  position: static !important;
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: #2c2c2e !important;
+  color: #f5f5f7 !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+.need-now-card .need-chip {
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: #2c2c2e !important;
+  color: #f5f5f7 !important;
+  box-shadow: none !important;
+}
 
 #needUpgrades,
 .need-upgrades {
