@@ -1921,7 +1921,9 @@
       color:var(--ink); font:700 15px/1 var(--font); opacity:1; cursor:pointer;
     }
     .call-dot.has-photo { border:0; color:transparent; }
-    .galactic-call.is-saved .call-dot:not(.has-photo) { background:transparent; }
+    .call-modes { display:flex; align-items:center; gap:6px; flex:none; }
+    .call-dot.is-on:not(.has-photo) { background:var(--ink); color:var(--surface); }
+    .call-yt { font-size:11px; letter-spacing:-0.04em; }
     .call-kicker {
       margin:14px 0 8px; font:600 12px/1 var(--font); letter-spacing:.14em;
       text-transform:uppercase; color:var(--dim);
@@ -2584,8 +2586,11 @@
       <div class="hero-tabs">
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
-          <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle or a YouTube link" autocomplete="off" maxlength="180" required />
+          <span class="call-modes">
+            <button type="button" class="call-dot is-on" id="callerPhoto" aria-label="X handle">x</button>
+            <button type="button" class="call-dot call-yt" id="callerYt" aria-label="YouTube channel">yt</button>
+          </span>
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle" autocomplete="off" maxlength="180" required />
           <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Clear">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
@@ -2602,9 +2607,11 @@
       var ask = document.getElementById("galacticAsk");
       if (!form || !input) return;
       var photo = document.getElementById("callerPhoto");
+      var yt = document.getElementById("callerYt");
       var refresh = document.getElementById("callerRefresh");
       var key = "emciix-caller-profile";
       var source = "";
+      var mode = "x";
       var heldName = "";
       var heldAvatar = "";
       function paint(card) {
@@ -2624,13 +2631,16 @@
         if (card.avatar) heldAvatar = card.avatar;
         else if (!card.keepPhoto) heldAvatar = "";
         if (photo) {
-          if (heldAvatar) {
-            photo.classList.add("has-photo");
-            photo.style.backgroundImage = "url(\"" + String(heldAvatar).replace(/"/g, "") + "\")";
-          } else {
-            photo.classList.remove("has-photo");
-            photo.style.backgroundImage = "";
-          }
+          photo.classList.toggle("is-on", mode !== "youtube");
+          photo.classList.toggle("has-photo", mode !== "youtube" && !!heldAvatar);
+          photo.style.backgroundImage = mode !== "youtube" && heldAvatar ? "url(\"" + String(heldAvatar).replace(/"/g, "") + "\")" : "";
+          photo.textContent = mode !== "youtube" && heldAvatar ? "" : "x";
+        }
+        if (yt) {
+          yt.classList.toggle("is-on", mode === "youtube");
+          yt.classList.toggle("has-photo", mode === "youtube" && !!heldAvatar);
+          yt.style.backgroundImage = mode === "youtube" && heldAvatar ? "url(\"" + String(heldAvatar).replace(/"/g, "") + "\")" : "";
+          yt.textContent = mode === "youtube" && heldAvatar ? "" : "yt";
         }
         try {
           localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source, label: ask ? ask.textContent : "Galactic call:" }));
@@ -2786,12 +2796,20 @@
         input.value = "";
         input.disabled = false;
         input.removeAttribute("data-title");
-        input.placeholder = " @handle or a YouTube link";
-        if (ask) ask.textContent = "Galactic call:";
+        input.placeholder = " @handle";
+        mode = "x";
         if (photo) {
+          photo.classList.add("is-on");
           photo.classList.remove("has-photo");
           photo.style.backgroundImage = "";
+          photo.textContent = "x";
         }
+        if (yt) {
+          yt.classList.remove("is-on", "has-photo");
+          yt.style.backgroundImage = "";
+          yt.textContent = "yt";
+        }
+        if (ask) ask.textContent = "Galactic call:";
         if (refresh) refresh.removeAttribute("data-handle");
         form.classList.remove("is-saved");
         try {
@@ -2893,25 +2911,45 @@
         var match = String(html || "").match(pattern);
         return match ? (match[1] || match[2] || "") : "";
       }
+      function promptFor(next) {
+        mode = next === "youtube" ? "youtube" : "x";
+        input.value = "";
+        input.disabled = false;
+        input.placeholder = mode === "youtube" ? " YouTube channel link or artist name" : " @handle";
+        if (ask) ask.textContent = "Galactic call:";
+        if (photo) photo.classList.toggle("is-on", mode !== "youtube");
+        if (yt) yt.classList.toggle("is-on", mode === "youtube");
+        input.focus();
+      }
+      if (photo) photo.addEventListener("click", function (event) {
+        event.preventDefault();
+        promptFor("x");
+      });
+      if (yt) yt.addEventListener("click", function (event) {
+        event.preventDefault();
+        promptFor("youtube");
+      });
       form.addEventListener("submit", function (event) {
         event.preventDefault();
         runLookup((input.value || "").trim());
       });
       function runLookup(value) {
-        var target = kindOf(value);
-        if (!target) return;
-        var shown = target.site === "x" ? "@" + target.raw : target.site;
-        source = target.raw;
-        form.setAttribute("data-query", target.raw);
+        if (!value) return;
+        var site = mode === "youtube" ? "youtube" : "x";
+        var handle = site === "x" ? asHandle(value) : value;
+        if (!handle) return;
+        var shown = site === "x" ? "@" + handle : "YouTube";
+        source = handle;
+        form.setAttribute("data-query", handle);
         input.disabled = true;
         input.placeholder = shown;
         if (ask) ask.textContent = shown;
-        var job = target.site === "youtube" ? youtubeCall(target.raw) : xByHandle(target.raw);
-        var fallback = target.site === "youtube" ? (parseLink(target.raw) ? target.raw : "https://www.youtube.com/results?search_query=" + encodeURIComponent(target.raw)) : "https://x.com/" + target.raw;
+        var job = site === "youtube" ? youtubeCall(handle) : xByHandle(handle);
+        var fallback = site === "youtube" ? (parseLink(handle) ? handle : "https://www.youtube.com/results?search_query=" + encodeURIComponent(handle)) : "https://x.com/" + handle;
         job.then(function (card) {
           input.disabled = false;
-          var who = (card && card.handle) || target.raw;
-          shown = target.site === "x" ? "@" + who : (card && card.name) || shown;
+          var who = (card && card.handle) || handle;
+          shown = site === "x" ? "@" + who : ((card && card.name) || "YouTube");
           var post = (card && card.title) || "";
           paint({
             name: (card && card.name) || who,
@@ -2923,7 +2961,7 @@
             keepPhoto: !(card && card.avatar)
           });
           input.value = post;
-          input.placeholder = shown;
+          input.placeholder = site === "youtube" ? " YouTube channel link or artist name" : shown;
           if (ask) ask.textContent = shown;
           publishCall({
             handle: who,
@@ -2936,11 +2974,11 @@
         }).catch(function () {
           input.disabled = false;
           input.value = "";
-          input.placeholder = shown;
+          input.placeholder = site === "youtube" ? " YouTube channel link or artist name" : shown;
           if (ask) ask.textContent = shown;
-          paint({ source: target.raw, label: shown, keepPhoto: true, keepName: true });
+          paint({ source: handle, label: shown, keepPhoto: true, keepName: true });
           publishCall({
-            handle: target.site === "x" ? target.raw : shown,
+            handle: site === "x" ? handle : shown,
             name: shown,
             avatar: "",
             post: "",
