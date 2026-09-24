@@ -1874,13 +1874,14 @@
       color:var(--ink); font:500 16px/1.2 var(--font); padding:0;
     }
     .caller-refresh {
-      appearance:none; border:1px solid var(--line); background:transparent; color:var(--ink);
-      height:32px; border-radius:999px; flex:none; padding:0 12px;
-      position:relative; z-index:3; pointer-events:auto;
-      font:600 13px/1 var(--font); cursor:pointer;
+      appearance:none; border:0; padding:0; width:36px; height:36px; border-radius:50%;
+      flex:none; cursor:pointer; position:relative; z-index:3; pointer-events:auto;
+      color:transparent; font-size:0;
+      background:url("/assets/refresh-planet.png?v=1") center / 140% no-repeat #050505;
+      box-shadow:0 0 12px rgba(255,168,64,.45);
     }
-    .caller-refresh:hover { color:var(--ink); }
-    .caller-refresh.is-busy { animation:caller-spin .7s linear infinite; }
+    .caller-refresh:hover { box-shadow:0 0 16px rgba(255,190,80,.7); }
+    .caller-refresh.is-busy { animation:caller-spin .8s linear infinite; }
     @keyframes caller-spin { to { transform:rotate(360deg); } }
     .call-dot {
       width:32px; height:32px; border-radius:50%; flex:none; padding:0;
@@ -2533,7 +2534,7 @@
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
           <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" / Whats the x user handle ? " autocomplete="off" maxlength="180" required />
-          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh">Refresh</button>
+          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh"></button>
         </form>
       </div>
     </section>
