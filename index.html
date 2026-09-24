@@ -1881,22 +1881,31 @@
     .planet-streaks, .planet-body { position:absolute; border-radius:50%; pointer-events:none; }
     .planet-streaks {
       inset:0;
-      background:repeating-conic-gradient(from 0deg, transparent 0 14deg, rgba(255,186,70,.65) 15deg, transparent 22deg);
+      background:repeating-conic-gradient(from 0deg, transparent 0 14deg, rgba(255,186,70,.55) 16deg, transparent 24deg);
       -webkit-mask:radial-gradient(circle, transparent 46%, #000 54%, #000 72%, transparent 80%);
       mask:radial-gradient(circle, transparent 46%, #000 54%, #000 72%, transparent 80%);
-      animation:caller-spin 9s linear infinite;
+      opacity:.7;
+      animation:caller-drift 18s linear infinite;
+      transition:opacity .6s ease;
     }
     .planet-body {
       inset:7px;
       background:url("/assets/refresh-planet.png?v=2") center / 170% no-repeat #050505;
       box-shadow:0 0 10px rgba(255,168,64,.5);
+      animation:caller-drift 22s linear infinite;
+      transition:box-shadow .6s ease, transform .6s ease;
     }
     .caller-refresh:hover .planet-body { box-shadow:0 0 16px rgba(255,200,90,.85); }
-    .caller-refresh.is-busy .planet-streaks { animation-duration:.55s; }
-    .caller-refresh.is-busy .planet-body { animation:caller-spin .7s linear infinite; }
+    .caller-refresh.is-busy .planet-streaks { animation-duration:2.4s; opacity:1; }
+    .caller-refresh.is-busy .planet-body { animation:caller-ease 1.15s cubic-bezier(.45,0,.2,1) infinite; }
     .caller-refresh.is-new .planet-body { box-shadow:0 0 18px rgba(255,220,140,.95); }
     .caller-refresh.is-same .planet-body { box-shadow:0 0 8px rgba(255,168,64,.35); }
-    @keyframes caller-spin { to { transform:rotate(360deg); } }
+    @keyframes caller-drift { to { transform:rotate(360deg); } }
+    @keyframes caller-ease {
+      0% { transform:rotate(0deg) scale(1); }
+      50% { transform:rotate(180deg) scale(1.05); }
+      100% { transform:rotate(360deg) scale(1); }
+    }
     .call-dot {
       width:32px; height:32px; border-radius:50%; flex:none; padding:0;
       border:2px solid var(--ink); background:transparent center/cover no-repeat;
@@ -2547,7 +2556,7 @@
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" / Whats the x user handle ? " autocomplete="off" maxlength="180" required />
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder="Galactic call" autocomplete="off" maxlength="180" required />
           <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh latest post">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
@@ -2573,13 +2582,12 @@
           source = card.source;
           form.setAttribute("data-query", card.source);
         }
-        if (card.title) {
-          input.value = card.title;
-          input.setAttribute("data-title", card.title);
-        }
+        if (card.title) input.value = card.title;
+        if (card.post) input.setAttribute("data-title", card.post);
+        else if (card.title) input.setAttribute("data-title", card.title);
         if (card.name) heldName = card.name;
         else if (!card.keepName) heldName = "";
-        if (ask) ask.textContent = heldName || "Galactic call:";
+        if (ask) ask.textContent = card.label || heldName || "Galactic call:";
         if (card.avatar) heldAvatar = card.avatar;
         else if (!card.keepPhoto) heldAvatar = "";
         if (photo) {
@@ -2592,7 +2600,7 @@
           }
         }
         try {
-          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source }));
+          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source, label: ask ? ask.textContent : "Galactic call:" }));
         } catch (err) {}
         form.classList.add("is-saved");
       }
@@ -2719,7 +2727,7 @@
         input.value = "";
         input.disabled = false;
         input.removeAttribute("data-title");
-        input.placeholder = " / Whats the x user handle ? ";
+        input.placeholder = "Galactic call";
         if (ask) ask.textContent = "Galactic call:";
         if (photo) {
           photo.classList.remove("has-photo");
@@ -2837,20 +2845,23 @@
           refresh.classList.remove("is-new", "is-same");
           refresh.classList.add("is-busy");
         }
-        if (!previous) input.placeholder = "Reading the profile…";
+        if (!previous) input.placeholder = "Galactic call";
         xByHandle(handle).then(function (card) {
           input.disabled = false;
           if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = " / Whats the x user handle ? ";
+          input.placeholder = "Galactic call";
           if (!card || (!card.title && !card.name)) {
-            if (!previous) paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle });
+            if (!previous) paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle, label: "Galactic call:" });
             return;
           }
+          var post = card.title || previous || "";
           paint({
             name: card.name,
             avatar: card.avatar,
-            title: card.title || previous || "Couldn't read the last post",
-            source: handle
+            title: [card.name, post].filter(Boolean).join(" · "),
+            post: post,
+            source: handle,
+            label: "Galactic call:"
           });
           if (!refresh) return;
           refresh.classList.add(previous && card.title === previous ? "is-same" : "is-new");
@@ -2858,7 +2869,7 @@
         }).catch(function () {
           input.disabled = false;
           if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = " / Whats the x user handle ? ";
+          input.placeholder = "Galactic call";
           if (!previous) paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle });
         });
       }
