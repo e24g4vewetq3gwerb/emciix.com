@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="./need-logo.png" />
     <script type="module" crossorigin src="/need/assets/index-Bsi7rUKP.js?v=phone-song"></script>
     <link rel="stylesheet" crossorigin href="/need/assets/index-pQCypl1A.css">
-      <link rel="stylesheet" href="/need/wide.css?v=wide-12">
+      <link rel="stylesheet" href="/need/wide.css?v=wide-13">
   </head>
   <body>
     <div id="app"></div>
@@ -42,6 +42,7 @@
           if (!card) return;
           label.classList.add("need-now-label");
           card.classList.add("need-now-card");
+          if (card.firstElementChild) card.firstElementChild.classList.add("need-stage");
           var old = card.querySelector("#needUpgrades");
           if (old) old.remove();
           var buttons = card.querySelectorAll("button");
