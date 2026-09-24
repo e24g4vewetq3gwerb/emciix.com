@@ -96,10 +96,47 @@ body:has(.need-home) #app,
 }
 
 @media (min-width: 900px) {
-  #app div[style*="max-width:420px"],
-  #app div[style*="max-width: 420px"] {
-    max-width: min(1280px, calc(100vw - 64px)) !important;
+  #app div[style*="max-width:420px"]:has(.need-home),
+  #app div[style*="max-width: 420px"]:has(.need-home) {
+    max-width: min(1040px, calc(100vw - 64px)) !important;
   }
+  #app div[style*="max-width:420px"]:has(.need-now-card),
+  #app div[style*="max-width: 420px"]:has(.need-now-card) {
+    max-width: min(1040px, calc(100vw - 48px)) !important;
+  }
+  .need-now-card {
+    display: grid !important;
+    grid-template-columns: 280px minmax(0, 1fr);
+    column-gap: 32px;
+    row-gap: 8px;
+    align-items: center;
+    justify-items: stretch;
+    text-align: left !important;
+    padding: 22px 24px !important;
+  }
+  .need-now-card > :first-child {
+    grid-column: 1;
+    grid-row: 1 / span 24;
+    align-self: center;
+    justify-self: center;
+  }
+  .need-now-card > :not(:first-child) {
+    grid-column: 2;
+    width: 100% !important;
+    max-width: none !important;
+    text-align: left !important;
+  }
+  .need-now-card > :not(:first-child),
+  .need-now-card h2,
+  .need-now-card p,
+  .need-now-card button {
+    text-align: left !important;
+  }
+  .need-now-card > div:not(:first-child) {
+    justify-content: flex-start !important;
+  }
+  .need-upgrades { justify-content: flex-start; }
+  .need-up-kicker { text-align: left; }
 }
 
 @media (min-width: 768px) {
