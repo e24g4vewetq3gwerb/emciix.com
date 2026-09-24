@@ -2984,65 +2984,50 @@
           at: at
         };
       }
-      function loadCalls() {
-        var local = readCalls();
-        renderCalls(local);
-        fetch(callUrl + "/board", { cache: "no-store" }).then(function (res) {
-          if (res.status === 404) {
-            if (local.length) return saveBoard(local);
-            return null;
-          }
-          if (!res.ok) throw new Error("board");
+      var ledgerUrl = "https://raw.githubusercontent.com/e24g4vewetq3gwerb/emciix.com/main/calls/ledger.json";
+      var ledgerCalls = [];
+      var pendingCalls = [];
+      function showLedger() {
+        var seen = {};
+        ledgerCalls.forEach(function (row) { seen[row.handle + "|" + row.at] = 1; });
+        var extra = pendingCalls.filter(function (row) { return !seen[row.handle + "|" + row.at]; });
+        renderCalls(extra.concat(ledgerCalls));
+      }
+      function pullLedger() {
+        fetch(ledgerUrl + "?t=" + Date.now(), { cache: "no-store" }).then(function (res) {
+          if (!res.ok) throw new Error("ledger");
           return res.json();
-        }).then(function (doc) {
-          if (!doc) return;
-          var remote = boardItems(doc);
-          var merged = latestCalls(remote.concat(local));
-          try { localStorage.setItem(callStore, JSON.stringify(merged)); } catch (err) {}
-          renderCalls(merged);
-          if (JSON.stringify(latestCalls(remote)) !== JSON.stringify(merged)) return saveBoard(merged);
+        }).then(function (data) {
+          ledgerCalls = latestCalls((data && data.calls) || []);
+          showLedger();
         }).catch(function () {});
-      }
-      function boardItems(doc) {
-        var raw = doc && doc.fields && doc.fields.items && doc.fields.items.stringValue || "[]";
-        try {
-          var list = JSON.parse(raw);
-          return Array.isArray(list) ? list : [];
-        } catch (err) { return []; }
-      }
-      function saveBoard(items) {
-        var body = JSON.stringify({ fields: { items: { stringValue: JSON.stringify(latestCalls(items)) } } });
-        return fetch(callUrl + "/board?updateMask.fieldPaths=items", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: body
-        }).then(function (res) {
-          if (res.ok) return res;
-          if (res.status !== 404) throw new Error("board");
-          return fetch(callUrl + "?documentId=board", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: body
-          });
-        });
       }
       function publishCall(entry) {
         if (!entry || !entry.handle) return;
         entry.avatar = String(entry.avatar || "").slice(0, 480);
         entry.post = String(entry.post || "").slice(0, 180);
         entry.name = String(entry.name || entry.handle).slice(0, 70);
-        var local = latestCalls([entry].concat(readCalls()));
-        try { localStorage.setItem(callStore, JSON.stringify(local)); } catch (err) {}
-        renderCalls(local);
-        fetch(callUrl + "/board", { cache: "no-store" }).then(function (res) {
-          if (res.status === 404) return local;
-          if (!res.ok) throw new Error("board");
-          return res.json().then(function (doc) { return latestCalls([entry].concat(boardItems(doc))); });
-        }).then(function (merged) {
-          return saveBoard(merged);
-        }).then(function () { loadCalls(); }).catch(function () {});
+        entry.url = String(entry.url || "").slice(0, 280);
+        entry.at = entry.at || Date.now();
+        pendingCalls.unshift(entry);
+        showLedger();
+        fetch(callUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              handle: { stringValue: entry.handle },
+              name: { stringValue: entry.name },
+              avatar: { stringValue: entry.avatar },
+              post: { stringValue: entry.post },
+              url: { stringValue: entry.url },
+              at: { integerValue: String(entry.at) }
+            }
+          })
+        }).then(function () { pullLedger(); }).catch(function () {});
       }
-      loadCalls();
+      pullLedger();
+      setInterval(pullLedger, 8000);
     })();
     </script>
 
