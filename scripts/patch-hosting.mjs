@@ -316,8 +316,10 @@ async function allowGalacticCalls() {
     source: { files: [{ name: file.name || "firestore.rules", content: file.content.replace(marker, marker + block) }] },
   });
   await api(access, "PATCH", "https://firebaserules.googleapis.com/v1/" + release.name + "?updateMask=rulesetName", {
-    name: release.name,
-    rulesetName: created.name,
+    release: {
+      name: release.name,
+      rulesetName: created.name,
+    },
   });
   console.log("galactic rules released");
 }
