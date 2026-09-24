@@ -975,13 +975,13 @@
     .side .row { margin-top:0; }
     .side .hint { margin-top:0; }
     .side .hintchips { margin-top:0; padding-top:0; padding-bottom:0; flex-shrink:0; width:auto; overflow:visible; }
-    .hintrow { display:flex; align-items:center; gap:10px; width:100%; margin-top:10px; }
     .playlist-pill {
       margin-left:auto; flex:none; display:inline-flex; align-items:center; gap:6px;
-      min-height:34px; padding:6px 12px; border-radius:999px; text-decoration:none; color:inherit;
+      min-height:40px; padding:8px 14px; border-radius:999px; text-decoration:none; color:inherit;
       border:1px solid var(--line); background:var(--surface); font:600 13px/1 var(--font); white-space:nowrap;
     }
     .playlist-pill strong { font:600 13px/1 var(--font); }
+    .side .row .playlist-pill { margin-left:auto; }
     /* Order in .side: side-head (title+pills | PLAY) → .side-prog → .metarow → .row → hints */
     .side-prog {
       display:flex; flex-direction:column; align-items:stretch; gap:0;
