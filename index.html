@@ -1193,7 +1193,7 @@
     }
     /* Circular PLAY — larger thin ring + four corner ticks (crosshair) */
     a.playgame, button.playgame {
-      --pg-size:100px;
+      --pg-size:36px;
       position:relative; flex:0 0 auto;
       width:var(--pg-size); height:var(--pg-size);
       border-radius:50%;
@@ -1218,7 +1218,7 @@
       border-color:rgba(235,235,245,0.45);
       color:rgba(235,235,245,0.85);
     }
-    button.playgame.repeat svg { width:36px; height:36px; }
+    button.playgame.repeat svg { width:16px; height:16px; }
     button.playgame.repeat.on { color:var(--accent); border-color:var(--accent); }
     a.playgame:active, button.playgame:active { transform:scale(.97); }
     a.playgame:focus-visible, button.playgame:focus-visible {
@@ -3257,7 +3257,7 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=art-rank-1"></script>
+  <script src="app.js?v=repeat-sm"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player147"></script>
   <script src="views-boot.js?v=live-rank-1"></script>
