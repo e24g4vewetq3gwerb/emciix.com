@@ -2942,7 +2942,7 @@
           return true;
         }).sort(function (a, b) {
           return (b.at || 0) - (a.at || 0);
-        }).slice(0, 5);
+        }).slice(0, 20);
       }
       function renderCalls(list) {
         var ol = document.getElementById("callHistory");
@@ -3021,7 +3021,7 @@
       }
       function applyLedger(data) {
         var rows = ((data && data.calls) || []).map(liveCall).filter(Boolean);
-        ledgerCalls = latestCalls(rows);
+        ledgerCalls = latestCalls(rows.concat(ledgerCalls));
         showLedger();
       }
       function addLive(row) {
@@ -3030,6 +3030,27 @@
         ledgerCalls = latestCalls([row].concat(ledgerCalls));
         showLedger();
       }
+      function pullInbox() {
+        fetch(inboxUrl + "/json?poll=1&since=12h", { cache: "no-store" }).then(function (res) {
+          if (!res.ok) throw new Error("inbox");
+          return res.text();
+        }).then(function (text) {
+          var rows = [];
+          String(text || "").split("\n").forEach(function (line) {
+            if (!line.trim()) return;
+            try {
+              var msg = JSON.parse(line);
+              if (!msg || msg.event !== "message" || !msg.message) return;
+              var extra = liveCall(JSON.parse(msg.message));
+              if (extra) rows.push(extra);
+            } catch (err) {}
+          });
+          if (rows.length) {
+            ledgerCalls = latestCalls(rows.concat(ledgerCalls));
+            showLedger();
+          }
+        }).catch(function () {});
+      }
       function pullLedger() {
         function take(url) {
           return fetch(url, { cache: "no-store" }).then(function (res) {
@@ -3037,8 +3058,8 @@
             return res.json();
           });
         }
-        take("/calls/ledger.json?t=" + Date.now()).catch(function () {
-          return take(ledgerUrl + "?t=" + Date.now());
+        take(ledgerUrl + "?t=" + Date.now()).catch(function () {
+          return take("/calls/ledger.json?t=" + Date.now());
         }).then(applyLedger).catch(function () {});
       }
       function publishCall(entry) {
@@ -3062,8 +3083,10 @@
           })
         }).catch(function () {});
       }
+      pullInbox();
       pullLedger();
-      setInterval(pullLedger, 20000);
+      setInterval(pullInbox, 3000);
+      setInterval(pullLedger, 15000);
       try {
         var live = new EventSource(inboxUrl + "/sse");
         live.onmessage = function (event) {
