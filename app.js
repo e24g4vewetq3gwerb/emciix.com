@@ -43,14 +43,7 @@ function repeatIconSvg(){
   return '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 6h8V3l5 4-5 4V8H7a3 3 0 0 0-3 3v2H2v-2a5 5 0 0 1 5-5zm10 12H9v3l-5-4 5-4v3h8a3 3 0 0 0 3-3v-2h2v2a5 5 0 0 1-5 5z"/><text x="12" y="14.5" text-anchor="middle" font-size="8" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="700" fill="currentColor">1</text></svg>';
 }
 function gameItHtml(){
-  return '<button class="playgame" id="playGame" type="button" aria-label="Open rhythm game">' +
-    '<svg class="playgame-x" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +
-      '<line x1="16" y1="16" x2="36" y2="36"/>' +
-      '<line x1="84" y1="16" x2="64" y2="36"/>' +
-      '<line x1="16" y1="84" x2="36" y2="64"/>' +
-      '<line x1="84" y1="84" x2="64" y2="64"/>' +
-    '</svg>' +
-    '<span class="playgame-label">PLAY</span></button>';
+  return '<button class="playgame repeat' + (repeatOn ? ' on' : '') + '" id="repeat" type="button" aria-pressed="' + (repeatOn ? 'true' : 'false') + '" aria-label="' + (repeatOn ? 'Repeat one on' : 'Repeat one off') + '" title="' + (repeatOn ? 'Repeat one on' : 'Repeat one') + '">' + repeatIconSvg() + '</button>';
 }
 var SONGS = [
   ["RFqKvFDB0Hg","I JUST UPDATE"],
@@ -654,8 +647,7 @@ function paintNow() {
     '<div class="row" role="group" aria-label="Playback controls">' +
     '<button class="b prev" id="transportPlay" type="button">Play</button>' +
     '<button class="b skip" id="transportChange" type="button">Change</button>' +
-    '<a class="playlist-pill" href="https://music.youtube.com/playlist?list=PLZX_2WN1sEAg" target="_blank" rel="noopener">Playlist <strong>emciix</strong> ›</a>' +
-    '<button class="b repeat' + (repeatOn ? ' on' : '') + '" id="repeat" type="button" aria-pressed="' + (repeatOn ? 'true' : 'false') + '" aria-label="' + (repeatOn ? 'Repeat one on' : 'Repeat one off') + '" title="Repeat one">' + repeatIconSvg() + '</button></div></div>';
+    '<a class="playlist-pill" href="https://music.youtube.com/playlist?list=PLZX_2WN1sEAg&si=b3Qk9UDjSFimkQcF" target="_blank" rel="noopener">Playlist</a></div></div>';
   bind();
   if (window.EmciixPaintSongLives) try { window.EmciixPaintSongLives(); } catch (e) {}
   if (window.EmciixPaintYtViews) try { window.EmciixPaintYtViews(); } catch (e) {}
