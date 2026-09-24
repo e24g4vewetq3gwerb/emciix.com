@@ -2548,7 +2548,7 @@
         </div>
         <nav class="topnav" aria-label="Site sections">
           <a class="needbtn" id="needBtn" href="/need">Need Inc.</a>
-          <a class="navchip" href="#songs">Songs</a>
+          <a class="navchip" href="#songs" id="songsNav" aria-controls="grid" aria-expanded="false">Songs</a>
           <a class="navchip" href="#charts">Charts</a>
           <a class="navchip" href="https://emciix.com/portal" title="Open the portal">Game</a>
         </nav>
@@ -2586,7 +2586,6 @@
           <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle or username" autocomplete="off" maxlength="180" required />
           <button type="submit" class="call-send" id="callerSend" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 11h11.2l-4.3-4.3 1.4-1.4L19.6 12l-7.3 6.7-1.4-1.4 4.3-4.3H4z"/></svg></button>
         </form>
-        <button type="button" class="open-playlist" id="openPlaylist" aria-expanded="false" aria-controls="grid">Open playlist</button>
         <div class="grid playlist-cards" id="grid" hidden></div>
       </div>
     </section>
@@ -2982,14 +2981,15 @@
         resetCall();
       };
       if (refresh) refresh.addEventListener("click", window.emciixRefresh, true);
-      var openPlaylist = document.getElementById("openPlaylist");
+      var songsNav = document.getElementById("songsNav");
       var playlistCards = document.getElementById("grid");
-      if (openPlaylist && playlistCards) {
-        openPlaylist.addEventListener("click", function () {
+      if (songsNav && playlistCards) {
+        songsNav.addEventListener("click", function (event) {
+          event.preventDefault();
           var open = playlistCards.hidden;
           playlistCards.hidden = !open;
-          openPlaylist.setAttribute("aria-expanded", open ? "true" : "false");
-          openPlaylist.textContent = open ? "Close playlist" : "Open playlist";
+          songsNav.setAttribute("aria-expanded", open ? "true" : "false");
+          if (open) playlistCards.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
       }
       var callStore = "emciix-call-history";
