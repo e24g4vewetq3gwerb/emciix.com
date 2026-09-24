@@ -111,6 +111,7 @@ const PATCHES = [
   ["subnet/index.html", "/subnet/index.html"],
   [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
+  ["game/play/firebase-scores.js", "/game/play/firebase-scores.js"],
 ];
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
 ["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js","portal/index.html","portal/invite.html","portal/assets/index-DLVCRiHz.js","portal/assets/index-C17i1khB.css","portal/assets/planet.png","portal/assets/moon.png","portal/assets/favicon-portal.svg","portal/assets/favicon-CozO3afC.svg"].forEach((p) => {
@@ -337,3 +338,38 @@ async function allowGalacticCalls() {
   console.log("galactic rules released");
 }
 try { await allowGalacticCalls(); } catch (err) { console.log("galactic rules skipped", String(err.message || err).slice(0, 400)); }
+
+async function allowLevelRanks() {
+  const project = "projects/emciix-com";
+  const releases = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + project + "/releases");
+  const release = (releases.releases || []).find((item) => String(item.name || "").endsWith("/cloud.firestore"));
+  if (!release || !release.rulesetName) return;
+  const ruleset = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + release.rulesetName);
+  const file = ((ruleset.source && ruleset.source.files) || [])[0];
+  if (!file || typeof file.content !== "string") return;
+  if (file.content.includes("match /gameLevelRanks/{docId}")) {
+    console.log("level rank rules already set");
+    return;
+  }
+  const marker = "match /databases/{database}/documents {";
+  if (!file.content.includes(marker)) {
+    console.log("rules shape unexpected");
+    return;
+  }
+  const block = `
+    match /gameLevelRanks/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && docId == "board"
+        && request.resource.data.levels is map;
+    }`;
+  const content = file.content.replace(marker, marker + block);
+  const created = await api(access, "POST", "https://firebaserules.googleapis.com/v1/" + project + "/rulesets", {
+    source: { files: [{ name: file.name || "firestore.rules", content }] },
+  });
+  await api(access, "PATCH", "https://firebaserules.googleapis.com/v1/" + release.name + "?updateMask=rulesetName", {
+    release: { name: release.name, rulesetName: created.name },
+  });
+  console.log("level rank rules released");
+}
+try { await allowLevelRanks(); } catch (err) { console.log("level rank rules skipped", String(err.message || err).slice(0, 400)); }

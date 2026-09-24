@@ -183,6 +183,7 @@
 
   /** @type {{displayName:string|null,totalScore:number}|null} */
   let cloudProfile = null;
+  let levelBoards = {};
 
   const KEY_MAP = {
     KeyD: 0,
@@ -543,6 +544,26 @@
     });
   }
 
+  function worldBest(levelId) {
+    const row = levelBoards && levelBoards[levelId];
+    const top = row && row.tops && row.tops[0];
+    if (!top || !top.score) return null;
+    return top;
+  }
+
+  async function refreshLevelRanks() {
+    const api = window.EmciixScores || (await waitForEmciixScores(8000));
+    if (!api || !api.loadLevelRanks) return;
+    try {
+      levelBoards = (await api.loadLevelRanks()) || {};
+    } catch (err) {
+      console.warn("level ranks", err);
+      return;
+    }
+    if (levelsOverlay && !levelsOverlay.classList.contains("hidden")) populateLevelsGrid();
+    updateLevelBestLabel();
+  }
+
   async function refreshPublicRanks() {
     const list = $("#public-rank-list");
     if (!list) return;
@@ -809,7 +830,11 @@
       } catch (pubErr) {
         console.warn("public rank publish", pubErr);
       }
+      if (api.syncLevelRanks) {
+        try { await api.syncLevelRanks(loadBests(), titleById); } catch (rankErr) { console.warn("level ranks", rankErr); }
+      }
       await refreshPublicRanks();
+      await refreshLevelRanks();
     } catch (err) {
       console.error(err);
       setSyncStatus("Sync error", "error");
@@ -1203,12 +1228,20 @@
     const id = levelMeta && levelMeta.id;
     const best = getBest(id);
     if (!best) {
-      el.classList.add("hidden");
-      el.textContent = "";
+      const world = worldBest(id);
+      if (!world) {
+        el.classList.add("hidden");
+        el.textContent = "";
+        return;
+      }
+      el.textContent = "WORLD · " + String(world.score) + " · " + String(world.displayName || "Player");
+      el.classList.remove("hidden");
       return;
     }
+    const world = worldBest(id);
     el.textContent =
-      "BEST · " + String(best.score) + " · " + String(best.rank || "D");
+      "BEST · " + String(best.score) + " · " + String(best.rank || "D") +
+      (world ? "   WORLD · " + String(world.score) + " · " + String(world.displayName || "Player") : "");
     el.classList.remove("hidden");
   }
 
@@ -1826,6 +1859,7 @@
             }
           } catch (_) {}
           await refreshPublicRanks().catch(() => {});
+          await refreshLevelRanks().catch(() => {});
         })
         .catch((err) => {
           console.error(err);
@@ -1862,9 +1896,13 @@
       if (meta.theme) btn.classList.add("theme-" + meta.theme);
       const shortTitle = meta.short || meta.title || ("Level " + (idx + 1));
       const best = bests[meta.id];
+      const world = worldBest(meta.id);
       const bestText = best
         ? "BEST " + best.score + " · " + (best.rank || "D")
         : "—";
+      const worldText = world
+        ? "WORLD " + world.score + " · " + (world.displayName || "Player")
+        : "";
       const art = meta.theme === "device"
         ? '<span class="lt-art device-art" aria-hidden="true"><i></i><i></i></span>'
         : meta.theme === "tabs"
@@ -1874,9 +1912,11 @@
         art +
         '<span class="lt-num">LVL ' + (idx + 1) + "</span>" +
         '<span class="lt-title"></span>' +
-        '<span class="lt-best' + (best ? " has-best" : "") + '"></span>';
+        '<span class="lt-best' + (best ? " has-best" : "") + '"></span>' +
+        '<span class="lt-world"></span>';
       btn.querySelector(".lt-title").textContent = String(shortTitle).toUpperCase();
       btn.querySelector(".lt-best").textContent = bestText;
+      btn.querySelector(".lt-world").textContent = worldText;
       btn.addEventListener("click", () => {
         askLevelJump(idx);
       });
@@ -1887,6 +1927,7 @@
   function openLevels(from) {
     levelsFrom = from || "start";
     populateLevelsGrid();
+    refreshLevelRanks().catch(() => {});
     if (levelsFrom === "results" && resultsOverlay) {
       resultsOverlay.classList.add("hidden");
     }
@@ -2671,7 +2712,9 @@
   bindAuthUI();
   initStartBgm();
   refreshPublicRanks().catch(console.error);
+  refreshLevelRanks().catch(console.error);
   setTimeout(() => refreshPublicRanks().catch(() => {}), 1500);
+  setTimeout(() => refreshLevelRanks().catch(() => {}), 1500);
   setTimeout(() => refreshPublicRanks().catch(() => {}), 4000);
   loadAssets().catch((err) => {
     console.error(err);

@@ -988,6 +988,12 @@ html, body {
   margin-top: auto;
 }
 .level-tile .lt-best.has-best { color: var(--yel); }
+.level-tile .lt-world {
+  display: block;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  color: rgba(245, 245, 250, 0.62);
+}
 
 /* ---- hit spark ---- */
 .hit-flash.spark {
@@ -2152,7 +2158,9 @@ html, body {
 .level-tile.theme-device .lt-title,
 .level-tile.theme-tabs .lt-title,
 .level-tile.theme-device .lt-best,
-.level-tile.theme-tabs .lt-best { grid-column: 2; }
+.level-tile.theme-tabs .lt-best,
+.level-tile.theme-device .lt-world,
+.level-tile.theme-tabs .lt-world { grid-column: 2; }
 
 .level-tile.theme-device {
   border-color: #00f5ff;
