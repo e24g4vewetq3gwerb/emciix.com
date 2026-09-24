@@ -2585,7 +2585,7 @@
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" x handle" autocomplete="off" maxlength="180" required />
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" x / youtube / linkedin" autocomplete="off" maxlength="180" required />
           <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Clear">
             <span class="planet-streaks" aria-hidden="true"></span>
             <span class="planet-body" aria-hidden="true"></span>
@@ -2724,7 +2724,7 @@
         var info = json && json.feed || {};
         var item = json && json.items && json.items[0];
         if (!item || !item.title) return null;
-        return { name: found.name || info.title || query, avatar: found.avatar || info.image || "", title: item.title };
+        return { name: found.name || info.title || query, avatar: found.avatar || info.image || "", title: item.title, url: item.link || "" };
       }
       async function xByHandle(handle) {
         var profile = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle));
@@ -2754,6 +2754,48 @@
         var handle = raw.replace(/^@/, "");
         return /^[A-Za-z0-9_]{1,15}$/.test(handle) ? handle : "";
       }
+      function kindOf(value) {
+        var raw = String(value || "").trim();
+        var linked = raw.match(/^in\/([A-Za-z0-9._-]{2,80})$/i);
+        if (linked) return { site: "linkedin", raw: "https://www.linkedin.com/in/" + linked[1] };
+        var url = parseLink(raw);
+        var site = url && siteOf(url);
+        if (site === "youtube" || site === "linkedin") return { site: site, raw: url.href };
+        if (site === "x") {
+          var fromUrl = asHandle(raw);
+          if (fromUrl) return { site: "x", raw: fromUrl };
+        }
+        var tagged = raw.match(/^(yt|youtube|in|li|linkedin)\s*:\s*(.+)$/i);
+        if (tagged) {
+          var key = tagged[1].toLowerCase();
+          return { site: key === "yt" || key === "youtube" ? "youtube" : "linkedin", raw: tagged[2].trim() };
+        }
+        var handle = asHandle(raw);
+        if (handle) return { site: "x", raw: handle };
+        var bare = raw.replace(/^@/, "");
+        if (/[.-]/.test(bare) && /^[A-Za-z0-9._-]{2,80}$/.test(bare)) return { site: "linkedin", raw: bare };
+        if (/^[A-Za-z0-9._-]{16,40}$/.test(bare)) return { site: "youtube", raw: bare };
+        return null;
+      }
+      async function youtubeCall(raw) {
+        var url = parseLink(raw);
+        var card = url ? await youtubeCard(url) : await youtubeByName(raw);
+        if (!card || !card.title) return null;
+        var who = card.name || raw;
+        return { handle: who.replace(/\s+/g, ""), name: who, avatar: card.avatar || "", title: card.title, url: card.url || (url ? url.href : "") };
+      }
+      async function linkedinCall(raw) {
+        var href = parseLink(raw);
+        if (!href) href = new URL("https://www.linkedin.com/in/" + String(raw || "").trim().replace(/^@/, "").replace(/^in\//i, ""));
+        var res = await fetch("https://api.microlink.io/?url=" + encodeURIComponent(href.href));
+        var info = ((await res.json()) || {}).data || {};
+        if (!info.title) return null;
+        var name = info.author || String(info.title).replace(/\s*[|–-]\s*LinkedIn\s*$/i, "").split(" - ")[0].trim();
+        var parts = href.pathname.split("/").filter(Boolean);
+        var handle = (parts[1] || parts[0] || name).replace(/^@/, "");
+        var image = info.image && (info.image.url || info.image) || "";
+        return { handle: handle, name: name || handle, avatar: image, title: firstLine(info.description || info.title), url: info.url || href.href };
+      }
       function resetCall() {
         source = "";
         heldName = "";
@@ -2762,7 +2804,7 @@
         input.value = "";
         input.disabled = false;
         input.removeAttribute("data-title");
-        input.placeholder = " x handle";
+        input.placeholder = " x / youtube / linkedin";
         if (ask) ask.textContent = "Galactic call:";
         if (photo) {
           photo.classList.remove("has-photo");
@@ -2796,7 +2838,7 @@
               }
             } catch (e) {}
           }
-          if (title) return { name: name, avatar: avatar, title: title };
+          if (title) return { name: name, avatar: avatar, title: title, url: "https://www.youtube.com/watch?v=" + id };
         }
         var channel = channelId(url);
         var looked = null;
@@ -2818,7 +2860,8 @@
         return {
           name: name || info.title || "",
           avatar: avatar || info.image || "",
-          title: (item && item.title) || title
+          title: (item && item.title) || title,
+          url: (item && item.link) || url.href
         };
       }
       function biggerAvatar(url) {
@@ -2873,18 +2916,20 @@
         runLookup((input.value || "").trim());
       });
       function runLookup(value) {
-        var handle = asHandle(value);
-        if (!handle) return;
-        var shown = "@" + handle;
-        source = handle;
-        form.setAttribute("data-query", handle);
+        var target = kindOf(value);
+        if (!target) return;
+        var shown = target.site === "x" ? "@" + target.raw : target.site;
+        source = target.raw;
+        form.setAttribute("data-query", target.raw);
         input.disabled = true;
         input.placeholder = shown;
         if (ask) ask.textContent = shown;
-        xByHandle(handle).then(function (card) {
+        var job = target.site === "youtube" ? youtubeCall(target.raw) : target.site === "linkedin" ? linkedinCall(target.raw) : xByHandle(target.raw);
+        var fallback = target.site === "youtube" ? (parseLink(target.raw) ? target.raw : "https://www.youtube.com/results?search_query=" + encodeURIComponent(target.raw)) : target.site === "linkedin" ? (parseLink(target.raw) ? target.raw : "https://www.linkedin.com/in/" + String(target.raw).replace(/^@/, "").replace(/^in\//i, "")) : "https://x.com/" + target.raw;
+        job.then(function (card) {
           input.disabled = false;
-          var who = (card && card.handle) || handle;
-          shown = "@" + who;
+          var who = (card && card.handle) || target.raw;
+          shown = target.site === "x" ? "@" + who : (card && card.name) || shown;
           var post = (card && card.title) || "";
           paint({
             name: (card && card.name) || who,
@@ -2903,7 +2948,7 @@
             name: (card && card.name) || who,
             avatar: (card && card.avatar) || "",
             post: post,
-            url: (card && card.url) || "",
+            url: (card && card.url) || fallback,
             at: Date.now()
           });
         }).catch(function () {
@@ -2911,13 +2956,13 @@
           input.value = "";
           input.placeholder = shown;
           if (ask) ask.textContent = shown;
-          paint({ source: handle, label: shown, keepPhoto: true, keepName: true });
+          paint({ source: target.raw, label: shown, keepPhoto: true, keepName: true });
           publishCall({
-            handle: handle,
-            name: handle,
+            handle: target.site === "x" ? target.raw : shown,
+            name: shown,
             avatar: "",
             post: "",
-            url: "https://x.com/" + handle,
+            url: fallback,
             at: Date.now()
           });
         });
@@ -2994,9 +3039,8 @@
       }
       function postHref(row) {
         var href = String((row && row.url) || "");
-        if (/status\/\d+/.test(href)) {
-          return href.replace(/^https:\/\/(?:twitter|fxtwitter)\.com\//i, "https://x.com/");
-        }
+        if (/status\/\d+/.test(href)) return href.replace(/^https:\/\/(?:twitter|fxtwitter)\.com\//i, "https://x.com/");
+        if (/youtu\.be|youtube\.com|linkedin\.com/i.test(href)) return href;
         return "";
       }
       function parseCallDoc(doc) {
