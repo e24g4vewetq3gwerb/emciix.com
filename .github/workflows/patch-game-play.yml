@@ -34,6 +34,8 @@ on:
       - app.js
       - need/assets/index-Bsi7rUKP.js
       - portal/**
+      - need/index.html
+      - need/wide.css
       - .github/workflows/patch-game-play.yml
 
 jobs:
