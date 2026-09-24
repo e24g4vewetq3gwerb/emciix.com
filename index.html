@@ -2427,12 +2427,7 @@
       color:var(--sp-title);
       font-weight:600;
     }
-    .statpanel.city .chartrow:hover .city-counts,
-    .statpanel.city .chartrow:focus-visible .city-counts,
-    .statpanel.city .chartrow:focus-within .city-counts { display:none; }
-    .statpanel.city .chartrow:hover .city-latest,
-    .statpanel.city .chartrow:focus-visible .city-latest,
-    .statpanel.city .chartrow:focus-within .city-latest { display:block; }
+    .chartrow .city-latest[data-loaded="1"] { display:block; }
     .chartrow .meta .share { color:var(--sp-dim); opacity:.9; }
     .chartrow .livechip {
       display:inline-flex; align-items:center; gap:4px;
@@ -3329,6 +3324,6 @@
   <script src="live-boot.js?v=Player147"></script>
   <script src="views-boot.js?v=live-rank-1"></script>
   <script src="shelf-boot.js?v=art-rank-1"></script>
-  <script src="stats-boot.js?v=open-pct-2"></script>
+  <script src="stats-boot.js?v=city-up-1"></script>
 </body>
 </html>
