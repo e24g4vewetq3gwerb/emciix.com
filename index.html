@@ -3028,6 +3028,14 @@
       }
       pullLedger();
       setInterval(pullLedger, 8000);
+      try {
+        if (!sessionStorage.getItem("emciix-ledger-sent")) {
+          sessionStorage.setItem("emciix-ledger-sent", "1");
+          readCalls().forEach(function (row) {
+            if (row && row.handle && row.handle !== "x") publishCall(row);
+          });
+        }
+      } catch (err) {}
     })();
     </script>
 
