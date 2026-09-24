@@ -1873,7 +1873,14 @@
       flex:1; min-width:0; border:0; outline:none; background:transparent;
       color:var(--ink); font:500 16px/1.2 var(--font); padding:0;
     }
-    .caller-profile::placeholder { color:var(--dim); }
+    .caller-refresh {
+      appearance:none; border:0; background:transparent; color:var(--dim);
+      width:28px; height:28px; border-radius:50%; flex:none; padding:0;
+      font:500 18px/1 var(--font); cursor:pointer;
+    }
+    .caller-refresh:hover { color:var(--ink); }
+    .caller-refresh.is-busy { animation:caller-spin .7s linear infinite; }
+    @keyframes caller-spin { to { transform:rotate(360deg); } }
     .call-dot {
       width:32px; height:32px; border-radius:50%; flex:none; padding:0;
       border:2px solid var(--ink); background:transparent center/cover no-repeat;
@@ -2525,6 +2532,7 @@
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
           <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" / Whats the x user handle ? " autocomplete="off" maxlength="180" required />
+          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh">↻</button>
         </form>
       </div>
     </section>
@@ -2535,21 +2543,32 @@
       var ask = document.getElementById("galacticAsk");
       if (!form || !input) return;
       var photo = document.getElementById("callerPhoto");
+      var refresh = document.getElementById("callerRefresh");
       var key = "emciix-caller-profile";
+      var source = "";
+      var heldName = "";
+      var heldAvatar = "";
       function paint(card) {
         card = card || {};
+        if (card.source) source = card.source;
         if (card.title) input.value = card.title;
-        if (ask) ask.textContent = card.name || "Galactic call:";
+        if (card.name) heldName = card.name;
+        else if (!card.keepName) heldName = "";
+        if (ask) ask.textContent = heldName || "Galactic call:";
+        if (card.avatar) heldAvatar = card.avatar;
+        else if (!card.keepPhoto) heldAvatar = "";
         if (photo) {
-          if (card.avatar) {
+          if (heldAvatar) {
             photo.classList.add("has-photo");
-            photo.style.backgroundImage = "url(\"" + String(card.avatar).replace(/"/g, "") + "\")";
+            photo.style.backgroundImage = "url(\"" + String(heldAvatar).replace(/"/g, "") + "\")";
           } else {
             photo.classList.remove("has-photo");
             photo.style.backgroundImage = "";
           }
         }
-        try { localStorage.setItem(key, JSON.stringify({ title: input.value, name: card.name || "", avatar: card.avatar || "" })); } catch (err) {}
+        try {
+          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source }));
+        } catch (err) {}
         form.classList.add("is-saved");
       }
       try {
@@ -2718,34 +2737,43 @@
       }
       form.addEventListener("submit", function (event) {
         event.preventDefault();
-        var value = (input.value || "").trim();
+        runLookup((input.value || "").trim());
+      });
+      function runLookup(value) {
         if (!value) { focusEmpty(); return; }
         var lookup = value;
         var url = parseLink(value);
         if (!url || !siteOf(url)) {
           var handle = value.replace(/^@/, "");
           if (/^[A-Za-z0-9_]{1,15}$/.test(handle)) lookup = "https://x.com/" + handle;
-          else { paint({ title: value, name: ask ? ask.textContent : "" }); return; }
+          else { paint({ title: value, keepPhoto: true, keepName: true }); return; }
         }
         input.disabled = true;
+        if (refresh) refresh.classList.add("is-busy");
         input.placeholder = "Reading the profile…";
         fetchCard(lookup).then(function (card) {
           input.disabled = false;
+          if (refresh) refresh.classList.remove("is-busy");
           input.placeholder = " / Whats the x user handle ? ";
           if (!card || (!card.title && !card.name)) {
-            paint({ title: "Couldn't read the last post" });
+            paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: lookup });
             return;
           }
           paint({
             name: card.name,
             avatar: card.avatar,
-            title: card.title || "Couldn't read the last post"
+            title: card.title || "Couldn't read the last post",
+            source: lookup
           });
         }).catch(function () {
           input.disabled = false;
+          if (refresh) refresh.classList.remove("is-busy");
           input.placeholder = " / Whats the x user handle ? ";
-          paint({ title: "Couldn't read the last post" });
+          paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true });
         });
+      }
+      if (refresh) refresh.addEventListener("click", function () {
+        runLookup(source || (input.value || "").trim());
       });
     })();
     </script>
