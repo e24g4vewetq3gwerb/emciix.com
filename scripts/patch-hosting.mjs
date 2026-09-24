@@ -288,32 +288,32 @@ async function allowGalacticCalls() {
     console.log("no rules source");
     return;
   }
-  if (file.content.includes("galacticCalls")) {
+  if (file.content.includes('callId == "board"')) {
     console.log("galactic rules already set");
     return;
   }
   const marker = "match /databases/{database}/documents {";
-  if (!file.content.includes(marker)) {
+  if (!file.content.includes(marker) && !file.content.includes("match /galacticCalls/{callId}")) {
     console.log("rules shape unexpected");
     return;
   }
   const block = `
     match /galacticCalls/{callId} {
       allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['handle', 'name', 'avatar', 'post', 'at'])
-        && request.resource.data.handle is string
-        && request.resource.data.handle.size() > 0
-        && request.resource.data.handle.size() < 40
-        && request.resource.data.name is string
-        && request.resource.data.name.size() < 80
-        && request.resource.data.avatar is string
-        && request.resource.data.avatar.size() < 500
-        && request.resource.data.post is string
-        && request.resource.data.post.size() < 300
-        && request.resource.data.at is int;
+      allow create, update: if callId == "board"
+        && request.resource.data.keys().hasOnly(['items'])
+        && request.resource.data.items is string
+        && request.resource.data.items.size() < 8000;
     }`;
+  const content = file.content.includes("match /galacticCalls/{callId}")
+    ? file.content.replace(/match \/galacticCalls\/\{callId\} \{[\s\S]*?\n    \}/, block.trim())
+    : file.content.replace(marker, marker + block);
+  if (!content.includes('callId == "board"')) {
+    console.log("could not rewrite galactic rule");
+    return;
+  }
   const created = await api(access, "POST", "https://firebaserules.googleapis.com/v1/" + project + "/rulesets", {
-    source: { files: [{ name: file.name || "firestore.rules", content: file.content.replace(marker, marker + block) }] },
+    source: { files: [{ name: file.name || "firestore.rules", content }] },
   });
   await api(access, "PATCH", "https://firebaserules.googleapis.com/v1/" + release.name + "?updateMask=rulesetName", {
     release: {

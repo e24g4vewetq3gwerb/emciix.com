@@ -655,7 +655,7 @@ function paintNow() {
     '<button class="b prev" id="prev" type="button">Prev</button>' +
     '<button class="b skip" id="skip" type="button">Skip</button>' +
     '<button class="b repeat' + (repeatOn ? ' on' : '') + '" id="repeat" type="button" aria-pressed="' + (repeatOn ? 'true' : 'false') + '" aria-label="' + (repeatOn ? 'Repeat one on' : 'Repeat one off') + '" title="Repeat one">' + repeatIconSvg() + '</button></div>' +
-    '<div class="hintchips" aria-label="Keyboard shortcuts"><button type="button" class="hintchip" id="hintPlay" aria-label="Play"><kbd>Space</kbd>play</button><button type="button" class="hintchip" id="hintChange" aria-label="Change song"><kbd>\u2190</kbd><kbd>\u2192</kbd>change</button></div></div>';
+    '<div class="hintrow"><div class="hintchips" aria-label="Keyboard shortcuts"><button type="button" class="hintchip" id="hintPlay" aria-label="Play"><kbd>Space</kbd>play</button><button type="button" class="hintchip" id="hintChange" aria-label="Change song"><kbd>\u2190</kbd><kbd>\u2192</kbd>change</button></div><a class="playlist-pill" href="https://music.youtube.com/playlist?list=PLZX_2WN1sEAg" target="_blank" rel="noopener">Playlist <strong>emciix</strong> ›</a></div></div>';
   bind();
   if (window.EmciixPaintSongLives) try { window.EmciixPaintSongLives(); } catch (e) {}
   if (window.EmciixPaintYtViews) try { window.EmciixPaintYtViews(); } catch (e) {}

@@ -974,7 +974,14 @@
     /* Control row sits below .metarow; spacing from side-prog padding-bottom */
     .side .row { margin-top:0; }
     .side .hint { margin-top:0; }
-    .side .hintchips { margin-top:10px; padding-top:0; padding-bottom:0; flex-shrink:0; width:100%; overflow:visible; }
+    .side .hintchips { margin-top:0; padding-top:0; padding-bottom:0; flex-shrink:0; width:auto; overflow:visible; }
+    .hintrow { display:flex; align-items:center; gap:10px; width:100%; margin-top:10px; }
+    .playlist-pill {
+      margin-left:auto; flex:none; display:inline-flex; align-items:center; gap:6px;
+      min-height:34px; padding:6px 12px; border-radius:999px; text-decoration:none; color:inherit;
+      border:1px solid var(--line); background:var(--surface); font:600 13px/1 var(--font); white-space:nowrap;
+    }
+    .playlist-pill strong { font:600 13px/1 var(--font); }
     /* Order in .side: side-head (title+pills | PLAY) → .side-prog → .metarow → .row → hints */
     .side-prog {
       display:flex; flex-direction:column; align-items:stretch; gap:0;
@@ -1841,10 +1848,7 @@
       font-family:var(--font); font-size:12px; font-weight:500;
       color:var(--dim); margin-left:auto; white-space:nowrap;
     }
-    .hero-tabs {
-      display:grid; grid-template-columns:minmax(210px,280px) minmax(0,1fr); gap:12px;
-      align-items:stretch;
-    }
+    .hero-tabs { display:block; }
     .playlist-only {
       display:flex; align-items:center; gap:12px;
       min-height:52px; text-decoration:none; color:inherit;
@@ -2568,13 +2572,6 @@
     <div class="hero" id="hero"></div>
     <section class="shelf" id="songs">
       <div class="hero-tabs">
-        <a class="playlist-only" href="https://music.youtube.com/playlist?list=PLZX_2WN1sEAg" target="_blank" rel="noopener" aria-label="Open the playlist on YouTube Music">
-          <span class="playlist-copy">
-            <span class="playlist-kicker">Playlist</span>
-            <strong>emciix</strong>
-          </span>
-          <span class="playlist-go" aria-hidden="true">›</span>
-        </a>
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
@@ -2968,37 +2965,61 @@
         };
       }
       function loadCalls() {
-        renderCalls(readCalls());
-        fetch(callUrl + "?pageSize=25", { cache: "no-store" }).then(function (res) {
-          if (!res.ok) throw new Error("calls");
+        var local = readCalls();
+        renderCalls(local);
+        fetch(callUrl + "/board", { cache: "no-store" }).then(function (res) {
+          if (res.status === 404) {
+            if (local.length) return saveBoard(local);
+            return null;
+          }
+          if (!res.ok) throw new Error("board");
           return res.json();
-        }).then(function (data) {
-          var remote = ((data && data.documents) || []).map(parseCallDoc);
-          var merged = latestCalls(remote.concat(readCalls()));
+        }).then(function (doc) {
+          if (!doc) return;
+          var remote = boardItems(doc);
+          var merged = latestCalls(remote.concat(local));
           try { localStorage.setItem(callStore, JSON.stringify(merged)); } catch (err) {}
           renderCalls(merged);
+          if (JSON.stringify(latestCalls(remote)) !== JSON.stringify(merged)) return saveBoard(merged);
         }).catch(function () {});
+      }
+      function boardItems(doc) {
+        var raw = doc && doc.fields && doc.fields.items && doc.fields.items.stringValue || "[]";
+        try {
+          var list = JSON.parse(raw);
+          return Array.isArray(list) ? list : [];
+        } catch (err) { return []; }
+      }
+      function saveBoard(items) {
+        var body = JSON.stringify({ fields: { items: { stringValue: JSON.stringify(latestCalls(items)) } } });
+        return fetch(callUrl + "/board?updateMask.fieldPaths=items", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: body
+        }).then(function (res) {
+          if (res.ok) return res;
+          if (res.status !== 404) throw new Error("board");
+          return fetch(callUrl + "?documentId=board", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: body
+          });
+        });
       }
       function publishCall(entry) {
         if (!entry || !entry.handle) return;
         entry.avatar = String(entry.avatar || "").slice(0, 480);
-        entry.post = String(entry.post || "").slice(0, 280);
+        entry.post = String(entry.post || "").slice(0, 180);
         entry.name = String(entry.name || entry.handle).slice(0, 70);
-        var merged = latestCalls([entry].concat(readCalls()));
-        try { localStorage.setItem(callStore, JSON.stringify(merged)); } catch (err) {}
-        renderCalls(merged);
-        fetch(callUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fields: {
-              handle: { stringValue: entry.handle },
-              name: { stringValue: entry.name },
-              avatar: { stringValue: entry.avatar },
-              post: { stringValue: entry.post },
-              at: { integerValue: String(entry.at || Date.now()) }
-            }
-          })
+        var local = latestCalls([entry].concat(readCalls()));
+        try { localStorage.setItem(callStore, JSON.stringify(local)); } catch (err) {}
+        renderCalls(local);
+        fetch(callUrl + "/board", { cache: "no-store" }).then(function (res) {
+          if (res.status === 404) return local;
+          if (!res.ok) throw new Error("board");
+          return res.json().then(function (doc) { return latestCalls([entry].concat(boardItems(doc))); });
+        }).then(function (merged) {
+          return saveBoard(merged);
         }).then(function () { loadCalls(); }).catch(function () {});
       }
       loadCalls();
