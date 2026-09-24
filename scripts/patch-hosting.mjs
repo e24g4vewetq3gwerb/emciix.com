@@ -108,6 +108,7 @@ const PATCHES = [
   [homeIndex || "index.html", "/index.html"],
   ["app.js", "/app.js"],
   ["views-boot.js", "/views-boot.js"],
+  ["stats-boot.js", "/stats-boot.js"],
   ["subnet/index.html", "/subnet/index.html"],
   [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],

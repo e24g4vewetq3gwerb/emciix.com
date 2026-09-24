@@ -26,6 +26,7 @@
       return (
         hb - ha ||
         (b.chat || 0) - (a.chat || 0) ||
+        openFreshPct(b) - openFreshPct(a) ||
         (b.n || 0) - (a.n || 0) ||
         String(a.name || "").localeCompare(String(b.name || ""))
       );
@@ -288,8 +289,8 @@
     var openN = c.n || 0;
     var openShare = openFreshPct(c);
     var chatShare = sharePct(chatN, totalChat);
-    var barPct = max > 0 ? Math.round((chatN / max) * 100) : 0;
-    if (chatN < 1) barPct = openShare;
+    var barPct = openShare;
+    if (barPct < 1 && chatN > 0) barPct = 8;
     var top = idx < 3 ? " top" : "";
     var tip = c.name + (c.region ? ", " + c.region : "");
     var chip = c.region
@@ -306,7 +307,11 @@
     // Chat pill = text/message line count (ranking metric)
     var chatHtml =
       '<span class="share">' + fmt(chatN) + " chat</span>";
-    var openHtml = '<span class="share">' + openShare + "% open</span>";
+    var openHtml =
+      '<span class="share">' +
+      (openN ? fmt(openN) + " open · " : "") +
+      openShare +
+      "% open</span>";
     var placeAttr = c.id ? ' data-place-id="' + esc(c.id) + '"' : "";
     var seeded = latestChatLabel({ body: c.lastBody || "", handle: c.handle || "" });
     var hasSeed = !!(c.lastBody && String(c.lastBody).trim());
