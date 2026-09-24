@@ -1945,6 +1945,17 @@
     .call-dot.is-on:not(.has-photo) { background:var(--ink); color:var(--surface); }
     .call-yt { min-width:52px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    .open-playlist {
+      display:flex; width:100%; margin-top:10px; min-height:44px;
+      align-items:center; justify-content:center;
+      border:0; border-radius:16px; cursor:pointer;
+      background:var(--surface-2); color:var(--ink);
+      font:600 15px/1 var(--font); letter-spacing:-0.02em;
+    }
+    .open-playlist:hover { filter:brightness(1.06); }
+    .open-playlist:active { transform:scale(.99); }
+    .playlist-cards { margin-top:14px; }
+    .playlist-cards[hidden] { display:none !important; }
     .card {
       position:relative;
       border:1px solid var(--line);
@@ -2586,6 +2597,8 @@
           <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" @handle or username" autocomplete="off" maxlength="180" required />
           <button type="submit" class="call-send" id="callerSend" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 11h11.2l-4.3-4.3 1.4-1.4L19.6 12l-7.3 6.7-1.4-1.4 4.3-4.3H4z"/></svg></button>
         </form>
+        <button type="button" class="open-playlist" id="openPlaylist" aria-expanded="false" aria-controls="grid">Open playlist</button>
+        <div class="grid playlist-cards" id="grid" hidden></div>
       </div>
     </section>
     <script>
@@ -2980,6 +2993,16 @@
         resetCall();
       };
       if (refresh) refresh.addEventListener("click", window.emciixRefresh, true);
+      var openPlaylist = document.getElementById("openPlaylist");
+      var playlistCards = document.getElementById("grid");
+      if (openPlaylist && playlistCards) {
+        openPlaylist.addEventListener("click", function () {
+          var open = playlistCards.hidden;
+          playlistCards.hidden = !open;
+          openPlaylist.setAttribute("aria-expanded", open ? "true" : "false");
+          openPlaylist.textContent = open ? "Close playlist" : "Open playlist";
+        });
+      }
       var callStore = "emciix-call-history";
       var callUrl = "https://firestore.googleapis.com/v1/projects/emciix-com/databases/(default)/documents/galacticCalls";
       function readCalls() {
