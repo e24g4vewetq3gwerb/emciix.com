@@ -11,9 +11,25 @@
     <link rel="apple-touch-icon" href="./need-logo.png" />
     <script type="module" crossorigin src="/need/assets/index-Bsi7rUKP.js"></script>
     <link rel="stylesheet" crossorigin href="/need/assets/index-pQCypl1A.css">
-      <link rel="stylesheet" href="/need/wide.css?v=wide-2">
+      <link rel="stylesheet" href="/need/wide.css?v=wide-3">
   </head>
   <body>
     <div id="app"></div>
+    <script>
+      (function () {
+        function mount() {
+          var top = document.querySelector(".need-home-top");
+          if (!top || document.getElementById("needHomeBack")) return;
+          var link = document.createElement("a");
+          link.id = "needHomeBack";
+          link.className = "need-home-back";
+          link.href = "https://emciix.com";
+          link.textContent = "Home";
+          top.insertBefore(link, top.firstChild);
+        }
+        mount();
+        new MutationObserver(mount).observe(document.body, { childList: true, subtree: true });
+      })();
+    </script>
   </body>
 </html>

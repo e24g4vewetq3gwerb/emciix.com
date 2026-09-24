@@ -1,3 +1,100 @@
+body:has(.need-home),
+body:has(.need-home) #app,
+.need-home {
+  background: #ffffff !important;
+  color: #171a20;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.need-home-top {
+  margin-bottom: 16px !important;
+  padding: 8px 10px 8px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: #1c1c1e;
+  color: #f5f5f7;
+}
+
+.need-home-back {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  margin-right: 8px;
+  border-radius: 999px;
+  background: #2c2c2e;
+  color: #f5f5f7;
+  text-decoration: none;
+  font: 600 13px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.need-home-back:hover { background: #3a3a3c; }
+
+.need-home-brand {
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #f5f5f7 !important;
+}
+
+.need-theme-btn {
+  border: 0 !important;
+  background: #2c2c2e !important;
+  color: #f5f5f7 !important;
+  box-shadow: none !important;
+  border-radius: 999px !important;
+}
+
+.need-door--mag,
+.need-door--cya,
+.need-door--yel {
+  --door-accent: #8e8e93;
+  --door-soft: rgba(142, 142, 147, 0.16);
+  --door-line: rgba(255, 255, 255, 0.12);
+  --door-bg: #1c1c1e;
+  --door-shadow: none;
+}
+
+.need-door,
+.need-door:hover,
+.need-door:active {
+  background: #1c1c1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+  color: #f5f5f7 !important;
+  border-radius: 22px !important;
+}
+
+.need-door-icon {
+  background: #2c2c2e !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f5f5f7 !important;
+  box-shadow: none !important;
+}
+
+.need-door-chev,
+.need-door-title,
+.need-door-sub {
+  color: #f5f5f7;
+}
+
+.need-door-sub { color: #a1a1a6 !important; }
+
+.need-door-badge {
+  background: #3a3a3c !important;
+  color: #f5f5f7 !important;
+  box-shadow: none !important;
+}
+
+.need-pv-town,
+.need-pv-price {
+  background: #2c2c2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
 @media (min-width: 900px) {
   #app div[style*="max-width:420px"],
   #app div[style*="max-width: 420px"] {
@@ -37,3 +134,4 @@
     min-height: 58px;
   }
 }
+
