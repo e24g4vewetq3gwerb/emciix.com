@@ -179,4 +179,87 @@ body:has(.need-home) #app,
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
 }
 
+html .need-pv-town,
+html .need-pv-price,
+html[data-theme="light"] .need-pv-town,
+html[data-theme="light"] .need-pv-price,
+html:not([data-theme="dark"]) .need-pv-town,
+html:not([data-theme="dark"]) .need-pv-price {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    #090d14 !important;
+  border: 1px solid rgba(168, 214, 255, 0.32) !important;
+  border-radius: 18px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 28px rgba(0, 0, 0, 0.28) !important;
+  color: #f4f7fb !important;
+}
+
+.need-pv-town-name,
+.need-pv-price-name,
+.need-pv-title,
+.need-pv-sub,
+.need-pv-price-store,
+.need-pv-town-reg {
+  color: #f5f7fb !important;
+}
+
+.need-pv-sub,
+.need-pv-price-store,
+.need-pv-town-reg,
+.need-pv-hint {
+  color: rgba(214, 228, 242, 0.72) !important;
+}
+
+.need-pv-price-amt {
+  color: #e7f4ff !important;
+  text-shadow: 0 0 14px rgba(160, 210, 255, 0.75);
+}
+
+.need-pv-chip,
+.need-pv-chip.is-hot,
+.need-pv-chip.is-quiet {
+  background: rgba(150, 200, 255, 0.1) !important;
+  border: 1px solid rgba(180, 220, 255, 0.4) !important;
+  color: #eaf4ff !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.need-door-preview--song .need-pv-art,
+html[data-theme="light"] .need-pv-art,
+html:not([data-theme="dark"]) .need-pv-art {
+  border-radius: 18px !important;
+  border: 1px solid rgba(186, 220, 255, 0.45) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 0 28px rgba(130, 190, 255, 0.28) !important;
+}
+
+.need-pv-bar {
+  height: 3px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.need-pv-bar-fill,
+html[data-theme="light"] .need-pv-bar-fill,
+html:not([data-theme="dark"]) .need-pv-bar-fill {
+  background: linear-gradient(90deg, #8ec4ff, #ffffff) !important;
+  box-shadow: 0 0 12px rgba(170, 214, 255, 0.85) !important;
+}
+
+.need-pv-chat,
+html[data-theme="light"] .need-pv-chat {
+  background: rgba(8, 12, 20, 0.72) !important;
+  border: 1px solid rgba(168, 214, 255, 0.28) !important;
+  color: #d7e3f0 !important;
+}
+
+.need-pv-kicker {
+  color: rgba(190, 220, 255, 0.78) !important;
+  letter-spacing: 0.16em !important;
+}
+
+
 
