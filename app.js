@@ -1,5 +1,5 @@
-document.documentElement.dataset.player = 'Player146';
-// Player146: unmute on intentional play; Popular|New flip inside badgestrip
+document.documentElement.dataset.player = 'Player147';
+// Player147: unmute on intentional play; Popular|New flip inside badgestrip
 var IDX_KEY = "emciixIdx";
 var REPEAT_KEY = "emciix.repeat";
 var MUTE_KEY = "emciix.muted";
@@ -50,10 +50,8 @@ var SONGS = [
   ["oq1c9I9T_tw","Which phone is it? iPhone or Android"],
   ["53Jny0alg9g","Still here"],
   ["9-nGIe8mQ0M","Wake you up Avicii"],
-  ["Id4HSb9j8RA","You're Not Alone"],
   ["R7BunIbGheI","One More Light On"],
   ["NgEug_9qIxU","IDK What I'm Doing"],
-  ["pHMXzHDwOgU","Not Alone"],
   ["m6cxgKh5QgE","Grid Run"],
   ["qZZuGfqancc","Solar System Party"],
   ["KhGqJCTO1Hc","Come Closer"],
@@ -67,6 +65,11 @@ var SONGS = [
   ["7hnVjQgSiWM","Dale Play It"],
   ["Qq-D17G4L_o","Which Device Is That"],
   ["3Js245_1l3o","SEVEN DAYS WAITIN"],
+  ["U5ju6EligjY","Brppp"],
+  ["B7VjRWZDDiI","Glitch"],
+  ["Uh2et7kcWSs","Mr44"],
+  ["Id4HSb9j8RA","You're Not Alone"],
+  ["pHMXzHDwOgU","Not Alone"],
   ["no-room-for-me","No Room for Me"]
 ].map(function(p){ return {id:p[0], title:p[1]}; });
 var NEED = {
@@ -554,7 +557,7 @@ function paintStageOnly() {
   var hudIdx = hero.querySelector(".kicker-idx");
   var stageHud = hero.querySelector(".stagehud");
   if (!stage || !titleEl) return false;
-  // Player146: never wipe an active YouTube/native play with a soft re-paint
+  // Player147: never wipe an active YouTube/native play with a soft re-paint
   if (hero.classList.contains("is-playing") || stage.classList.contains("is-playing")) {
     if (titleEl) titleEl.textContent = v.title;
     if (hudIdx) hudIdx.textContent = heroKickerIdx();
@@ -852,7 +855,7 @@ function startYouTube(v, stage, epoch) {
   if (tick) { clearInterval(tick); tick = null; }
   var origin = "";
   try { origin = encodeURIComponent(location.origin || ""); } catch (e) {}
-  // Player146: intentional play (stage/Space/PLAY) → start unmuted unless user muted.
+  // Player147: intentional play (stage/Space/PLAY) → start unmuted unless user muted.
   // Earlier mute=1 + later unMute often never fired (API late / outside gesture).
   var startMuted = wantMuted();
   var qs = "?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1&mute=" + (startMuted ? "1" : "0");
@@ -966,7 +969,7 @@ function start() {
     startNative({
       title: entry.title,
       driveId: entry.driveId,
-      src: entry.src + (entry.src.indexOf("?") >= 0 ? "&" : "?") + "v=Player146",
+      src: entry.src + (entry.src.indexOf("?") >= 0 ? "&" : "?") + "v=Player147",
       source: entry.source
     }, v);
     return;
@@ -1294,8 +1297,7 @@ function fetchLatestFromAtom() {
     });
 }
 function fetchLatestFromRss() {
-  // rss2json often lags; keep as secondary
-  var atom = "https://www.youtube.com/feeds/videos.xml?playlist_id=" + uploadsPlaylistId();
+  var atom = "https://www.youtube.com/feeds/videos.xml?playlist_id=PLZX_2WN1sEAg";
   var url = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(atom);
   return fetch(url, { cache: "no-store" })
     .then(function (r) {
@@ -1349,11 +1351,44 @@ function fetchLatestFallback() {
     });
 }
 function fetchLatestTrack() {
-  // Atom first (live). Same-origin latest.json before rss2json — rss2json often lags days.
-  return withTimeout(fetchLatestFromAtom(), 5500)
+  return withTimeout(fetchLatestFromRss(), 5000)
+    .catch(function () { return withTimeout(fetchLatestFromAtom(), 5500); })
     .catch(function () { return withTimeout(fetchLatestFallback(), 900); })
-    .catch(function () { return withTimeout(fetchLatestFromChannel(), 5500); })
-    .catch(function () { return withTimeout(fetchLatestFromRss(), 5000); });
+    .catch(function () { return withTimeout(fetchLatestFromChannel(), 5500); });
+}
+function applyPlaylistFeed(videos) {
+  if (!videos || !videos.length) return false;
+  var byId = {};
+  var i;
+  for (i = 0; i < SONGS.length; i++) byId[SONGS[i].id] = SONGS[i];
+  var next = [];
+  var seen = {};
+  videos.forEach(function (v) {
+    var id = v.videoId || v.id;
+    if (!id || seen[id]) return;
+    seen[id] = 1;
+    var song = byId[id] || { id: id, title: v.title || id };
+    if (v.title) song.title = String(v.title).trim() || song.title;
+    next.push(song);
+  });
+  for (i = 0; i < SONGS.length; i++) {
+    if (!seen[SONGS[i].id]) next.push(SONGS[i]);
+  }
+  var keep = SONGS[idx] ? SONGS[idx].id : "";
+  SONGS.length = 0;
+  for (i = 0; i < next.length; i++) SONGS.push(next[i]);
+  if (keep) {
+    for (i = 0; i < SONGS.length; i++) if (SONGS[i].id === keep) idx = i;
+  }
+  applyCatalogOrder({ rebuild: true });
+  if (!isPlayingNow()) paint({ soft: true, animate: false });
+  return true;
+}
+function syncPlaylistFeed() {
+  return fetch("https://invidious.darkness.services/api/v1/playlists/PLZX_2WN1sEAg?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) { return applyPlaylistFeed(data && data.videos); })
+    .catch(function () { return false; });
 }
 function bootPlayer() {
   parseDeepLink();
@@ -1361,6 +1396,7 @@ function bootPlayer() {
   updateLiveModeHint();
   loadDriveMap();
   paint();
+  syncPlaylistFeed();
   bootReady = true;
   bindLivePill();
   var startedId = SONGS[idx] ? SONGS[idx].id : null;
@@ -1380,7 +1416,7 @@ function bootPlayer() {
       .catch(function () {});
     return;
   }
-  // Player146: honor Popular|New preference for initial order
+  // Player147: honor Popular|New preference for initial order
   withTimeout(fetchViewsMap(), 12000)
     .then(function (views) {
       if (deepLinkLocked || userPicked()) return false;
@@ -1484,7 +1520,7 @@ document.addEventListener("keydown", function(e){
 });
 
 (function () {
-  // Player146: any stage / PLAY control tap starts playback
+  // Player147: any stage / PLAY control tap starts playback
   if (window.EmciixPlayDelegate) return;
   window.EmciixPlayDelegate = true;
   function wantPlay(el) {
@@ -1555,7 +1591,7 @@ else bootPlayer();
   }
   var animTimer = null;
   function syncFavicon(mode) {
-    var v = "Player146";
+    var v = "Player147";
     var svgHref = mode === "light"
       ? "/favicon-blob-light.svg?v=" + v
       : "/favicon-blob-dark.svg?v=" + v;

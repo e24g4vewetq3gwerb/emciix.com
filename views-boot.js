@@ -457,19 +457,30 @@
     var ch = null;
     try { ch = typeof YT_CHANNEL_ID !== "undefined" ? YT_CHANNEL_ID : null; } catch (e) {}
     if (!ch) ch = "UCt8dYnrvcrZSCx9uS0aLBSQ";
-    return fetchUploadsFromVercel()
+    var playlist = fetch("https://invidious.darkness.services/api/v1/playlists/PLZX_2WN1sEAg?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        if (data && data.items && data.items.length) {
-          return { added: applyUploadItems(data.items, ch), ok: true, source: "vercel" };
-        }
-        return fetchUploadsFromRss2Json(ch).then(function (fallback) {
-          if (fallback && fallback.items && fallback.items.length) {
-            return { added: applyUploadItems(fallback.items, ch), ok: true, source: "rss2json" };
-          }
-          return { added: 0, ok: false, source: "uploads" };
-        });
+        var videos = data && data.videos || [];
+        var items = videos.map(function (v) { return { id: v.videoId, title: v.title }; });
+        return { added: applyUploadItems(items, ch), ok: items.length > 0, source: "playlist" };
       })
-      .catch(function () { return { added: 0, ok: false, source: "uploads" }; });
+      .catch(function () { return null; });
+    return playlist.then(function (fromList) {
+      if (fromList && fromList.ok) return fromList;
+      return fetchUploadsFromVercel()
+        .then(function (data) {
+          if (data && data.items && data.items.length) {
+            return { added: applyUploadItems(data.items, ch), ok: true, source: "vercel" };
+          }
+          return fetchUploadsFromRss2Json(ch).then(function (fallback) {
+            if (fallback && fallback.items && fallback.items.length) {
+              return { added: applyUploadItems(fallback.items, ch), ok: true, source: "rss2json" };
+            }
+            return { added: 0, ok: false, source: "uploads" };
+          });
+        })
+        .catch(function () { return { added: 0, ok: false, source: "uploads" }; });
+    });
   }
 
   function pullYoutubePageViews() {

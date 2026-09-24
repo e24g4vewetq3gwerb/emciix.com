@@ -106,6 +106,7 @@ const homeIndex = materializeHome();
 const PATCHES = [
   [homeIndex || "index.html", "/index.html"],
   ["app.js", "/app.js"],
+  ["views-boot.js", "/views-boot.js"],
   [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
 ];
