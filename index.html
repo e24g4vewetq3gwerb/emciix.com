@@ -2997,14 +2997,15 @@
         var extra = pendingCalls.filter(function (row) { return !seen[row.handle + "|" + row.at]; });
         renderCalls(extra.concat(ledgerCalls));
       }
+      function applyLedger(data) {
+        ledgerCalls = latestCalls((data && data.calls) || []);
+        showLedger();
+      }
       function pullLedger() {
         fetch(ledgerUrl + "?t=" + Date.now(), { cache: "no-store" }).then(function (res) {
           if (!res.ok) throw new Error("ledger");
           return res.json();
-        }).then(function (data) {
-          ledgerCalls = latestCalls((data && data.calls) || []);
-          showLedger();
-        }).catch(function () {});
+        }).then(applyLedger).catch(function () {});
       }
       function publishCall(entry) {
         if (!entry || !entry.handle) return;
@@ -3015,20 +3016,22 @@
         entry.at = entry.at || Date.now();
         pendingCalls.unshift(entry);
         showLedger();
-        fetch(callUrl, {
+        fetch("https://ntfy.sh/emciix-galactic-ledger-9f3c", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "text/plain", "Title": "call" },
           body: JSON.stringify({
-            fields: {
-              handle: { stringValue: entry.handle },
-              name: { stringValue: entry.name },
-              avatar: { stringValue: entry.avatar },
-              post: { stringValue: entry.post },
-              url: { stringValue: entry.url },
-              at: { integerValue: String(entry.at) }
-            }
+            handle: entry.handle,
+            name: entry.name,
+            avatar: entry.avatar,
+            post: entry.post,
+            url: entry.url,
+            at: entry.at
           })
-        }).then(function () { pullLedger(); }).catch(function () {});
+        }).then(function () {
+          setTimeout(pullLedger, 8000);
+          setTimeout(pullLedger, 20000);
+          setTimeout(pullLedger, 45000);
+        }).catch(function () {});
       }
       pullLedger();
       setInterval(pullLedger, 8000);
