@@ -1245,7 +1245,11 @@
       border-color:rgba(235,235,245,0.45);
       color:rgba(235,235,245,0.85);
     }
-    button.playgame.repeat svg { width:36px; height:36px; }
+    .badgestrip .title-repeat {
+      width:32px; height:32px; min-width:32px; flex:0 0 32px;
+      padding:0; border-radius:999px;
+    }
+    .badgestrip .title-repeat svg { width:16px; height:16px; }
     button.playgame.repeat.on { color:var(--accent); border-color:var(--accent); }
     a.playgame:active, button.playgame:active { transform:scale(.97); }
     a.playgame:focus-visible, button.playgame:focus-visible {
@@ -3291,7 +3295,7 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=portal-top"></script>
+  <script src="app.js?v=repeat-back"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player147"></script>
   <script src="views-boot.js?v=live-rank-1"></script>
