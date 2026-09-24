@@ -2,7 +2,7 @@ name: Galactic ledger
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [galactic-call]

@@ -15,7 +15,7 @@ function readLedger() {
 function keep(list) {
   const seen = new Set();
   return list
-    .filter((row) => row && row.handle && row.handle !== "x" && row.handle !== "ledgerprobe" && row.handle !== "probe2")
+    .filter((row) => row && row.handle && row.handle !== "x" && row.handle !== "ledgerprobe" && row.handle !== "probe2" && row.handle !== "smoketest")
     .map((row) => {
       row.at = Number(row.at) || 0;
       return row;

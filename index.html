@@ -2909,6 +2909,14 @@
           input.placeholder = shown;
           if (ask) ask.textContent = shown;
           paint({ source: handle, label: shown, keepPhoto: true, keepName: true });
+          publishCall({
+            handle: handle,
+            name: handle,
+            avatar: "",
+            post: "",
+            url: "https://x.com/" + handle,
+            at: Date.now()
+          });
         });
       }
       window.emciixRefresh = function (event) {
