@@ -169,6 +169,108 @@ function setBar(pct){
   if (!bar) return;
   var w = Math.max(0, Math.min(100, Number(pct) || 0));
   bar.style.width = w + "%";
+  var seek = document.getElementById("seekBar");
+  if (seek) {
+    seek.setAttribute("aria-valuenow", String(Math.round(w)));
+    seek.setAttribute("aria-valuemin", "0");
+    seek.setAttribute("aria-valuemax", "100");
+  }
+}
+var playhead = { t: 0, d: 0, at: 0 };
+function applyPlayhead(elapsed, duration) {
+  if (isFinite(elapsed) && elapsed >= 0) {
+    playhead.t = elapsed;
+    playhead.at = Date.now();
+  }
+  if (isFinite(duration) && duration > 1) playhead.d = duration;
+  setClock(playhead.t, playhead.d > 1 ? playhead.d : null);
+  if (playhead.d > 1) setBar((playhead.t / playhead.d) * 100);
+}
+function currentMedia() {
+  var video = hero && hero.querySelector("video.native-media");
+  var frame = hero && hero.querySelector("iframe.yt-embed");
+  return { video: video, frame: frame };
+}
+function seekRatio(ratio) {
+  ratio = Math.max(0, Math.min(1, Number(ratio) || 0));
+  var media = currentMedia();
+  var video = media.video;
+  if (video && isFinite(video.duration) && video.duration > 1) {
+    var to = ratio * video.duration;
+    try { video.currentTime = to; } catch (e) {}
+    applyPlayhead(to, video.duration);
+    return;
+  }
+  var dur = playhead.d;
+  if (ytPlayer && ytPlayer.getDuration) {
+    try {
+      var yd = ytPlayer.getDuration();
+      if (isFinite(yd) && yd > 1) dur = yd;
+    } catch (e2) {}
+  }
+  if (!(dur > 1)) return;
+  var sec = ratio * dur;
+  if (ytPlayer && ytPlayer.seekTo) {
+    try { ytPlayer.seekTo(sec, true); } catch (e3) {}
+  }
+  if (media.frame && media.frame.contentWindow) {
+    try {
+      media.frame.contentWindow.postMessage(JSON.stringify({
+        event: "command",
+        func: "seekTo",
+        args: [sec, true]
+      }), "*");
+    } catch (e4) {}
+  }
+  applyPlayhead(sec, dur);
+}
+function bindSeek() {
+  var bar = document.getElementById("seekBar");
+  if (!bar) return;
+  function ratioFrom(e) {
+    var point = e.touches && e.touches[0] ? e.touches[0] : e;
+    var box = bar.getBoundingClientRect();
+    if (!box.width) return 0;
+    return (point.clientX - box.left) / box.width;
+  }
+  bar.onpointerdown = function (e) {
+    if (e.button != null && e.button !== 0) return;
+    e.preventDefault();
+    try { bar.setPointerCapture(e.pointerId); } catch (err) {}
+    seekRatio(ratioFrom(e));
+    bar.onpointermove = function (ev) { seekRatio(ratioFrom(ev)); };
+    bar.onpointerup = bar.onpointercancel = function () {
+      bar.onpointermove = null;
+      bar.onpointerup = null;
+      bar.onpointercancel = null;
+    };
+  };
+}
+function armYtProgress(frame) {
+  if (!frame) return;
+  function hello() {
+    try {
+      if (!frame.contentWindow) return;
+      frame.contentWindow.postMessage(JSON.stringify({ event: "listening", id: "emciix", channel: "widget" }), "*");
+    } catch (e) {}
+  }
+  frame.addEventListener("load", hello);
+  setTimeout(hello, 400);
+  setTimeout(hello, 1400);
+}
+if (!window.EmciixYtProgress) {
+  window.EmciixYtProgress = true;
+  window.addEventListener("message", function (event) {
+    var data = event.data;
+    if (!data) return;
+    if (typeof data === "string") {
+      try { data = JSON.parse(data); } catch (e) { return; }
+    }
+    if (!data || data.event !== "infoDelivery" || !data.info) return;
+    var info = data.info;
+    if (typeof info.currentTime !== "number") return;
+    applyPlayhead(info.currentTime, typeof info.duration === "number" ? info.duration : playhead.d);
+  });
 }
 var deepLinkLocked = false;
 var USER_PICKED_KEY = "emciix.userPicked";
@@ -637,7 +739,7 @@ function paintNow() {
     gameItHtml() +
     '</div>' +
     '<div class="side-prog">' +
-    '<div class="bar"><i id="bar"></i></div>' +
+    '<button type="button" class="bar" id="seekBar" aria-label="Seek in song"><i id="bar"></i></button>' +
     '</div>' +
     '<div class="metarow">' +
     '<p class="meta" id="clock">0:00 / --:--</p>' +
@@ -788,7 +890,7 @@ function startNative(entry, v) {
     var d = (isFinite(dur) && dur > 0) ? dur : null;
     setClock(ct, d);
     if (d) setBar((ct / d) * 100);
-    else setBar(Math.min(95, (ct / 210) * 100));
+    applyPlayhead(ct, d || playhead.d);
   }
   video.addEventListener("error", function () { fallbackYt(); });
   video.addEventListener("stalled", function () {
@@ -874,6 +976,7 @@ function startYouTube(v, stage, epoch) {
   iframe.title = v.title || "";
   stage.appendChild(hud);
   stage.appendChild(iframe);
+  armYtProgress(iframe);
   wireEmbedIframe(stage);
   // Best-effort unmute while still in gesture stack
   setTimeout(function () { if (epoch === embedEpoch) forceUnmuteMedia(); }, 0);
@@ -919,21 +1022,24 @@ function startYouTube(v, stage, epoch) {
   if (status) status.textContent = repeatOn ? "Playing (repeat on)." : "Playing on this page.";
   setClock(0, null);
   setBar(0);
-  var t0 = Date.now();
-  var fullDur = null;
+  playhead.t = 0;
+  playhead.d = 0;
+  playhead.at = Date.now();
   tick = setInterval(function () {
-    var s = (Date.now() - t0) / 1000;
-    if (ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
+    var s = playhead.t;
+    var fullDur = playhead.d;
+    var live = false;
+    if (ytPlayer && ytPlayer.getCurrentTime) {
       try {
+        var state = ytPlayer.getPlayerState && ytPlayer.getPlayerState();
+        live = state === 1;
         var ct = ytPlayer.getCurrentTime();
-        var dur = ytPlayer.getDuration();
+        var dur = ytPlayer.getDuration && ytPlayer.getDuration();
         if (isFinite(ct) && ct >= 0) s = ct;
-        if (isFinite(dur) && dur > 0) fullDur = dur;
+        if (isFinite(dur) && dur > 1) fullDur = dur;
       } catch (e) {}
     }
-    setClock(s, fullDur);
-    if (fullDur && fullDur > 0) setBar((s / fullDur) * 100);
-    else setBar(Math.min(95, (s / 210) * 100));
+    if (live || (isFinite(s) && s > playhead.t + 0.05)) applyPlayhead(s, fullDur);
   }, 250);
 }
 function start() {
@@ -1471,6 +1577,7 @@ function bind() {
   if (repeatBtn) repeatBtn.onclick = function(){
     setRepeat(!repeatOn);
   };
+  bindSeek();
   bindHeroModeTabs();
   syncModeSwitchUi();
 }

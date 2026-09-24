@@ -1013,7 +1013,34 @@
       border-top:1px solid var(--hairline);
       margin-top:2px !important; padding-top:10px;
     }
-    .side-prog .bar { width:100%; flex:0 0 auto; }
+    .side-prog .bar {
+      position:relative;
+      width:100%;
+      height:16px;
+      flex:0 0 auto;
+      border:0;
+      padding:0;
+      background:transparent;
+      cursor:pointer;
+      appearance:none;
+      -webkit-appearance:none;
+    }
+    .side-prog .bar::before {
+      content:"";
+      position:absolute;
+      left:0; right:0; top:50%;
+      height:3px; margin-top:-1.5px;
+      border-radius:99px;
+      background:rgba(84,84,88,0.55);
+    }
+    html[data-theme="light"] .side-prog .bar::before { background:rgba(0,0,0,0.12); }
+    .side-prog .bar i {
+      position:absolute;
+      left:0; top:50%;
+      height:3px; margin-top:-1.5px;
+      width:0;
+      border-radius:99px;
+    }
     @keyframes sideIn {
       from { opacity:0; transform:translateY(8px); }
       to { opacity:1; transform:translateY(0); }
@@ -3257,7 +3284,7 @@
       </div>
     </section>
   </div>
-  <script src="app.js?v=art-rank-2"></script>
+  <script src="app.js?v=prog-1"></script>
   <script src="live.js"></script>
   <script src="live-boot.js?v=Player147"></script>
   <script src="views-boot.js?v=live-rank-1"></script>
