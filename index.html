@@ -271,19 +271,19 @@
     }
     html[data-theme="light"] .topnav .needbtn,
     html[data-theme="light"] .topnav .navchip {
-      color:#3A3A3C;
+      color:#1d1d1f;
+      font-weight:700;
       border-radius:999px;
     }
-    html[data-theme="light"] .topnav .needbtn { color:#1d1d1f; }
     html[data-theme="light"] .topnav .needbtn + .navchip::before,
     html[data-theme="light"] .topnav .navchip + .navchip::before {
       background:rgba(0,0,0,0.08);
     }
     .topnav .needbtn,
     .topnav .navchip {
-      font-family:var(--font); font-size:12px; font-weight:600;
+      font-family:var(--font); font-size:12px; font-weight:700;
       letter-spacing:-0.01em; text-decoration:none;
-      color:var(--dim); border:0;
+      color:var(--ink); border:0;
       background:transparent; border-radius:8px; padding:6px 12px;
       white-space:nowrap;
       flex:1 1 0; min-width:5.75em; /* equal floor ≈ Need Inc. */
@@ -294,7 +294,7 @@
       box-sizing:border-box;
       height:auto; cursor:pointer;
     }
-    .topnav .needbtn { color:var(--ink); }
+    .topnav .needbtn { color:var(--ink); font-weight:700; }
     .topnav .needbtn + .navchip::before,
     .topnav .navchip + .navchip::before {
       content:""; position:absolute; left:0; top:22%; bottom:22%;
@@ -1581,7 +1581,7 @@
     .livepill {
       display:inline-flex; align-items:center; justify-content:center; gap:6px;
       width:max-content; max-width:100%;
-      font-family:var(--font); font-size:12px; font-weight:600;
+      font-family:var(--font); font-size:12px; font-weight:700;
       color:var(--live-ink); margin:0; letter-spacing:-0.011em;
       border:1px solid transparent; border-radius:999px;
       padding:5px 12px 5px 10px;
