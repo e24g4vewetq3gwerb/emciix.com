@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="./need-logo.png" />
     <script type="module" crossorigin src="/need/assets/index-Bsi7rUKP.js?v=phone-song"></script>
     <link rel="stylesheet" crossorigin href="/need/assets/index-pQCypl1A.css">
-      <link rel="stylesheet" href="/need/wide.css?v=wide-11">
+      <link rel="stylesheet" href="/need/wide.css?v=wide-12">
   </head>
   <body>
     <div id="app"></div>
@@ -47,8 +47,16 @@
           var buttons = card.querySelectorAll("button");
           for (var b = 0; b < buttons.length; b++) {
             var text = (buttons[b].textContent || "").trim();
+            var name = (buttons[b].getAttribute("aria-label") || "").toLowerCase();
             if (text === "Skip" || text === "…") buttons[b].classList.add("need-skip");
             if (text === "Keep") buttons[b].classList.add("need-keep");
+            if (name.indexOf("play") >= 0 || text === "Play") buttons[b].classList.add("need-play");
+            if (/^(Older|Slower|Same energy|Like this|Repeat|Mute)$/.test(text)) buttons[b].classList.add("need-chip");
+          }
+          var boxes = card.querySelectorAll("div");
+          for (var t = 0; t < boxes.length; t++) {
+            var fill = boxes[t].firstElementChild;
+            if (fill && fill.style && /%$/.test(fill.style.width) && boxes[t].children.length === 1) boxes[t].classList.add("need-beam-track");
           }
         }
         paint();
