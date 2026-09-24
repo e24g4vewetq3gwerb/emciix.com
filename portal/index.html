@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>(function(){try{if(/[?&]preview=1(?:&|$)/.test(location.search))document.documentElement.classList.add("portal-embed");}catch(e){}})();</script>
+<script>(function(){try{var q=location.search;if(/[?&]preview=1(?:&|$)/.test(q))document.documentElement.classList.add("portal-embed");if(/[?&]bg=1(?:&|$)/.test(q))document.documentElement.classList.add("portal-bg");}catch(e){}})();</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>portal</title>
@@ -62,6 +62,11 @@
     html.portal-embed .sky-hint,
     html.portal-embed .page-tabs,
     html.portal-embed .play-row { display: none !important; }
+    html.portal-bg .panel-4,
+    html.portal-bg .sky-hint,
+    html.portal-bg .page-tabs,
+    html.portal-bg .play-row,
+    html.portal-bg #embed-fly { display: none !important; }
     #embed-fly {
       display: none;
       position: fixed;
