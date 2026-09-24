@@ -4,3 +4,36 @@
     max-width: min(1280px, calc(100vw - 64px)) !important;
   }
 }
+
+@media (min-width: 768px) {
+  .need-home-shell {
+    max-width: min(1280px, calc(100vw - 40px));
+  }
+  .need-door-preview-slot {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+  }
+  .need-door-preview {
+    flex: 1 1 auto !important;
+    justify-content: flex-start !important;
+  }
+  .need-door-preview--song .need-pv-art {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 180px;
+    aspect-ratio: 16 / 10;
+    align-self: stretch !important;
+    object-fit: cover;
+    flex: 1 1 auto;
+  }
+  .need-door-preview--place .need-pv-towns,
+  .need-door-preview--shop .need-pv-prices {
+    flex: 1 1 auto !important;
+  }
+  .need-pv-town,
+  .need-pv-price {
+    flex: 1 1 auto;
+    min-height: 58px;
+  }
+}
