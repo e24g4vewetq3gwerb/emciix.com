@@ -67,10 +67,7 @@ var SONGS = [
   ["3Js245_1l3o","SEVEN DAYS WAITIN"],
   ["U5ju6EligjY","Brppp"],
   ["B7VjRWZDDiI","Glitch"],
-  ["Uh2et7kcWSs","Mr44"],
-  ["Id4HSb9j8RA","You're Not Alone"],
-  ["pHMXzHDwOgU","Not Alone"],
-  ["no-room-for-me","No Room for Me"]
+  ["Uh2et7kcWSs","Mr44"]
 ].map(function(p){ return {id:p[0], title:p[1]}; });
 var NEED = {
   repo: "https://github.com/e24g4vewetq3gwerb/Need",
@@ -1144,40 +1141,14 @@ function fetchViewsMap() {
 function ensureLatestInCatalog(track) {
   if (!track || !track.id) return false;
   var id = String(track.id);
-  var title = String(track.title || "Latest upload").trim() || "Latest upload";
-  bumpRecencyId(id);
-  var i = -1;
+  var title = String(track.title || "").trim();
   for (var n = 0; n < SONGS.length; n++) {
-    if (SONGS[n].id === id) { i = n; break; }
-  }
-  if (i === 0 && heroMode === "new") {
-    if (title && SONGS[0].title !== title) {
-      SONGS[0].title = title;
-      rebuildGrid();
-      return true;
-    }
-    return false;
-  }
-  var keepId = SONGS[idx] ? SONGS[idx].id : null;
-  if (i > 0) {
-    var moved = SONGS.splice(i, 1)[0];
-    if (title) moved.title = title;
-    if (heroMode === "new") SONGS.unshift(moved);
-    else SONGS.push(moved); // will be re-sorted by views
-  } else if (i < 0) {
-    if (heroMode === "new") SONGS.unshift({ id: id, title: title });
-    else SONGS.push({ id: id, title: title });
-  } else if (title && SONGS[i]) {
-    SONGS[i].title = title;
-  }
-  applyCatalogOrder({ rebuild: true });
-  if (keepId) {
-    for (var j = 0; j < SONGS.length; j++) {
-      if (SONGS[j].id === keepId) { idx = j; break; }
+    if (SONGS[n].id === id) {
+      if (title) SONGS[n].title = title;
+      return false;
     }
   }
-  try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
-  return true;
+  return false;
 }
 window.EmciixEnsureTrack = ensureLatestInCatalog;
 function applyLatestTrack(track) {
@@ -1191,9 +1162,7 @@ function applyLatestTrack(track) {
   if (i >= 0) {
     idx = i;
   } else {
-    SONGS.unshift({ id: id, title: title });
-    idx = 0;
-    rebuildGrid();
+    return false;
   }
   try { localStorage.setItem(IDX_KEY, String(idx)); } catch (e) {}
   return true;
@@ -1370,9 +1339,7 @@ function applyPlaylistFeed(videos) {
     if (v.title) song.title = String(v.title).trim() || song.title;
     next.push(song);
   });
-  for (i = 0; i < SONGS.length; i++) {
-    if (!seen[SONGS[i].id]) next.push(SONGS[i]);
-  }
+  if (next.length < 1) return false;
   var keep = SONGS[idx] ? SONGS[idx].id : "";
   SONGS.length = 0;
   for (i = 0; i < next.length; i++) SONGS.push(next[i]);
