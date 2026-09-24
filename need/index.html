@@ -9,9 +9,9 @@
     <title>Need</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="apple-touch-icon" href="./need-logo.png" />
-    <script type="module" crossorigin src="/need/assets/index-Bsi7rUKP.js"></script>
+    <script type="module" crossorigin src="/need/assets/index-Bsi7rUKP.js?v=doors-8"></script>
     <link rel="stylesheet" crossorigin href="/need/assets/index-pQCypl1A.css">
-      <link rel="stylesheet" href="/need/wide.css?v=wide-8">
+      <link rel="stylesheet" href="/need/wide.css?v=wide-9">
   </head>
   <body>
     <div id="app"></div>
@@ -89,6 +89,22 @@
         }
         paint();
         new MutationObserver(paint).observe(document.body, { childList: true, subtree: true });
+      })();
+      (function () {
+        function shelf() {
+          var shop = document.querySelector(".need-door-preview--shop");
+          if (!shop || shop.getAttribute("data-shelf") === "1") return;
+          shop.setAttribute("data-shelf", "1");
+          shop.innerHTML =
+            '<span class="need-shelf-kicker">Two stores</span>' +
+            '<ul class="need-pv-prices need-shelf">' +
+            '<li class="need-pv-price"><span class="need-pv-price-name">Scan a shelf</span><span class="need-pv-price-right"><span class="need-pv-price-amt">Ready</span></span></li>' +
+            '<li class="need-pv-price"><span class="need-pv-price-name">The other store</span><span class="need-pv-price-right"><span class="need-pv-price-amt">Waiting</span></span></li>' +
+            '<li class="need-pv-price"><span class="need-pv-price-name">Keep the lower</span><span class="need-pv-price-right"><span class="need-pv-price-amt">Open</span></span></li>' +
+            "</ul>";
+        }
+        shelf();
+        new MutationObserver(shelf).observe(document.body, { childList: true, subtree: true });
       })();
     </script>
   </body>
