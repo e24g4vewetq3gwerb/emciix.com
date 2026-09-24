@@ -1874,10 +1874,10 @@
       color:var(--ink); font:500 16px/1.2 var(--font); padding:0;
     }
     .caller-refresh {
-      appearance:none; border:0; background:transparent; color:var(--dim);
-      width:32px; height:32px; border-radius:50%; flex:none; padding:0;
-      position:relative; z-index:2;
-      font:500 18px/1 var(--font); cursor:pointer;
+      appearance:none; border:1px solid var(--line); background:transparent; color:var(--ink);
+      height:32px; border-radius:999px; flex:none; padding:0 12px;
+      position:relative; z-index:3; pointer-events:auto;
+      font:600 13px/1 var(--font); cursor:pointer;
     }
     .caller-refresh:hover { color:var(--ink); }
     .caller-refresh.is-busy { animation:caller-spin .7s linear infinite; }
@@ -2532,8 +2532,8 @@
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
           <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo">x</button>
-          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" / Whats the x/youtube handle ? " autocomplete="off" maxlength="180" required />
-          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh">↻</button>
+          <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder=" / Whats the x user handle ? " autocomplete="off" maxlength="180" required />
+          <button type="button" class="caller-refresh" id="callerRefresh" aria-label="Refresh">Refresh</button>
         </form>
       </div>
     </section>
@@ -2678,23 +2678,39 @@
         return { name: who.name || user.name || handle, handle: user.screen_name, avatar: biggerAvatar(who.avatar_url || user.avatar_url), title: firstLine(latest.text) };
       }
       async function lookupEither(value) {
-        var url = parseLink(value);
-        if (url && siteOf(url)) return fetchCard(value);
-        var name = String(value || "").replace(/^@/, "").trim();
-        if (!name) return null;
-        var x = null;
-        if (/^[A-Za-z0-9_]{1,15}$/.test(name)) {
-          try { x = await xByHandle(name); } catch (e) { x = null; }
+        var handle = asHandle(value);
+        if (!handle) return null;
+        try { return await xByHandle(handle); } catch (e) { return null; }
+      }
+      function asHandle(value) {
+        var raw = String(value || "").trim();
+        var url = parseLink(raw);
+        if (url && siteOf(url) === "x") {
+          var parts = url.pathname.split("/").filter(Boolean);
+          if (parts[0] === "status" || parts[0] === "i" || parts[0] === "intent" || parts[0] === "search" || parts[0] === "home") return "";
+          return (parts[0] || "").replace(/^@/, "");
         }
-        var yt = null;
-        try { yt = await youtubeByName(name); } catch (e) { yt = null; }
-        function ok(card) { return card && (card.title || card.name); }
-        var key = name.toLowerCase().replace(/\s+/g, "");
-        if (ok(x) && String(x.handle || "").toLowerCase() === name.toLowerCase()) return x;
-        if (ok(yt) && String(yt.name || "").toLowerCase().replace(/\s+/g, "") === key) return yt;
-        if (ok(x)) return x;
-        if (ok(yt)) return yt;
-        return null;
+        var handle = raw.replace(/^@/, "");
+        return /^[A-Za-z0-9_]{1,15}$/.test(handle) ? handle : "";
+      }
+      function resetCall() {
+        source = "";
+        heldName = "";
+        heldAvatar = "";
+        form.removeAttribute("data-query");
+        input.value = "";
+        input.disabled = false;
+        input.removeAttribute("data-title");
+        input.placeholder = " / Whats the x user handle ? ";
+        if (ask) ask.textContent = "Galactic call:";
+        if (photo) {
+          photo.classList.remove("has-photo");
+          photo.style.backgroundImage = "";
+        }
+        if (refresh) refresh.classList.remove("is-busy");
+        form.classList.remove("is-saved");
+        try { localStorage.removeItem(key); } catch (err) {}
+        input.focus();
       }
       async function youtubeCard(url) {
         var id = videoId(url);
@@ -2793,41 +2809,44 @@
         runLookup((input.value || "").trim());
       });
       function runLookup(value) {
-        if (!value) { focusEmpty(); return; }
-        source = value;
-        form.setAttribute("data-query", value);
+        var handle = asHandle(value);
+        if (!handle) return;
+        source = handle;
+        form.setAttribute("data-query", handle);
         input.disabled = true;
         if (refresh) refresh.classList.add("is-busy");
         input.placeholder = "Reading the profile…";
-        lookupEither(value).then(function (card) {
+        xByHandle(handle).then(function (card) {
           input.disabled = false;
           if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = " / Whats the x/youtube handle ? ";
+          input.placeholder = " / Whats the x user handle ? ";
           if (!card || (!card.title && !card.name)) {
-            paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: value });
+            paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle });
             return;
           }
           paint({
             name: card.name,
             avatar: card.avatar,
             title: card.title || "Couldn't read the last post",
-            source: value
+            source: handle
           });
         }).catch(function () {
           input.disabled = false;
           if (refresh) refresh.classList.remove("is-busy");
-          input.placeholder = " / Whats the x/youtube handle ? ";
-          paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: value });
+          input.placeholder = " / Whats the x user handle ? ";
+          paint({ title: "Couldn't read the last post", keepPhoto: true, keepName: true, source: handle });
         });
       }
-      if (refresh) refresh.addEventListener("click", function (event) {
+      document.addEventListener("click", function (event) {
+        var node = event.target && event.target.closest ? event.target.closest("#callerRefresh") : null;
+        if (!node) return;
         event.preventDefault();
         event.stopPropagation();
-        var typed = (input.value || "").trim();
-        var savedTitle = input.getAttribute("data-title") || "";
-        var again = form.getAttribute("data-query") || source;
-        if (typed && typed !== savedTitle && !/^couldn'?t read/i.test(typed)) again = typed;
-        runLookup(again);
+        var typed = asHandle(input.value);
+        var handle = typed || form.getAttribute("data-query") || source;
+        if (!handle) { resetCall(); return; }
+        input.value = "@" + handle;
+        runLookup(handle);
       });
     })();
     </script>
