@@ -1540,17 +1540,11 @@
         font-weight:300; line-height:1; opacity:.7; justify-self:end;
       }
       /* Destination accents on row icons */
-      .needprev-row[data-dest="need"] .needprev-ico {
-        color:var(--accent); border-color:var(--accent-border); background:var(--accent-soft);
-      }
-      .needprev-row[data-dest="song"] .needprev-ico {
-        color:var(--magenta); border-color:var(--magenta-border); background:var(--magenta-soft);
-      }
-      .needprev-row[data-dest="place"] .needprev-ico {
-        color:var(--yellow); border-color:var(--yellow-border); background:var(--yellow-soft);
-      }
+      .needprev-row[data-dest="need"] .needprev-ico,
+      .needprev-row[data-dest="song"] .needprev-ico,
+      .needprev-row[data-dest="place"] .needprev-ico,
       .needprev-row[data-dest="shop"] .needprev-ico {
-        color:var(--accent); border-color:var(--accent-border); background:var(--accent-soft);
+        color:var(--ink); border-color:var(--line); background:var(--surface);
       }
     }
 
@@ -2107,17 +2101,17 @@
       border-color: var(--accent-border);
     }
     .statpanel.city {
-      --sp-accent: var(--magenta);
-      --sp-accent-2: var(--yellow);
-      --sp-accent-dim: var(--magenta-soft);
-      --sp-chip-border: var(--magenta-border);
+      --sp-accent: #8e8e93;
+      --sp-accent-2: #d1d1d6;
+      --sp-accent-dim: rgba(255,255,255,0.06);
+      --sp-chip-border: var(--line);
       --sp-track: rgba(255,255,255,0.08);
-      --sp-hover: var(--magenta-soft);
-      --sp-rank-outline: var(--magenta-border);
+      --sp-hover: rgba(255,255,255,0.05);
+      --sp-rank-outline: var(--line);
       --sp-rank-text: var(--dim);
-      background: var(--panel-mag);
-      border-color: var(--magenta-border);
-      box-shadow:var(--shadow-sm), var(--glow-mag);
+      background: var(--surface);
+      border-color: var(--line);
+      box-shadow: var(--shadow-sm);
     }
     /* Homepage Need prev: flat city card — no magenta bloom */
     .needprev-city.statpanel.city {
@@ -2139,11 +2133,11 @@
       --sp-hover: var(--accent-soft);
     }
     html[data-theme="light"] .statpanel.city {
-      --sp-accent: var(--accent);
-      --sp-accent-2: var(--magenta);
-      --sp-accent-dim: var(--accent-soft);
-      --sp-chip-border: var(--accent-border);
-      --sp-hover: var(--accent-soft);
+      --sp-accent: #636366;
+      --sp-accent-2: #1d1d1f;
+      --sp-accent-dim: rgba(0,0,0,0.04);
+      --sp-chip-border: var(--line);
+      --sp-hover: rgba(0,0,0,0.04);
       --sp-rank-outline: var(--line);
       --sp-rank-text: var(--dim);
       --sp-track: rgba(0,0,0,0.06);
@@ -2239,7 +2233,7 @@
     .chart { display:flex; flex-direction:column; gap:2px; margin-top:8px; }
     .chartrow {
       display:grid; grid-template-columns:28px minmax(0,1fr) auto; gap:6px 8px;
-      align-items:center; padding:8px 4px 8px 6px; border-radius:var(--radius-sm);
+      align-items:center; padding:10px 8px; border-radius:16px;
       transition: background .15s ease;
     }
     .chartrow:hover { background:var(--sp-hover); }
@@ -2465,7 +2459,7 @@
     }
     @supports not (background: color-mix(in srgb, red 50%, white)) {
       .statpanel.pop .bartrack i { background:linear-gradient(90deg, #1d1d1f, #636366); }
-      .statpanel.city .bartrack i { background: linear-gradient(90deg, #bf5af2, #ff9f0a); }
+      .statpanel.city .bartrack i { background: #8e8e93; }
     }
     html[data-theme="dark"] .statpanel.city .bartrack i,
     html.dark .statpanel.city .bartrack i {
@@ -3268,6 +3262,6 @@
   <script src="live-boot.js?v=Player147"></script>
   <script src="views-boot.js?v=live-rank-1"></script>
   <script src="shelf-boot.js?v=art-rank-1"></script>
-  <script src="stats-boot.js?v=city-up-1"></script>
+  <script src="stats-boot.js?v=city-up-2"></script>
 </body>
 </html>

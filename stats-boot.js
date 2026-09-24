@@ -375,6 +375,8 @@
     if (tN > 0) leadBits.push(fmt(tN) + " today");
     leadBits.push(fmt(show[0].chat || 0) + " chat");
     if (show[0].n) leadBits.push(fmt(show[0].n) + " open");
+    var openPct = openFreshPct(show[0]);
+    if (openPct) leadBits.push(openPct + "% open");
     return (
       trunc(show[0].name, 24) +
       (show[0].region ? ", " + trunc(show[0].region, 12) : "") +
