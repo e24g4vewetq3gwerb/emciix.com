@@ -94,6 +94,22 @@
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 
   const audio = $("#audio");
+  const GAME_MUTE_KEY = "emciix.game.muted";
+  let gameMuted = false;
+  try { gameMuted = localStorage.getItem(GAME_MUTE_KEY) === "1"; } catch (_) {}
+  function applyGameMute() {
+    if (audio) {
+      audio.muted = gameMuted;
+      audio.volume = gameMuted ? 0 : 1;
+    }
+    const btn = $("#btn-mute");
+    if (!btn) return;
+    btn.setAttribute("aria-pressed", gameMuted ? "true" : "false");
+    btn.setAttribute("aria-label", gameMuted ? "Unmute" : "Mute");
+    btn.title = gameMuted ? "Unmute" : "Mute";
+    btn.textContent = gameMuted ? "🔇" : "🔊";
+  }
+  applyGameMute();
   const startOverlay = $("#start-overlay");
   const resultsOverlay = $("#results-overlay");
   const pauseOverlay = $("#pause-overlay");
@@ -2542,6 +2558,14 @@
 
   function bindUI() {
     startBtn.addEventListener("click", startGame);
+    const muteBtn = $("#btn-mute");
+    if (muteBtn) {
+      muteBtn.addEventListener("click", () => {
+        gameMuted = !gameMuted;
+        try { localStorage.setItem(GAME_MUTE_KEY, gameMuted ? "1" : "0"); } catch (_) {}
+        applyGameMute();
+      });
+    }
     retryBtn.addEventListener("click", startGame);
     const nextLevelBtn = $("#next-level-btn");
     if (nextLevelBtn) nextLevelBtn.addEventListener("click", () => { goNextLevel().catch(console.error); });

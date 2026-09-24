@@ -113,6 +113,7 @@
         <div class="transport">
           <button type="button" class="nav-btn" id="btn-back" aria-label="Restart">‹</button>
           <button type="button" class="nav-btn play" id="btn-pause" aria-label="Pause">❚❚</button>
+          <button type="button" class="nav-btn" id="btn-mute" aria-label="Mute" aria-pressed="false" title="Mute">🔊</button>
           <button type="button" class="nav-btn" id="btn-fwd" aria-label="Skip tip">›</button>
         </div>
         <button type="button" class="corner-btn yel" id="btn-next" aria-label="Next level" title="Next level">›</button>
@@ -428,6 +429,6 @@
   <audio id="start-bgm" loop preload="none"></audio>
   <script>window.EmciixScoresBoot="loading";window.addEventListener("error",function(e){if(e&&e.filename&&String(e.filename).indexOf("firebase")!==-1){window.EmciixScoresBoot=String(e.message||"error");}},true);</script>
   <script type="module" src="/game/play/firebase-scores.js?v=tab-emciix-1"></script>
-  <script src="/game/play/game.js?v=bw-rocket-1" defer></script>
+  <script src="/game/play/game.js?v=mute-1" defer></script>
 </body>
 </html>

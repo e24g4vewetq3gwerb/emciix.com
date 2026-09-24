@@ -18,6 +18,7 @@ function copyAudio(titled, dest) {
 
 copyAudio("game/play/levels/glitch-by-glitch/Glitch by Glitch.mp3", "game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3");
 copyAudio("game/play/levels/watch-it-brppp/Watch it brppp.mp3", "game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3");
+copyAudio("game/play/levels/no-room-for-me/No Room for Me.mp3", "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3");
 
 function materializeUniverseCss() {
   const dest = "/tmp/game-with-vacant.css";
@@ -116,7 +117,7 @@ if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
-["video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","assets/refresh-planet.png","calls/ledger.json"].forEach((file) => {
+["video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","assets/refresh-planet.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
 
