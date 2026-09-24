@@ -137,6 +137,25 @@ body:has(.need-home) #app,
   }
   .need-upgrades { justify-content: flex-start; }
   .need-up-kicker { text-align: left; }
+  .need-now-card div:has(> .need-skip) {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .need-now-card .need-skip,
+  .need-now-card .need-keep {
+    position: static !important;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    height: 46px !important;
+  }
+}
+
+#needUpgrades,
+.need-upgrades {
+  display: none !important;
 }
 
 @media (min-width: 768px) {

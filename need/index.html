@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="./need-logo.png" />
     <script type="module" crossorigin src="/need/assets/index-Bsi7rUKP.js?v=doors-8"></script>
     <link rel="stylesheet" crossorigin href="/need/assets/index-pQCypl1A.css">
-      <link rel="stylesheet" href="/need/wide.css?v=wide-10">
+      <link rel="stylesheet" href="/need/wide.css?v=wide-11">
   </head>
   <body>
     <div id="app"></div>
@@ -31,10 +31,6 @@
         new MutationObserver(mount).observe(document.body, { childList: true, subtree: true });
       })();
       (function () {
-        var keys = ["sleeve", "beam", "room", "hold"];
-        function on(key) {
-          try { return sessionStorage.getItem("need-up-" + key) === "1"; } catch (e) { return false; }
-        }
         function paint() {
           var label = null;
           var nodes = document.querySelectorAll("p");
@@ -46,46 +42,14 @@
           if (!card) return;
           label.classList.add("need-now-label");
           card.classList.add("need-now-card");
+          var old = card.querySelector("#needUpgrades");
+          if (old) old.remove();
           var buttons = card.querySelectorAll("button");
           for (var b = 0; b < buttons.length; b++) {
             var text = (buttons[b].textContent || "").trim();
             if (text === "Skip" || text === "…") buttons[b].classList.add("need-skip");
             if (text === "Keep") buttons[b].classList.add("need-keep");
           }
-          var tracks = card.querySelectorAll('div[aria-hidden="true"]');
-          for (var t = 0; t < tracks.length; t++) {
-            var fill = tracks[t].firstElementChild;
-            if (fill && fill.style && /%$/.test(fill.style.width)) tracks[t].classList.add("need-beam-track");
-          }
-          if (!card.querySelector("#needUpgrades")) {
-            var bar = document.createElement("div");
-            bar.id = "needUpgrades";
-            bar.className = "need-upgrades";
-            bar.innerHTML = '<span class="need-up-kicker">Imaginary upgrades</span>';
-            keys.forEach(function (key) {
-              var button = document.createElement("button");
-              button.type = "button";
-              button.setAttribute("data-up", key);
-              button.textContent = key.charAt(0).toUpperCase() + key.slice(1);
-              bar.appendChild(button);
-            });
-            card.appendChild(bar);
-            bar.addEventListener("click", function (e) {
-              var hit = e.target.closest("button[data-up]");
-              if (!hit) return;
-              var key = hit.getAttribute("data-up");
-              var next = !card.classList.contains("is-" + key);
-              card.classList.toggle("is-" + key, next);
-              hit.classList.toggle("on", next);
-              try { sessionStorage.setItem("need-up-" + key, next ? "1" : "0"); } catch (err) {}
-            });
-          }
-          keys.forEach(function (key) {
-            var active = on(key);
-            card.classList.toggle("is-" + key, active);
-            var hit = card.querySelector('[data-up="' + key + '"]');
-            if (hit) hit.classList.toggle("on", active);
-          });
         }
         paint();
         new MutationObserver(paint).observe(document.body, { childList: true, subtree: true });
