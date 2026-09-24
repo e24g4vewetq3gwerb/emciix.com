@@ -3050,9 +3050,14 @@
         }).catch(function () {});
       }
       function pullLedger() {
-        fetch(ledgerUrl + "?t=" + Date.now(), { cache: "no-store" }).then(function (res) {
-          if (!res.ok) throw new Error("ledger");
-          return res.json();
+        function take(url) {
+          return fetch(url, { cache: "no-store" }).then(function (res) {
+            if (!res.ok) throw new Error("ledger");
+            return res.json();
+          });
+        }
+        take("/calls/ledger.json?t=" + Date.now()).catch(function () {
+          return take(ledgerUrl + "?t=" + Date.now());
         }).then(applyLedger).catch(function () {});
       }
       function publishCall(entry) {
