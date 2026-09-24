@@ -2787,14 +2787,37 @@
       async function linkedinCall(raw) {
         var href = parseLink(raw);
         if (!href) href = new URL("https://www.linkedin.com/in/" + String(raw || "").trim().replace(/^@/, "").replace(/^in\//i, ""));
-        var res = await fetch("https://api.microlink.io/?url=" + encodeURIComponent(href.href));
-        var info = ((await res.json()) || {}).data || {};
-        if (!info.title) return null;
-        var name = info.author || String(info.title).replace(/\s*[|–-]\s*LinkedIn\s*$/i, "").split(" - ")[0].trim();
         var parts = href.pathname.split("/").filter(Boolean);
-        var handle = (parts[1] || parts[0] || name).replace(/^@/, "");
+        var slug = decodeURIComponent((parts[0] === "in" ? parts[1] : parts[0]) || "").replace(/^@/, "");
+        if (!slug) return null;
+        var profile = "https://www.linkedin.com/in/" + slug;
+        var postUrl = profile;
+        var post = "";
+        try {
+          var page = await fetch("https://r.jina.ai/" + profile + "/recent-activity/shares/");
+          var text = await page.text();
+          var cutAt = text.indexOf("Posts");
+          var cut = cutAt >= 0 ? text.slice(cutAt) : text;
+          var found = cut.match(/https:\/\/www\.linkedin\.com\/posts\/[^\s)]+/);
+          if (found) {
+            postUrl = found[0];
+            var after = cut.slice(found.index + found[0].length).replace(/^\)\s*/, "");
+            after = after.split("[...more]")[0].split("public_profile__posts")[0];
+            after = after.replace(/\[([^\]]*)\]\([^)]+\)/g, "$1");
+            after = after.replace(/\s+/g, " ").trim();
+            if (after && !/sign in to view|join now/i.test(after)) post = firstLine(after);
+          }
+        } catch (e) {}
+        var info = {};
+        try {
+          var card = await fetch("https://api.microlink.io/?url=" + encodeURIComponent(profile));
+          info = ((await card.json()) || {}).data || {};
+        } catch (e) {}
+        if (!post) post = firstLine(info.description || "");
+        if (!post) return null;
+        var name = info.author || String(info.title || "").replace(/\s*[|–-]\s*LinkedIn\s*$/i, "").split(" - ")[0].trim() || slug;
         var image = info.image && (info.image.url || info.image) || "";
-        return { handle: handle, name: name || handle, avatar: image, title: firstLine(info.description || info.title), url: info.url || href.href };
+        return { handle: slug, name: name, avatar: image, title: post, url: postUrl };
       }
       function resetCall() {
         source = "";
