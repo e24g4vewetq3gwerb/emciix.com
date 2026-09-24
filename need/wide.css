@@ -429,6 +429,44 @@ html:not([data-theme="dark"]) .need-pv-bar-fill {
   50% { transform: scale(1.04); }
 }
 
+@media (max-width: 1100px) {
+  .need-doors {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .need-door {
+    width: 100% !important;
+    max-width: none !important;
+    flex: none !important;
+  }
+}
+
+.need-door--mag .need-door-preview-slot,
+.need-door-preview--song,
+.need-pv-chat,
+.need-door-preview--shop .need-pv-kicker,
+.need-door-preview--shop:not([data-shelf="1"]) .need-pv-prices {
+  display: none !important;
+}
+
+.need-door-preview--place .need-pv-town {
+  display: flex !important;
+}
+
+.need-shelf {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.need-shelf-kicker {
+  font: 700 11px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+
 
 
 

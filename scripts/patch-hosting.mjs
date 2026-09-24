@@ -111,6 +111,7 @@ const PATCHES = [
   ["stats-boot.js", "/stats-boot.js"],
   ["need/index.html", "/need/index.html"],
   ["need/wide.css", "/need/wide.css"],
+  ["need/assets/index-Bsi7rUKP.js", "/need/assets/index-Bsi7rUKP.js"],
   ["subnet/index.html", "/subnet/index.html"],
   [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
