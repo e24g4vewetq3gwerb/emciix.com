@@ -1,12 +1,3 @@
 {
-  "calls": [
-    {
-      "at": "1",
-      "avatar": "",
-      "handle": "ledgerprobe",
-      "name": "probe",
-      "post": "probe",
-      "url": ""
-    }
-  ]
+  "calls": []
 }
