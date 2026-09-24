@@ -1867,6 +1867,7 @@
     .galactic-label {
       appearance:none; border:0; background:transparent; color:inherit; padding:0;
       font:600 18px/1 var(--font); letter-spacing:-0.02em; white-space:nowrap; cursor:pointer;
+      max-width:46%; overflow:hidden; text-overflow:ellipsis;
     }
     .caller-profile {
       flex:1; min-width:0; border:0; outline:none; background:transparent;
@@ -1874,10 +1875,11 @@
     }
     .caller-profile::placeholder { color:var(--dim); }
     .call-dot {
-      width:22px; height:22px; border-radius:50%; flex:none; padding:0;
-      border:2px solid var(--ink); background:transparent; opacity:.9; cursor:pointer;
+      width:32px; height:32px; border-radius:50%; flex:none; padding:0;
+      border:2px solid var(--ink); background:transparent center/cover no-repeat; opacity:.9; cursor:pointer;
     }
-    .galactic-call.is-saved .call-dot { background:var(--ink); }
+    .call-dot.has-photo { border:0; opacity:1; }
+    .galactic-call.is-saved .call-dot:not(.has-photo) { background:var(--ink); }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
     .card {
       position:relative;
@@ -2520,7 +2522,7 @@
         </a>
         <form class="playlist-only galactic-call" id="galacticCall">
           <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
-          <button type="submit" class="call-dot" aria-label="Save caller profile"></button>
+          <button type="submit" class="call-dot" id="callerPhoto" aria-label="Caller photo"></button>
           <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder="Caller profile" autocomplete="off" maxlength="180" required />
         </form>
       </div>
@@ -2531,11 +2533,34 @@
       var input = document.getElementById("callerProfile");
       var ask = document.getElementById("galacticAsk");
       if (!form || !input) return;
+      var photo = document.getElementById("callerPhoto");
       var key = "emciix-caller-profile";
+      function paint(card) {
+        card = card || {};
+        if (card.title) input.value = card.title;
+        if (ask) ask.textContent = card.name || "Galactic call:";
+        if (photo) {
+          if (card.avatar) {
+            photo.classList.add("has-photo");
+            photo.style.backgroundImage = "url(\"" + String(card.avatar).replace(/"/g, "") + "\")";
+          } else {
+            photo.classList.remove("has-photo");
+            photo.style.backgroundImage = "";
+          }
+        }
+        try { localStorage.setItem(key, JSON.stringify({ title: input.value, name: card.name || "", avatar: card.avatar || "" })); } catch (err) {}
+        form.classList.add("is-saved");
+      }
       try {
-        var saved = localStorage.getItem(key);
-        if (saved) { input.value = saved; form.classList.add("is-saved"); }
-      } catch (e) {}
+        var saved = JSON.parse(localStorage.getItem(key) || "null");
+        if (saved && typeof saved === "object") paint(saved);
+        else if (typeof saved === "string" && saved) paint({ title: saved });
+      } catch (e) {
+        try {
+          var plain = localStorage.getItem(key);
+          if (plain && plain.charAt(0) !== "{") paint({ title: plain });
+        } catch (err) {}
+      }
       function focusEmpty() {
         input.focus();
       }
@@ -2580,94 +2605,140 @@
         if (parts[0] === "channel" && /^UC[\w-]{20,}$/.test(parts[1] || "")) return parts[1];
         return "";
       }
-      async function resolveHandle(url) {
-        var parts = url.pathname.split("/").filter(Boolean);
-        var handle = "";
-        if ((parts[0] || "").charAt(0) === "@") handle = parts[0].slice(1);
-        else if (parts[0] === "c" || parts[0] === "user") handle = parts[1] || "";
-        if (!handle) return "";
+      function thumbUrl(list) {
+        if (!Array.isArray(list) || !list.length) return "";
+        var best = list[list.length - 1] || list[0];
+        var url = (best && best.url) || "";
+        if (url.indexOf("//") === 0) url = "https:" + url;
+        return url;
+      }
+      async function channelLookup(handle) {
         var res = await fetch("https://invidious.darkness.services/api/v1/search?type=channel&q=" + encodeURIComponent("@" + handle));
         var data = await res.json();
         var list = Array.isArray(data) ? data : [];
         for (var i = 0; i < list.length; i++) {
-          if (list[i] && /^UC[\w-]{20,}$/.test(list[i].authorId || "")) return list[i].authorId;
+          if (list[i] && /^UC[\w-]{20,}$/.test(list[i].authorId || "")) {
+            return { id: list[i].authorId, name: list[i].author || handle, avatar: thumbUrl(list[i].authorThumbnails) };
+          }
         }
-        return "";
+        return null;
       }
-      async function youtubeTitle(url) {
+      async function youtubeCard(url) {
         var id = videoId(url);
+        var name = "";
+        var avatar = "";
+        var title = "";
         if (id) {
           var video = await fetch("https://noembed.com/embed?url=" + encodeURIComponent("https://www.youtube.com/watch?v=" + id));
           var meta = await video.json();
-          if (meta && meta.title && !meta.error) return meta.title;
+          if (meta && meta.title && !meta.error) title = meta.title;
+          name = meta && meta.author_name || "";
+          if (meta && meta.author_url) {
+            try {
+              var author = new URL(meta.author_url);
+              var handle = (author.pathname.split("/").filter(Boolean)[0] || "").replace(/^@/, "");
+              if (handle) {
+                var found = await channelLookup(handle);
+                if (found) { name = found.name || name; avatar = found.avatar || avatar; }
+              }
+            } catch (e) {}
+          }
+          if (title) return { name: name, avatar: avatar, title: title };
         }
-        var channel = channelId(url) || await resolveHandle(url);
-        if (!channel) return "";
+        var channel = channelId(url);
+        var looked = null;
+        if (!channel) {
+          var parts = url.pathname.split("/").filter(Boolean);
+          var handle = "";
+          if ((parts[0] || "").charAt(0) === "@") handle = parts[0].slice(1);
+          else if (parts[0] === "c" || parts[0] === "user") handle = parts[1] || "";
+          if (handle) looked = await channelLookup(handle);
+          channel = looked && looked.id;
+          if (looked) { name = looked.name; avatar = looked.avatar; }
+        }
+        if (!channel) return { name: name, avatar: avatar, title: title };
         var rss = "https://www.youtube.com/feeds/videos.xml?channel_id=" + channel;
         var feed = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rss));
         var json = await feed.json();
+        var info = json && json.feed || {};
         var item = json && json.items && json.items[0];
-        return item && item.title ? item.title : "";
+        return {
+          name: name || info.title || "",
+          avatar: avatar || info.image || "",
+          title: (item && item.title) || title
+        };
       }
-      async function xTitle(url) {
+      function biggerAvatar(url) {
+        return String(url || "").replace("_normal.", "_200x200.");
+      }
+      async function xCard(url) {
         var parts = url.pathname.split("/").filter(Boolean);
         var at = parts.indexOf("status");
         if (at >= 0 && parts[at + 1]) {
           var one = await fetch("https://api.fxtwitter.com/2/status/" + encodeURIComponent(parts[at + 1]));
           var post = await one.json();
-          return firstLine(post && post.status && post.status.text);
+          var status = post && post.status || {};
+          var author = status.author || {};
+          return { name: author.name || "", avatar: biggerAvatar(author.avatar_url), title: firstLine(status.text) };
         }
         var handle = (parts[0] || "").replace(/^@/, "");
-        if (!handle || handle === "home" || handle === "search" || handle === "i" || handle === "intent") return "";
-        var res = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle) + "/statuses?count=1");
+        if (!handle || handle === "home" || handle === "search" || handle === "i" || handle === "intent") return { name: "", avatar: "", title: "" };
+        var profile = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle));
+        var user = (await profile.json()).user || {};
+        var posts = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle) + "/statuses?count=1");
+        var latest = ((await posts.json()).results || [])[0] || {};
+        var who = latest.author || user;
+        return { name: who.name || user.name || "", avatar: biggerAvatar(who.avatar_url || user.avatar_url), title: firstLine(latest.text) };
+      }
+      async function socialCard(href) {
+        var res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(href));
         var data = await res.json();
-        var latest = data && data.results && data.results[0];
-        return firstLine(latest && latest.text);
+        var html = data && data.contents ? String(data.contents) : "";
+        var desc = metaContent(html, "og:description");
+        var title = metaContent(html, "og:title");
+        var image = metaContent(html, "og:image");
+        var name = String(title || "").replace(/\s*[|–-]\s*(LinkedIn|Facebook)\s*$/i, "").trim();
+        var post = "";
+        if (desc && !/log in|sign in|join linkedin|facebook/i.test(desc)) post = firstLine(desc);
+        return { name: name, avatar: image, title: post };
+      }
+      async function fetchCard(raw) {
+        var url = parseLink(raw);
+        var site = url && siteOf(url);
+        if (!site) return null;
+        if (site === "youtube") return youtubeCard(url);
+        if (site === "x") return xCard(url);
+        return socialCard(url.href);
       }
       function metaContent(html, key) {
         var pattern = new RegExp("(?:property|name)=[\"']" + key + "[\"'][^>]*content=[\"']([^\"']+)[\"']|content=[\"']([^\"']+)[\"'][^>]*(?:property|name)=[\"']" + key + "[\"']", "i");
         var match = String(html || "").match(pattern);
         return match ? (match[1] || match[2] || "") : "";
       }
-      async function socialTitle(href) {
-        var res = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(href));
-        var data = await res.json();
-        var html = data && data.contents ? String(data.contents) : "";
-        var desc = metaContent(html, "og:description");
-        var title = metaContent(html, "og:title");
-        if (desc && !/log in|sign in|join linkedin|facebook/i.test(desc)) return firstLine(desc);
-        if (title && !/\|\s*linkedin\b|facebook$/i.test(title)) return firstLine(title);
-        return "";
-      }
-      async function lastPostTitle(raw) {
-        var url = parseLink(raw);
-        var site = url && siteOf(url);
-        if (!site) return "";
-        if (site === "youtube") return youtubeTitle(url);
-        if (site === "x") return xTitle(url);
-        return socialTitle(url.href);
-      }
-      function remember(value) {
-        input.value = value;
-        try { localStorage.setItem(key, value); } catch (err) {}
-        form.classList.add("is-saved");
-      }
       form.addEventListener("submit", function (event) {
         event.preventDefault();
         var value = (input.value || "").trim();
         if (!value) { focusEmpty(); return; }
         var url = parseLink(value);
-        if (!url || !siteOf(url)) { remember(value); return; }
+        if (!url || !siteOf(url)) { paint({ title: value, name: ask ? ask.textContent : "" }); return; }
         input.disabled = true;
-        input.placeholder = "Reading the last post…";
-        lastPostTitle(value).then(function (title) {
+        input.placeholder = "Reading the profile…";
+        fetchCard(value).then(function (card) {
           input.disabled = false;
           input.placeholder = "Caller profile";
-          remember(title || "Couldn't read the last post");
+          if (!card || (!card.title && !card.name)) {
+            paint({ title: "Couldn't read the last post" });
+            return;
+          }
+          paint({
+            name: card.name,
+            avatar: card.avatar,
+            title: card.title || "Couldn't read the last post"
+          });
         }).catch(function () {
           input.disabled = false;
           input.placeholder = "Caller profile";
-          remember("Couldn't read the last post");
+          paint({ title: "Couldn't read the last post" });
         });
       });
     })();
