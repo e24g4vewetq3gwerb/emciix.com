@@ -225,7 +225,7 @@ await pruneStorage();
 
 function widenConnect(config) {
   const extras = {
-    "connect-src": ["https://api.fxtwitter.com", "https://invidious.darkness.services"],
+    "connect-src": ["https://api.fxtwitter.com", "https://invidious.darkness.services", "https://raw.githubusercontent.com"],
     "img-src": ["https://*.ggpht.com", "https://*.licdn.com", "https://*.fbcdn.net"],
   };
   let hits = 0;
@@ -288,7 +288,7 @@ async function allowGalacticCalls() {
     console.log("no rules source");
     return;
   }
-  if (file.content.includes('callId == "board"')) {
+  if (file.content.includes('callId != "board"')) {
     console.log("galactic rules already set");
     return;
   }
@@ -300,15 +300,25 @@ async function allowGalacticCalls() {
   const block = `
     match /galacticCalls/{callId} {
       allow read: if true;
-      allow create, update: if callId == "board"
-        && request.resource.data.keys().hasOnly(['items'])
-        && request.resource.data.items is string
-        && request.resource.data.items.size() < 8000;
+      allow create: if callId != "board"
+        && request.resource.data.keys().hasOnly(['handle', 'name', 'avatar', 'post', 'url', 'at'])
+        && request.resource.data.handle is string
+        && request.resource.data.handle.size() > 0
+        && request.resource.data.handle.size() < 40
+        && request.resource.data.name is string
+        && request.resource.data.name.size() < 80
+        && request.resource.data.avatar is string
+        && request.resource.data.avatar.size() < 500
+        && request.resource.data.post is string
+        && request.resource.data.post.size() < 300
+        && request.resource.data.url is string
+        && request.resource.data.url.size() < 300
+        && request.resource.data.at is int;
     }`;
   const content = file.content.includes("match /galacticCalls/{callId}")
     ? file.content.replace(/match \/galacticCalls\/\{callId\} \{[\s\S]*?\n    \}/, block.trim())
     : file.content.replace(marker, marker + block);
-  if (!content.includes('callId == "board"')) {
+  if (!content.includes('callId != "board"')) {
     console.log("could not rewrite galactic rule");
     return;
   }
