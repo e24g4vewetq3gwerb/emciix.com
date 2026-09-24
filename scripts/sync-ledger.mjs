@@ -15,7 +15,11 @@ function readLedger() {
 function keep(list) {
   const seen = new Set();
   return list
-    .filter((row) => row && row.handle && row.handle !== "x")
+    .filter((row) => row && row.handle && row.handle !== "x" && row.handle !== "ledgerprobe" && row.handle !== "probe2")
+    .map((row) => {
+      row.at = Number(row.at) || 0;
+      return row;
+    })
     .sort((a, b) => (b.at || 0) - (a.at || 0))
     .filter((row) => {
       const key = row.handle + "|" + row.at + "|" + row.post;
@@ -39,6 +43,21 @@ if (process.env.CALL_JSON && process.env.CALL_JSON !== "null") {
     const extra = JSON.parse(process.env.CALL_JSON);
     if (extra && extra.handle) found.push(extra);
   } catch {}
+}
+try {
+  const inbox = await fetch("https://ntfy.sh/emciix-galactic-ledger-9f3c/json?poll=1&since=12h");
+  const text = await inbox.text();
+  for (const line of text.split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      const msg = JSON.parse(line);
+      if (!msg || msg.event !== "message" || !msg.message) continue;
+      const extra = JSON.parse(msg.message);
+      if (extra && extra.handle) found.push(extra);
+    } catch {}
+  }
+} catch (err) {
+  console.log("inbox", String(err).slice(0, 180));
 }
 for (const doc of data.documents || []) {
   if (String(doc.name || "").endsWith("/board")) continue;

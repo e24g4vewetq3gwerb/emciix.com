@@ -225,7 +225,7 @@ await pruneStorage();
 
 function widenConnect(config) {
   const extras = {
-    "connect-src": ["https://api.fxtwitter.com", "https://invidious.darkness.services", "https://raw.githubusercontent.com"],
+    "connect-src": ["https://api.fxtwitter.com", "https://invidious.darkness.services", "https://raw.githubusercontent.com", "https://api.github.com", "https://ntfy.sh"],
     "img-src": ["https://*.ggpht.com", "https://*.licdn.com", "https://*.fbcdn.net"],
   };
   let hits = 0;
