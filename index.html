@@ -2933,9 +2933,16 @@
         } catch (err) { return []; }
       }
       function latestCalls(list) {
-        return (list || []).filter(function (row) { return row && row.handle; }).sort(function (a, b) {
+        var seen = {};
+        return (list || []).filter(function (row) {
+          if (!row || !row.handle) return false;
+          var key = row.handle + "|" + (row.at || 0) + "|" + (row.post || "");
+          if (seen[key]) return false;
+          seen[key] = 1;
+          return true;
+        }).sort(function (a, b) {
           return (b.at || 0) - (a.at || 0);
-        }).slice(0, 10);
+        }).slice(0, 5);
       }
       function renderCalls(list) {
         var ol = document.getElementById("callHistory");
@@ -2997,17 +3004,50 @@
         };
       }
       var ledgerUrl = "https://raw.githubusercontent.com/e24g4vewetq3gwerb/emciix.com/main/calls/ledger.json";
+      var inboxUrl = "https://ntfy.sh/emciix-galactic-ledger-9f3c";
       var ledgerCalls = [];
       var pendingCalls = [];
+      function liveCall(row) {
+        if (!row || !row.handle) return null;
+        if (row.handle === "x" || row.handle === "smoketest" || row.handle === "probe2" || row.handle === "ledgerprobe") return null;
+        row.at = Number(row.at) || 0;
+        return row;
+      }
       function showLedger() {
         var seen = {};
         ledgerCalls.forEach(function (row) { seen[row.handle + "|" + row.at] = 1; });
-        var extra = pendingCalls.filter(function (row) { return !seen[row.handle + "|" + row.at]; });
+        var extra = pendingCalls.filter(function (row) { return row && !seen[row.handle + "|" + row.at]; });
         renderCalls(extra.concat(ledgerCalls));
       }
       function applyLedger(data) {
-        ledgerCalls = latestCalls((data && data.calls) || []);
+        var rows = ((data && data.calls) || []).map(liveCall).filter(Boolean);
+        ledgerCalls = latestCalls(rows.concat(ledgerCalls));
         showLedger();
+      }
+      function addLive(row) {
+        row = liveCall(row);
+        if (!row) return;
+        ledgerCalls = latestCalls([row].concat(ledgerCalls));
+        showLedger();
+      }
+      function pullInbox() {
+        fetch(inboxUrl + "/json?poll=1&since=12h", { cache: "no-store" }).then(function (res) {
+          if (!res.ok) throw new Error("inbox");
+          return res.text();
+        }).then(function (text) {
+          var rows = [];
+          String(text || "").split("\n").forEach(function (line) {
+            if (!line.trim()) return;
+            try {
+              var msg = JSON.parse(line);
+              if (!msg || msg.event !== "message" || !msg.message) return;
+              var extra = liveCall(JSON.parse(msg.message));
+              if (extra) rows.push(extra);
+            } catch (err) {}
+          });
+          ledgerCalls = latestCalls(rows.concat(ledgerCalls));
+          showLedger();
+        }).catch(function () {});
       }
       function pullLedger() {
         fetch(ledgerUrl + "?t=" + Date.now(), { cache: "no-store" }).then(function (res) {
@@ -3016,15 +3056,14 @@
         }).then(applyLedger).catch(function () {});
       }
       function publishCall(entry) {
-        if (!entry || !entry.handle) return;
+        if (!entry || !entry.handle || !liveCall({ handle: entry.handle })) return;
         entry.avatar = String(entry.avatar || "").slice(0, 480);
         entry.post = String(entry.post || "").slice(0, 180);
         entry.name = String(entry.name || entry.handle).slice(0, 70);
         entry.url = String(entry.url || "").slice(0, 280);
         entry.at = entry.at || Date.now();
-        pendingCalls.unshift(entry);
-        showLedger();
-        fetch("https://ntfy.sh/emciix-galactic-ledger-9f3c", {
+        addLive(entry);
+        fetch(inboxUrl, {
           method: "POST",
           headers: { "Content-Type": "text/plain", "Title": "call" },
           body: JSON.stringify({
@@ -3035,14 +3074,22 @@
             url: entry.url,
             at: entry.at
           })
-        }).then(function () {
-          setTimeout(pullLedger, 8000);
-          setTimeout(pullLedger, 20000);
-          setTimeout(pullLedger, 45000);
         }).catch(function () {});
       }
+      pullInbox();
       pullLedger();
-      setInterval(pullLedger, 8000);
+      setInterval(pullInbox, 2500);
+      setInterval(pullLedger, 20000);
+      try {
+        var live = new EventSource(inboxUrl + "/sse");
+        live.onmessage = function (event) {
+          try {
+            var msg = JSON.parse(event.data);
+            if (!msg || !msg.message) return;
+            addLive(JSON.parse(msg.message));
+          } catch (err) {}
+        };
+      } catch (err) {}
       try {
         if (!sessionStorage.getItem("emciix-ledger-sent")) {
           sessionStorage.setItem("emciix-ledger-sent", "1");
