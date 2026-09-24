@@ -649,8 +649,7 @@ function paintNow() {
     '</div>' +
     '<div class="row" role="group" aria-label="Playback controls">' +
     '<button class="b prev" id="transportPlay" type="button">Play</button>' +
-    '<button class="b skip" id="transportChange" type="button">Change</button>' +
-    '<a class="playlist-pill" href="https://music.youtube.com/playlist?list=PLZX_2WN1sEAg&si=b3Qk9UDjSFimkQcF" target="_blank" rel="noopener">Playlist</a></div></div>';
+    '<button class="b skip" id="transportChange" type="button">Change</button></div></div>';
   bind();
   if (window.EmciixPaintSongLives) try { window.EmciixPaintSongLives(); } catch (e) {}
   if (window.EmciixPaintYtViews) try { window.EmciixPaintYtViews(); } catch (e) {}
