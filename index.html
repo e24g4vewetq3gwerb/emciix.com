@@ -2984,8 +2984,8 @@
         if (tagged) return { site: "youtube", raw: tagged[1].trim() };
         var handle = asHandle(raw);
         if (handle) return { site: "x", raw: handle };
-        var bare = raw.replace(/^@/, "");
-        if (/^[A-Za-z0-9._-]{2,40}$/.test(bare)) return { site: "youtube", raw: bare };
+        var bare = raw.replace(/^@/, "").trim();
+        if (bare) return { site: "youtube", raw: bare };
         return null;
       }
       async function youtubeCall(raw) {
@@ -3046,6 +3046,23 @@
             } catch (e) {}
           }
           if (title) return { name: name, avatar: avatar, title: title, url: "https://www.youtube.com/watch?v=" + id };
+        }
+        var list = url.searchParams.get("list");
+        if (!id && list) {
+          try {
+            var listed = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent("https://www.youtube.com/feeds/videos.xml?playlist_id=" + list));
+            var listedJson = await listed.json();
+            var listedInfo = listedJson && listedJson.feed || {};
+            var listedItem = listedJson && listedJson.items && listedJson.items[0];
+            if (listedInfo.title || (listedItem && listedItem.title)) {
+              return {
+                name: listedInfo.title || "",
+                avatar: listedInfo.image || "",
+                title: (listedItem && listedItem.title) || listedInfo.title || "",
+                url: (listedItem && listedItem.link) || ("https://www.youtube.com/playlist?list=" + list)
+              };
+            }
+          } catch (e) {}
         }
         var channel = channelId(url);
         var looked = null;
@@ -3142,8 +3159,11 @@
       });
       function runLookup(value) {
         if (!value) return;
-        var site = mode === "youtube" ? "youtube" : "x";
-        var handle = site === "x" ? asHandle(value) : value;
+        var kind = kindOf(value);
+        if (!kind) return;
+        var site = kind.site;
+        mode = site;
+        var handle = kind.raw;
         if (!handle) return;
         var shown = site === "x" ? "@" + handle : "YouTube";
         source = handle;
@@ -3167,7 +3187,7 @@
             label: shown,
             keepPhoto: !(card && card.avatar)
           });
-          input.value = post;
+          input.value = post || value;
           input.placeholder = "";
           if (ask) ask.textContent = shown;
           publishCall({
