@@ -34,13 +34,13 @@
       ".portal-preview-open{position:absolute;inset:0;z-index:1}" +
       ".portal-preview .topwrap{position:absolute;z-index:5;left:50%;right:auto;top:16px;width:min(1004px,calc(100% - 32px));margin:0;transform:translateX(-50%);pointer-events:auto}" +
       ".portal-orbit{position:absolute;width:0;height:0;z-index:4;pointer-events:none}" +
-      ".portal-orbit-a{left:24%;top:76%;animation:portalSpin 42s linear infinite}" +
-      ".portal-orbit-b{left:76%;top:76%;animation:portalSpin 29s linear infinite reverse}" +
+      ".portal-orbit-a{left:14%;top:84%;animation:portalSpin 52s linear infinite}" +
+      ".portal-orbit-b{left:86%;top:84%;animation:portalSpin 40s linear infinite reverse}" +
       ".portal-orbit a,.portal-orbit span{position:absolute;display:block;border-radius:50%;pointer-events:auto;background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;box-shadow:inset -16px -12px 24px rgba(0,0,0,.45),0 0 32px rgba(255,150,50,.35)}" +
-      ".portal-orbit-a a{width:128px;height:128px;margin:-64px 0 0 0;animation:portalSpin 42s linear infinite reverse}" +
-      ".portal-orbit-b a{width:80px;height:80px;margin:-40px 0 0 8px;animation:portalSpin 29s linear infinite}" +
+      ".portal-orbit-a a{width:104px;height:104px;margin:-52px 0 0 0;animation:portalSpin 14s linear infinite}" +
+      ".portal-orbit-b a{width:68px;height:68px;margin:-34px 0 0 0;animation:portalSpin 11s linear infinite reverse}" +
       "@keyframes portalSpin{to{transform:rotate(360deg)}}" +
-      "@media (max-width:760px){.portal-orbit-a,.portal-orbit-b{top:80%}.portal-orbit-a{left:22%}.portal-orbit-b{left:78%}.portal-orbit-a a{width:96px;height:96px;margin:-48px 0 0 0}.portal-orbit-b a{width:64px;height:64px;margin:-32px 0 0 4px}}" +
+      "@media (max-width:760px){.portal-orbit-a,.portal-orbit-b{top:86%}.portal-orbit-a{left:16%}.portal-orbit-b{left:84%}.portal-orbit-a a{width:84px;height:84px;margin:-42px 0 0 0}.portal-orbit-b a{width:56px;height:56px;margin:-28px 0 0 0}}" +
       "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}" +
       ".portal-preview .galactic-call{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);width:min(520px,calc(100% - 40px));margin:0;pointer-events:auto;background:rgba(18,18,20,.55);border-color:rgba(255,255,255,.22);color:#f5f5f7}" +
       ".portal-preview .galactic-label{display:none !important}" +
@@ -50,7 +50,17 @@
       ".portal-preview .call-dot.is-on{border-color:#f5f5f7;box-shadow:0 0 0 3px rgba(255,255,255,.28),0 0 16px rgba(255,160,60,.55)}" +
       ".portal-preview .call-dot.is-on:not(.has-photo){background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;color:transparent}" +
       ".portal-preview .caller-profile{color:#f5f5f7}" +
-      ".portal-preview .call-send{background:transparent;color:#f5f5f7;border:1px solid rgba(255,255,255,.35)}";
+      ".portal-preview .call-send{background:transparent;color:#f5f5f7;border:1px solid rgba(255,255,255,.35)}" +
+      ".portal-preview .topwrap{background:rgba(10,10,12,.5);border-color:rgba(255,255,255,.16)}" +
+      ".portal-preview .livepill{background:rgba(48,209,88,.16)!important;border-color:rgba(48,209,88,.5)!important;color:#c8f8d4!important}" +
+      ".portal-preview .livedot{background:#30d158!important;box-shadow:0 0 0 3px rgba(48,209,88,.3)!important}" +
+      ".portal-preview .themebtn{color:#f2d48a!important;background:rgba(242,212,138,.14)!important;border-color:rgba(242,212,138,.5)!important}" +
+      ".portal-preview .markbtn{background:#e8c15a!important;color:#1a1408!important}" +
+      ".portal-preview .soc-spotify{color:#1ed760!important;background:rgba(29,185,84,.16)!important;border-color:rgba(30,215,96,.5)!important}" +
+      ".portal-preview .soc-apple{color:#ff4d6a!important;background:rgba(250,36,60,.16)!important;border-color:rgba(255,77,106,.5)!important}" +
+      ".portal-preview .soc-x{color:#f5f5f7!important;background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.32)!important}" +
+      ".portal-preview .soc-linkedin{color:#7eb6ff!important;background:rgba(10,102,194,.22)!important;border-color:rgba(126,182,255,.55)!important}" +
+      ".portal-preview .soc-youtube{color:#ff5a5a!important;background:rgba(255,0,0,.16)!important;border-color:rgba(255,90,90,.55)!important}";
     document.head.appendChild(style);
     var card = document.createElement("div");
     card.id = "portal-preview";
