@@ -230,7 +230,8 @@ document.getElementById("play").onclick = start;
 document.getElementById("again").onclick = start;
 document.getElementById("file").onchange = function(){
   var f = this.files && this.files[0]; if (!f) return;
-  audio.src = URL.createObjectURL(f);
+  var blobUrl = URL.createObjectURL(f);
+  if (/^blob:/.test(blobUrl)) audio.src = blobUrl;
 };
 document.addEventListener("keydown", function(e){
   if (e.code==="Space") { e.preventDefault(); if (!running) start(); else { if (audio.paused) audio.play(); else audio.pause(); } }

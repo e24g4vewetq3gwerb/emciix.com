@@ -1,10 +1,13 @@
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
-import { mkdirSync, readFileSync, writeFileSync, existsSync, copyFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync, existsSync, copyFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
 
 const PROJECT = "emciix-com";
 const LOGIN_V = "login-7";
+// Private (0700) scratch dir for generated files instead of fixed, world-readable /tmp paths.
+const WORK_DIR = mkdtempSync(join(tmpdir(), "emciix-patch-"));
 
 function copyAudio(titled, dest) {
   if (existsSync(dest)) return dest;
@@ -21,7 +24,7 @@ copyAudio("game/play/levels/watch-it-brppp/Watch it brppp.mp3", "game/play/level
 copyAudio("game/play/levels/no-room-for-me/No Room for Me.mp3", "game/play/levels/no-room-for-me/audio/no-room-for-me.mp3");
 
 function materializeUniverseCss() {
-  const dest = "/tmp/game-with-vacant.css";
+  const dest = join(WORK_DIR, "game-with-vacant.css");
   const extras = ["game/play/theme-vacant.css", "game/play/vacant-chairs.css", "game/play/start-hub.css", "game/play/session-name.css", "game/play/start-login.css"].filter(existsSync);
   if (!existsSync("game/play/game.css")) return null;
   const chunks = [readFileSync("game/play/game.css")];
@@ -67,7 +70,7 @@ function materializePlayIndex() {
     html = html.replace('<div class="start-layout">', '<div class="start-layout">\n        <aside class="public-rank-card" id="public-rank-card">\n          <span class="public-rank-kicker">SYNCED</span>\n          <h2>PUBLIC BOARD</h2>\n          <div class="public-rank-cols"><span>#</span><span>PLAYER</span><span>PTS</span></div>\n          <ol class="public-rank-list" id="public-rank-list"></ol>\n        </aside>');
     html = html.replace('</button>\n        </div>\n      </div>\n    </div>\n\n    <div id="game"', '</button>\n        </div>\n        <aside class="start-jukebox" id="start-jukebox">\n          <span class="jb-kicker">LISTEN</span>\n          <h2>MUSIC</h2>\n          <p class="jb-now" id="jukebox-now">—</p>\n          <div class="jb-controls">\n            <button type="button" id="jukebox-prev">PREV</button>\n            <button type="button" id="jukebox-play">PLAY</button>\n            <button type="button" id="jukebox-next">NEXT</button>\n          </div>\n          <div id="jukebox-list"></div>\n          <audio id="start-hub-audio" preload="none"></audio>\n        </aside>\n      </div>\n    </div>\n\n    <div id="game"');
   }
-  const dest = "/tmp/play-index-vacant.html";
+  const dest = join(WORK_DIR, "play-index-vacant.html");
   writeFileSync(dest, html);
   return dest;
 }
@@ -81,7 +84,7 @@ function materializeGameJs() {
     s = s.replace("    levels = await res.json();\n    await loadLevel(0);", "    levels = await res.json();\n    const resume = readSaveIndex(levels);\n    await loadLevel(resume);");
     s = s.replace("    levelIndex = Math.max(0, Math.min(index, levels.length - 1));\n    levelMeta = levels[levelIndex];", "    levelIndex = Math.max(0, Math.min(index, levels.length - 1));\n    levelMeta = levels[levelIndex];\n    writeSavePoint(levelIndex, levelMeta);");
   }
-  const dest = "/tmp/game-savepoint.js";
+  const dest = join(WORK_DIR, "game-savepoint.js");
   writeFileSync(dest, s);
   return dest;
 }
@@ -94,7 +97,7 @@ function materializeHome() {
   if (!html.includes("portal-preview.js")) {
     html = html.replace("</body>", '  <script src="/portal-preview.js?v=prev-12" defer></script>\n</body>');
   }
-  const dest = "/tmp/home-portal.html";
+  const dest = join(WORK_DIR, "home-portal.html");
   writeFileSync(dest, html);
   return dest;
 }
