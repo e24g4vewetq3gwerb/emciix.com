@@ -738,7 +738,8 @@
       color:var(--label); text-align:center;
     }
     #need-preview, #charts { display:none !important; }
-    .wrap > :not(.topwrap) { display:none !important; }
+    .wrap > :not(.topwrap):not(#portal-preview) { display:none !important; }
+    #portal-preview { display:block !important; }
     .wrap::before { content:none !important; display:none !important; }
     .wrap::before {
       content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
