@@ -2929,12 +2929,18 @@
         if (!profile.ok) return null;
         var user = (await profile.json()).user || {};
         if (!user.screen_name) return null;
-        var posts = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle) + "/statuses?count=1");
-        var latest = posts.ok ? (((await posts.json()).results || [])[0] || {}) : {};
-        var who = latest.author || user;
-        var handleName = who.screen_name || user.screen_name || handle;
-        var postUrl = latest.url || (latest.id ? "https://x.com/" + handleName + "/status/" + latest.id : "");
-        return { name: who.name || user.name || handle, handle: user.screen_name, avatar: biggerAvatar(who.avatar_url || user.avatar_url), title: firstLine(latest.text), url: postUrl };
+        var posts = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle) + "/statuses?count=8");
+        var results = posts.ok ? (((await posts.json()).results) || []) : [];
+        var mine = String(user.screen_name).toLowerCase();
+        var latest = results.find(function (row) {
+          var author = String((row.author && row.author.screen_name) || "").toLowerCase();
+          return author === mine && !row.retweet && !row.retweeted_status;
+        }) || results.find(function (row) {
+          var author = String((row.author && row.author.screen_name) || "").toLowerCase();
+          return author === mine;
+        }) || {};
+        var postUrl = latest.url || (latest.id ? "https://x.com/" + user.screen_name + "/status/" + latest.id : "https://x.com/" + user.screen_name);
+        return { name: user.name || handle, handle: user.screen_name, avatar: biggerAvatar(user.avatar_url), title: firstLine(latest.text), url: postUrl };
       }
       async function lookupEither(value) {
         var handle = asHandle(value);
@@ -3200,14 +3206,17 @@
         } catch (err) { return []; }
       }
       function latestCalls(list) {
-        var seen = {};
-        return (list || []).filter(function (row) {
-          if (!row || !row.handle) return false;
-          var key = row.handle + "|" + (row.at || 0) + "|" + (row.post || "");
-          if (seen[key]) return false;
-          seen[key] = 1;
-          return true;
-        }).sort(function (a, b) {
+        var best = {};
+        (list || []).forEach(function (row) {
+          if (!row || !row.handle) return;
+          var id = String(row.handle).replace(/^@/, "").toLowerCase();
+          if (!id) return;
+          var urlName = String(row.url || "").match(/(?:x|twitter|fxtwitter)\.com\/([^/?#]+)\/status\//i);
+          if (urlName && urlName[1].toLowerCase() !== id) return;
+          var prev = best[id];
+          if (!prev || (Number(row.at) || 0) >= (Number(prev.at) || 0)) best[id] = row;
+        });
+        return Object.keys(best).map(function (id) { return best[id]; }).sort(function (a, b) {
           return (b.at || 0) - (a.at || 0);
         }).slice(0, 20);
       }
