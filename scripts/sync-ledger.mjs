@@ -16,21 +16,19 @@ function readLedger() {
 }
 
 function keep(list) {
-  const seen = new Set();
-  return list
+  const best = new Map();
+  list
     .filter((row) => row && row.handle && row.handle !== "x" && row.handle !== "ledgerprobe" && row.handle !== "probe2" && row.handle !== "smoketest")
-    .map((row) => {
+    .forEach((row) => {
       row.at = Number(row.at) || 0;
-      return row;
-    })
-    .sort((a, b) => (b.at || 0) - (a.at || 0))
-    .filter((row) => {
-      const key = row.handle + "|" + row.at + "|" + row.post;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .slice(0, 20);
+      const id = String(row.handle).replace(/^@/, "").toLowerCase();
+      if (!id) return;
+      const urlName = String(row.url || "").match(/(?:x|twitter|fxtwitter)\.com\/([^/?#]+)\/status\//i);
+      if (urlName && urlName[1].toLowerCase() !== id) return;
+      const prev = best.get(id);
+      if (!prev || row.at >= prev.at) best.set(id, row);
+    });
+  return [...best.values()].sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 20);
 }
 
 const res = await fetch(listUrl);
