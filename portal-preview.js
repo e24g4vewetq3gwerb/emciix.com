@@ -7,8 +7,8 @@
       style.id = "preview-fly-only";
       style.textContent =
         ".sky-hint{display:none!important}" +
-        ".panel-4{display:none!important}" +
-        ".hud{zoom:1!important;display:flex;justify-content:center;padding:0 0 16px!important}" +
+        ".panel-4-head h1{visibility:hidden!important}" +
+        ".hud{zoom:1!important}" +
         "#preview-fly{appearance:none;border:1px solid rgba(255,255,255,.35);background:#f2f2f4;color:#121212;border-radius:999px;padding:.55rem 1.6rem;font:600 .85rem/1 system-ui,sans-serif;letter-spacing:.12em;text-transform:none}";
       doc.head.appendChild(style);
       return true;
@@ -33,7 +33,7 @@
       ".portal-preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000;opacity:0;z-index:0}.portal-preview.is-ready iframe{opacity:1}" +
       ".portal-preview-open{position:absolute;inset:0;z-index:1}" +
       ".portal-preview-kicker{position:absolute;z-index:2;left:14px;top:12px;font:600 11px/1 var(--font,system-ui);letter-spacing:.18em;color:#fff;pointer-events:none}" +
-      ".portal-preview .galactic-call{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:min(920px,calc(100% - 28px));margin:0;pointer-events:auto;box-sizing:border-box}" +
+      ".portal-preview .galactic-call{position:absolute;z-index:4;left:16px;right:auto;top:auto;bottom:18px;transform:none;width:min(560px,calc(100% - 32px));min-height:44px;margin:0;padding:8px 14px;pointer-events:auto;box-sizing:border-box}" +
       "@media (max-width:760px){.portal-preview .galactic-call{gap:8px;padding:8px 10px 8px 14px}.portal-preview .galactic-label{font-size:14px;max-width:38%}.portal-preview .call-dot,.portal-preview .call-yt{box-sizing:border-box;min-width:36px;height:32px}.portal-preview .caller-profile{min-width:52px}}";
     document.head.appendChild(style);
     var card = document.createElement("div");
@@ -47,11 +47,35 @@
     else document.body.appendChild(card);
     var call = document.getElementById("galacticCall");
     if (call) card.appendChild(call);
+    function seat(frame) {
+      if (!call || !frame) return;
+      var doc = frame.contentDocument;
+      var head = doc && doc.querySelector(".panel-4-head");
+      if (!head) return;
+      var title = head.querySelector("h1");
+      if (title) title.style.visibility = "hidden";
+      var box = head.getBoundingClientRect();
+      var side = head.querySelector("div.flex");
+      var sideW = side ? side.getBoundingClientRect().width + 16 : 96;
+      call.style.left = Math.max(10, box.left) + "px";
+      call.style.top = Math.max(8, box.top - 4) + "px";
+      call.style.bottom = "auto";
+      call.style.width = Math.max(220, box.width - sideW) + "px";
+      call.style.transform = "none";
+    }
     var frame = card.querySelector("iframe");
     frame.addEventListener("load", function () {
       watch(frame);
       card.classList.add("is-ready");
+      seat(frame);
     });
+    window.addEventListener("resize", function () { seat(frame); });
+    var ticks = 0;
+    var seated = setInterval(function () {
+      ticks += 1;
+      seat(frame);
+      if (ticks > 20) clearInterval(seated);
+    }, 300);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();
