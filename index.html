@@ -2776,7 +2776,7 @@
     <section class="shelf" id="songs">
       <div class="hero-tabs">
         <form class="playlist-only galactic-call" id="galacticCall">
-          <button type="button" class="galactic-label" id="galacticAsk">Galactic call:</button>
+          <button type="button" class="galactic-label" id="galacticAsk">Have Fun</button>
           <span class="call-modes">
             <button type="button" class="call-dot is-on" id="callerPhoto" aria-label="X handle">x</button>
             <button type="button" class="call-dot call-yt" id="callerYt" aria-label="YouTube channel">yt</button>
@@ -2814,7 +2814,9 @@
         else if (card.title) input.setAttribute("data-title", card.title);
         if (card.name) heldName = card.name;
         else if (!card.keepName) heldName = "";
-        if (ask) ask.textContent = card.label || heldName || "Galactic call:";
+        var shown = card.label || heldName || "Have Fun";
+        if (shown === "Galactic call:" || shown === "Galactic call") shown = heldName || "Have Fun";
+        if (ask) ask.textContent = shown;
         if (card.avatar) heldAvatar = card.avatar;
         else if (!card.keepPhoto) heldAvatar = "";
         if (photo) {
@@ -2830,7 +2832,7 @@
           yt.textContent = mode === "youtube" && heldAvatar ? "" : "yt";
         }
         try {
-          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source, label: ask ? ask.textContent : "Galactic call:" }));
+          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source, label: ask ? ask.textContent : "Have Fun" }));
         } catch (err) {}
         form.classList.add("is-saved");
       }
@@ -3017,7 +3019,7 @@
           yt.style.backgroundImage = "";
           yt.textContent = "yt";
         }
-        if (ask) ask.textContent = "Galactic call:";
+        if (ask) ask.textContent = "Have Fun";
         if (refresh) refresh.removeAttribute("data-handle");
         form.classList.remove("is-saved");
         try {
@@ -3124,7 +3126,7 @@
         input.value = "";
         input.disabled = false;
         input.placeholder = mode === "youtube" ? " YouTube channel link or artist name" : " @handle or username";
-        if (ask) ask.textContent = "Galactic call:";
+        if (ask) ask.textContent = "Have Fun";
         if (photo) photo.classList.toggle("is-on", mode !== "youtube");
         if (yt) yt.classList.toggle("is-on", mode === "youtube");
         input.focus();

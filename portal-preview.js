@@ -41,7 +41,8 @@
       ".portal-orbit-b span{width:84px;height:84px;margin:-42px 0 0 -210px;animation:portalSpin 33s linear infinite}" +
       "@keyframes portalSpin{to{transform:rotate(360deg)}}" +
       "@media (max-width:760px){.portal-orbit{top:62%}.portal-orbit-a a{width:108px;height:108px;margin:-54px 0 0 92px}.portal-orbit-b span{width:64px;height:64px;margin:-32px 0 0 -120px}}" +
-      "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}";
+      "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}" +
+      ".portal-preview .galactic-call{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);width:min(720px,calc(100% - 48px));margin:0;pointer-events:auto}";
     document.head.appendChild(style);
     var card = document.createElement("div");
     card.id = "portal-preview";
@@ -53,6 +54,8 @@
     if (wrap) wrap.appendChild(card);
     else document.body.appendChild(card);
     if (header) card.appendChild(header);
+    var call = document.getElementById("galacticCall");
+    if (call) card.appendChild(call);
     var frame = card.querySelector("iframe");
     frame.addEventListener("load", function () {
       watch(frame);
