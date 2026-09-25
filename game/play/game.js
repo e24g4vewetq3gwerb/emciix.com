@@ -640,8 +640,8 @@
           linked = user.providerData.map((p) => p && p.providerId).filter(Boolean);
         }
       } catch (_) {}
-      const hasGoogle = linked.indexOf("google.com") !== -1;
-      const hasX = linked.indexOf("twitter.com") !== -1;
+      const hasGoogle = linked.some((id) => id === "google.com");
+      const hasX = linked.some((id) => id === "twitter.com");
       if (badgeGoogle) badgeGoogle.classList.toggle("hidden", !hasGoogle);
       if (badgeX) badgeX.classList.toggle("hidden", !hasX);
       if (linkGoogleBtn) linkGoogleBtn.classList.toggle("hidden", hasGoogle);
@@ -1087,7 +1087,7 @@
       let previewUrl = "";
       try {
         previewUrl = URL.createObjectURL(file);
-        if (avatarImg && previewUrl) {
+        if (avatarImg && /^blob:/.test(previewUrl)) {
           avatarImg.src = previewUrl;
           avatarImg.removeAttribute("data-placeholder");
         }

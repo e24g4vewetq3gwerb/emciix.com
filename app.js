@@ -261,9 +261,14 @@ function armYtProgress(frame) {
   setTimeout(hello, 400);
   setTimeout(hello, 1400);
 }
+var YT_MESSAGE_ORIGINS = ["https://www.youtube.com", "https://youtube.com", "https://m.youtube.com", "https://www.youtube-nocookie.com", "https://youtube-nocookie.com"];
+function isYouTubeOrigin(origin) {
+  return typeof origin === "string" && YT_MESSAGE_ORIGINS.indexOf(origin) !== -1;
+}
 if (!window.EmciixYtProgress) {
   window.EmciixYtProgress = true;
   window.addEventListener("message", function (event) {
+    if (!event || !isYouTubeOrigin(event.origin)) return;
     var data = event.data;
     if (!data) return;
     if (typeof data === "string") {
@@ -810,8 +815,7 @@ function ensureEmbedListen() {
   if (embedListenBound) return;
   embedListenBound = true;
   window.addEventListener("message", function (e) {
-    if (!e || !e.origin) return;
-    if (e.origin.indexOf("youtube.com") === -1 && e.origin.indexOf("youtube-nocookie.com") === -1) return;
+    if (!e || !isYouTubeOrigin(e.origin)) return;
     var data = e.data;
     if (typeof data === "string") {
       try { data = JSON.parse(data); } catch (err) { return; }
