@@ -38,6 +38,9 @@ on:
       - need/wide.css
       - .github/workflows/patch-game-play.yml
 
+permissions:
+  contents: read
+
 jobs:
   patch:
     runs-on: ubuntu-latest
