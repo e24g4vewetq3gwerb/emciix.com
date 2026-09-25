@@ -37,6 +37,8 @@ function materializePlayIndex() {
   const src = "game/play/index.html";
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
+  // loadLevel() sets the level track, so the placeholder src only wasted a 2.8 MB download per visit.
+  html = html.replace('<audio id="audio" preload="auto" src="/game/play/audio/one-feeling-one-promise.mp3"></audio>', '<audio id="audio" preload="auto"></audio>');
   html = html.replace(/start-login\.js\?v=login-\d+/g, "start-login.js?v=" + LOGIN_V);
   html = html.replace(/start-login\.css\?v=login-\d+/g, "start-login.css?v=" + LOGIN_V);
   if (!html.includes("start-login.js")) {
@@ -193,6 +195,11 @@ do {
   pageToken = page.nextPageToken || "";
 } while (pageToken);
 
+// Never publish repo internals (a CLI deploy from a git clone once shipped /.git).
+for (const path of Object.keys(files)) {
+  if (path.startsWith("/.git/") || path.startsWith(".git/")) delete files[path];
+}
+
 const uploads = new Map();
 for (const [local, remote] of PATCHES) {
   if (!existsSync(local)) continue;
@@ -203,10 +210,12 @@ for (const [local, remote] of PATCHES) {
   console.log("patch", key);
 }
 
+const KEEP_VERSIONS = 10;
+
 async function pruneStorage() {
   try {
-    await api(access, "PATCH", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/live?updateMask=retainedReleaseCount", { retainedReleaseCount: 1 });
-    console.log("retainedReleaseCount=1");
+    await api(access, "PATCH", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/live?updateMask=retainedReleaseCount", { retainedReleaseCount: KEEP_VERSIONS });
+    console.log("retainedReleaseCount=" + KEEP_VERSIONS);
   } catch (err) {
     console.log("retain", String(err.message || err).slice(0, 200));
   }
@@ -219,7 +228,11 @@ async function pruneStorage() {
     for (const v of page.versions || []) versions.push(v);
     token = page.nextPageToken || "";
   } while (token);
-  const doomed = versions.filter((v) => v && v.name && v.name !== liveName && v.status !== "DELETED");
+  // Keep the newest KEEP_VERSIONS versions so a bad deploy can be rolled back.
+  const alive = versions
+    .filter((v) => v && v.name && v.status !== "DELETED")
+    .sort((a, b) => String(b.createTime || "").localeCompare(String(a.createTime || "")));
+  const doomed = alive.slice(KEEP_VERSIONS).filter((v) => v.name !== liveName);
   let n = 0;
   for (const v of doomed) {
     try {
@@ -273,7 +286,22 @@ function widenConnect(config) {
   return config || {};
 }
 
-const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: widenConnect(current.config || {}) });
+// Browser caching for static files. Content-hashed bundles never change, so they
+// cache for a year. Media, images and fonts are overwritten in place, so a week.
+const CACHE_RULES = [
+  { glob: "**/*.@(mp3|mp4|webm|wav|m4a|ogg|jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2|ttf|otf)", value: "public, max-age=604800" },
+  { glob: "**/assets/index-*.@(js|css)", value: "public, max-age=31536000, immutable" },
+];
+function cacheStatic(config) {
+  config = config || {};
+  const globs = new Set(CACHE_RULES.map((r) => r.glob));
+  const headers = (config.headers || []).filter((h) => !globs.has(h.glob));
+  for (const rule of CACHE_RULES) headers.push({ glob: rule.glob, headers: { "Cache-Control": rule.value } });
+  config.headers = headers;
+  return config;
+}
+
+const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: cacheStatic(widenConnect(current.config || {})) });
 const newVersion = created.name;
 const populated = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + ":populateFiles", { files });
 const required = new Set(populated.uploadRequiredHashes || []);
