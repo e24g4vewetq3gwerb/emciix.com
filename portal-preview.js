@@ -33,15 +33,12 @@
       ".portal-preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000;opacity:0;z-index:0}.portal-preview.is-ready iframe{opacity:1}" +
       ".portal-preview-open{position:absolute;inset:0;z-index:1}" +
       ".portal-preview .topwrap{position:absolute;z-index:5;left:50%;right:auto;top:16px;width:min(1004px,calc(100% - 32px));margin:0;transform:translateX(-50%);pointer-events:auto}" +
-      ".portal-orbit{position:absolute;width:0;height:0;z-index:7;pointer-events:none}" +
-      ".portal-orbit-a{left:50%;top:46%;animation:portalSpin 28s linear infinite}" +
-      ".portal-orbit-b{left:50%;top:46%;animation:portalSpin 18s linear infinite reverse}" +
-      ".portal-orbit a,.portal-orbit span{position:absolute;display:block;border-radius:50%;pointer-events:auto;background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;box-shadow:inset -16px -12px 24px rgba(0,0,0,.45),0 0 32px rgba(255,150,50,.35)}" +
-      ".portal-orbit-a a{width:96px;height:96px;margin:-48px 0 0 120px;animation:portalSpin 9s linear infinite}" +
-      ".portal-orbit-b a{width:64px;height:64px;margin:28px 0 0 -32px;animation:portalSpin 7s linear infinite reverse}" +
-      "@keyframes portalSpin{to{transform:rotate(360deg)}}" +
-      "@media (max-width:760px){.portal-orbit-a,.portal-orbit-b{left:50%;top:46%}.portal-orbit-a a{width:72px;height:72px;margin:-36px 0 0 70px}.portal-orbit-b a{width:48px;height:48px;margin:16px 0 0 -24px}}" +
-      "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}" +
+      ".portal-orbit{position:absolute;inset:0;z-index:7;pointer-events:none}" +
+      ".portal-orbit a{position:absolute;left:0;top:0;display:block;border-radius:50%;pointer-events:auto;margin:0;background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;box-shadow:inset -16px -12px 24px rgba(0,0,0,.45),0 0 32px rgba(255,150,50,.35)}" +
+      ".portal-orbit-a a{width:96px;height:96px}" +
+      ".portal-orbit-b a{width:64px;height:64px}" +
+      "@media (max-width:760px){.portal-orbit-a a{width:72px;height:72px}.portal-orbit-b a{width:48px;height:48px}}" +
+      "@media (prefers-reduced-motion:reduce){.portal-orbit a{animation:none !important}}" +
       ".portal-preview .galactic-call{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);width:min(520px,calc(100% - 40px));margin:0;pointer-events:auto;background:rgba(18,18,20,.55);border-color:rgba(255,255,255,.22);color:#f5f5f7}" +
       ".portal-preview .galactic-label,.portal-preview .call-modes{display:none !important}" +
       ".portal-preview .caller-profile{color:#f5f5f7}" +
@@ -67,6 +64,27 @@
     else document.body.appendChild(card);
     var call = document.getElementById("galacticCall");
     if (call) card.appendChild(call);
+    var planetA = card.querySelector(".portal-orbit-a a");
+    var planetB = card.querySelector(".portal-orbit-b a");
+    var reduceSpin = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var spinStart = performance.now();
+    function placePlanet(el, x, y, turn) {
+      el.style.transform = "translate(" + x + "px," + y + "px) rotate(" + turn + "deg) translate(-50%,-50%)";
+    }
+    function spinPlanets(now) {
+      requestAnimationFrame(spinPlanets);
+      if (!call || !planetA || !planetB) return;
+      var field = call.getBoundingClientRect();
+      var host = card.getBoundingClientRect();
+      var cx = field.left - host.left + field.width / 2;
+      var cy = field.top - host.top + field.height / 2;
+      var rx = Math.max(70, field.width / 2);
+      var ry = Math.max(28, field.height);
+      var t = reduceSpin ? 0.4 : (now - spinStart) / 1000;
+      placePlanet(planetA, cx + Math.cos(t / 14) * rx, cy + Math.sin(t / 14) * ry, t * 36);
+      placePlanet(planetB, cx + Math.cos(t / 9 + Math.PI) * rx * 0.62, cy + Math.sin(t / 9 + Math.PI) * ry * 1.35, -t * 48);
+    }
+    requestAnimationFrame(spinPlanets);
     var frame = card.querySelector("iframe");
     frame.addEventListener("load", function () {
       watch(frame);
