@@ -7,7 +7,9 @@
       "**/node_modules/**",
       ".github/**",
       "DEPLOY.md",
-      "README.md"
+      "README.md",
+      "SECURITY.md",
+      "scripts/**"
     ],
     "cleanUrls": true,
     "trailingSlash": false,
