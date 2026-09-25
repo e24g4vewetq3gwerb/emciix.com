@@ -29,7 +29,7 @@
     if (bg) bg.remove();
     var style = document.createElement("style");
     style.textContent =
-      ".portal-preview{display:block;position:relative;margin:18px 0 0;width:100%;height:420px;border-radius:var(--radius-lg,22px);overflow:hidden;border:1px solid var(--line,rgba(255,255,255,.14));background:#000;box-sizing:border-box}" +
+      ".portal-preview{display:block;position:relative;margin:0 0 18px;width:100%;height:420px;border-radius:var(--radius-lg,22px);overflow:hidden;border:1px solid var(--line,rgba(255,255,255,.14));background:#000;box-sizing:border-box}" +
       ".portal-preview[hidden]{display:none !important}" +
       ".portal-preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000;opacity:0;z-index:0}.portal-preview.is-ready iframe{opacity:1}" +
       ".portal-preview-open{position:absolute;inset:0;z-index:1}";
@@ -38,12 +38,13 @@
     card.id = "portal-preview";
     card.className = "portal-preview";
     card.innerHTML = '<a class="portal-preview-open" href="/portal" aria-label="Open portal"></a><iframe src="/portal/?preview=1" title="Portal preview" tabindex="-1" loading="lazy"></iframe>';
-    card.hidden = true;
-    var shelf = document.getElementById("songs");
-    if (shelf) shelf.insertAdjacentElement("afterend", card);
+    card.hidden = false;
+    var header = document.querySelector(".topwrap");
+    if (header) header.insertAdjacentElement("afterend", card);
     else document.body.appendChild(card);
     var tab = document.getElementById("portalNav");
     if (tab) {
+      tab.setAttribute("aria-expanded", "true");
       tab.addEventListener("click", function (event) {
         event.preventDefault();
         var open = card.hidden;
