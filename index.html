@@ -2899,9 +2899,16 @@
       async function channelLookup(query) {
         var q = String(query || "").replace(/^@/, "").trim();
         if (!q) return null;
-        var res = await fetch("https://invidious.darkness.services/api/v1/search?type=channel&q=" + encodeURIComponent(q));
-        var data = await res.json();
-        var list = Array.isArray(data) ? data : [];
+        var hosts = ["https://invidious.f5.si", "https://invidious.darkness.services"];
+        var list = [];
+        for (var h = 0; h < hosts.length; h++) {
+          try {
+            var res = await fetch(hosts[h] + "/api/v1/search?type=channel&q=" + encodeURIComponent(q));
+            if (!res.ok) continue;
+            var data = await res.json();
+            if (Array.isArray(data) && data.length) { list = data; break; }
+          } catch (err) {}
+        }
         var needle = q.toLowerCase().replace(/\s+/g, "");
         var exact = null;
         var first = null;
@@ -2916,13 +2923,21 @@
       async function youtubeByName(query) {
         var found = await channelLookup(query);
         if (!found || !found.id) return null;
-        var rss = "https://www.youtube.com/feeds/videos.xml?channel_id=" + found.id;
-        var feed = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rss));
-        var json = await feed.json();
-        var info = json && json.feed || {};
-        var item = json && json.items && json.items[0];
-        if (!item || !item.title) return null;
-        return { name: found.name || info.title || query, avatar: found.avatar || info.image || "", title: item.title, url: item.link || "" };
+        try {
+          var rss = "https://www.youtube.com/feeds/videos.xml?channel_id=" + found.id;
+          var feed = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rss));
+          var json = await feed.json();
+          var info = json && json.feed || {};
+          var item = json && json.items && json.items[0];
+          if (item && item.title) return { name: found.name || info.title || query, avatar: found.avatar || info.image || "", title: item.title, url: item.link || "" };
+        } catch (err) {}
+        try {
+          var alt = await fetch("https://invidious.f5.si/api/v1/channels/" + encodeURIComponent(found.id) + "/videos?sort_by=newest");
+          var body = await alt.json();
+          var video = body && body.videos && body.videos[0];
+          if (video && video.title) return { name: found.name || video.author || query, avatar: found.avatar || "", title: video.title, url: video.videoId ? "https://www.youtube.com/watch?v=" + video.videoId : "" };
+        } catch (err) {}
+        return null;
       }
       async function xByHandle(handle) {
         var profile = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle));
