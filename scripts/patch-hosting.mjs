@@ -95,9 +95,9 @@ function materializeHome() {
   const src = "index.html";
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
-  html = html.replace(/portal-preview\.js\?v=prev-\d+/g, "portal-preview.js?v=prev-16");
+  html = html.replace(/portal-preview\.js\?v=prev-\d+/g, "portal-preview.js?v=prev-17");
   if (!html.includes("portal-preview.js")) {
-    html = html.replace("</body>", '  <script src="/portal-preview.js?v=prev-16" defer></script>\n</body>');
+    html = html.replace("</body>", '  <script src="/portal-preview.js?v=prev-17" defer></script>\n</body>');
   }
   const dest = join(WORK_DIR, "home-portal.html");
   writeFileSync(dest, html);

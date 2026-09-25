@@ -23,6 +23,7 @@
     }, 200);
   }
   function mount() {
+    return;
     if (document.getElementById("portal-preview")) return;
     var bg = document.getElementById("portal-bg");
     if (bg) bg.remove();

@@ -738,6 +738,8 @@
       color:var(--label); text-align:center;
     }
     #need-preview, #charts { display:none !important; }
+    .wrap > :not(.topwrap) { display:none !important; }
+    .wrap::before { content:none !important; display:none !important; }
     .wrap::before {
       content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
       width:min(120%, 1100px); height:420px; pointer-events:none; z-index:0;
