@@ -42,10 +42,14 @@
       "@keyframes portalSpin{to{transform:rotate(360deg)}}" +
       "@media (max-width:760px){.portal-orbit{top:62%}.portal-orbit-a a{width:108px;height:108px;margin:-54px 0 0 92px}.portal-orbit-b span{width:64px;height:64px;margin:-32px 0 0 -120px}}" +
       "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}" +
-      ".portal-preview .call-modes{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;margin:0;pointer-events:auto}" +
+      ".portal-preview .galactic-call{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);width:min(520px,calc(100% - 40px));margin:0;pointer-events:auto;background:rgba(18,18,20,.55);border-color:rgba(255,255,255,.22);color:#f5f5f7}" +
+      ".portal-preview .galactic-label{display:none !important}" +
+      ".portal-preview .call-modes{position:static;transform:none}" +
       ".portal-preview .call-dot{background:transparent;color:#f5f5f7;border-color:rgba(255,255,255,.72)}" +
       ".portal-preview .call-dot.is-on:not(.has-photo){background:#f5f5f7;color:#121212;border-color:#f5f5f7}" +
-      ".portal-preview .galactic-label,.portal-preview .caller-profile,.portal-preview .call-send{display:none !important}";
+      ".portal-preview .caller-profile{color:#f5f5f7}" +
+      ".portal-preview .caller-profile::placeholder{color:rgba(245,245,247,.55)}" +
+      ".portal-preview .call-send{background:transparent;color:#f5f5f7;border:1px solid rgba(255,255,255,.35)}";
     document.head.appendChild(style);
     var card = document.createElement("div");
     card.id = "portal-preview";
@@ -57,8 +61,8 @@
     if (wrap) wrap.appendChild(card);
     else document.body.appendChild(card);
     if (header) card.appendChild(header);
-    var modes = document.querySelector(".call-modes");
-    if (modes) card.appendChild(modes);
+    var call = document.getElementById("galacticCall");
+    if (call) card.appendChild(call);
     var frame = card.querySelector("iframe");
     frame.addEventListener("load", function () {
       watch(frame);
