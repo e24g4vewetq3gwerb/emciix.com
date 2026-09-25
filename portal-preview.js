@@ -43,12 +43,7 @@
       "@media (max-width:760px){.portal-orbit-a,.portal-orbit-b{top:86%}.portal-orbit-a{left:16%}.portal-orbit-b{left:84%}.portal-orbit-a a{width:84px;height:84px;margin:-42px 0 0 0}.portal-orbit-b a{width:56px;height:56px;margin:-28px 0 0 0}}" +
       "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}" +
       ".portal-preview .galactic-call{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);width:min(520px,calc(100% - 40px));margin:0;pointer-events:auto;background:rgba(18,18,20,.55);border-color:rgba(255,255,255,.22);color:#f5f5f7}" +
-      ".portal-preview .galactic-label{display:none !important}" +
-      ".portal-preview .call-modes{position:static;transform:none}" +
-      ".portal-preview .call-dot,.portal-preview .call-yt{width:36px;min-width:36px;height:36px;padding:0;border-radius:50%;color:transparent;font-size:0;border:2px solid rgba(255,255,255,.35);background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat}" +
-      ".portal-preview .call-yt{filter:hue-rotate(210deg) saturate(1.2)}" +
-      ".portal-preview .call-dot.is-on{border-color:#f5f5f7;box-shadow:0 0 0 3px rgba(255,255,255,.28),0 0 16px rgba(255,160,60,.55)}" +
-      ".portal-preview .call-dot.is-on:not(.has-photo){background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;color:transparent}" +
+      ".portal-preview .galactic-label,.portal-preview .call-modes{display:none !important}" +
       ".portal-preview .caller-profile{color:#f5f5f7}" +
       ".portal-preview .call-send{background:transparent;color:#f5f5f7;border:1px solid rgba(255,255,255,.35)}" +
       ".portal-preview .topwrap{background:rgba(10,10,12,.5);border-color:rgba(255,255,255,.16)}" +
