@@ -33,14 +33,14 @@
       ".portal-preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000;opacity:0;z-index:0}.portal-preview.is-ready iframe{opacity:1}" +
       ".portal-preview-open{position:absolute;inset:0;z-index:1}" +
       ".portal-preview .topwrap{position:absolute;z-index:5;left:50%;right:auto;top:16px;width:min(1004px,calc(100% - 32px));margin:0;transform:translateX(-50%);pointer-events:auto}" +
-      ".portal-orbit{position:absolute;width:0;height:0;z-index:4;pointer-events:none}" +
-      ".portal-orbit-a{left:14%;top:84%;animation:portalSpin 52s linear infinite}" +
-      ".portal-orbit-b{left:86%;top:84%;animation:portalSpin 40s linear infinite reverse}" +
+      ".portal-orbit{position:absolute;width:0;height:0;z-index:7;pointer-events:none}" +
+      ".portal-orbit-a{left:50%;top:46%;animation:portalSpin 28s linear infinite}" +
+      ".portal-orbit-b{left:50%;top:46%;animation:portalSpin 18s linear infinite reverse}" +
       ".portal-orbit a,.portal-orbit span{position:absolute;display:block;border-radius:50%;pointer-events:auto;background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;box-shadow:inset -16px -12px 24px rgba(0,0,0,.45),0 0 32px rgba(255,150,50,.35)}" +
-      ".portal-orbit-a a{width:104px;height:104px;margin:-52px 0 0 0;animation:portalSpin 14s linear infinite}" +
-      ".portal-orbit-b a{width:68px;height:68px;margin:-34px 0 0 0;animation:portalSpin 11s linear infinite reverse}" +
+      ".portal-orbit-a a{width:96px;height:96px;margin:-48px 0 0 120px;animation:portalSpin 9s linear infinite}" +
+      ".portal-orbit-b a{width:64px;height:64px;margin:28px 0 0 -32px;animation:portalSpin 7s linear infinite reverse}" +
       "@keyframes portalSpin{to{transform:rotate(360deg)}}" +
-      "@media (max-width:760px){.portal-orbit-a,.portal-orbit-b{top:86%}.portal-orbit-a{left:16%}.portal-orbit-b{left:84%}.portal-orbit-a a{width:84px;height:84px;margin:-42px 0 0 0}.portal-orbit-b a{width:56px;height:56px;margin:-28px 0 0 0}}" +
+      "@media (max-width:760px){.portal-orbit-a,.portal-orbit-b{left:50%;top:46%}.portal-orbit-a a{width:72px;height:72px;margin:-36px 0 0 70px}.portal-orbit-b a{width:48px;height:48px;margin:16px 0 0 -24px}}" +
       "@media (prefers-reduced-motion:reduce){.portal-orbit,.portal-orbit a,.portal-orbit span{animation:none !important}}" +
       ".portal-preview .galactic-call{position:absolute;z-index:6;left:50%;top:46%;transform:translate(-50%,-50%);width:min(520px,calc(100% - 40px));margin:0;pointer-events:auto;background:rgba(18,18,20,.55);border-color:rgba(255,255,255,.22);color:#f5f5f7}" +
       ".portal-preview .galactic-label,.portal-preview .call-modes{display:none !important}" +
