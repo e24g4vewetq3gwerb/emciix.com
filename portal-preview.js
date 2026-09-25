@@ -67,11 +67,9 @@
     card.className = "portal-preview";
     card.innerHTML = '<a class="portal-preview-open" href="/portal" aria-label="Open portal"></a><iframe src="/portal/?preview=1" title="Portal preview" tabindex="-1" loading="lazy"></iframe><div class="portal-orbit portal-orbit-a"><a href="https://music.youtube.com/playlist?list=PLZX_2WN1sEAg&si=HmAC2yV1aCsF9TI1" aria-label="Playlist"></a></div><div class="portal-orbit portal-orbit-b"><a href="https://emciix.com/game/play" aria-label="Game"></a></div>';
     card.hidden = false;
-    var header = document.querySelector(".topwrap");
     var wrap = document.querySelector(".wrap");
     if (wrap) wrap.appendChild(card);
     else document.body.appendChild(card);
-    if (header) card.appendChild(header);
     var call = document.getElementById("galacticCall");
     if (call) card.appendChild(call);
     var frame = card.querySelector("iframe");
