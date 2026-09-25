@@ -18,7 +18,6 @@ Please **do not open a public issue** for security problems.
 1. Preferred: use GitHub **private vulnerability reporting** —
    go to the repository's **Security** tab and click **Report a vulnerability**
    (https://github.com/e24g4vewetq3gwerb/emciix.com/security/advisories/new).
-2. Or email **cue@dialchad.com** with the subject `SECURITY: emciix.com`.
 
 Please include:
 
