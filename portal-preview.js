@@ -6,8 +6,7 @@
       var style = doc.createElement("style");
       style.id = "preview-fly-only";
       style.textContent =
-        ".sky-hint{display:none!important}" +
-        ".panel-4-head h1{visibility:hidden!important}" +
+        ".sky-hint,.page-tabs,.panel-4,#embed-fly{display:none!important}" +
         ".hud{zoom:1!important}" +
         "#preview-fly{appearance:none;border:1px solid rgba(255,255,255,.35);background:#f2f2f4;color:#121212;border-radius:999px;padding:.55rem 1.6rem;font:600 .85rem/1 system-ui,sans-serif;letter-spacing:.12em;text-transform:none}";
       doc.head.appendChild(style);
