@@ -96,7 +96,7 @@ function materializeHome() {
   if (!existsSync(src)) return null;
   let html = readFileSync(src, "utf8");
   html = html.replace(/portal-preview\.js\?v=prev-\d+/g, "portal-preview.js?v=prev-32");
-  if (!html.includes("portal-preview.js")) {
+  if (!html.includes("portal-preview.js") && !html.includes('data-home="portal"')) {
     html = html.replace("</body>", '  <script src="/portal-preview.js?v=prev-32" defer></script>\n</body>');
   }
   const dest = join(WORK_DIR, "home-portal.html");
@@ -123,7 +123,7 @@ const PATCHES = [
   ["game/play/firebase-scores.js", "/game/play/firebase-scores.js"],
 ];
 if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
-["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js","portal/index.html","portal/invite.html","portal/assets/index-DLVCRiHz.js","portal/assets/index-C17i1khB.css","portal/assets/planet.png","portal/assets/planet.webp","portal/assets/moon.png","portal/assets/favicon-portal.svg","portal/assets/favicon-CozO3afC.svg"].forEach((p) => {
+["game/play/universe-boot.js","game/play/vacant-mode.js","game/play/start-hub.js","game/play/start-hub.css","game/play/session-name.js","game/play/session-name.css","game/play/session-guest.js","game/play/start-login.js","game/play/start-login.css","game/play/vacant-chairs.css","portal-preview.js","portal/index.html","portal/galactic-call.js","portal/invite.html","portal/assets/index-DLVCRiHz.js","portal/assets/index-C17i1khB.css","portal/assets/planet.png","portal/assets/planet.webp","portal/assets/moon.png","portal/assets/favicon-portal.svg","portal/assets/favicon-CozO3afC.svg"].forEach((p) => {
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
