@@ -236,7 +236,10 @@ await pruneStorage();
 
 function widenConnect(config) {
   const extras = {
-    "connect-src": ["https://api.fxtwitter.com", "https://invidious.f5.si", "https://invidious.darkness.services", "https://raw.githubusercontent.com", "https://api.github.com", "https://ntfy.sh", "https://noembed.com", "https://api.rss2json.com", "https://api.microlink.io", "https://r.jina.ai"],
+    "connect-src": ["https://api.fxtwitter.com", "https://invidious.f5.si", "https://invidious.darkness.services", "https://raw.githubusercontent.com", "https://api.github.com", "https://ntfy.sh", "https://noembed.com", "https://api.rss2json.com", "https://api.microlink.io", "https://r.jina.ai", "https://www.google.com", "https://www.recaptcha.net", "https://firebaseappcheck.googleapis.com", "https://content-firebaseappcheck.googleapis.com"],
+    // reCAPTCHA Enterprise + Firebase App Check
+    "script-src": ["https://www.google.com", "https://www.gstatic.com", "https://www.recaptcha.net"],
+    "frame-src": ["https://www.google.com", "https://www.recaptcha.net"],
     "img-src": ["https://*.ggpht.com", "https://*.licdn.com", "https://*.fbcdn.net", "https://*.googleusercontent.com", "https://i.ytimg.com"],
   };
   let hits = 0;
