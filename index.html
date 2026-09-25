@@ -3129,7 +3129,7 @@
         if (ask) ask.textContent = "Have Fun";
         if (photo) photo.classList.toggle("is-on", mode !== "youtube");
         if (yt) yt.classList.toggle("is-on", mode === "youtube");
-        input.focus();
+        if (input.offsetParent) input.focus();
       }
       if (photo) photo.addEventListener("click", function (event) {
         event.preventDefault();
