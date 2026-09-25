@@ -737,6 +737,7 @@
       font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
       color:var(--label); text-align:center;
     }
+    #need-preview, #charts { display:none !important; }
     .wrap::before {
       content:""; position:absolute; left:50%; top:0; transform:translateX(-50%);
       width:min(120%, 1100px); height:420px; pointer-events:none; z-index:0;
@@ -2749,6 +2750,7 @@
         <nav class="topnav" aria-label="Site sections">
           <a class="needbtn" id="needBtn" href="/need">Need Inc.</a>
           <a class="navchip" href="#songs" id="songsNav" aria-controls="grid" aria-expanded="false">Songs</a>
+          <a class="navchip" href="#portal-preview" id="portalNav" aria-controls="portal-preview" aria-expanded="false">Portal</a>
           <a class="navchip" href="https://emciix.com/portal" title="Open the portal">Game</a>
         </nav>
       </div>
