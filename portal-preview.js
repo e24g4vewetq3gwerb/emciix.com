@@ -32,14 +32,13 @@
       ".portal-preview{display:block;position:relative;margin:0 0 var(--section-gap,18px);width:100%;height:420px;border-radius:var(--radius-lg,22px);overflow:hidden;border:1px solid var(--line,rgba(255,255,255,.14));background:#000;box-sizing:border-box}" +
       ".portal-preview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;pointer-events:none;background:#000;opacity:0;z-index:0}.portal-preview.is-ready iframe{opacity:1}" +
       ".portal-preview-open{position:absolute;inset:0;z-index:1}" +
-      ".portal-preview-kicker{position:absolute;z-index:2;left:14px;top:12px;font:600 11px/1 var(--font,system-ui);letter-spacing:.18em;color:#fff;pointer-events:none}" +
       ".portal-preview .galactic-call{position:absolute;z-index:4;left:16px;right:auto;top:auto;bottom:18px;transform:none;width:min(560px,calc(100% - 32px));min-height:44px;margin:0;padding:8px 14px;pointer-events:auto;box-sizing:border-box}" +
       "@media (max-width:760px){.portal-preview .galactic-call{gap:8px;padding:8px 10px 8px 14px}.portal-preview .galactic-label{font-size:14px;max-width:38%}.portal-preview .call-dot,.portal-preview .call-yt{box-sizing:border-box;min-width:36px;height:32px}.portal-preview .caller-profile{min-width:52px}}";
     document.head.appendChild(style);
     var card = document.createElement("div");
     card.id = "portal-preview";
     card.className = "portal-preview";
-    card.innerHTML = '<a class="portal-preview-open" href="/portal" aria-label="Open portal"></a><span class="portal-preview-kicker">PORTAL</span><iframe src="/portal/?preview=1" title="Portal preview" tabindex="-1" loading="lazy"></iframe>';
+    card.innerHTML = '<a class="portal-preview-open" href="/portal" aria-label="Open portal"></a><iframe src="/portal/?preview=1" title="Portal preview" tabindex="-1" loading="lazy"></iframe>';
     var wrap = document.querySelector(".wrap");
     var header = wrap && wrap.querySelector(".topwrap");
     if (header) header.insertAdjacentElement("afterend", card);
