@@ -62,8 +62,6 @@
     var wrap = document.querySelector(".wrap");
     if (wrap) wrap.appendChild(card);
     else document.body.appendChild(card);
-    var call = document.getElementById("galacticCall");
-    if (call) card.appendChild(call);
     var planetA = card.querySelector(".portal-orbit-a a");
     var planetB = card.querySelector(".portal-orbit-b a");
     var reduceSpin = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -73,13 +71,12 @@
     }
     function spinPlanets(now) {
       requestAnimationFrame(spinPlanets);
-      if (!call || !planetA || !planetB) return;
-      var field = call.getBoundingClientRect();
+      if (!planetA || !planetB) return;
       var host = card.getBoundingClientRect();
-      var cx = field.left - host.left + field.width / 2;
-      var cy = field.top - host.top + field.height / 2;
-      var rx = Math.max(70, field.width / 2);
-      var ry = Math.max(28, field.height);
+      var cx = host.width / 2;
+      var cy = host.height * 0.46;
+      var rx = Math.min(240, host.width * 0.28);
+      var ry = Math.max(36, host.height * 0.08);
       var t = reduceSpin ? 0.4 : (now - spinStart) / 1000;
       placePlanet(planetA, cx + Math.cos(t / 14) * rx, cy + Math.sin(t / 14) * ry, t * 36);
       placePlanet(planetB, cx + Math.cos(t / 9 + Math.PI) * rx * 0.62, cy + Math.sin(t / 9 + Math.PI) * ry * 1.35, -t * 48);

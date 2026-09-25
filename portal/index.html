@@ -85,10 +85,58 @@
       pointer-events: none;
     }
     html.portal-embed #embed-fly { display: inline-block; }
+    html.portal-embed .portal-call { display: none !important; }
+    .portal-call {
+      position: fixed;
+      z-index: 40;
+      left: 50%;
+      top: 46%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: min(520px, calc(100% - 40px));
+      min-height: 52px;
+      margin: 0;
+      padding: 10px 12px 10px 18px;
+      box-sizing: border-box;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(18,18,20,.55);
+      color: #f5f5f7;
+    }
+    .portal-call .caller-profile {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: #f5f5f7;
+      font: 500 16px/1.2 system-ui, sans-serif;
+    }
+    .portal-call .call-send {
+      appearance: none;
+      flex: none;
+      width: 44px;
+      height: 36px;
+      padding: 0;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: transparent;
+      color: #f5f5f7;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 <div id="root"></div>
+<form class="portal-call" id="galacticCall">
+  <input class="caller-profile" id="callerProfile" name="caller" type="text" placeholder="" autocomplete="off" maxlength="180" required />
+  <button type="submit" class="call-send" id="callerSend" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 11h11.2l-4.3-4.3 1.4-1.4L19.6 12l-7.3 6.7-1.4-1.4 4.3-4.3H4z"/></svg></button>
+</form>
 <span id="embed-fly">Fly</span>
 <span id="warp-atmo" aria-hidden="true"></span>
 <a id="warp-planet" data-hud href="https://emciix.com/game/play" aria-label="Open the game"></a>
@@ -97,7 +145,13 @@
   var planet = document.getElementById("warp-planet");
   planet.addEventListener("pointerdown", function (event) { event.stopPropagation(); });
   planet.addEventListener("pointermove", function (event) { event.stopPropagation(); });
+  var call = document.getElementById("galacticCall");
+  if (call) {
+    call.addEventListener("pointerdown", function (event) { event.stopPropagation(); });
+    call.addEventListener("pointermove", function (event) { event.stopPropagation(); });
+  }
 })();
 </script>
+<script src="/portal/galactic-call.js?v=1" defer></script>
 </body>
 </html>
