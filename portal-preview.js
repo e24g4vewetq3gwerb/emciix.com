@@ -79,3 +79,30 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();
 })();
+
+// reCAPTCHA Enterprise site key: loads on the homepage so the key receives traffic.
+// The floating badge is hidden so the layout stays unchanged.
+(function () {
+  var KEY = "6Lc4tM4tAAAAALKvME6LdQOTV3_rJMCPWcGJk9du";
+  if (window.__emciixRecaptcha) return;
+  window.__emciixRecaptcha = true;
+  try {
+    var css = document.createElement("style");
+    css.textContent = ".grecaptcha-badge{visibility:hidden!important}";
+    document.head.appendChild(css);
+    window.emciixRecaptchaReady = function () {
+      try {
+        var g = window.grecaptcha && window.grecaptcha.enterprise;
+        if (!g) return;
+        g.ready(function () {
+          g.execute(KEY, { action: "homepage" }).then(function () {}, function () {});
+        });
+      } catch (_) {}
+    };
+    var s = document.createElement("script");
+    s.src = "https://www.google.com/recaptcha/enterprise.js?render=" + KEY + "&onload=emciixRecaptchaReady";
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+  } catch (_) {}
+})();
