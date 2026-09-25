@@ -36,7 +36,7 @@
       ".portal-orbit{position:absolute;left:50%;top:58%;width:0;height:0;z-index:4;pointer-events:none}" +
       ".portal-orbit-a{animation:portalSpin 46s linear infinite}" +
       ".portal-orbit-b{animation:portalSpin 33s linear infinite reverse}" +
-      ".portal-orbit a,.portal-orbit span{position:absolute;display:block;border-radius:50%;pointer-events:auto;background:url('/portal/assets/planet.png?v=up-1') center/cover no-repeat;box-shadow:inset -16px -12px 24px rgba(0,0,0,.45),0 0 32px rgba(255,150,50,.35)}" +
+      ".portal-orbit a,.portal-orbit span{position:absolute;display:block;border-radius:50%;pointer-events:auto;background:url('/portal/assets/planet.webp?v=up-2') center/cover no-repeat;box-shadow:inset -16px -12px 24px rgba(0,0,0,.45),0 0 32px rgba(255,150,50,.35)}" +
       ".portal-orbit-a a{width:150px;height:150px;margin:-75px 0 0 150px;animation:portalSpin 46s linear infinite reverse}" +
       ".portal-orbit-b span{width:84px;height:84px;margin:-42px 0 0 -210px;animation:portalSpin 33s linear infinite}" +
       "@keyframes portalSpin{to{transform:rotate(360deg)}}" +
