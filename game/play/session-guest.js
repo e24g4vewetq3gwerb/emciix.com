@@ -1,4 +1,5 @@
 import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
@@ -13,6 +14,7 @@ const firebaseConfig = {
 
 let app;
 try { app = getApp(); } catch (_) { app = initializeApp(firebaseConfig); }
+try { initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider("6Lc4tM4tAAAAALKvME6LdQOTV3_rJMCPWcGJk9du"), isTokenAutoRefreshEnabled: true }); } catch (_) {}
 const auth = getAuth(app);
 const db = getFirestore(app);
 

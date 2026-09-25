@@ -33,6 +33,7 @@ import {
   runTransaction,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js";
 
 const firebaseConfig = {
   apiKey: "REDACTED",
@@ -44,6 +45,20 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+// Firebase App Check (reCAPTCHA Enterprise site key). Not enforced in the console,
+// so a failed token exchange never blocks Auth / Firestore / Storage.
+const RECAPTCHA_SITE_KEY = "6Lc4tM4tAAAAALKvME6LdQOTV3_rJMCPWcGJk9du";
+try {
+  const badgeCss = document.createElement("style");
+  badgeCss.textContent = ".grecaptcha-badge{visibility:hidden!important}";
+  document.head.appendChild(badgeCss);
+  initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(RECAPTCHA_SITE_KEY),
+    isTokenAutoRefreshEnabled: true,
+  });
+} catch (err) {
+  console.warn("App Check init skipped", err);
+}
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
