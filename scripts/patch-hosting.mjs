@@ -301,7 +301,16 @@ function cacheStatic(config) {
   return config;
 }
 
-const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: cacheStatic(widenConnect(current.config || {})) });
+function routeHomeToPortal(config) {
+  config = config || {};
+  const redirects = (config.redirects || []).filter((rule) => rule && rule.glob !== "/" && rule.glob !== "/index.html");
+  redirects.unshift({ glob: "/", statusCode: 302, location: "/portal" });
+  config.redirects = redirects;
+  console.log("root redirect / -> /portal");
+  return config;
+}
+
+const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: routeHomeToPortal(cacheStatic(widenConnect(current.config || {}))) });
 const newVersion = created.name;
 const populated = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + ":populateFiles", { files });
 const required = new Set(populated.uploadRequiredHashes || []);
