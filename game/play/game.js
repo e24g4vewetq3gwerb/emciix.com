@@ -1088,7 +1088,9 @@
       try {
         previewUrl = URL.createObjectURL(file);
         if (avatarImg && /^blob:/.test(previewUrl)) {
-          avatarImg.src = previewUrl;
+          // Object URLs are same-origin "blob:" identifiers; encodeURI leaves them unchanged
+          // and guarantees no markup characters reach the <img>.
+          avatarImg.src = encodeURI(previewUrl);
           avatarImg.removeAttribute("data-placeholder");
         }
       } catch (_) {}

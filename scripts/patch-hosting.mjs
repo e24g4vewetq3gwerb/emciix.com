@@ -118,6 +118,7 @@ const PATCHES = [
   ["need/wide.css", "/need/wide.css"],
   ["need/assets/index-Bsi7rUKP.js", "/need/assets/index-Bsi7rUKP.js"],
   ["subnet/index.html", "/subnet/index.html"],
+  ["delta.html", "/delta.html"],
   [gameJs || "game/play/game.js", "/game/play/game.js"],
   ["game/play/levels.json", "/game/play/levels.json"],
   ["game/play/firebase-scores.js", "/game/play/firebase-scores.js"],
