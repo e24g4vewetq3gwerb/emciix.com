@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 
 const PROJECT = "emciix-com";
-const LOGIN_V = "login-7";
+const LOGIN_V = "login-8";
 // Private (0700) scratch dir for generated files instead of fixed, world-readable /tmp paths.
 const WORK_DIR = mkdtempSync(join(tmpdir(), "emciix-patch-"));
 

@@ -46,6 +46,5 @@
 }
 .start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.35rem}
 .start-login .auth-chip.hidden{display:none}
-.start-login .auth-chip-avatar{width:28px;height:28px;border-radius:8px;object-fit:cover;background:#111}
 .start-login .auth-error{margin:.4rem 0 0;color:#ff6b8a;font-size:.7rem}
 .start-login .auth-error.hidden{display:none}

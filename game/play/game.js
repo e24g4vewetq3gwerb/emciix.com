@@ -518,28 +518,12 @@
       li.innerHTML =
         '<span class="rank-pos">' + (i + 1) + '</span>' +
         '<span class="rank-player">' +
-          '<img class="rank-avatar" alt="" width="24" height="24" data-placeholder="1" />' +
           '<span class="rank-name"></span>' +
         '</span>' +
         '<span class="rank-pts"></span>';
       li.querySelector(".rank-name").textContent = row.displayName || "Player";
       li.querySelector(".rank-pts").textContent = formatPoints(row.totalScore);
-      const img = li.querySelector(".rank-avatar");
-      const photo = row.photoURL ? String(row.photoURL) : "";
-      if (img) {
-        if (/^https?:\/\//i.test(photo)) {
-          img.src = photo;
-          img.removeAttribute("data-placeholder");
-          img.onerror = function () {
-            this.removeAttribute("src");
-            this.setAttribute("data-placeholder", "1");
-            this.onerror = null;
-          };
-        } else {
-          img.removeAttribute("src");
-          img.setAttribute("data-placeholder", "1");
-        }
-      }
+      // Text only: no profile photos are fetched on the game page.
       list.appendChild(li);
     });
   }
@@ -588,7 +572,6 @@
   function updateAuthChip(user) {
     const chip = $("#auth-chip");
     const nameEl = $("#auth-chip-name");
-    const avatarEl = $("#auth-chip-avatar");
     const signInRow = $("#auth-signin-row");
     const signInBtn = $("#btn-google-signin");
     const signInXBtn = $("#btn-x-signin");
@@ -609,21 +592,6 @@
           user.email ||
           "Signed in";
         nameEl.textContent = name;
-      }
-      const photo =
-        (cloudProfile && cloudProfile.photoURL) ||
-        user.photoURL ||
-        "";
-      if (avatarEl) {
-        if (photo) {
-          avatarEl.src = photo;
-          avatarEl.alt = "Profile photo";
-          avatarEl.removeAttribute("data-placeholder");
-        } else {
-          avatarEl.removeAttribute("src");
-          avatarEl.alt = "";
-          avatarEl.setAttribute("data-placeholder", "1");
-        }
       }
       const pts =
         cloudProfile && typeof cloudProfile.totalScore === "number"
@@ -654,10 +622,6 @@
       if (signInBtn) signInBtn.classList.remove("hidden");
       if (signInXBtn) signInXBtn.classList.remove("hidden");
       if (nameEl) nameEl.textContent = "";
-      if (avatarEl) {
-        avatarEl.removeAttribute("src");
-        avatarEl.alt = "";
-      }
       if (badgeGoogle) badgeGoogle.classList.add("hidden");
       if (badgeX) badgeX.classList.add("hidden");
       if (linkGoogleBtn) linkGoogleBtn.classList.add("hidden");
@@ -1066,94 +1030,6 @@
         } else if (e.key === "Escape") {
           hideNameEdit();
         }
-      });
-    }
-
-    async function runAvatarUpload(file) {
-      showAuthError("");
-      const api = window.EmciixScores || (await waitForEmciixScores(8000));
-      if (!api || !api.uploadAvatar) {
-        showAuthError("Avatar upload not available — hard-refresh");
-        return;
-      }
-      if (!file) return;
-      const avatarImg = $("#auth-chip-avatar");
-      const avatarBtn = $("#auth-avatar-btn");
-      const changePhotoBtn = $("#auth-change-photo");
-      const prevPhoto =
-        (cloudProfile && cloudProfile.photoURL) ||
-        (avatarImg && avatarImg.getAttribute("src")) ||
-        "";
-      let previewUrl = "";
-      try {
-        previewUrl = URL.createObjectURL(file);
-        if (avatarImg && /^blob:/.test(previewUrl)) {
-          // Object URLs are same-origin "blob:" identifiers; encodeURI leaves them unchanged
-          // and guarantees no markup characters reach the <img>.
-          avatarImg.src = encodeURI(previewUrl);
-          avatarImg.removeAttribute("data-placeholder");
-        }
-      } catch (_) {}
-      if (avatarBtn) avatarBtn.disabled = true;
-      if (changePhotoBtn) changePhotoBtn.disabled = true;
-      showAuthError("Uploading…");
-      setSyncStatus("Uploading…");
-      try {
-        const url = await api.uploadAvatar(file);
-        if (!cloudProfile) cloudProfile = { displayName: null, totalScore: 0, photoURL: url };
-        else cloudProfile.photoURL = url;
-        const user = api.getCurrentUser && api.getCurrentUser();
-        updateAuthChip(user);
-        showAuthError("");
-        setSyncStatus("Photo updated", "synced");
-        refreshPublicRanks().catch(() => {});
-      } catch (err) {
-        console.error(err);
-        if (avatarImg) {
-          if (prevPhoto) avatarImg.src = prevPhoto;
-          else {
-            avatarImg.removeAttribute("src");
-            avatarImg.setAttribute("data-placeholder", "1");
-          }
-        }
-        if (cloudProfile) cloudProfile.photoURL = prevPhoto || cloudProfile.photoURL || null;
-        const msg = String((err && err.message) || err || "Upload failed");
-        showAuthError(msg.length > 120 ? msg.slice(0, 117) + "…" : msg);
-        setSyncStatus("Upload failed", "error");
-      } finally {
-        if (previewUrl) {
-          try { URL.revokeObjectURL(previewUrl); } catch (_) {}
-        }
-        if (avatarBtn) avatarBtn.disabled = false;
-        if (changePhotoBtn) changePhotoBtn.disabled = false;
-      }
-    }
-
-    function openAvatarPicker() {
-      const input = $("#auth-avatar-input");
-      if (input) input.click();
-    }
-
-    const avatarInput = $("#auth-avatar-input");
-    const avatarBtn = $("#auth-avatar-btn");
-    const changePhotoBtn = $("#auth-change-photo");
-    if (avatarBtn) {
-      avatarBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        openAvatarPicker();
-      });
-    }
-    if (changePhotoBtn) {
-      changePhotoBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        openAvatarPicker();
-      });
-    }
-    if (avatarInput) {
-      avatarInput.addEventListener("change", () => {
-        const file = avatarInput.files && avatarInput.files[0];
-        avatarInput.value = "";
-        if (file) runAvatarUpload(file).catch(console.error);
       });
     }
 

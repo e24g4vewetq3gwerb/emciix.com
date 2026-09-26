@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#04040C" />
   <title>Emciix</title>
   <link rel="icon" href="/game/play/favicon.svg?v=bw-rocket-1" type="image/svg+xml" />
-  <link rel="stylesheet" href="/game/play/game.css?v=portal-bg-1" />
+  <link rel="stylesheet" href="/game/play/game.css?v=textonly-1" />
 </head>
 <body>
   <div id="app">
     <div id="start-overlay" class="overlay">
-      <iframe class="portal-bg" src="/portal/?bg=1" title="" tabindex="-1" aria-hidden="true"></iframe>
+      <iframe class="portal-bg" src="/portal/?bg=1&amp;v=clean-1" title="" tabindex="-1" aria-hidden="true"></iframe>
       <div class="start-layout">
         <div class="overlay-card start-main borderless">
           <div class="dots" aria-hidden="true">
@@ -429,7 +429,7 @@
   <audio id="audio" preload="auto" src="/game/play/audio/one-feeling-one-promise.mp3"></audio>
   <audio id="start-bgm" loop preload="none"></audio>
   <script>window.EmciixScoresBoot="loading";window.addEventListener("error",function(e){if(e&&e.filename&&String(e.filename).indexOf("firebase")!==-1){window.EmciixScoresBoot=String(e.message||"error");}},true);</script>
-  <script type="module" src="/game/play/firebase-scores.js?v=level-ranks-1"></script>
-  <script src="/game/play/game.js?v=level-ranks-1" defer></script>
+  <script type="module" src="/game/play/firebase-scores.js?v=textonly-1"></script>
+  <script src="/game/play/game.js?v=textonly-1" defer></script>
 </body>
 </html>

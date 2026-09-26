@@ -13,7 +13,6 @@
         '<button type="button" id="btn-x-signin" class="login-half btn-x" aria-label="X">X</button>' +
       '</div>' +
       '<div class="auth-chip hidden" id="auth-chip">' +
-        '<img id="auth-chip-avatar" class="auth-chip-avatar" alt="" width="28" height="28" data-placeholder="1" />' +
         '<div class="auth-chip-meta">' +
           '<strong id="auth-chip-name">Signed in</strong>' +
           '<span id="auth-points-val">0</span> PTS' +

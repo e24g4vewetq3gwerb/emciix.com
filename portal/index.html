@@ -67,7 +67,12 @@
     html.portal-bg .sky-hint,
     html.portal-bg .page-tabs,
     html.portal-bg .play-row,
-    html.portal-bg #embed-fly { display: none !important; }
+    html.portal-bg #embed-fly,
+    html.portal-bg #warp-planet,
+    html.portal-bg #warp-atmo,
+    html.portal-bg #warp-moon,
+    html.portal-bg .portal-call,
+    html.portal-bg .reticle { display: none !important; }
     #embed-fly {
       display: none;
       position: fixed;
@@ -145,8 +150,21 @@
 <span id="warp-atmo" aria-hidden="true"></span>
 <a id="warp-planet" data-hud href="https://emciix.com/game/play" aria-label="Open the game"></a>
 <script>
+// Game background mode (/portal/?bg=1 inside /game/play): starfield only.
+// Drop the planet, its ring, the moon and the call pill so nothing is drawn or fetched
+// (planet.webp, call ledger, avatars); the warp renderer skips missing nodes.
+(function () {
+  if (!document.documentElement.classList.contains("portal-bg")) return;
+  ["warp-planet", "warp-atmo", "warp-moon", "galacticCall", "embed-fly"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  });
+})();
+</script>
+<script>
 (function () {
   var planet = document.getElementById("warp-planet");
+  if (!planet) return;
   var drag = null;
   var moved = false;
   function placePlanet(x, y) {

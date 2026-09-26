@@ -32,7 +32,6 @@ import {
   limit,
   runTransaction,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js";
 
 const firebaseConfig = {
@@ -46,7 +45,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 // Firebase App Check (reCAPTCHA Enterprise site key). Not enforced in the console,
-// so a failed token exchange never blocks Auth / Firestore / Storage.
+// so a failed token exchange never blocks Auth / Firestore.
 const RECAPTCHA_SITE_KEY = "6Lc4tM4tAAAAALKvME6LdQOTV3_rJMCPWcGJk9du";
 try {
   const badgeCss = document.createElement("style");
@@ -61,7 +60,6 @@ try {
 }
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 const xProvider = new TwitterAuthProvider();
 xProvider.setCustomParameters({ lang: "en" });
@@ -757,120 +755,6 @@ async function saveCloudBest(levelId, best, title) {
 }
 
 
-function compressAvatarFile(file) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const max = 96;
-        let w = img.naturalWidth || img.width;
-        let h = img.naturalHeight || img.height;
-        if (!w || !h) throw new Error("Invalid image");
-        const scale = Math.min(1, max / Math.max(w, h));
-        w = Math.max(1, Math.round(w * scale));
-        h = Math.max(1, Math.round(h * scale));
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, w, h);
-        let quality = 0.65;
-        let dataUrl = canvas.toDataURL("image/jpeg", quality);
-        while (dataUrl.length > 60000 && quality > 0.35) {
-          quality -= 0.08;
-          dataUrl = canvas.toDataURL("image/jpeg", quality);
-        }
-        if (dataUrl.length > 60000) {
-          const c2 = document.createElement("canvas");
-          c2.width = 64;
-          c2.height = 64;
-          c2.getContext("2d").drawImage(img, 0, 0, 64, 64);
-          dataUrl = c2.toDataURL("image/jpeg", 0.55);
-          quality = 0.55;
-        }
-        URL.revokeObjectURL(url);
-        if (dataUrl.length > 100000) {
-          reject(new Error("Could not compress image enough — try a smaller photo"));
-          return;
-        }
-        canvas.toBlob(
-          (blob) => resolve({ dataUrl, blob: blob || null }),
-          "image/jpeg",
-          quality
-        );
-      } catch (e) {
-        URL.revokeObjectURL(url);
-        reject(e);
-      }
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("Could not read image"));
-    };
-    img.src = url;
-  });
-}
-
-async function tryAvatarStorageUpload(user, blob) {
-  if (!blob) return null;
-  let useStorage = false;
-  try {
-    useStorage = localStorage.getItem("emciix.useAvatarStorage") === "1";
-  } catch (_) {}
-  if (!useStorage) return null;
-  const path = "avatars/" + user.uid + "/avatar.jpg";
-  const r = ref(storage, path);
-  const uploadPromise = (async () => {
-    await uploadBytes(r, blob, { contentType: "image/jpeg" });
-    return await getDownloadURL(r);
-  })();
-  const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error("avatar storage timeout")), 1500);
-  });
-  return await Promise.race([uploadPromise, timeoutPromise]);
-}
-
-async function uploadAvatar(file) {
-  const user = auth.currentUser;
-  if (!user) throw new Error("Not signed in");
-  if (!file || !String(file.type || "").startsWith("image/")) throw new Error("Choose an image file");
-  if (file.size > 2 * 1024 * 1024) throw new Error("Image must be under 2MB");
-
-  const compressed = await compressAvatarFile(file);
-  let url = compressed.dataUrl;
-
-  // Skip Firebase Storage by default (no Blaze) — data-URL → Firestore is fast.
-  // Opt-in via localStorage.emciix.useAvatarStorage === "1" with a 1.5s race.
-  try {
-    const stored = await tryAvatarStorageUpload(user, compressed.blob);
-    if (stored) url = stored;
-  } catch (err) {
-    console.warn("avatar storage skipped/failed, using inline photo", err);
-    url = compressed.dataUrl;
-  }
-
-  const existing = await getUserProfile();
-  const bests = await loadCloudBests();
-  const cloudSum = sumCloudBestsTotal(bests);
-  const totalScore = Math.max(existing ? existing.totalScore : 0, cloudSum);
-  const levelsCleared = Math.max(
-    existing ? existing.levelsCleared : 0,
-    Object.keys(bests).length
-  );
-  const payload = {
-    displayName: (existing && existing.displayName) || user.displayName || "Player",
-    photoURL: clampStr(url, 100000),
-    updatedAt: Date.now(),
-    totalScore,
-    levelsCleared,
-  };
-  if (user.email) payload.email = clampStr(user.email, 200);
-  await setDoc(doc(db, "users", user.uid), payload, { merge: true });
-  await publishPublicRank(user, payload.displayName, payload.totalScore, payload.photoURL);
-  return payload.photoURL;
-}
-
 /**
  * Top public totals for the start-screen rank card.
  * @param {number} [n=10]
@@ -983,7 +867,6 @@ const api = {
   publishLevelRank,
   syncLevelRanks,
   publishPublicRank,
-  uploadAvatar,
   abandonPublicRank,
   applyMergedBests,
   applyPendingMergeIfAny,
@@ -1014,7 +897,6 @@ export {
   publishLevelRank,
   syncLevelRanks,
   publishPublicRank,
-  uploadAvatar,
   abandonPublicRank,
   applyMergedBests,
   applyPendingMergeIfAny,
