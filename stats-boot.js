@@ -599,7 +599,7 @@
       "projects/need-inc-app/databases/place/documents/places/" + encodeURIComponent(placeId);
     var url =
       "https://firestore.googleapis.com/v1/" + parent +
-      ":runQuery?key=REDACTED";
+      ":runQuery?key=AIzaSyC2CJQcEQADmlmSAXaMmjpPcE0aDkhcE5Q";
     var requestBody = {
       structuredQuery: {
         from: [{ collectionId: "messages" }],
@@ -767,7 +767,7 @@
       "projects/need-inc-app/databases/place/documents/places/" + encodeURIComponent(placeId);
     var url =
       "https://firestore.googleapis.com/v1/" + parent +
-      ":runQuery?key=REDACTED";
+      ":runQuery?key=AIzaSyC2CJQcEQADmlmSAXaMmjpPcE0aDkhcE5Q";
     var requestBody = {
       structuredQuery: {
         from: [{ collectionId: "messages" }],

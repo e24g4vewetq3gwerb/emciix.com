@@ -21,6 +21,8 @@ on:
       - game/play/vacant-chairs.css
       - game/play/universe-boot.js
       - game/play/favicon.svg
+      - game/play/firebase-scores.js
+      - game/play/session-guest.js
       - game/play/levels.json
       - game/play/levels/no-room-for-me/**
       - game/play/levels/glitch-by-glitch/**

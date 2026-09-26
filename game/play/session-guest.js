@@ -4,7 +4,7 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "REDACTED",
+  apiKey: "AIzaSyCUTqtIleTwRZXD2Ur9C8qWFSvhW3VIJLU",
   authDomain: "emciix-com.firebaseapp.com",
   projectId: "emciix-com",
   storageBucket: "emciix-com.firebasestorage.app",

@@ -36,7 +36,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js";
 
 const firebaseConfig = {
-  apiKey: "REDACTED",
+  apiKey: "AIzaSyCUTqtIleTwRZXD2Ur9C8qWFSvhW3VIJLU",
   authDomain: "emciix-com.firebaseapp.com",
   projectId: "emciix-com",
   storageBucket: "emciix-com.firebasestorage.app",
