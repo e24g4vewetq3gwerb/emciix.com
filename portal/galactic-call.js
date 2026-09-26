@@ -54,6 +54,23 @@
         }
         return false;
       }
+      // No links: any URL or link-like text (scheme://, www., bare domain.tld, IP address) is rejected.
+      var LINK_TLDS = "com|net|org|edu|gov|mil|int|io|co|be|ly|gg|tv|me|app|dev|xyz|ai|uk|ca|us|info|biz|site|online|live|link|links|to|cc|ws|fm|am|sh|gl|gd|is|it|de|fr|ru|cn|jp|kr|in|au|br|es|nl|eu|ch|se|no|pl|tk|ml|ga|cf|gq|top|club|shop|store|blog|news|page|art|one|fun|click|win|vip|pro|mobi|name|tech|space|website|zip|mov|lol|wtf|porn|sex|xxx|adult|onion|ly|gl|su|nz|za|mx|ar|tr|ir|id|ph|pk|bd|ng|ke|vn|th|my|sg|hk|tw|ua|cz|at|dk|fi|gr|hu|ie|il|pt|ro|sk|to|ms|la|nu|cx|ac|im|re|red|blue|pink|video|watch|stream|social|chat|games|game|media|music|world|today|life|cloud|host|email|network|digital|agency|studio|design|codes|download|free|gay|sexy|tube|cam|webcam|dating|bet|casino|poker|men|work|works|best|cool|rocks|ninja|guru|wiki|help|photo|photos|pics|pictures|gallery|land|city|country|global|group|team|systems|services|solutions|company|finance|money|cash|loan|market|trade|exchange|crypto|nft|bot|run|now|new|top|plus|biz";
+      var LINK_BARE = new RegExp("(^|[^a-z0-9-])[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\\.(?:" + LINK_TLDS + ")(?![a-z0-9-])", "i");
+      function hasLink() {
+        for (var a = 0; a < arguments.length; a++) {
+          var raw = String(arguments[a] || "");
+          if (!raw) continue;
+          var text = raw.replace(/[\u3002\uff0e\uff61\u2024\u2e33\u00b7]/g, ".").replace(/[\uff0f\u2044\u2215]/g, "/");
+          if (/[a-z][a-z0-9+.-]*:\/\//i.test(text)) return true;
+          if (/(^|[^a-z0-9])www\d{0,3}\./i.test(text)) return true;
+          if (/(^|[^0-9.])\d{1,3}(?:\.\d{1,3}){3}(?![0-9])/.test(text) || /\[[0-9a-f:]+\]/i.test(text)) return true;
+          if (/(^|[^a-z0-9-])[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9-]+)*\.[a-z]{2,}(?::\d+)?\//i.test(text)) return true;
+          if (/(^|[^a-z0-9])localhost(?![a-z0-9])/i.test(text)) return true;
+          if (LINK_BARE.test(text)) return true;
+        }
+        return false;
+      }
       function queryOf(url) {
         // Only the human-typed part of a link is screened (e.g. a YouTube search_query), not random video/post ids.
         try { var u = new URL(String(url || "")); return u.searchParams.get("search_query") || u.searchParams.get("q") || ""; } catch (err) { return ""; }
@@ -100,12 +117,12 @@
       }
       try {
         var saved = JSON.parse(localStorage.getItem(key) || "null");
-        if (saved && typeof saved === "object" && safeCard(saved)) paint(saved);
-        else if (typeof saved === "string" && saved && !isExplicit(saved)) paint({ title: saved });
+        if (saved && typeof saved === "object" && safeCard(saved) && !hasLink(saved.title, saved.name, saved.label, saved.source)) paint(saved);
+        else if (typeof saved === "string" && saved && !isExplicit(saved) && !hasLink(saved)) paint({ title: saved });
       } catch (e) {
         try {
           var plain = localStorage.getItem(key);
-          if (plain && plain.charAt(0) !== "{" && !isExplicit(plain)) paint({ title: plain });
+          if (plain && plain.charAt(0) !== "{" && !isExplicit(plain) && !hasLink(plain)) paint({ title: plain });
         } catch (err) {}
       }
       function focusEmpty() {
@@ -218,7 +235,7 @@
         if (isExplicit(user.name, user.screen_name, user.description)) return { blocked: true };
         var posts = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle) + "/statuses?count=8");
         var results = posts.ok ? (((await posts.json()).results) || []) : [];
-        results = results.filter(function (row) { return row && !isExplicit(row.text, row.author && row.author.name); });
+        results = results.filter(function (row) { return row && !isExplicit(row.text, row.author && row.author.name) && !hasLink(row.text); });
         var mine = String(user.screen_name).toLowerCase();
         var latest = results.find(function (row) {
           var author = String((row.author && row.author.screen_name) || "").toLowerCase();
@@ -270,6 +287,7 @@
         if (card && card.blocked) return card;
         if (!card || !card.title) return null;
         if (!safeCard(card)) return { blocked: true };
+        if (hasLink(card.name, card.title)) return null;
         var who = card.name || raw;
         return { handle: who.replace(/\s+/g, ""), name: who, avatar: card.avatar || "", title: card.title, url: card.url || (url ? url.href : "") };
       }
@@ -441,6 +459,7 @@
       });
       function runLookup(value) {
         if (!value) return;
+        if (hasLink(value)) { blockCall("No links"); return; }
         if (isExplicit(value)) { blockCall(); return; }
         var kind = kindOf(value);
         if (!kind) return;
@@ -455,7 +474,7 @@
         input.placeholder = "";
         if (ask) ask.textContent = shown;
         var job = site === "youtube" ? youtubeCall(handle) : xByHandle(handle);
-        var fallback = site === "youtube" ? (parseLink(handle) ? handle : "https://www.youtube.com/results?search_query=" + encodeURIComponent(handle)) : "https://x.com/" + handle;
+        var fallback = "";
         job.then(function (card) {
           if (card && (card.blocked || !safeCard(card))) { blockCall(); return; }
           input.disabled = false;
@@ -498,7 +517,7 @@
           });
         });
       }
-      function blockCall() {
+      function blockCall(note) {
         source = "";
         heldName = "";
         heldAvatar = "";
@@ -506,7 +525,7 @@
         input.disabled = false;
         input.value = "";
         input.removeAttribute("data-title");
-        input.placeholder = "Try something else";
+        input.placeholder = note || "Try something else";
         if (ask) ask.textContent = "Have Fun";
         if (photo) { photo.classList.remove("has-photo"); photo.style.backgroundImage = ""; }
         if (yt) { yt.classList.remove("has-photo"); yt.style.backgroundImage = ""; }
@@ -575,21 +594,15 @@
         if (kicker) kicker.hidden = false;
         rows.forEach(function (row) {
           var li = document.createElement("li");
-          var href = postHref(row);
-          var ava = document.createElement(href ? "a" : "span");
+          // Text only: no anchors or hrefs to channels, videos or X posts.
+          var ava = document.createElement("span");
           ava.className = "call-ava";
-          if (href) {
-            ava.href = href;
-          }
           if (row.avatar) ava.style.backgroundImage = "url(\"" + String(row.avatar).replace(/"/g, "") + "\")";
           else ava.textContent = "x";
           var copy = document.createElement("span");
           copy.className = "call-copy";
-          var who = document.createElement(href ? "a" : "strong");
+          var who = document.createElement("strong");
           who.className = "call-who";
-          if (href) {
-            who.href = href;
-          }
           who.textContent = "@" + String(row.handle).replace(/^@/, "");
           var post = document.createElement("span");
           post.className = "call-post";
@@ -600,12 +613,6 @@
           li.appendChild(copy);
           ol.appendChild(li);
         });
-      }
-      function postHref(row) {
-        var href = String((row && row.url) || "");
-        if (/status\/\d+/.test(href)) return href.replace(/^https:\/\/(?:twitter|fxtwitter)\.com\//i, "https://x.com/");
-        if (/youtu\.be|youtube\.com/i.test(href)) return href;
-        return "";
       }
       function parseCallDoc(doc) {
         var fields = doc && doc.fields || {};
@@ -626,6 +633,8 @@
         if (!row || !row.handle) return null;
         if (row.handle === "x" || row.handle === "smoketest" || row.handle === "probe2" || row.handle === "ledgerprobe") return null;
         if (isExplicit(row.handle, row.name, row.post, queryOf(row.url))) return null;
+        if (hasLink(row.handle, row.name, row.post)) return null;
+        row.url = "";
         row.at = Number(row.at) || 0;
         return row;
       }
@@ -687,10 +696,11 @@
       function publishCall(entry) {
         if (!entry || !entry.handle || !liveCall({ handle: entry.handle })) return;
         if (isExplicit(entry.handle, entry.name, entry.post, queryOf(entry.url))) return;
+        if (hasLink(entry.handle, entry.name, entry.post)) return;
         entry.avatar = String(entry.avatar || "").slice(0, 480);
         entry.post = String(entry.post || "").slice(0, 180);
         entry.name = String(entry.name || entry.handle).slice(0, 70);
-        entry.url = String(entry.url || "").slice(0, 280);
+        entry.url = "";
         entry.at = entry.at || Date.now();
         addLive(entry);
         fetch(inboxUrl, {

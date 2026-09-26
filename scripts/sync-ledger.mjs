@@ -54,6 +54,23 @@ function isExplicit() {
   }
   return false;
 }
+// No links: any URL or link-like text (scheme://, www., bare domain.tld, IP address) is rejected.
+var LINK_TLDS = "com|net|org|edu|gov|mil|int|io|co|be|ly|gg|tv|me|app|dev|xyz|ai|uk|ca|us|info|biz|site|online|live|link|links|to|cc|ws|fm|am|sh|gl|gd|is|it|de|fr|ru|cn|jp|kr|in|au|br|es|nl|eu|ch|se|no|pl|tk|ml|ga|cf|gq|top|club|shop|store|blog|news|page|art|one|fun|click|win|vip|pro|mobi|name|tech|space|website|zip|mov|lol|wtf|porn|sex|xxx|adult|onion|ly|gl|su|nz|za|mx|ar|tr|ir|id|ph|pk|bd|ng|ke|vn|th|my|sg|hk|tw|ua|cz|at|dk|fi|gr|hu|ie|il|pt|ro|sk|to|ms|la|nu|cx|ac|im|re|red|blue|pink|video|watch|stream|social|chat|games|game|media|music|world|today|life|cloud|host|email|network|digital|agency|studio|design|codes|download|free|gay|sexy|tube|cam|webcam|dating|bet|casino|poker|men|work|works|best|cool|rocks|ninja|guru|wiki|help|photo|photos|pics|pictures|gallery|land|city|country|global|group|team|systems|services|solutions|company|finance|money|cash|loan|market|trade|exchange|crypto|nft|bot|run|now|new|top|plus|biz";
+var LINK_BARE = new RegExp("(^|[^a-z0-9-])[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\\.(?:" + LINK_TLDS + ")(?![a-z0-9-])", "i");
+function hasLink() {
+  for (var a = 0; a < arguments.length; a++) {
+    var raw = String(arguments[a] || "");
+    if (!raw) continue;
+    var text = raw.replace(/[\u3002\uff0e\uff61\u2024\u2e33\u00b7]/g, ".").replace(/[\uff0f\u2044\u2215]/g, "/");
+    if (/[a-z][a-z0-9+.-]*:\/\//i.test(text)) return true;
+    if (/(^|[^a-z0-9])www\d{0,3}\./i.test(text)) return true;
+    if (/(^|[^0-9.])\d{1,3}(?:\.\d{1,3}){3}(?![0-9])/.test(text) || /\[[0-9a-f:]+\]/i.test(text)) return true;
+    if (/(^|[^a-z0-9-])[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9-]+)*\.[a-z]{2,}(?::\d+)?\//i.test(text)) return true;
+    if (/(^|[^a-z0-9])localhost(?![a-z0-9])/i.test(text)) return true;
+    if (LINK_BARE.test(text)) return true;
+  }
+  return false;
+}
 function queryOf(url) {
   try { const u = new URL(String(url || "")); return u.searchParams.get("search_query") || u.searchParams.get("q") || ""; } catch { return ""; }
 }
@@ -63,6 +80,7 @@ function keep(list) {
   list
     .filter((row) => row && row.handle && row.handle !== "x" && row.handle !== "ledgerprobe" && row.handle !== "probe2" && row.handle !== "smoketest")
     .filter((row) => !isExplicit(row.handle, row.name, row.post, queryOf(row.url)))
+    .filter((row) => !hasLink(row.handle, row.name, row.post))
     .forEach((row) => {
       row.at = Number(row.at) || 0;
       const id = String(row.handle).replace(/^@/, "").toLowerCase();
@@ -72,7 +90,8 @@ function keep(list) {
       const prev = best.get(id);
       if (!prev || row.at >= prev.at) best.set(id, row);
     });
-  return [...best.values()].sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 20);
+  // No links in the public ledger: the url field is dropped (the call display is text only).
+  return [...best.values()].map((row) => ({ ...row, url: "" })).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 20);
 }
 
 const res = await fetch(listUrl);
