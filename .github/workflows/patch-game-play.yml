@@ -39,6 +39,7 @@ on:
       - need/index.html
       - need/wide.css
       - delta.html
+      - starslip/**
       - .github/workflows/patch-game-play.yml
 
 permissions:
