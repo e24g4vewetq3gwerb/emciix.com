@@ -78,6 +78,13 @@
           }
         ]
       }
+    ],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "https://tasfica.ca/",
+        "type": 302
+      }
     ]
   }
 }
