@@ -15,10 +15,54 @@ function readLedger() {
   }
 }
 
+// Strict safe search: mirror of the screen in portal/galactic-call.js so explicit calls never reach the public ledger.
+const SAFE_WORDS = ["sex", "sexy", "sexting", "sexcam", "porn", "porno", "porns", "pron", "p0rn", "xxx", "xxxx", "nsfw", "nude", "nudes", "nudity", "naked", "boob", "boobs", "tits", "titty", "titties", "pussy", "cock", "cocks", "dickpic", "cum", "cumshot", "blowjob", "handjob", "anal", "milf", "dilf", "fetish", "bdsm", "bondage", "erotic", "erotica", "hentai", "ecchi", "rule34", "r34", "camgirl", "camgirls", "stripper", "striptease", "horny", "slut", "sluts", "whore", "fuck", "fucking", "fucked", "orgasm", "dildo", "incest", "gangbang", "threesome", "lingerie", "onlyfans", "fansly", "xnxx", "xvideos", "xhamster", "pornhub", "redtube", "youporn", "brazzers", "chaturbate", "stripchat", "bangbros", "hardcore", "softcore", "uncensored", "playboy", "hot video", "hot videos", "blue film", "adult video", "adult videos", "18+", "18 plus", "only fans", "sx", "booty", "ass", "asses", "butt", "twerk", "twerking", "vagina", "vulva", "penis", "nipple", "nipples", "panties", "upskirt", "cleavage", "busty", "thot", "thots", "desi bhabhi", "lesbian kiss", "lesbian kissing", "big ass", "feet lover", "foot lover"];
+const SAFE_PARTS = ["porn", "xnxx", "xvideo", "xhamster", "pornhub", "redtube", "youporn", "onlyfans", "brazzers", "chaturbate", "stripchat", "hentai", "nsfw", "blowjob", "cumshot", "gangbang", "masturbat", "sexvideo", "sexyvideo", "xxxvideo", "nudevideo"];
+const SAFE_COMBOS = [
+  / (?:hot|sexy|bold|naked|nude|spicy) (?:[a-z0-9]+ )?(?:girl|girls|gf|woman|women|lady|ladies|babe|babes|aunty|auntie|aunties|bhabhi|bhabi|maid|maids|diva|divas|wife|wives|teen|teens|model|models|kiss|kisses|kissing|reel|reels|actress|actresses) /,
+  / (?:hot|sexy|bold|naked|nude|spicy) (?:video|videos|film|films|clip|clips|scene|scenes|photo|photos|pic|pics|dance|dances|body|figure|romance) /,
+  / (?:desi|romantic|hot|sexy|bold) (?:[a-z]+ )?(?:bhabhi|bhabi|aunty|auntie|aunties) /
+];
+function plainText(value) {
+  var text = String(value || "").toLowerCase();
+  try { text = text.normalize("NFKD").replace(/[\u0300-\u036f]/g, ""); } catch (err) {}
+  return text;
+}
+function leetText(text) {
+  return text.replace(/[0@4]/g, function (c) { return c === "0" ? "o" : "a"; }).replace(/[$5]/g, "s").replace(/3/g, "e").replace(/[1!|]/g, "i");
+}
+function isExplicit() {
+  for (var a = 0; a < arguments.length; a++) {
+    var raw = String(arguments[a] || "");
+    if (!raw) continue;
+    if (/(^|[^a-z0-9])18\s*\+/i.test(raw) || /(^|[^a-z0-9])x{3,}($|[^a-z0-9])/i.test(raw)) return true;
+    var plain = plainText(raw);
+    var forms = [plain, leetText(plain)];
+    for (var f = 0; f < forms.length; f++) {
+      var spaced = " " + forms[f].replace(/[^a-z0-9+]+/g, " ").trim() + " ";
+      var packed = forms[f].replace(/[^a-z]+/g, "");
+      for (var w = 0; w < SAFE_WORDS.length; w++) {
+        if (spaced.indexOf(" " + SAFE_WORDS[w] + " ") >= 0 || spaced.indexOf(" " + SAFE_WORDS[w] + "s ") >= 0) return true;
+      }
+      for (var c = 0; c < SAFE_COMBOS.length; c++) {
+        if (SAFE_COMBOS[c].test(spaced)) return true;
+      }
+      for (var p = 0; p < SAFE_PARTS.length; p++) {
+        if (packed.indexOf(SAFE_PARTS[p]) >= 0) return true;
+      }
+    }
+  }
+  return false;
+}
+function queryOf(url) {
+  try { const u = new URL(String(url || "")); return u.searchParams.get("search_query") || u.searchParams.get("q") || ""; } catch { return ""; }
+}
+
 function keep(list) {
   const best = new Map();
   list
     .filter((row) => row && row.handle && row.handle !== "x" && row.handle !== "ledgerprobe" && row.handle !== "probe2" && row.handle !== "smoketest")
+    .filter((row) => !isExplicit(row.handle, row.name, row.post, queryOf(row.url)))
     .forEach((row) => {
       row.at = Number(row.at) || 0;
       const id = String(row.handle).replace(/^@/, "").toLowerCase();

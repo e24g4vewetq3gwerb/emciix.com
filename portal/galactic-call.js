@@ -11,6 +11,58 @@
       var mode = "x";
       var heldName = "";
       var heldAvatar = "";
+      // Strict safe search. The YouTube channel search goes through Invidious (/api/v1/search), which has no
+      // SafeSearch / Restricted Mode switch, and fxtwitter has no sensitive-content flag, so every query and every
+      // result (channel name, handle, description, video title, X profile, post text) is screened here. Anything
+      // that trips the list is dropped: blocked queries never hit the network, never get a YouTube search link and
+      // are never published to the public call ledger.
+      var SAFE_WORDS = ["sex", "sexy", "sexting", "sexcam", "porn", "porno", "porns", "pron", "p0rn", "xxx", "xxxx", "nsfw", "nude", "nudes", "nudity", "naked", "boob", "boobs", "tits", "titty", "titties", "pussy", "cock", "cocks", "dickpic", "cum", "cumshot", "blowjob", "handjob", "anal", "milf", "dilf", "fetish", "bdsm", "bondage", "erotic", "erotica", "hentai", "ecchi", "rule34", "r34", "camgirl", "camgirls", "stripper", "striptease", "horny", "slut", "sluts", "whore", "fuck", "fucking", "fucked", "orgasm", "dildo", "incest", "gangbang", "threesome", "lingerie", "onlyfans", "fansly", "xnxx", "xvideos", "xhamster", "pornhub", "redtube", "youporn", "brazzers", "chaturbate", "stripchat", "bangbros", "hardcore", "softcore", "uncensored", "playboy", "hot video", "hot videos", "blue film", "adult video", "adult videos", "18+", "18 plus", "only fans", "sx", "booty", "ass", "asses", "butt", "twerk", "twerking", "vagina", "vulva", "penis", "nipple", "nipples", "panties", "upskirt", "cleavage", "busty", "thot", "thots", "desi bhabhi", "lesbian kiss", "lesbian kissing", "big ass", "feet lover", "foot lover"];
+      var SAFE_PARTS = ["porn", "xnxx", "xvideo", "xhamster", "pornhub", "redtube", "youporn", "onlyfans", "brazzers", "chaturbate", "stripchat", "hentai", "nsfw", "blowjob", "cumshot", "gangbang", "masturbat", "sexvideo", "sexyvideo", "xxxvideo", "nudevideo"];
+      var SAFE_COMBOS = [
+        / (?:hot|sexy|bold|naked|nude|spicy) (?:[a-z0-9]+ )?(?:girl|girls|gf|woman|women|lady|ladies|babe|babes|aunty|auntie|aunties|bhabhi|bhabi|maid|maids|diva|divas|wife|wives|teen|teens|model|models|kiss|kisses|kissing|reel|reels|actress|actresses) /,
+        / (?:hot|sexy|bold|naked|nude|spicy) (?:video|videos|film|films|clip|clips|scene|scenes|photo|photos|pic|pics|dance|dances|body|figure|romance) /,
+        / (?:desi|romantic|hot|sexy|bold) (?:[a-z]+ )?(?:bhabhi|bhabi|aunty|auntie|aunties) /
+      ];
+      function plainText(value) {
+        var text = String(value || "").toLowerCase();
+        try { text = text.normalize("NFKD").replace(/[\u0300-\u036f]/g, ""); } catch (err) {}
+        return text;
+      }
+      function leetText(text) {
+        return text.replace(/[0@4]/g, function (c) { return c === "0" ? "o" : "a"; }).replace(/[$5]/g, "s").replace(/3/g, "e").replace(/[1!|]/g, "i");
+      }
+      function isExplicit() {
+        for (var a = 0; a < arguments.length; a++) {
+          var raw = String(arguments[a] || "");
+          if (!raw) continue;
+          if (/(^|[^a-z0-9])18\s*\+/i.test(raw) || /(^|[^a-z0-9])x{3,}($|[^a-z0-9])/i.test(raw)) return true;
+          var plain = plainText(raw);
+          var forms = [plain, leetText(plain)];
+          for (var f = 0; f < forms.length; f++) {
+            var spaced = " " + forms[f].replace(/[^a-z0-9+]+/g, " ").trim() + " ";
+            var packed = forms[f].replace(/[^a-z]+/g, "");
+            for (var w = 0; w < SAFE_WORDS.length; w++) {
+              if (spaced.indexOf(" " + SAFE_WORDS[w] + " ") >= 0 || spaced.indexOf(" " + SAFE_WORDS[w] + "s ") >= 0) return true;
+            }
+            for (var c = 0; c < SAFE_COMBOS.length; c++) {
+              if (SAFE_COMBOS[c].test(spaced)) return true;
+            }
+            for (var p = 0; p < SAFE_PARTS.length; p++) {
+              if (packed.indexOf(SAFE_PARTS[p]) >= 0) return true;
+            }
+          }
+        }
+        return false;
+      }
+      function queryOf(url) {
+        // Only the human-typed part of a link is screened (e.g. a YouTube search_query), not random video/post ids.
+        try { var u = new URL(String(url || "")); return u.searchParams.get("search_query") || u.searchParams.get("q") || ""; } catch (err) { return ""; }
+      }
+      function safeCard(card) {
+        if (!card) return card;
+        return isExplicit(card.name, card.title, card.post, card.handle, card.label, card.source, queryOf(card.url), card.description) ? null : card;
+      }
+      window.emciixIsExplicit = isExplicit;
       function paint(card) {
         card = card || {};
         if (card.source) {
@@ -48,12 +100,12 @@
       }
       try {
         var saved = JSON.parse(localStorage.getItem(key) || "null");
-        if (saved && typeof saved === "object") paint(saved);
-        else if (typeof saved === "string" && saved) paint({ title: saved });
+        if (saved && typeof saved === "object" && safeCard(saved)) paint(saved);
+        else if (typeof saved === "string" && saved && !isExplicit(saved)) paint({ title: saved });
       } catch (e) {
         try {
           var plain = localStorage.getItem(key);
-          if (plain && plain.charAt(0) !== "{") paint({ title: plain });
+          if (plain && plain.charAt(0) !== "{" && !isExplicit(plain)) paint({ title: plain });
         } catch (err) {}
       }
       function focusEmpty() {
@@ -110,6 +162,7 @@
       async function channelLookup(query) {
         var q = String(query || "").replace(/^@/, "").trim();
         if (!q) return null;
+        if (isExplicit(q)) return { blocked: true };
         var hosts = ["https://invidious.f5.si", "https://invidious.darkness.services"];
         var list = [];
         for (var h = 0; h < hosts.length; h++) {
@@ -123,16 +176,21 @@
         var needle = q.toLowerCase().replace(/\s+/g, "");
         var exact = null;
         var first = null;
+        var dropped = 0;
         for (var i = 0; i < list.length; i++) {
           if (!list[i] || !/^UC[\w-]{20,}$/.test(list[i].authorId || "")) continue;
+          if (isExplicit(list[i].author, list[i].channelHandle, list[i].description)) { dropped++; continue; }
           var hit = { id: list[i].authorId, name: list[i].author || q, avatar: thumbUrl(list[i].authorThumbnails) };
           if (!first) first = hit;
           if ((hit.name || "").toLowerCase().replace(/\s+/g, "") === needle) exact = hit;
         }
+        // A query whose result page is largely adult channels is itself steering there: block it outright.
+        if (dropped && ((!exact && !first) || dropped >= 3 || dropped * 10 >= list.length * 3)) return { blocked: true };
         return exact || first;
       }
       async function youtubeByName(query) {
         var found = await channelLookup(query);
+        if (found && found.blocked) return found;
         if (!found || !found.id) return null;
         try {
           var rss = "https://www.youtube.com/feeds/videos.xml?channel_id=" + found.id;
@@ -140,12 +198,14 @@
           var json = await feed.json();
           var info = json && json.feed || {};
           var item = json && json.items && json.items[0];
+          if (isExplicit(info.title, info.author, item && item.title)) return { blocked: true };
           if (item && item.title) return { name: found.name || info.title || query, avatar: found.avatar || info.image || "", title: item.title, url: item.link || "" };
         } catch (err) {}
         try {
           var alt = await fetch("https://invidious.f5.si/api/v1/channels/" + encodeURIComponent(found.id) + "/videos?sort_by=newest");
           var body = await alt.json();
           var video = body && body.videos && body.videos[0];
+          if (video && isExplicit(video.title, video.author)) return { blocked: true };
           if (video && video.title) return { name: found.name || video.author || query, avatar: found.avatar || "", title: video.title, url: video.videoId ? "https://www.youtube.com/watch?v=" + video.videoId : "" };
         } catch (err) {}
         return null;
@@ -155,8 +215,10 @@
         if (!profile.ok) return null;
         var user = (await profile.json()).user || {};
         if (!user.screen_name) return null;
+        if (isExplicit(user.name, user.screen_name, user.description)) return { blocked: true };
         var posts = await fetch("https://api.fxtwitter.com/2/profile/" + encodeURIComponent(handle) + "/statuses?count=8");
         var results = posts.ok ? (((await posts.json()).results) || []) : [];
+        results = results.filter(function (row) { return row && !isExplicit(row.text, row.author && row.author.name); });
         var mine = String(user.screen_name).toLowerCase();
         var latest = results.find(function (row) {
           var author = String((row.author && row.author.screen_name) || "").toLowerCase();
@@ -203,8 +265,11 @@
       }
       async function youtubeCall(raw) {
         var url = parseLink(raw);
+        if (isExplicit(raw)) return { blocked: true };
         var card = url ? await youtubeCard(url) : await youtubeByName(raw);
+        if (card && card.blocked) return card;
         if (!card || !card.title) return null;
+        if (!safeCard(card)) return { blocked: true };
         var who = card.name || raw;
         return { handle: who.replace(/\s+/g, ""), name: who, avatar: card.avatar || "", title: card.title, url: card.url || (url ? url.href : "") };
       }
@@ -248,12 +313,14 @@
           var meta = await video.json();
           if (meta && meta.title && !meta.error) title = meta.title;
           name = meta && meta.author_name || "";
+          if (isExplicit(title, name)) return { blocked: true };
           if (meta && meta.author_url) {
             try {
               var author = new URL(meta.author_url);
               var handle = (author.pathname.split("/").filter(Boolean)[0] || "").replace(/^@/, "");
               if (handle) {
                 var found = await channelLookup(handle);
+                if (found && found.blocked) return found;
                 if (found) { name = found.name || name; avatar = found.avatar || avatar; }
               }
             } catch (e) {}
@@ -267,6 +334,7 @@
             var listedJson = await listed.json();
             var listedInfo = listedJson && listedJson.feed || {};
             var listedItem = listedJson && listedJson.items && listedJson.items[0];
+            if (isExplicit(listedInfo.title, listedInfo.author, listedItem && listedItem.title)) return { blocked: true };
             if (listedInfo.title || (listedItem && listedItem.title)) {
               return {
                 name: listedInfo.title || "",
@@ -285,6 +353,7 @@
           if ((parts[0] || "").charAt(0) === "@") handle = parts[0].slice(1);
           else if (parts[0] === "c" || parts[0] === "user") handle = parts[1] || "";
           if (handle) looked = await channelLookup(handle);
+          if (looked && looked.blocked) return looked;
           channel = looked && looked.id;
           if (looked) { name = looked.name; avatar = looked.avatar; }
         }
@@ -294,6 +363,7 @@
         var json = await feed.json();
         var info = json && json.feed || {};
         var item = json && json.items && json.items[0];
+        if (isExplicit(info.title, info.author, item && item.title)) return { blocked: true };
         return {
           name: name || info.title || "",
           avatar: avatar || info.image || "",
@@ -339,9 +409,8 @@
         var url = parseLink(raw);
         var site = url && siteOf(url);
         if (!site) return null;
-        if (site === "youtube") return youtubeCard(url);
-        if (site === "x") return xCard(url);
-        return socialCard(url.href);
+        var card = site === "youtube" ? await youtubeCard(url) : site === "x" ? await xCard(url) : await socialCard(url.href);
+        return card && card.blocked ? null : safeCard(card);
       }
       function metaContent(html, key) {
         var pattern = new RegExp("(?:property|name)=[\"']" + key + "[\"'][^>]*content=[\"']([^\"']+)[\"']|content=[\"']([^\"']+)[\"'][^>]*(?:property|name)=[\"']" + key + "[\"']", "i");
@@ -372,6 +441,7 @@
       });
       function runLookup(value) {
         if (!value) return;
+        if (isExplicit(value)) { blockCall(); return; }
         var kind = kindOf(value);
         if (!kind) return;
         var site = kind.site;
@@ -387,6 +457,7 @@
         var job = site === "youtube" ? youtubeCall(handle) : xByHandle(handle);
         var fallback = site === "youtube" ? (parseLink(handle) ? handle : "https://www.youtube.com/results?search_query=" + encodeURIComponent(handle)) : "https://x.com/" + handle;
         job.then(function (card) {
+          if (card && (card.blocked || !safeCard(card))) { blockCall(); return; }
           input.disabled = false;
           var who = (card && card.handle) || handle;
           shown = site === "x" ? "@" + who : ((card && card.name) || "YouTube");
@@ -427,6 +498,25 @@
           });
         });
       }
+      function blockCall() {
+        source = "";
+        heldName = "";
+        heldAvatar = "";
+        form.removeAttribute("data-query");
+        input.disabled = false;
+        input.value = "";
+        input.removeAttribute("data-title");
+        input.placeholder = "Try something else";
+        if (ask) ask.textContent = "Have Fun";
+        if (photo) { photo.classList.remove("has-photo"); photo.style.backgroundImage = ""; }
+        if (yt) { yt.classList.remove("has-photo"); yt.style.backgroundImage = ""; }
+        form.classList.remove("is-saved");
+        try { localStorage.removeItem(key); localStorage.removeItem("emciix-x-handle"); } catch (err) {}
+        if (input.offsetParent) input.focus();
+      }
+      input.addEventListener("input", function () {
+        if (input.placeholder) input.placeholder = "";
+      });
       window.emciixRefresh = function (event) {
         if (event) { event.preventDefault(); event.stopPropagation(); }
         resetCall();
@@ -535,6 +625,7 @@
       function liveCall(row) {
         if (!row || !row.handle) return null;
         if (row.handle === "x" || row.handle === "smoketest" || row.handle === "probe2" || row.handle === "ledgerprobe") return null;
+        if (isExplicit(row.handle, row.name, row.post, queryOf(row.url))) return null;
         row.at = Number(row.at) || 0;
         return row;
       }
@@ -595,6 +686,7 @@
       }
       function publishCall(entry) {
         if (!entry || !entry.handle || !liveCall({ handle: entry.handle })) return;
+        if (isExplicit(entry.handle, entry.name, entry.post, queryOf(entry.url))) return;
         entry.avatar = String(entry.avatar || "").slice(0, 480);
         entry.post = String(entry.post || "").slice(0, 180);
         entry.name = String(entry.name || entry.handle).slice(0, 70);
