@@ -269,9 +269,12 @@
       border-radius: 999px;
       padding: 8px 14px;
       font: 500 12px/1 system-ui, sans-serif;
-      cursor: pointer;
+      cursor: grab;
+      touch-action: none;
       white-space: nowrap;
+      user-select: none;
     }
+    #local-open.is-dragging { cursor: grabbing; }
     #local-panel {
       position: fixed;
       z-index: 60;
@@ -372,6 +375,7 @@
 <button type="button" id="local-open">Make em yours</button>
 <div id="local-panel" hidden>
   <h2>On this device</h2>
+  <label>Button name<input id="yours-name" type="text" maxlength="32" placeholder="Make em yours" autocomplete="off" /></label>
   <label>Blob link<input id="blob-link" type="text" maxlength="300" placeholder="Link" autocomplete="off" /></label>
   <label>Blob face<input id="blob-face" type="color" value="#f7f7f7" /></label>
   <div id="local-planets"></div>
@@ -645,6 +649,16 @@
     var color = document.getElementById("blob-face");
     if (link) link.value = cfg.href || "https://x.ai/bot/Uw0qDplLQgGSCLsWk21hw";
     if (color && /^#[0-9a-fA-F]{6}$/.test(cfg.face || "")) color.value = cfg.face;
+    var yoursField = document.getElementById("yours-name");
+    var yoursBtn = document.getElementById("local-open");
+    if (yoursField) {
+      var savedName = "";
+      try {
+        var savedYours = JSON.parse(localStorage.getItem("portal-yours") || "null");
+        if (savedYours && savedYours.name) savedName = savedYours.name;
+      } catch (err) {}
+      yoursField.value = savedName || (yoursBtn ? yoursBtn.textContent : "") || "Make em yours";
+    }
   }
   function saveLocal() {
     document.querySelectorAll("#local-planets input").forEach(function (input) {
@@ -663,6 +677,19 @@
     };
     try { localStorage.setItem("portal-blob-local", JSON.stringify(cfg)); } catch (err) {}
     applyBlob(cfg);
+    var yoursField = document.getElementById("yours-name");
+    var yoursBtn = document.getElementById("local-open");
+    if (yoursField && yoursBtn) {
+      var name = String(yoursField.value || "").replace(/\s+/g, " ").trim().slice(0, 32) || "Make em yours";
+      yoursBtn.textContent = name;
+      yoursField.value = name;
+      var prev = {};
+      try { prev = JSON.parse(localStorage.getItem("portal-yours") || "{}") || {}; } catch (err) {}
+      if (typeof prev.x !== "number") prev.x = 0.5;
+      if (typeof prev.y !== "number") prev.y = 0.5;
+      prev.name = name;
+      try { localStorage.setItem("portal-yours", JSON.stringify(prev)); } catch (err) {}
+    }
     fillLocal();
   }
   if (!document.documentElement.classList.contains("portal-bg") && layer) {
@@ -675,7 +702,88 @@
     var localPanel = document.getElementById("local-panel");
     var localSave = document.getElementById("local-save");
     var localClose = document.getElementById("local-close");
-    if (localOpen && localPanel) localOpen.addEventListener("click", function () {
+    var yoursDrag = null;
+    var yoursMoved = false;
+    function yoursClamp(n) { return Math.min(0.92, Math.max(0.08, n)); }
+    function placeYours(x, y) {
+      var px = yoursClamp(x);
+      var py = yoursClamp(y);
+      localOpen.style.left = (px * 100) + "%";
+      localOpen.style.top = (py * 100) + "%";
+      localOpen.style.transform = "translate(-50%, -50%)";
+      if (localPanel) {
+        var w = window.innerWidth || 1;
+        var h = window.innerHeight || 1;
+        var panelW = Math.min(420, w - 24);
+        var cx = Math.min(w - panelW / 2 - 12, Math.max(panelW / 2 + 12, px * w));
+        var below = py < 0.62;
+        localPanel.style.left = cx + "px";
+        localPanel.style.transform = "translateX(-50%)";
+        localPanel.style.top = below ? (py * h + 26) + "px" : "auto";
+        localPanel.style.bottom = below ? "auto" : ((1 - py) * h + 26) + "px";
+      }
+      return { x: px, y: py };
+    }
+    if (localOpen) {
+      var savedYours = null;
+      try { savedYours = JSON.parse(localStorage.getItem("portal-yours") || "null"); } catch (err) {}
+      var placed = placeYours(savedYours && typeof savedYours.x === "number" ? savedYours.x : 0.5, savedYours && typeof savedYours.y === "number" ? savedYours.y : 0.5);
+      if (savedYours && savedYours.name) localOpen.textContent = String(savedYours.name).slice(0, 32);
+      localOpen.addEventListener("pointerdown", function (event) {
+        if (event.button != null && event.button !== 0) return;
+        event.stopPropagation();
+        var rect = localOpen.getBoundingClientRect();
+        yoursMoved = false;
+        yoursDrag = {
+          id: event.pointerId,
+          x: event.clientX,
+          y: event.clientY,
+          ox: event.clientX - (rect.left + rect.width / 2),
+          oy: event.clientY - (rect.top + rect.height / 2),
+          px: placed.x,
+          py: placed.y
+        };
+        try { localOpen.setPointerCapture(event.pointerId); } catch (err) {}
+      });
+      localOpen.addEventListener("pointermove", function (event) {
+        if (!yoursDrag || event.pointerId !== yoursDrag.id) return;
+        event.stopPropagation();
+        if (Math.hypot(event.clientX - yoursDrag.x, event.clientY - yoursDrag.y) > 6) {
+          if (!yoursMoved) {
+            yoursMoved = true;
+            localOpen.classList.add("is-dragging");
+          }
+          event.preventDefault();
+        }
+        if (!yoursMoved) return;
+        var w = window.innerWidth || 1;
+        var h = window.innerHeight || 1;
+        placed = placeYours((event.clientX - yoursDrag.ox) / w, (event.clientY - yoursDrag.oy) / h);
+      });
+      function endYoursDrag(event) {
+        if (!yoursDrag || event.pointerId !== yoursDrag.id) return;
+        yoursDrag = null;
+        localOpen.classList.remove("is-dragging");
+        if (!yoursMoved) return;
+        event.preventDefault();
+        event.stopPropagation();
+        var prev = {};
+        try { prev = JSON.parse(localStorage.getItem("portal-yours") || "{}") || {}; } catch (err) {}
+        prev.x = placed.x;
+        prev.y = placed.y;
+        if (!prev.name) prev.name = localOpen.textContent || "Make em yours";
+        try { localStorage.setItem("portal-yours", JSON.stringify(prev)); } catch (err) {}
+      }
+      localOpen.addEventListener("pointerup", endYoursDrag);
+      localOpen.addEventListener("pointercancel", endYoursDrag);
+    }
+    if (localOpen && localPanel) localOpen.addEventListener("click", function (event) {
+      if (yoursMoved) {
+        event.preventDefault();
+        event.stopPropagation();
+        yoursMoved = false;
+        return;
+      }
       fillLocal();
       localPanel.hidden = false;
     });
