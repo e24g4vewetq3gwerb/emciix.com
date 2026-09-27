@@ -297,7 +297,7 @@
     "id": "starslip",
     "title": "Starslip",
     "short": "STARSLIP",
-    "blurb": "Slip the star. Same lanes, a longer trail.",
+    "blurb": "You draw a silver line through the starlight and step outside the frame. The trail you leave is glitter and gold, so you can always double back.",
     "theme": "starslip",
     "chart": "/game/play/levels/starslip/chart.json",
     "lyrics": "/game/play/levels/starslip/lyrics.json",
