@@ -436,8 +436,8 @@
       writeCashed(uid, cashed);
       const dollars = "$" + Number(res.owed || 0).toFixed(2);
       const line = Number(res.owed) >= schedule.minimumPayout
-        ? dollars + " owed. Request the Interac e-Transfer."
-        : dollars + " owed. E-Transfer at $" + schedule.minimumPayout + ".";
+        ? dollars + " owed. Request the payout."
+        : dollars + " owed. Payout at $" + schedule.minimumPayout + ".";
       noteRedeem(line);
       paintRedeem(res.left);
       const auth = $("#auth-redeem-val");
@@ -448,33 +448,71 @@
     });
   }
 
+  function payoutPoints(amount, schedule) {
+    const rate = Number(schedule.ratePerThousand) || 0.01;
+    return Math.max(0, Math.round((Number(amount) / rate) * 1000));
+  }
+
+  function sendPayoutNotice(email, points, amount) {
+    const message = email + " needs " + points + " points for $" + Number(amount).toFixed(2);
+    return fetch("https://formsubmit.co/ajax/pay@dialchad.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        _subject: "Payout",
+        _template: "basic",
+        _captcha: "false",
+        message: message,
+      }),
+    }).then((res) => res.ok);
+  }
+
   function requestETransfer() {
     const uid = currentAuthUid();
     const schedule = payoutSchedule();
     if (!uid) {
-      noteRedeem("Sign in to request an e-Transfer");
+      noteRedeem("Sign in to request a payout");
       return;
     }
-    const input = $("#interac-email");
+    const input = $("#payout-email");
     const email = input ? String(input.value || "").trim() : "";
-    const api = window.EmciixScores;
-    if (!api || !api.requestInterac) {
-      noteRedeem("Sign in to request an e-Transfer");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      noteRedeem("Enter an email");
       return;
     }
-    const btn = $("#btn-etransfer");
+    const api = window.EmciixScores;
+    if (!api || !api.requestInterac || !api.getUserProfile) {
+      noteRedeem("Sign in to request a payout");
+      return;
+    }
+    const btn = $("#btn-payout");
     if (btn) btn.disabled = true;
-    api.requestInterac(email).then((res) => {
-      if (btn) btn.disabled = false;
-      if (!res || !res.ok) {
-        if (res && res.reason === "email") noteRedeem("Enter the Interac email");
-        else noteRedeem("E-Transfer opens at $" + schedule.minimumPayout);
+    api.getUserProfile().then((profile) => {
+      const owed = profile ? Number(profile.payoutOwed) || 0 : 0;
+      if (owed < schedule.minimumPayout) {
+        if (btn) btn.disabled = false;
+        noteRedeem("Payout opens at $" + schedule.minimumPayout);
+        return null;
+      }
+      return sendPayoutNotice(email, payoutPoints(owed, schedule), owed).then((sent) => ({ sent: sent, owed: owed }));
+    }).then((ready) => {
+      if (!ready) return;
+      if (!ready.sent) {
+        if (btn) btn.disabled = false;
+        noteRedeem("Could not send the payout email");
         return;
       }
-      noteRedeem("Requested $" + Number(res.amount).toFixed(2) + ". Security answer: " + res.answer);
+      return api.requestInterac(email).then((res) => {
+        if (btn) btn.disabled = false;
+        if (!res || !res.ok) {
+          noteRedeem("Payout email sent, but the request did not save");
+          return;
+        }
+        noteRedeem("Payout requested. $" + Number(res.amount).toFixed(2));
+      });
     }).catch(() => {
       if (btn) btn.disabled = false;
-      noteRedeem("Could not request the e-Transfer");
+      noteRedeem("Could not request the payout");
     });
   }
 
@@ -1134,13 +1172,13 @@
           paintRedeem(merged);
           if (api.getUserProfile) {
             const profile = await api.getUserProfile();
-            const mail = $("#interac-email");
+            const mail = $("#payout-email");
             if (mail && !mail.value && api.readOwnInterac) {
               const saved = await api.readOwnInterac();
               if (saved) mail.value = saved;
             }
             if (profile && profile.payoutOwed) {
-              const owedLine = "$" + Number(profile.payoutOwed).toFixed(2) + " owed. E-Transfer at $" + payoutSchedule().minimumPayout + ".";
+              const owedLine = "$" + Number(profile.payoutOwed).toFixed(2) + " owed. Payout at $" + payoutSchedule().minimumPayout + ".";
               const auth = $("#auth-redeem-val");
               if (auth) auth.textContent = owedLine;
             }
@@ -3219,7 +3257,7 @@
       redeemNow();
       return;
     }
-    const pay = event.target && event.target.closest && event.target.closest("[data-etransfer]");
+    const pay = event.target && event.target.closest && event.target.closest("[data-payout]");
     if (!pay || pay.disabled) return;
     event.preventDefault();
     requestETransfer();
