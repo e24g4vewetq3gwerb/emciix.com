@@ -48,3 +48,4 @@
 .start-login .auth-chip.hidden{display:none}
 .start-login .auth-error{margin:.4rem 0 0;color:#ff6b8a;font-size:.7rem}
 .start-login .auth-error.hidden{display:none}
+.start-login .payout-note{margin:.45rem 0 0;font-size:.68rem;letter-spacing:.04em;color:rgba(245,245,250,.72)}
