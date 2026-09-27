@@ -2523,18 +2523,6 @@ html, body {
 }
 #encore-btn:hover { background: rgba(154, 215, 255, 0.24); }
 #encore-btn.hidden { display: none; }
-  border: 2px solid #9ad7ff;
-  border-radius: 12px;
-  background: rgba(154, 215, 255, 0.12);
-  color: #f5f5fa;
-  font: inherit;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  box-shadow: 0 0 18px rgba(154, 215, 255, 0.35);
-}
-#encore-btn:hover { background: rgba(154, 215, 255, 0.24); }
-#encore-btn.hidden { display: none; }
 
 html, body, #app, .overlay, .levels-grid, .upgrade-card, .public-rank-list, .start-layout {
   scrollbar-width: thin;
