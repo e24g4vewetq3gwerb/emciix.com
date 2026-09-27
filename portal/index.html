@@ -161,18 +161,19 @@
     #planet-connect {
       position: fixed;
       z-index: 50;
-      left: 50%;
-      top: 62%;
-      transform: translate(-50%, -50%);
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -100%);
       display: flex;
       gap: 8px;
-      width: min(420px, calc(100% - 36px));
+      width: min(320px, calc(100% - 24px));
       margin: 0;
       padding: 8px 8px 8px 16px;
       box-sizing: border-box;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.22);
       background: rgba(18,18,20,.88);
+      pointer-events: auto;
     }
     #planet-connect[hidden] { display: none !important; }
     #planet-connect input {
@@ -297,6 +298,13 @@
       if (!el) continue;
       el.style.visibility = "visible";
       el.style.transform = "translate3d(" + (planets[i].x * w).toFixed(2) + "px," + (planets[i].y * h).toFixed(2) + "px,0) scale(0.4063)";
+    }
+    if (form && !form.hidden && linking) {
+      var box = form.getBoundingClientRect();
+      var fw = box.width || 280;
+      var cx = Math.min(w - fw / 2 - 8, Math.max(fw / 2 + 8, linking.x * w));
+      form.style.left = cx.toFixed(2) + "px";
+      form.style.top = (linking.y * h - 30).toFixed(2) + "px";
     }
     requestAnimationFrame(paint);
   }
