@@ -200,6 +200,15 @@ do {
 for (const path of Object.keys(files)) {
   if (path.startsWith("/.git/") || path.startsWith(".git/")) delete files[path];
 }
+for (const path of Object.keys(files)) {
+  const bare = path.replace(/^\//, "");
+  if ([
+    "portal/assets/planet-clear.webp",
+    "portal/assets/planet.png",
+    "portal/assets/moon.png",
+    "portal/assets/favicon-CozO3afC.svg",
+  ].includes(bare)) delete files[path];
+}
 
 const uploads = new Map();
 for (const [local, remote] of PATCHES) {
