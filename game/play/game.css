@@ -2262,6 +2262,17 @@ html, body {
 }
 #confirm-overlay[data-theme="tabs"] h1 { color: #ffe628; }
 
+#app[data-theme="starslip"] .title-box,
+#app[data-theme="starslip"] .lane-a,
+#app[data-theme="starslip"] .lane-sync,
+#app[data-theme="starslip"] .lane-b {
+  border-color: #d7e4ff;
+}
+#app[data-theme="starslip"] .lane-label,
+#app[data-theme="starslip"] .title-box h2 { color: #f3e2a5; }
+#app[data-theme="starslip"] .side-panel.left,
+#app[data-theme="starslip"] .side-panel.right { border-color: #f3e2a5; }
+
 .upgrade-node.track-perfect { border-color: #fff; box-shadow: 0 0 14px rgba(255,255,255,.28); }
 .upgrade-node.track-perfect[aria-pressed="true"] { background: rgba(255,255,255,.14); }
 .upgrade-detail-name.perfect { color: #fff; }

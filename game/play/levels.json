@@ -292,5 +292,18 @@
     "youtube": "",
     "sideLeft": "WATCH IT",
     "sideRight": "BRPPP"
+  },
+  {
+    "id": "starslip",
+    "title": "Starslip",
+    "short": "STARSLIP",
+    "blurb": "Slip the star. Same lanes, a longer trail.",
+    "theme": "starslip",
+    "chart": "/game/play/levels/starslip/chart.json",
+    "lyrics": "/game/play/levels/starslip/lyrics.json",
+    "audio": "/game/play/levels/starslip/audio/starslip.mp3",
+    "youtube": "",
+    "sideLeft": "STAR",
+    "sideRight": "SLIP"
   }
 ]
