@@ -4,7 +4,7 @@
 <script>(function(){try{var q=location.search;if(/[?&]preview=1(?:&|$)/.test(q))document.documentElement.classList.add("portal-embed");if(/[?&]bg=1(?:&|$)/.test(q))document.documentElement.classList.add("portal-bg");}catch(e){}})();</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>portal</title>
+<title>Portal</title>
 <meta name="description" content="A warp-speed starfield you can steer." />
 <link rel="icon" href="/portal/assets/favicon-portal.svg?v=bw-rocket-1" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,7 +13,7 @@
   <script type="module" crossorigin src="/portal/assets/index-DLVCRiHz.js?v=fly-4"></script>
   <link rel="stylesheet" crossorigin href="/portal/assets/index-C17i1khB.css">
   <style>
-    #warp-planet {
+    .warp-planet {
       position: fixed;
       z-index: 20;
       left: 0;
@@ -27,6 +27,7 @@
       cursor: grab;
       visibility: hidden;
       background: url("/portal/assets/planet.webp?v=up-2") center / cover no-repeat;
+      box-shadow: 0 0 28px rgba(255, 168, 60, 0.35);
       pointer-events: auto;
       will-change: transform;
       transform: translate3d(-200px, -200px, 0) scale(0.2);
@@ -69,6 +70,9 @@
     html.portal-bg .play-row,
     html.portal-bg #embed-fly,
     html.portal-bg #warp-planet,
+    html.portal-bg .warp-planet,
+    html.portal-bg #local-settings,
+    html.portal-bg #local-settings-btn,
     html.portal-bg #warp-atmo,
     html.portal-bg #warp-moon,
     html.portal-bg .portal-call,
@@ -138,6 +142,52 @@
       justify-content: center;
       cursor: pointer;
     }
+
+    #local-settings-btn {
+      position: fixed;
+      z-index: 45;
+      top: 14px;
+      right: 14px;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(18,18,20,.55);
+      color: #f5f5f7;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: 500 13px/1 system-ui, sans-serif;
+      letter-spacing: .04em;
+      cursor: pointer;
+    }
+    #local-settings {
+      position: fixed;
+      z-index: 46;
+      top: 52px;
+      right: 14px;
+      width: min(360px, calc(100% - 28px));
+      max-height: min(70dvh, 520px);
+      overflow: auto;
+      padding: 14px;
+      box-sizing: border-box;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(18,18,20,.88);
+      color: #f5f5f7;
+      font: 500 14px/1.3 system-ui, sans-serif;
+    }
+    #local-settings[hidden] { display: none !important; }
+    #local-settings h2 { margin: 0 0 10px; font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+    #local-settings p { margin: 0 0 12px; color: rgba(245,245,247,.62); font-size: 12px; }
+    .planet-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .planet-row input {
+      flex: 1; min-width: 0; border: 1px solid rgba(255,255,255,.2); background: transparent;
+      color: #f5f5f7; border-radius: 12px; padding: 8px 10px; font: inherit;
+    }
+    .planet-row button, #add-planet {
+      border: 1px solid rgba(255,255,255,.28); background: transparent; color: #f5f5f7; border-radius: 12px; cursor: pointer;
+    }
+    .planet-row button { width: 36px; flex: none; }
+    #add-planet { width: 100%; padding: 9px 12px; }
+    html.portal-embed #local-settings,
+    html.portal-embed #local-settings-btn { display: none !important; }
   </style>
 </head>
 <body>
@@ -148,14 +198,21 @@
 </form>
 <span id="embed-fly">Fly</span>
 <span id="warp-atmo" aria-hidden="true"></span>
-<a id="warp-planet" data-hud href="https://emciix.com/game/play" aria-label="Open the game"></a>
+<div id="planet-layer"></div>
+<button type="button" id="local-settings-btn" aria-expanded="false">Local</button>
+<aside id="local-settings" hidden>
+  <h2>Local</h2>
+  <p>Planets stay on this device. Choose a link for each one.</p>
+  <div id="planet-list"></div>
+  <button type="button" id="add-planet">Add planet</button>
+</aside>
 <script>
 // Game background mode (/portal/?bg=1 inside /game/play): starfield only.
 // Drop the planet, its ring, the moon and the call pill so nothing is drawn or fetched
 // (planet.webp, call ledger, avatars); the warp renderer skips missing nodes.
 (function () {
   if (!document.documentElement.classList.contains("portal-bg")) return;
-  ["warp-planet", "warp-atmo", "warp-moon", "galacticCall", "embed-fly"].forEach(function (id) {
+  ["warp-planet", "warp-atmo", "warp-moon", "galacticCall", "embed-fly", "planet-layer", "local-settings", "local-settings-btn"].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.parentNode) el.parentNode.removeChild(el);
   });
@@ -163,54 +220,171 @@
 </script>
 <script>
 (function () {
-  var planet = document.getElementById("warp-planet");
-  if (!planet) return;
+  var KEY = "portal-planets-local";
+  var layer = document.getElementById("planet-layer");
+  var listEl = document.getElementById("planet-list");
+  var panel = document.getElementById("local-settings");
+  var toggle = document.getElementById("local-settings-btn");
+  var addBtn = document.getElementById("add-planet");
+  var planets = [];
   var drag = null;
-  var moved = false;
-  function placePlanet(x, y) {
-    window.__planetX = x;
-    window.__planetY = y;
+  function cleanHref(value) {
+    var v = String(value || "").trim();
+    if (!v) return "";
+    if (v.charAt(0) === "/" && v.charAt(1) !== "/") return v;
+    if (!/^https?:\/\//i.test(v)) v = "https://" + v.replace(/^\/+/, "");
+    try {
+      var url = new URL(v, location.origin);
+      if (url.protocol === "http:" || url.protocol === "https:") return url.href;
+    } catch (err) {}
+    return "";
   }
-  try {
-    var saved = JSON.parse(localStorage.getItem("starslip-planet") || "null");
-    if (saved && typeof saved.x === "number" && typeof saved.y === "number") placePlanet(saved.x, saved.y);
-  } catch (e) {}
-  planet.addEventListener("pointerdown", function (event) {
-    event.stopPropagation();
-    event.preventDefault();
-    moved = false;
-    drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    planet.style.cursor = "grabbing";
-    try { planet.setPointerCapture(event.pointerId); } catch (err) {}
-  });
-  planet.addEventListener("pointermove", function (event) {
-    event.stopPropagation();
-    if (!drag || event.pointerId !== drag.id) return;
-    if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 4) moved = true;
+  function clamp(n) { return Math.min(0.94, Math.max(0.06, n)); }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(planets)); } catch (err) {}
+  }
+  function load() {
+    try {
+      var list = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (Array.isArray(list) && list.length) {
+        return list.filter(function (p) {
+          return p && typeof p.x === "number" && typeof p.y === "number";
+        }).slice(0, 12).map(function (p, i) {
+          return { id: String(p.id || ("p" + i)), x: clamp(p.x), y: clamp(p.y), href: cleanHref(p.href) };
+        });
+      }
+    } catch (err) {}
+    var x = 0.2, y = 0.18;
+    try {
+      var old = JSON.parse(localStorage.getItem("starslip-planet") || "null");
+      if (old && typeof old.x === "number" && typeof old.y === "number") { x = old.x; y = old.y; }
+    } catch (err) {}
+    return [{ id: "p1", x: clamp(x), y: clamp(y), href: "https://emciix.com/game/play" }];
+  }
+  function spot() {
+    var spots = [[0.78, 0.22], [0.22, 0.78], [0.8, 0.74], [0.5, 0.16], [0.5, 0.84], [0.14, 0.5], [0.86, 0.5]];
+    for (var i = 0; i < spots.length; i++) {
+      var free = planets.every(function (p) { return Math.hypot(p.x - spots[i][0], p.y - spots[i][1]) > 0.14; });
+      if (free) return { x: spots[i][0], y: spots[i][1] };
+    }
+    return { x: clamp(0.2 + Math.random() * 0.6), y: clamp(0.2 + Math.random() * 0.6) };
+  }
+  function paint() {
     var w = window.innerWidth || 1;
     var h = window.innerHeight || 1;
-    placePlanet(Math.min(0.94, Math.max(0.06, event.clientX / w)), Math.min(0.94, Math.max(0.06, event.clientY / h)));
-  });
-  function endDrag(event) {
-    if (!drag || event.pointerId !== drag.id) return;
-    drag = null;
-    planet.style.cursor = "grab";
-    if (!moved) {
-      window.location.href = planet.getAttribute("href");
-      return;
+    for (var i = 0; i < planets.length; i++) {
+      var el = document.getElementById("planet-" + planets[i].id);
+      if (!el) continue;
+      el.style.visibility = "visible";
+      el.style.transform = "translate3d(" + (planets[i].x * w).toFixed(2) + "px," + (planets[i].y * h).toFixed(2) + "px,0) scale(0.4063)";
     }
-    event.preventDefault();
-    event.stopPropagation();
-    try { localStorage.setItem("starslip-planet", JSON.stringify({ x: window.__planetX, y: window.__planetY })); } catch (err) {}
+    requestAnimationFrame(paint);
   }
-  planet.addEventListener("pointerup", endDrag);
-  planet.addEventListener("pointercancel", endDrag);
-  planet.addEventListener("click", function (event) {
-    if (!moved) return;
-    event.preventDefault();
-    event.stopPropagation();
-    moved = false;
-  });
+  function drawList() {
+    if (!listEl) return;
+    listEl.replaceChildren();
+    planets.forEach(function (planet, index) {
+      var row = document.createElement("div");
+      row.className = "planet-row";
+      var input = document.createElement("input");
+      input.type = "url";
+      input.placeholder = "https://";
+      input.value = planet.href;
+      input.setAttribute("aria-label", "Planet " + (index + 1) + " link");
+      input.addEventListener("input", function () {
+        planet.href = cleanHref(input.value);
+        var node = document.getElementById("planet-" + planet.id);
+        if (node) node.setAttribute("href", planet.href || "#");
+        save();
+      });
+      input.addEventListener("change", function () { input.value = planet.href; });
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "×";
+      remove.setAttribute("aria-label", "Remove planet");
+      remove.addEventListener("click", function () {
+        planets = planets.filter(function (item) { return item.id !== planet.id; });
+        save();
+        drawPlanets();
+        drawList();
+      });
+      row.appendChild(input);
+      row.appendChild(remove);
+      listEl.appendChild(row);
+    });
+  }
+  function drawPlanets() {
+    if (!layer) return;
+    layer.replaceChildren();
+    planets.forEach(function (planet, index) {
+      var el = document.createElement("a");
+      el.className = "warp-planet";
+      el.id = "planet-" + planet.id;
+      el.href = planet.href || "#";
+      el.style.filter = "hue-rotate(" + (index * 46) + "deg)";
+      el.setAttribute("aria-label", planet.href ? "Open link" : "Set a link in Local");
+      el.addEventListener("pointerdown", function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        drag = { id: event.pointerId, planet: planet, x: event.clientX, y: event.clientY, moved: false };
+        el.style.cursor = "grabbing";
+        try { el.setPointerCapture(event.pointerId); } catch (err) {}
+      });
+      el.addEventListener("pointermove", function (event) {
+        event.stopPropagation();
+        if (!drag || drag.id !== event.pointerId || drag.planet !== planet) return;
+        if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) > 4) drag.moved = true;
+        var w = window.innerWidth || 1;
+        var h = window.innerHeight || 1;
+        planet.x = clamp(event.clientX / w);
+        planet.y = clamp(event.clientY / h);
+      });
+      function endDrag(event) {
+        if (!drag || drag.id !== event.pointerId || drag.planet !== planet) return;
+        var moved = drag.moved;
+        drag = null;
+        el.style.cursor = "grab";
+        if (!moved) {
+          if (planet.href) window.location.href = planet.href;
+          else if (panel && toggle) { panel.hidden = false; toggle.setAttribute("aria-expanded", "true"); }
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        save();
+      }
+      el.addEventListener("pointerup", endDrag);
+      el.addEventListener("pointercancel", endDrag);
+      el.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      layer.appendChild(el);
+    });
+  }
+  if (!document.documentElement.classList.contains("portal-bg") && layer) {
+    planets = load();
+    save();
+    drawPlanets();
+    drawList();
+    requestAnimationFrame(paint);
+    if (toggle && panel) toggle.addEventListener("click", function () {
+      panel.hidden = !panel.hidden;
+      toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+    });
+    if (addBtn) addBtn.addEventListener("click", function () {
+      if (planets.length >= 12) return;
+      var next = spot();
+      planets.push({ id: "p" + Date.now().toString(36), x: next.x, y: next.y, href: "" });
+      save();
+      drawPlanets();
+      drawList();
+      if (panel && toggle) { panel.hidden = false; toggle.setAttribute("aria-expanded", "true"); }
+      var fields = listEl.querySelectorAll("input");
+      if (fields.length) fields[fields.length - 1].focus();
+    });
+  }
+
   var call = document.getElementById("galacticCall");
   if (call) {
     var callDrag = null;
