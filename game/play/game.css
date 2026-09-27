@@ -1003,10 +1003,13 @@ html, body {
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
   box-shadow: 0 0 10px rgba(0, 245, 255, 0.12);
-  min-height: 78px;
+  min-height: 96px;
+  height: max-content;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .level-tile:hover {
   border-color: var(--mag);
@@ -1040,6 +1043,11 @@ html, body {
 .level-tile .lt-best.has-best { color: var(--yel); }
 .level-tile .lt-world {
   display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.35;
   font-size: 0.56rem;
   letter-spacing: 0.06em;
   color: rgba(245, 245, 250, 0.62);
@@ -2178,10 +2186,11 @@ html, body {
 .level-tile.theme-tabs {
   display: grid;
   grid-template-columns: 52px 1fr;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto auto auto;
   column-gap: 0.55rem;
   align-items: center;
-  min-height: 104px;
+  min-height: max-content;
+  height: max-content;
   padding: 0.65rem 0.7rem;
 }
 .level-tile.theme-device .lt-art,
