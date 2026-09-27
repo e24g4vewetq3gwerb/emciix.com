@@ -204,11 +204,12 @@
     .corner-blob {
       position: fixed;
       z-index: 45;
-      top: max(12px, env(safe-area-inset-top));
-      right: max(12px, env(safe-area-inset-right));
+      top: 8px;
+      right: 14px;
       width: 46px;
       height: 46px;
-      pointer-events: none;
+      display: block;
+      cursor: pointer;
       filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.55));
     }
     #portal-share {
@@ -250,7 +251,7 @@
 <span id="warp-atmo" aria-hidden="true"></span>
 <div id="planet-layer"></div>
 <button type="button" id="portal-share">Share</button>
-<div class="corner-blob" aria-hidden="true">
+<a class="corner-blob" href="https://x.ai/bot" aria-label="Grokbot">
   <svg viewBox="0 0 64 64" width="46" height="46">
     <circle cx="32" cy="32" r="28" fill="#f7f7f7"/>
     <circle cx="22" cy="26" r="4.2" fill="#111"/>
@@ -258,7 +259,7 @@
     <rect x="16" y="36" width="32" height="16" rx="3" fill="#111"/>
     <rect x="20" y="39.5" width="24" height="9" rx="1.5" fill="#f7f7f7"/>
   </svg>
-</div>
+</a>
 <form id="planet-connect" hidden>
   <input id="planet-connect-input" type="text" placeholder="Link" autocomplete="off" maxlength="300" aria-label="Link" />
   <button type="submit">Connect</button>
@@ -358,9 +359,9 @@
       try { localStorage.setItem("portal-social-seeded", "1"); } catch (err) {}
     }
     var laidOut = false;
-    try { laidOut = localStorage.getItem("portal-layout") === "sky-1"; } catch (err) {}
+    try { laidOut = localStorage.getItem("portal-layout") === "row-1"; } catch (err) {}
     if (!laidOut) {
-      var start = { plus: { x: 0.28, y: 0.15 }, game: { x: 0.55, y: 0.10 }, music: { x: 0.44, y: 0.28 }, x: { x: 0.74, y: 0.21 } };
+      var start = { game: { x: 0.18, y: 0.30 }, plus: { x: 0.40, y: 0.30 }, music: { x: 0.62, y: 0.30 }, x: { x: 0.84, y: 0.30 } };
       var sawPlus = false;
       list.forEach(function (p) {
         if (!start[p.id]) return;
@@ -372,7 +373,7 @@
         var empty = list.filter(function (p) { return !p.href; })[0];
         if (empty) { empty.x = start.plus.x; empty.y = start.plus.y; }
       }
-      try { localStorage.setItem("portal-layout", "sky-1"); } catch (err) {}
+      try { localStorage.setItem("portal-layout", "row-1"); } catch (err) {}
     }
     return list;
   }
