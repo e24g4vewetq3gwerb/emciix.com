@@ -196,7 +196,23 @@
       cursor: pointer;
     }
     html.portal-embed #planet-connect,
-    html.portal-bg #planet-connect { display: none !important; }
+    html.portal-bg #planet-connect,
+    html.portal-embed #portal-share,
+    html.portal-bg #portal-share { display: none !important; }
+    #portal-share {
+      position: fixed;
+      z-index: 45;
+      top: 14px;
+      left: 14px;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(18,18,20,.55);
+      color: #f5f5f7;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: 500 13px/1 system-ui, sans-serif;
+      letter-spacing: .04em;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -208,6 +224,7 @@
 <span id="embed-fly">Fly</span>
 <span id="warp-atmo" aria-hidden="true"></span>
 <div id="planet-layer"></div>
+<button type="button" id="portal-share">Share</button>
 <form id="planet-connect" hidden>
   <input id="planet-connect-input" type="text" placeholder="Link" autocomplete="off" maxlength="300" aria-label="Link" />
   <button type="submit">Connect</button>
@@ -218,7 +235,7 @@
 // (planet.webp, call ledger, avatars); the warp renderer skips missing nodes.
 (function () {
   if (!document.documentElement.classList.contains("portal-bg")) return;
-  ["warp-planet", "warp-atmo", "warp-moon", "galacticCall", "embed-fly", "planet-layer", "local-settings", "local-settings-btn"].forEach(function (id) {
+  ["warp-planet", "warp-atmo", "warp-moon", "galacticCall", "embed-fly", "planet-layer", "local-settings", "local-settings-btn", "portal-share", "planet-connect"].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.parentNode) el.parentNode.removeChild(el);
   });
@@ -228,6 +245,11 @@
 (function () {
   var KEY = "portal-planets-local";
   var GAME = "https://emciix.com/game/play";
+  var SOCIAL = [
+    { id: "game", href: GAME, test: /\/game\/play\/?$/ },
+    { id: "music", href: "https://music.youtube.com/playlist?list=PLZX_2WN1sEAg", test: /list=PLZX_2WN1sEAg/ },
+    { id: "x", href: "https://x.com/emciixcom", test: /x\.com\/emciixcom\/?$/i }
+  ];
   var layer = document.getElementById("planet-layer");
   var form = document.getElementById("planet-connect");
   var field = document.getElementById("planet-connect-input");
@@ -282,9 +304,29 @@
       var next = spotFrom(list);
       list.push({ id: "p" + Date.now().toString(36), x: next.x, y: next.y, href: "" });
     }
-    if (!list.some(function (p) { return /\/game\/play\/?$/.test(p.href || ""); }) && list.length < 12) {
-      var gameSpot = spotFrom(list);
-      list.unshift({ id: "game", x: gameSpot.x, y: gameSpot.y, href: GAME });
+    try {
+      var shared = new URLSearchParams(location.search).get("with") || "";
+      if (shared) {
+        shared.split("|").slice(0, 8).forEach(function (part) {
+          var href = cleanHref(part);
+          if (!href || list.length >= 12) return;
+          if (list.some(function (p) { return p.href === href; })) return;
+          var place = spotFrom(list);
+          list.push({ id: "s" + Date.now().toString(36) + list.length, x: place.x, y: place.y, href: href });
+        });
+        history.replaceState(null, "", location.pathname);
+      }
+    } catch (err) {}
+    var seeded = false;
+    try { seeded = localStorage.getItem("portal-social-seeded") === "1"; } catch (err) {}
+    if (!seeded) {
+      SOCIAL.slice().reverse().forEach(function (item) {
+        if (list.length >= 12) return;
+        if (list.some(function (p) { return item.test.test(p.href || ""); })) return;
+        var place = spotFrom(list);
+        list.unshift({ id: item.id, x: place.x, y: place.y, href: item.href });
+      });
+      try { localStorage.setItem("portal-social-seeded", "1"); } catch (err) {}
     }
     return list;
   }
@@ -341,7 +383,7 @@
       el.id = "planet-" + planet.id;
       el.href = planet.href || "#";
       if (planet.href) el.style.filter = "hue-rotate(" + (index * 46) + "deg)";
-      el.setAttribute("aria-label", planet.href ? (planet.id === "game" ? "Open the game" : "Open link") : "Connect a link");
+      el.setAttribute("aria-label", planet.href ? (planet.id === "game" ? "Open the game" : planet.id === "music" ? "Open the playlist" : planet.id === "x" ? "Open X" : "Open link") : "Connect a link");
       if (!planet.href) el.insertAdjacentHTML("beforeend", PLUS);
       el.addEventListener("pointerdown", function (event) {
         event.stopPropagation();
@@ -398,6 +440,22 @@
     save();
     drawPlanets();
     requestAnimationFrame(paint);
+    var shareBtn = document.getElementById("portal-share");
+    if (shareBtn) shareBtn.addEventListener("click", function () {
+      var links = planets.filter(function (p) { return p.href; }).map(function (p) { return p.href; });
+      var url = location.origin + "/portal" + (links.length ? "?with=" + encodeURIComponent(links.join("|")) : "");
+      var payload = { title: "Portal", text: "Planets", url: url };
+      if (navigator.share) {
+        navigator.share(payload).catch(function () {});
+        return;
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () {
+          shareBtn.textContent = "Copied";
+          setTimeout(function () { shareBtn.textContent = "Share"; }, 1200);
+        }).catch(function () {});
+      }
+    });
   }
 
   var call = document.getElementById("galacticCall");
