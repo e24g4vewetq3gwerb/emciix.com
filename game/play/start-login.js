@@ -59,6 +59,23 @@
     }
     box.querySelector("#btn-google-signin").addEventListener("click", () => { run("google"); });
     box.querySelector("#btn-x-signin").addEventListener("click", () => { run("x"); });
+    box.querySelector("#btn-google-signout").addEventListener("click", async () => {
+      const err = box.querySelector("#auth-error");
+      const api = window.EmciixScores;
+      if (!api || !api.signOutUser) {
+        if (err) { err.textContent = "Auth not ready — wait a second"; err.classList.remove("hidden"); }
+        return;
+      }
+      try {
+        if (err) { err.textContent = ""; err.classList.add("hidden"); }
+        await api.signOutUser();
+      } catch (e) {
+        if (err) {
+          err.textContent = String((e && e.message) || e || "Could not log out");
+          err.classList.remove("hidden");
+        }
+      }
+    });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();

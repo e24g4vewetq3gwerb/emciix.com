@@ -3251,6 +3251,19 @@
   bindPads();
   bindUI();
   document.addEventListener("click", (event) => {
+    const out = event.target && event.target.closest && event.target.closest("#btn-google-signout");
+    if (out) {
+      event.preventDefault();
+      const api = window.EmciixScores;
+      if (!api || !api.signOutUser) {
+        showAuthError("Auth not ready — wait a second");
+        return;
+      }
+      api.signOutUser().catch((err) => {
+        showAuthError(String((err && err.message) || "Could not log out"));
+      });
+      return;
+    }
     const btn = event.target && event.target.closest && event.target.closest("[data-redeem]");
     if (btn && !btn.disabled) {
       event.preventDefault();
