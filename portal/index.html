@@ -725,9 +725,13 @@
       return { x: px, y: py };
     }
     if (localOpen) {
+      var yoursSpots = [{ x: 0.5, y: 0.5 }, { x: 0.7, y: 0.43 }];
       var savedYours = null;
       try { savedYours = JSON.parse(localStorage.getItem("portal-yours") || "null"); } catch (err) {}
-      var placed = placeYours(savedYours && typeof savedYours.x === "number" ? savedYours.x : 0.5, savedYours && typeof savedYours.y === "number" ? savedYours.y : 0.5);
+      var startSpot = savedYours && savedYours.placed && typeof savedYours.x === "number" && typeof savedYours.y === "number"
+        ? savedYours
+        : yoursSpots[Math.random() < 0.5 ? 0 : 1];
+      var placed = placeYours(startSpot.x, startSpot.y);
       if (savedYours && savedYours.name) localOpen.textContent = String(savedYours.name).slice(0, 32);
       localOpen.addEventListener("pointerdown", function (event) {
         if (event.button != null && event.button !== 0) return;
@@ -771,6 +775,7 @@
         try { prev = JSON.parse(localStorage.getItem("portal-yours") || "{}") || {}; } catch (err) {}
         prev.x = placed.x;
         prev.y = placed.y;
+        prev.placed = true;
         if (!prev.name) prev.name = localOpen.textContent || "Make em yours";
         try { localStorage.setItem("portal-yours", JSON.stringify(prev)); } catch (err) {}
       }
