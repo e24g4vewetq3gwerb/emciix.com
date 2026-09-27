@@ -339,7 +339,7 @@
 <span id="warp-atmo" aria-hidden="true"></span>
 <div id="planet-layer"></div>
 <button type="button" id="portal-share" aria-label="Share"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 3.5v9.2M8.6 6.8 12 3.5l3.4 3.3M6.2 11v7.2A1.6 1.6 0 0 0 7.8 19.8h8.4a1.6 1.6 0 0 0 1.6-1.6V11"/></svg></button>
-<a class="corner-blob" href="https://x.ai/bot" aria-label="Grokbot">
+<a class="corner-blob" href="https://x.ai/bot/Uw0qDplLQgGSCLsWk21hw" aria-label="Grokbot">
   <svg viewBox="0 0 64 64" width="32" height="32">
     <circle class="blob-face" cx="32" cy="32" r="28" fill="#f7f7f7"/>
     <circle class="eye" cx="22" cy="26" r="4.2" fill="#111"/>
@@ -584,17 +584,21 @@
   function applyBlob(cfg) {
     var blob = document.querySelector(".corner-blob");
     if (!blob) return;
-    blob.href = cleanHref(cfg.href) || "https://x.ai/bot";
+    blob.href = cleanHref(cfg.href) || "https://x.ai/bot/Uw0qDplLQgGSCLsWk21hw";
     var face = blob.querySelector(".blob-face");
     var color = /^#[0-9a-fA-F]{6}$/.test(cfg.face || "") ? cfg.face : "#f7f7f7";
     if (face) face.setAttribute("fill", color);
   }
   function readBlob() {
+    var next = "https://x.ai/bot/Uw0qDplLQgGSCLsWk21hw";
     try {
       var saved = JSON.parse(localStorage.getItem("portal-blob-local") || "null");
-      if (saved && typeof saved === "object") return saved;
+      if (saved && typeof saved === "object") {
+        if (!saved.href || saved.href === "https://x.ai/bot" || saved.href === "https://x.ai/bot/") saved.href = next;
+        return saved;
+      }
     } catch (err) {}
-    return { href: "https://x.ai/bot", face: "#f7f7f7" };
+    return { href: next, face: "#f7f7f7" };
   }
   function fillLocal() {
     var box = document.getElementById("local-planets");
@@ -618,7 +622,7 @@
     var cfg = readBlob();
     var link = document.getElementById("blob-link");
     var color = document.getElementById("blob-face");
-    if (link) link.value = cfg.href || "https://x.ai/bot";
+    if (link) link.value = cfg.href || "https://x.ai/bot/Uw0qDplLQgGSCLsWk21hw";
     if (color && /^#[0-9a-fA-F]{6}$/.test(cfg.face || "")) color.value = cfg.face;
   }
   function saveLocal() {
@@ -633,7 +637,7 @@
     save();
     drawPlanets();
     var cfg = {
-      href: cleanHref((document.getElementById("blob-link") || {}).value) || "https://x.ai/bot",
+      href: cleanHref((document.getElementById("blob-link") || {}).value) || "https://x.ai/bot/Uw0qDplLQgGSCLsWk21hw",
       face: (document.getElementById("blob-face") || {}).value || "#f7f7f7"
     };
     try { localStorage.setItem("portal-blob-local", JSON.stringify(cfg)); } catch (err) {}
