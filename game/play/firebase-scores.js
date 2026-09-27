@@ -907,15 +907,30 @@ async function resetAccountPoints() {
   return true;
 }
 
+function wholePoints(amount) {
+  const value = Number(amount);
+  if (!Number.isFinite(value) || value < 0) return 0;
+  return Math.min(100000000, Math.floor(value));
+}
+
+function dollars(amount) {
+  const value = Number(amount);
+  if (!Number.isFinite(value) || value < 0) return 0;
+  return Math.round(value * 100) / 100;
+}
+
 async function addRedeemable(amount) {
   const user = auth.currentUser;
-  const add = Math.max(0, Math.floor(Number(amount) || 0));
+  const add = wholePoints(amount);
   if (!user || !add) return 0;
   const ref = doc(db, "users", user.uid);
-  const snap = await getDoc(ref);
-  const prev = snap.exists() ? Math.max(0, Math.floor(Number(snap.data().redeemable) || 0)) : 0;
-  const next = prev + add;
-  await setDoc(ref, { redeemable: next, updatedAt: Date.now() }, { merge: true });
+  let next = 0;
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    const prev = snap.exists() ? wholePoints(snap.data().redeemable) : 0;
+    next = Math.min(100000000, prev + add);
+    tx.set(ref, { redeemable: next, updatedAt: Date.now() }, { merge: true });
+  });
   return next;
 }
 
@@ -948,16 +963,21 @@ function payoutMonthKey() {
 async function claimRedeemable(amount) {
   const user = auth.currentUser;
   if (!user) return { ok: false, reason: "signin" };
-  const take = Math.max(0, Math.floor(Number(amount) || 0));
+  const take = wholePoints(amount);
   const ref = doc(db, "users", user.uid);
   let result = { ok: false, reason: "minimum" };
   await runTransaction(db, async (tx) => {
     const snap = await tx.get(ref);
     const data = snap.exists() ? snap.data() || {} : {};
-    const prev = Math.max(0, Math.floor(Number(data.redeemable) || 0));
-    const cashed = Math.max(0, Math.floor(Number(data.redeemed) || 0));
+    const prev = wholePoints(data.redeemable);
+    const cashed = wholePoints(data.redeemed);
     const month = payoutMonthKey();
-    const used = data.payoutMonth === month ? Math.max(0, Math.floor(Number(data.payoutMonthPoints) || 0)) : 0;
+    const used = data.payoutMonth === month ? wholePoints(data.payoutMonthPoints) : 0;
+    const rate = Number(PAYOUT.ratePerThousand);
+    if (!(rate > 0)) {
+      result = { ok: false, reason: "rate", left: prev };
+      return;
+    }
     let moving = Math.min(prev, take);
     if (PAYOUT.monthlyCapPoints) {
       moving = Math.min(moving, Math.max(0, PAYOUT.monthlyCapPoints - used));
@@ -966,18 +986,16 @@ async function claimRedeemable(amount) {
       result = { ok: false, reason: moving <= 0 && PAYOUT.monthlyCapPoints ? "cap" : "minimum", have: prev, left: prev };
       return;
     }
-    const rate = Number(PAYOUT.ratePerThousand) || 0;
-    const owedNow = Math.round((moving / 1000) * rate * 100) / 100;
-    const payoutOwed = Math.round((Math.max(0, Number(data.payoutOwed) || 0) + owedNow) * 100) / 100;
+    const owedNow = dollars((moving / 1000) * rate);
+    const payoutOwed = dollars(dollars(data.payoutOwed) + owedNow);
     const prior = Array.isArray(data.payouts) ? data.payouts.slice(0, 19) : [];
-    const entry = { at: Date.now(), points: moving, status: "accruing", rate: rate, amount: owedNow };
     tx.set(ref, {
       redeemable: prev - moving,
       redeemed: cashed + moving,
       payoutOwed: payoutOwed,
       payoutMonth: month,
       payoutMonthPoints: used + moving,
-      payouts: [entry].concat(prior),
+      payouts: [{ at: Date.now(), points: moving, status: "accruing", rate: rate, amount: owedNow }].concat(prior),
       updatedAt: Date.now(),
     }, { merge: true });
     result = { ok: true, moved: moving, left: prev - moving, status: "accruing", amount: owedNow, owed: payoutOwed, rate: rate };
@@ -1036,6 +1054,88 @@ async function requestInterac(email, method) {
   return result;
 }
 
+function payoutHoldOf(data) {
+  const hold = data && data.payoutHold;
+  if (!hold || typeof hold !== "object") return null;
+  const amount = dollars(hold.amount);
+  if (!amount) return null;
+  return { amount: amount, points: wholePoints(hold.points), at: wholePoints(hold.at) || Date.now() };
+}
+
+async function beginPayout() {
+  const user = auth.currentUser;
+  if (!user) return { ok: false, reason: "signin" };
+  const ref = doc(db, "users", user.uid);
+  let result = { ok: false, reason: "minimum" };
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    const data = snap.exists() ? snap.data() || {} : {};
+    const existing = payoutHoldOf(data);
+    if (existing && Date.now() - existing.at < 10 * 60 * 1000) {
+      result = { ok: true, held: true, amount: existing.amount, points: existing.points };
+      return;
+    }
+    let owed = dollars(data.payoutOwed);
+    if (existing) owed = dollars(owed + existing.amount);
+    if (owed < PAYOUT.minimumPayout) {
+      if (existing) tx.set(ref, { payoutOwed: owed, payoutHold: deleteField(), updatedAt: Date.now() }, { merge: true });
+      result = { ok: false, reason: "minimum", owed: owed };
+      return;
+    }
+    const rate = Number(PAYOUT.ratePerThousand) || 0.01;
+    const points = wholePoints((owed / rate) * 1000);
+    tx.set(ref, { payoutOwed: 0, payoutHold: { amount: owed, points: points, at: Date.now() }, updatedAt: Date.now() }, { merge: true });
+    result = { ok: true, amount: owed, points: points };
+  });
+  return result;
+}
+
+async function finishPayout(email, method, sent) {
+  const user = auth.currentUser;
+  if (!user) return { ok: false, reason: "signin" };
+  const rail = method === "paypal" ? "paypal" : "interac";
+  const to = interacEmailOk(email);
+  if (sent && !to) return { ok: false, reason: "email" };
+  const ref = doc(db, "users", user.uid);
+  const secretRef = doc(db, "users", user.uid, "private", "payout");
+  let result = { ok: false, reason: "missing" };
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    const secretSnap = await tx.get(secretRef);
+    const data = snap.exists() ? snap.data() || {} : {};
+    const hold = payoutHoldOf(data);
+    if (!hold) {
+      result = { ok: false, reason: "missing" };
+      return;
+    }
+    if (!sent) {
+      tx.set(ref, {
+        payoutOwed: dollars(dollars(data.payoutOwed) + hold.amount),
+        payoutHold: deleteField(),
+        updatedAt: Date.now(),
+      }, { merge: true });
+      result = { ok: true, released: true, amount: hold.amount };
+      return;
+    }
+    const secret = secretSnap.exists() ? secretSnap.data() || {} : {};
+    const prior = Array.isArray(secret.transfers) ? secret.transfers.slice(0, 19) : [];
+    tx.set(ref, {
+      payoutHold: deleteField(),
+      email: deleteField(),
+      interacEmail: deleteField(),
+      transfers: deleteField(),
+      updatedAt: Date.now(),
+    }, { merge: true });
+    tx.set(secretRef, {
+      interacEmail: to,
+      transfers: [{ at: Date.now(), amount: hold.amount, points: hold.points, email: to, answer: rail === "interac" ? interacCode() : "", method: rail, status: "requested" }].concat(prior),
+      updatedAt: Date.now(),
+    }, { merge: true });
+    result = { ok: true, amount: hold.amount, points: hold.points };
+  });
+  return result;
+}
+
 const api = {
   signInGoogle,
   signInX,
@@ -1066,6 +1166,8 @@ const api = {
   pullRedeemable,
   claimRedeemable,
   requestInterac,
+  beginPayout,
+  finishPayout,
   readOwnInterac,
   payoutSchedule: PAYOUT,
   lastLinkMerged: false,

@@ -400,9 +400,12 @@
     }
   }
 
+  let redeemBusy = false;
+
   function redeemNow() {
     const uid = currentAuthUid();
     const schedule = payoutSchedule();
+    if (redeemBusy) return;
     if (!uid) {
       noteRedeem("Sign in to redeem");
       return;
@@ -422,30 +425,37 @@
       noteRedeem("Sign in to redeem");
       return;
     }
+    redeemBusy = true;
     document.querySelectorAll("[data-redeem]").forEach((btn) => { btn.disabled = true; });
     api.claimRedeemable(amount).then((res) => {
       if (!res || !res.ok) {
         const reason = res && res.reason;
         noteRedeem(reason === "cap" ? "Monthly cap reached" : "Need " + formatPoints(schedule.minimumPoints) + " to redeem");
-        paintRedeem(readRedeem(uid));
         return;
       }
       writeRedeem(uid, res.left);
       writeRedeem(null, res.left);
-      const cashed = readCashed(uid) + res.moved;
+      const cashed = readCashed(uid) + wholeSafe(res.moved);
       writeCashed(uid, cashed);
       const dollars = "$" + Number(res.owed || 0).toFixed(2);
       const line = Number(res.owed) >= schedule.minimumPayout
         ? dollars + " owed. Request the payout."
         : dollars + " owed. Payout at $" + schedule.minimumPayout + ".";
       noteRedeem(line);
-      paintRedeem(res.left);
       const auth = $("#auth-redeem-val");
       if (auth) auth.textContent = line;
     }).catch(() => {
-      noteRedeem("Could not redeem");
+      noteRedeem("Could not redeem. Your points were kept.");
+    }).finally(() => {
+      redeemBusy = false;
       paintRedeem(readRedeem(uid));
     });
+  }
+
+  function wholeSafe(amount) {
+    const value = Number(amount);
+    if (!Number.isFinite(value) || value < 0) return 0;
+    return Math.floor(value);
   }
 
   function payoutPoints(amount, schedule) {
@@ -473,9 +483,12 @@
     }).then((res) => res.ok);
   }
 
+  let payoutBusy = false;
+
   function requestETransfer() {
     const uid = currentAuthUid();
     const schedule = payoutSchedule();
+    if (payoutBusy) return;
     if (!uid) {
       noteRedeem("Sign in to request a payout");
       return;
@@ -487,40 +500,39 @@
       return;
     }
     const api = window.EmciixScores;
-    if (!api || !api.requestInterac || !api.getUserProfile) {
+    if (!api || !api.beginPayout || !api.finishPayout) {
       noteRedeem("Sign in to request a payout");
       return;
     }
     const rail = payoutRail();
     const btn = $("#btn-payout");
+    payoutBusy = true;
     if (btn) btn.disabled = true;
-    api.getUserProfile().then((profile) => {
-      const owed = profile ? Number(profile.payoutOwed) || 0 : 0;
-      if (owed < schedule.minimumPayout) {
-        if (btn) btn.disabled = false;
+    let hold = null;
+    api.beginPayout().then((started) => {
+      if (!started || !started.ok) {
         noteRedeem("Payout opens at $" + schedule.minimumPayout);
         return null;
       }
-      return sendPayoutNotice(email, payoutPoints(owed, schedule), owed, rail).then((sent) => ({ sent: sent, owed: owed, rail: rail }));
-    }).then((ready) => {
-      if (!ready) return;
-      if (!ready.sent) {
-        if (btn) btn.disabled = false;
-        noteRedeem("Could not send the payout email");
+      hold = started;
+      return sendPayoutNotice(email, started.points, started.amount, rail);
+    }).then((sent) => {
+      if (sent == null) return null;
+      return api.finishPayout(email, rail, !!sent).then((done) => ({ sent: !!sent, done: done, hold: hold }));
+    }).then((out) => {
+      if (!out) return;
+      if (!out.sent || !out.done || !out.done.ok) {
+        noteRedeem("Payout did not send. Your balance was kept.");
         return;
       }
-      return api.requestInterac(email, ready.rail).then((res) => {
-        if (btn) btn.disabled = false;
-        if (!res || !res.ok) {
-          noteRedeem("Payout email sent, but the request did not save");
-          return;
-        }
-        const label = ready.rail === "interac" ? "Interac" : "PayPal";
-        noteRedeem(label + " payout requested. $" + Number(res.amount).toFixed(2));
-      });
+      const label = rail === "interac" ? "Interac" : "PayPal";
+      noteRedeem(label + " payout requested. $" + Number(out.done.amount).toFixed(2));
     }).catch(() => {
+      if (hold && api.finishPayout) api.finishPayout(email, rail, false).catch(() => {});
+      noteRedeem("Could not request the payout. Your balance was kept.");
+    }).finally(() => {
+      payoutBusy = false;
       if (btn) btn.disabled = false;
-      noteRedeem("Could not request the payout");
     });
   }
 
@@ -545,9 +557,9 @@
     const api = window.EmciixScores;
     if (uid && api && api.addRedeemable) {
       api.addRedeemable(add).then((cloud) => {
-        const merged = Math.max(next, Math.floor(Number(cloud) || 0));
-        writeRedeem(uid, merged);
-        paintRedeem(merged);
+        const saved = Math.max(0, Math.floor(Number(cloud) || 0));
+        writeRedeem(uid, saved);
+        paintRedeem(saved);
       }).catch(() => {});
     }
     return next;
@@ -1175,9 +1187,9 @@
       if (api.pullRedeemable) {
         try {
           const cloudRedeem = await api.pullRedeemable();
-          const merged = Math.max(readRedeem(user.uid), Math.floor(Number(cloudRedeem) || 0));
-          writeRedeem(user.uid, merged);
-          paintRedeem(merged);
+          const saved = Math.max(0, Math.floor(Number(cloudRedeem) || 0));
+          writeRedeem(user.uid, saved);
+          paintRedeem(saved);
           if (api.getUserProfile) {
             const profile = await api.getUserProfile();
             const mail = $("#payout-email");
