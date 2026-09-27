@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 
 const PROJECT = "emciix-com";
-const LOGIN_V = "login-19";
+const LOGIN_V = "login-20";
 // Private (0700) scratch dir for generated files instead of fixed, world-readable /tmp paths.
 const WORK_DIR = mkdtempSync(join(tmpdir(), "emciix-patch-"));
 
@@ -69,7 +69,7 @@ function materializePlayIndex() {
     if (!html.includes(key)) html = html.replace("</head>", "  <link rel=\"stylesheet\" href=\"" + href + "\" />\n</head>");
   }
   if (!html.includes("public-rank-list")) {
-    html = html.replace('<div class="start-layout">', '<div class="start-layout">\n        <aside class="public-rank-card" id="public-rank-card">\n          <span class="public-rank-kicker">SYNCED</span>\n          <h2>PUBLIC BOARD</h2>\n          <div class="public-rank-cols"><span>#</span><span>PLAYER</span><span>PTS</span></div>\n          <ol class="public-rank-list" id="public-rank-list"></ol>\n        </aside>');
+    html = html.replace('<div class="start-layout">', '<div class="start-layout">\n        <aside class="public-rank-card" id="public-rank-card">\n          <span class="public-rank-kicker">SYNCED</span>\n          <h2>RANKS</h2>\n          <div class="public-rank-cols"><span>#</span><span>PLAYER</span><span>PTS</span></div>\n          <ol class="public-rank-list" id="public-rank-list"></ol>\n        </aside>');
     html = html.replace('</button>\n        </div>\n      </div>\n    </div>\n\n    <div id="game"', '</button>\n        </div>\n        <aside class="start-jukebox" id="start-jukebox">\n          <span class="jb-kicker">LISTEN</span>\n          <h2>MUSIC</h2>\n          <p class="jb-now" id="jukebox-now">—</p>\n          <div class="jb-controls">\n            <button type="button" id="jukebox-prev">PREV</button>\n            <button type="button" id="jukebox-play">PLAY</button>\n            <button type="button" id="jukebox-next">NEXT</button>\n          </div>\n          <div id="jukebox-list"></div>\n          <audio id="start-hub-audio" preload="none"></audio>\n        </aside>\n      </div>\n    </div>\n\n    <div id="game"');
   }
   const dest = join(WORK_DIR, "play-index-vacant.html");
