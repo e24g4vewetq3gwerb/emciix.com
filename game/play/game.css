@@ -930,6 +930,14 @@ html, body {
   letter-spacing: 0.08em;
   color: var(--yel);
 }
+#btn-redeem,
+#btn-redeem-results,
+.levels-redeem {
+  margin-top: 0.45rem;
+}
+[data-redeem]:disabled {
+  opacity: 0.4;
+}
 .res-new-best {
   margin: 0.25rem 0 0;
   font-size: 0.8rem;

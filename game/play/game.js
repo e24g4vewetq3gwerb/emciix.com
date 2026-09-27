@@ -351,6 +351,52 @@
     if (levels) levels.textContent = val;
     const results = $("#res-redeem");
     if (results && !results.dataset.locked) results.textContent = "REDEEM " + val;
+    document.querySelectorAll("[data-redeem]").forEach((btn) => {
+      btn.disabled = amount <= 0;
+    });
+  }
+
+  function cashedKey(uid) {
+    return (uid ? REDEEM_KEY + "-cashed:" + uid : REDEEM_KEY + "-cashed");
+  }
+
+  function readCashed(uid) {
+    try {
+      return Math.max(0, Math.floor(Number(localStorage.getItem(cashedKey(uid))) || 0));
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  function writeCashed(uid, amount) {
+    try {
+      localStorage.setItem(cashedKey(uid), String(Math.max(0, Math.floor(Number(amount) || 0))));
+    } catch (_) {}
+  }
+
+  function redeemNow() {
+    const uid = currentAuthUid();
+    const amount = readRedeem(uid);
+    if (!amount) {
+      paintRedeem(0);
+      return;
+    }
+    writeRedeem(uid, 0);
+    if (uid) writeRedeem(null, 0);
+    const cashed = readCashed(uid) + amount;
+    writeCashed(uid, cashed);
+    const results = $("#res-redeem");
+    if (results) {
+      results.dataset.locked = "1";
+      results.textContent = "REDEEMED " + formatPoints(amount);
+    }
+    paintRedeem(0);
+    const auth = $("#auth-redeem-val");
+    if (auth) auth.textContent = "REDEEMED " + formatPoints(cashed);
+    const api = window.EmciixScores;
+    if (uid && api && api.claimRedeemable) {
+      api.claimRedeemable(amount).catch(() => {});
+    }
   }
 
   function resetLocalPointsOnce() {
@@ -3074,6 +3120,12 @@
   loadUpgrades();
   bindPads();
   bindUI();
+  document.addEventListener("click", (event) => {
+    const btn = event.target && event.target.closest && event.target.closest("[data-redeem]");
+    if (!btn || btn.disabled) return;
+    event.preventDefault();
+    redeemNow();
+  });
   bindAuthUI();
   initStartBgm();
   refreshPublicRanks().catch(console.error);

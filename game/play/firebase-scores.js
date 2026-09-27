@@ -916,6 +916,23 @@ async function pullRedeemable() {
   return profile ? profile.redeemable : 0;
 }
 
+async function claimRedeemable(amount) {
+  const user = auth.currentUser;
+  if (!user) return 0;
+  const take = Math.max(0, Math.floor(Number(amount) || 0));
+  const ref = doc(db, "users", user.uid);
+  let moved = 0;
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    const data = snap.exists() ? snap.data() || {} : {};
+    const prev = Math.max(0, Math.floor(Number(data.redeemable) || 0));
+    const cashed = Math.max(0, Math.floor(Number(data.redeemed) || 0));
+    moved = Math.max(prev, take);
+    tx.set(ref, { redeemable: 0, redeemed: cashed + moved, updatedAt: Date.now() }, { merge: true });
+  });
+  return moved;
+}
+
 const api = {
   signInGoogle,
   signInX,
@@ -944,6 +961,7 @@ const api = {
   resetAccountPoints,
   addRedeemable,
   pullRedeemable,
+  claimRedeemable,
   lastLinkMerged: false,
 };
 
@@ -977,4 +995,5 @@ export {
   resetAccountPoints,
   addRedeemable,
   pullRedeemable,
+  claimRedeemable,
 };

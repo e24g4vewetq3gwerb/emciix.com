@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#04040C" />
   <title>Emciix</title>
   <link rel="icon" href="/game/play/favicon.svg?v=bw-rocket-1" type="image/svg+xml" />
-  <link rel="stylesheet" href="/game/play/game.css?v=redeem-1" />
+  <link rel="stylesheet" href="/game/play/game.css?v=redeem-2" />
 </head>
 <body>
   <div id="app">
@@ -170,6 +170,7 @@
         </div>
         <p class="res-best" id="res-best">BEST 0</p>
         <p class="res-redeem" id="res-redeem">REDEEM 0</p>
+        <button id="btn-redeem-results" type="button" data-redeem class="btn-secondary">REDEEM</button>
         <p class="res-new-best hidden" id="res-new-best">NEW BEST!</p>
         <div class="results-grid">
           <div><span class="dim">SCORE</span><strong id="res-score">0</strong></div>
@@ -193,6 +194,7 @@
         <div class="levels-header-meta">
           <p class="sync-status" id="sync-status">Local only</p>
           <p class="levels-points hidden" id="levels-points" aria-label="Saved points">POINTS · <strong id="levels-points-val">0</strong> · REDEEM · <strong id="levels-redeem-val">0</strong></p>
+          <button type="button" id="btn-redeem-levels" data-redeem class="btn-secondary levels-redeem">REDEEM</button>
         </div>
         <div class="levels-grid" id="levels-grid"></div>
         <button id="levels-close" type="button" class="btn-secondary">BACK</button>
@@ -577,7 +579,7 @@
   <audio id="audio" preload="auto" src="/game/play/audio/one-feeling-one-promise.mp3"></audio>
   <audio id="start-bgm" loop preload="none"></audio>
   <script>window.EmciixScoresBoot="loading";window.addEventListener("error",function(e){if(e&&e.filename&&String(e.filename).indexOf("firebase")!==-1){window.EmciixScoresBoot=String(e.message||"error");}},true);</script>
-  <script type="module" src="/game/play/firebase-scores.js?v=redeem-1"></script>
-  <script src="/game/play/game.js?v=redeem-1" defer></script>
+  <script type="module" src="/game/play/firebase-scores.js?v=redeem-2"></script>
+  <script src="/game/play/game.js?v=redeem-2" defer></script>
 </body>
 </html>

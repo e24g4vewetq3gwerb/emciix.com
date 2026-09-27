@@ -18,6 +18,7 @@
           '<span id="auth-points-val">0</span> PTS' +
           '<span class="redeem" id="auth-redeem-val">0 REDEEM</span>' +
         '</div>' +
+        '<button type="button" id="btn-redeem" data-redeem class="start-action-btn">REDEEM</button>' +
         '<button type="button" id="btn-google-signout" class="start-action-btn btn-secondary">LOG OUT</button>' +
       '</div>' +
       '<p class="auth-error hidden" id="auth-error"></p>';
