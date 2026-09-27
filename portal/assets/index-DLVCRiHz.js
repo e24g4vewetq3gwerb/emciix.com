@@ -25,7 +25,7 @@ void main() {
   p.y += uPitch * 0.06;
   float d = length(p);
   float vig = smoothstep(1.2, 0.15, d);
-  vec3 col = mix(vec3(0.86, 0.89, 0.94), vec3(0.965, 0.972, 0.985), vig);
+  vec3 col = mix(vec3(0.50, 0.66, 0.84), vec3(0.74, 0.85, 0.96), vig);
   col += vec3(1.0, 1.0, 1.0) * uFlash * 0.12;
   fragColor = vec4(col, 1.0);
 }
