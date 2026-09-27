@@ -365,9 +365,10 @@
     const api = window.EmciixScores;
     const schedule = api && api.payoutSchedule;
     return {
-      ratePerThousand: schedule && schedule.ratePerThousand != null ? Number(schedule.ratePerThousand) : null,
+      ratePerThousand: schedule && schedule.ratePerThousand != null ? Number(schedule.ratePerThousand) : 0.01,
       minimumPoints: schedule && schedule.minimumPoints ? Math.floor(schedule.minimumPoints) : 1000,
-      monthlyCapPoints: schedule && schedule.monthlyCapPoints ? Math.floor(schedule.monthlyCapPoints) : null,
+      monthlyCapPoints: schedule && schedule.monthlyCapPoints ? Math.floor(schedule.monthlyCapPoints) : 2000000,
+      minimumPayout: schedule && schedule.minimumPayout ? Number(schedule.minimumPayout) : 20,
     };
   }
 
@@ -433,9 +434,10 @@
       writeRedeem(null, res.left);
       const cashed = readCashed(uid) + res.moved;
       writeCashed(uid, cashed);
-      const line = res.status === "held"
-        ? "Recorded " + formatPoints(res.moved) + ". Pay starts when the rate is set."
-        : "Owed " + res.amount + ". Pending payout.";
+      const dollars = "$" + Number(res.owed || 0).toFixed(2);
+      const line = Number(res.owed) >= schedule.minimumPayout
+        ? dollars + " owed. Request the Interac e-Transfer."
+        : dollars + " owed. E-Transfer at $" + schedule.minimumPayout + ".";
       noteRedeem(line);
       paintRedeem(res.left);
       const auth = $("#auth-redeem-val");
@@ -443,6 +445,36 @@
     }).catch(() => {
       noteRedeem("Could not redeem");
       paintRedeem(readRedeem(uid));
+    });
+  }
+
+  function requestETransfer() {
+    const uid = currentAuthUid();
+    const schedule = payoutSchedule();
+    if (!uid) {
+      noteRedeem("Sign in to request an e-Transfer");
+      return;
+    }
+    const input = $("#interac-email");
+    const email = input ? String(input.value || "").trim() : "";
+    const api = window.EmciixScores;
+    if (!api || !api.requestInterac) {
+      noteRedeem("Sign in to request an e-Transfer");
+      return;
+    }
+    const btn = $("#btn-etransfer");
+    if (btn) btn.disabled = true;
+    api.requestInterac(email).then((res) => {
+      if (btn) btn.disabled = false;
+      if (!res || !res.ok) {
+        if (res && res.reason === "email") noteRedeem("Enter the Interac email");
+        else noteRedeem("E-Transfer opens at $" + schedule.minimumPayout);
+        return;
+      }
+      noteRedeem("Requested $" + Number(res.amount).toFixed(2) + " to " + res.email + ". Security answer: " + res.answer);
+    }).catch(() => {
+      if (btn) btn.disabled = false;
+      noteRedeem("Could not request the e-Transfer");
     });
   }
 
@@ -1100,6 +1132,16 @@
           const merged = Math.max(readRedeem(user.uid), Math.floor(Number(cloudRedeem) || 0));
           writeRedeem(user.uid, merged);
           paintRedeem(merged);
+          if (api.getUserProfile) {
+            const profile = await api.getUserProfile();
+            const mail = $("#interac-email");
+            if (mail && profile && profile.interacEmail && !mail.value) mail.value = profile.interacEmail;
+            if (profile && profile.payoutOwed) {
+              const owedLine = "$" + Number(profile.payoutOwed).toFixed(2) + " owed. E-Transfer at $" + payoutSchedule().minimumPayout + ".";
+              const auth = $("#auth-redeem-val");
+              if (auth) auth.textContent = owedLine;
+            }
+          }
         } catch (_) {}
       }
     } catch (err) {
@@ -3169,9 +3211,15 @@
   bindUI();
   document.addEventListener("click", (event) => {
     const btn = event.target && event.target.closest && event.target.closest("[data-redeem]");
-    if (!btn || btn.disabled) return;
+    if (btn && !btn.disabled) {
+      event.preventDefault();
+      redeemNow();
+      return;
+    }
+    const pay = event.target && event.target.closest && event.target.closest("[data-etransfer]");
+    if (!pay || pay.disabled) return;
     event.preventDefault();
-    redeemNow();
+    requestETransfer();
   });
   bindAuthUI();
   initStartBgm();

@@ -19,6 +19,8 @@
           '<span class="redeem" id="auth-redeem-val">0 REDEEM</span>' +
         '</div>' +
         '<button type="button" id="btn-redeem" data-redeem class="start-action-btn">REDEEM</button>' +
+        '<label class="interac-row">Interac email<input id="interac-email" type="email" maxlength="80" autocomplete="email" placeholder="name@email.com" /></label>' +
+        '<button type="button" id="btn-etransfer" data-etransfer class="start-action-btn">E-TRANSFER</button>' +
         '<button type="button" id="btn-google-signout" class="start-action-btn btn-secondary">LOG OUT</button>' +
       '</div>' +
       '<p class="auth-error hidden" id="auth-error"></p>';

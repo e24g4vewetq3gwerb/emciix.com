@@ -489,6 +489,8 @@ async function getUserProfile() {
     photoURL: data.photoURL ? String(data.photoURL) : null,
     pointsEra: data.pointsEra ? String(data.pointsEra) : "",
     redeemable: Math.max(0, Math.floor(Number(data.redeemable) || 0)),
+    payoutOwed: Math.round(Math.max(0, Number(data.payoutOwed) || 0) * 100) / 100,
+    interacEmail: data.interacEmail ? String(data.interacEmail) : "",
   };
 }
 
@@ -917,9 +919,11 @@ async function pullRedeemable() {
 }
 
 const PAYOUT = {
-  ratePerThousand: null,
+  ratePerThousand: 0.01,
   minimumPoints: 1000,
-  monthlyCapPoints: null,
+  monthlyCapPoints: 2000000,
+  minimumPayout: 20,
+  method: "interac",
 };
 
 function payoutMonthKey() {
@@ -947,20 +951,62 @@ async function claimRedeemable(amount) {
       result = { ok: false, reason: moving <= 0 && PAYOUT.monthlyCapPoints ? "cap" : "minimum", have: prev, left: prev };
       return;
     }
-    const rate = PAYOUT.ratePerThousand;
-    const status = rate == null ? "held" : "pending";
-    const owed = rate == null ? null : Math.round((moving / 1000) * Number(rate) * 100) / 100;
+    const rate = Number(PAYOUT.ratePerThousand) || 0;
+    const owedNow = Math.round((moving / 1000) * rate * 100) / 100;
+    const payoutOwed = Math.round((Math.max(0, Number(data.payoutOwed) || 0) + owedNow) * 100) / 100;
     const prior = Array.isArray(data.payouts) ? data.payouts.slice(0, 19) : [];
-    const entry = { at: Date.now(), points: moving, status: status, rate: rate, amount: owed };
+    const entry = { at: Date.now(), points: moving, status: "accruing", rate: rate, amount: owedNow };
     tx.set(ref, {
       redeemable: prev - moving,
       redeemed: cashed + moving,
+      payoutOwed: payoutOwed,
       payoutMonth: month,
       payoutMonthPoints: used + moving,
       payouts: [entry].concat(prior),
       updatedAt: Date.now(),
     }, { merge: true });
-    result = { ok: true, moved: moving, left: prev - moving, status: status, amount: owed, rate: rate };
+    result = { ok: true, moved: moving, left: prev - moving, status: "accruing", amount: owedNow, owed: payoutOwed, rate: rate };
+  });
+  return result;
+}
+
+function interacEmailOk(value) {
+  const email = String(value || "").trim().toLowerCase();
+  if (!/^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$/.test(email) || email.length > 80) return "";
+  return email;
+}
+
+function interacCode() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for (let i = 0; i < 6; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+  return out;
+}
+
+async function requestInterac(email) {
+  const user = auth.currentUser;
+  if (!user) return { ok: false, reason: "signin" };
+  const to = interacEmailOk(email);
+  if (!to) return { ok: false, reason: "email" };
+  const ref = doc(db, "users", user.uid);
+  let result = { ok: false, reason: "minimum" };
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    const data = snap.exists() ? snap.data() || {} : {};
+    const owed = Math.round(Math.max(0, Number(data.payoutOwed) || 0) * 100) / 100;
+    if (owed < PAYOUT.minimumPayout) {
+      result = { ok: false, reason: "minimum", owed: owed };
+      return;
+    }
+    const code = interacCode();
+    const prior = Array.isArray(data.transfers) ? data.transfers.slice(0, 19) : [];
+    tx.set(ref, {
+      payoutOwed: 0,
+      interacEmail: to,
+      transfers: [{ at: Date.now(), amount: owed, email: to, answer: code, method: "interac", status: "requested" }].concat(prior),
+      updatedAt: Date.now(),
+    }, { merge: true });
+    result = { ok: true, amount: owed, email: to, answer: code };
   });
   return result;
 }
@@ -994,6 +1040,7 @@ const api = {
   addRedeemable,
   pullRedeemable,
   claimRedeemable,
+  requestInterac,
   payoutSchedule: PAYOUT,
   lastLinkMerged: false,
 };
