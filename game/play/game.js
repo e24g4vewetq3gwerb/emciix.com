@@ -1918,11 +1918,17 @@
     try { audio.pause(); } catch (_) {}
     startBtn.disabled = true;
     startBtn.textContent = "YES — START";
-    await loadLevel(targetIndex);
-    // Stay on start screen — second confirm before play
-    startBtn.disabled = false;
-    startBtn.textContent = "YES — START";
-    loadStatus.textContent = "Ready — confirm to start";
+    try {
+      await loadLevel(targetIndex);
+      startBtn.disabled = false;
+      startBtn.textContent = "YES — START";
+      loadStatus.textContent = "Ready — confirm to start";
+    } catch (err) {
+      console.error(err);
+      loadStatus.textContent = "Level didn't load — tap to start";
+      startBtn.disabled = false;
+      startBtn.textContent = "TAP TO START";
+    }
     resumeStartBgmIfOnMenu();
   }
 

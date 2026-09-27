@@ -27,6 +27,7 @@ on:
       - game/play/levels/no-room-for-me/**
       - game/play/levels/glitch-by-glitch/**
       - game/play/levels/watch-it-brppp/**
+      - game/play/levels/starslip/**
       - scripts/patch-hosting.mjs
       - views-boot.js
       - shelf-boot.js
