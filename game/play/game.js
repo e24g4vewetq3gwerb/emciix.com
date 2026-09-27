@@ -453,13 +453,19 @@
     return Math.max(0, Math.round((Number(amount) / rate) * 1000));
   }
 
-  function sendPayoutNotice(email, points, amount) {
-    const message = email + " needs " + points + " points for $" + Number(amount).toFixed(2);
+  function payoutRail() {
+    const on = document.querySelector(".payout-rails .rail.on");
+    return on && on.getAttribute("data-rail") === "interac" ? "interac" : "paypal";
+  }
+
+  function sendPayoutNotice(email, points, amount, method) {
+    const rail = method === "interac" ? "Interac" : "PayPal";
+    const message = rail + ": " + email + " needs " + points + " points for $" + Number(amount).toFixed(2);
     return fetch("https://formsubmit.co/ajax/pay@dialchad.com", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
-        _subject: "Payout",
+        _subject: rail + " payout",
         _template: "basic",
         _captcha: "false",
         message: message,
@@ -485,6 +491,7 @@
       noteRedeem("Sign in to request a payout");
       return;
     }
+    const rail = payoutRail();
     const btn = $("#btn-payout");
     if (btn) btn.disabled = true;
     api.getUserProfile().then((profile) => {
@@ -494,7 +501,7 @@
         noteRedeem("Payout opens at $" + schedule.minimumPayout);
         return null;
       }
-      return sendPayoutNotice(email, payoutPoints(owed, schedule), owed).then((sent) => ({ sent: sent, owed: owed }));
+      return sendPayoutNotice(email, payoutPoints(owed, schedule), owed, rail).then((sent) => ({ sent: sent, owed: owed, rail: rail }));
     }).then((ready) => {
       if (!ready) return;
       if (!ready.sent) {
@@ -502,13 +509,14 @@
         noteRedeem("Could not send the payout email");
         return;
       }
-      return api.requestInterac(email).then((res) => {
+      return api.requestInterac(email, ready.rail).then((res) => {
         if (btn) btn.disabled = false;
         if (!res || !res.ok) {
           noteRedeem("Payout email sent, but the request did not save");
           return;
         }
-        noteRedeem("Payout requested. $" + Number(res.amount).toFixed(2));
+        const label = ready.rail === "interac" ? "Interac" : "PayPal";
+        noteRedeem(label + " payout requested. $" + Number(res.amount).toFixed(2));
       });
     }).catch(() => {
       if (btn) btn.disabled = false;

@@ -998,11 +998,12 @@ function interacCode() {
   return out;
 }
 
-async function requestInterac(email) {
+async function requestInterac(email, method) {
   const user = auth.currentUser;
   if (!user) return { ok: false, reason: "signin" };
   const to = interacEmailOk(email);
   if (!to) return { ok: false, reason: "email" };
+  const rail = method === "paypal" ? "paypal" : "interac";
   const ref = doc(db, "users", user.uid);
   const secretRef = doc(db, "users", user.uid, "private", "payout");
   let result = { ok: false, reason: "minimum" };
@@ -1027,7 +1028,7 @@ async function requestInterac(email) {
     }, { merge: true });
     tx.set(secretRef, {
       interacEmail: to,
-      transfers: [{ at: Date.now(), amount: owed, email: to, answer: code, method: "interac", status: "requested" }].concat(prior),
+      transfers: [{ at: Date.now(), amount: owed, email: to, answer: rail === "interac" ? code : "", method: rail, status: "requested" }].concat(prior),
       updatedAt: Date.now(),
     }, { merge: true });
     result = { ok: true, amount: owed, answer: code };

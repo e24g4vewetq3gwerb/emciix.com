@@ -19,8 +19,12 @@
           '<span class="redeem" id="auth-redeem-val">0 REDEEM</span>' +
         '</div>' +
         '<button type="button" id="btn-redeem" data-redeem class="start-action-btn">REDEEM</button>' +
+        '<div class="payout-rails" role="group" aria-label="Payout method">' +
+          '<button type="button" class="rail" data-rail="interac">INTERAC</button>' +
+          '<button type="button" class="rail on" data-rail="paypal">PAYPAL</button>' +
+        '</div>' +
         '<label class="interac-row">Email<input id="payout-email" type="email" maxlength="80" autocomplete="email" placeholder="name@email.com" /></label>' +
-        '<p class="payout-note">Canada only. Interac e-Transfer to a Canadian bank.</p>' +
+        '<p class="payout-note" id="payout-note">PayPal. Any country. Paid to this email.</p>' +
         '<button type="button" id="btn-payout" data-payout class="start-action-btn">PAYOUT</button>' +
         '<button type="button" id="btn-google-signout" class="start-action-btn btn-secondary">LOG OUT</button>' +
       '</div>' +
@@ -60,6 +64,17 @@
     }
     box.querySelector("#btn-google-signin").addEventListener("click", () => { run("google"); });
     box.querySelector("#btn-x-signin").addEventListener("click", () => { run("x"); });
+    const rails = box.querySelectorAll("[data-rail]");
+    const note = box.querySelector("#payout-note");
+    rails.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        rails.forEach((item) => item.classList.toggle("on", item === btn));
+        if (!note) return;
+        note.textContent = btn.getAttribute("data-rail") === "paypal"
+          ? "PayPal. Any country. Paid to this email."
+          : "Canada only. Interac e-Transfer to a Canadian bank.";
+      });
+    });
     box.querySelector("#btn-google-signout").addEventListener("click", async () => {
       const err = box.querySelector("#auth-error");
       const api = window.EmciixScores;

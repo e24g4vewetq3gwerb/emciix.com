@@ -80,6 +80,27 @@
   margin:0.35rem 0 0;
   box-sizing:border-box;
 }
+.start-login .payout-rails{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.4rem;
+  width:100%;
+}
+.start-login .payout-rails button{
+  appearance:none;
+  height:2.2rem;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,.28);
+  background:transparent;
+  color:inherit;
+  font:700 .68rem/1 system-ui,sans-serif;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.start-login .payout-rails button.on{
+  border-color:#00f5ff;
+  box-shadow:0 0 12px rgba(0,245,255,.35);
+}
 .start-login .auth-chip .start-action-btn{
   width:100% !important;
   align-self:stretch;
