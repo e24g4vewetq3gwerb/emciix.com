@@ -318,8 +318,29 @@
       left: 50% !important;
       transform: translateX(-50%) !important;
       z-index: 30 !important;
-      width: min(16rem, calc(100% - 2.5rem)) !important;
-      font-size: 0.78rem !important;
+      width: max-content !important;
+      max-width: min(22rem, calc(100% - 2rem)) !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+      padding: 10px 16px 11px !important;
+      border-radius: 16px !important;
+      border: 1px solid rgba(255,255,255,.28) !important;
+      background: rgba(8,8,10,.78) !important;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      color: #fff !important;
+      font-size: 0.95rem !important;
+      font-weight: 600 !important;
+      letter-spacing: .01em !important;
+      line-height: 1.25 !important;
+      text-shadow: none !important;
+    }
+    .sky-hint span {
+      color: rgba(255,255,255,.9) !important;
+      font-size: 0.8rem !important;
+      font-weight: 500 !important;
+      margin-top: .28rem !important;
+      text-shadow: none !important;
     }
     .hud {
       transform: scale(0.72);
