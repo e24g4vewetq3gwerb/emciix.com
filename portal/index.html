@@ -27,12 +27,11 @@
       touch-action: none;
       cursor: grab;
       visibility: hidden;
-      background:
-        radial-gradient(circle at 30% 28%, rgba(255, 244, 214, 0.28), transparent 46%),
-        url("/portal/assets/planet-clear.webp?v=clear-1") center / cover no-repeat;
+      background: url("/portal/assets/planet.webp?v=vivid-1") center / cover no-repeat;
+      filter: saturate(1.4) contrast(1.15);
       box-shadow:
-        0 0 0 3px rgba(28, 28, 30, 0.72),
-        0 10px 28px rgba(20, 30, 50, 0.18);
+        0 0 0 3px rgba(20, 22, 28, 0.88),
+        0 12px 24px rgba(20, 30, 50, 0.16);
       pointer-events: auto;
       will-change: transform;
       transform: translate3d(-200px, -200px, 0) scale(0.2);
@@ -151,10 +150,10 @@
     .warp-planet::after {
       content: "";
       position: absolute;
-      inset: -16%;
+      inset: -5%;
       border-radius: 50%;
-      border: 2px solid rgba(28, 28, 30, 0.45);
-      box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.35);
+      border: 2px solid rgba(20, 22, 28, 0.8);
+      box-shadow: none;
       pointer-events: none;
     }
     .warp-planet .plus {
@@ -652,7 +651,7 @@
       el.className = "warp-planet";
       el.id = "planet-" + planet.id;
       el.href = planet.href || "#";
-      if (planet.href) el.style.filter = "hue-rotate(" + (index * 22) + "deg) brightness(1.2) saturate(1.2)";
+      if (planet.href) el.style.filter = "hue-rotate(" + (index * 18) + "deg) saturate(1.5) contrast(1.18)";
       el.setAttribute("aria-label", planet.href ? (planet.id === "game" ? "Open the game" : planet.id === "music" ? "Open the playlist" : planet.id === "x" ? "Open X" : "Open link") : "Connect a link");
       if (!planet.href) el.insertAdjacentHTML("beforeend", PLUS);
       el.addEventListener("pointerdown", function (event) {
