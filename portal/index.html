@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
-  <script type="module" crossorigin src="/portal/assets/index-DLVCRiHz.js?v=fly-4"></script>
+  <script type="module" crossorigin src="/portal/assets/index-DLVCRiHz.js?v=fly-5"></script>
   <link rel="stylesheet" crossorigin href="/portal/assets/index-C17i1khB.css">
   <style>
     .warp-planet {
@@ -325,7 +325,8 @@
       transform: scale(0.72);
       transform-origin: bottom center;
     }
-    .play-row.rec-row { grid-template-columns: 1fr 1fr; }
+    .play-row.rec-row { grid-template-columns: 1fr; }
+    .play-row.rec-row button { white-space: normal; line-height: 1.25; min-height: 2.4rem; padding: 6px 10px; }
   </style>
 </head>
 <body>
@@ -751,6 +752,7 @@
   var rec = null;
   var chunks = [];
   var blob = null;
+  var saveOnStop = false;
   function stamp() {
     var d = new Date();
     function p(n) { return String(n).padStart(2, "0"); }
@@ -773,7 +775,7 @@
     var button = document.getElementById("portal-record");
     if (!button) return;
     var on = !!(rec && rec.state === "recording");
-    var label = on ? "Stop" : "Record";
+    var label = on ? "Stop and save" : "Start recording this screen and save";
     if (button.textContent !== label) button.textContent = label;
     button.classList.toggle("is-on", on);
     button.setAttribute("aria-pressed", on ? "true" : "false");
@@ -798,6 +800,8 @@
       blob = new Blob(chunks, { type: (rec && rec.mimeType) || "video/webm" });
       rec = null;
       sync();
+      if (saveOnStop && blob) download(blob, "portal-" + stamp() + ".webm");
+      saveOnStop = false;
     };
     var track = stream.getVideoTracks()[0];
     if (track) track.addEventListener("ended", function () {
@@ -806,39 +810,16 @@
     rec.start(250);
     sync();
   }
-  async function display() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) return null;
-    try {
-      return await navigator.mediaDevices.getDisplayMedia({
-        video: { frameRate: 30 },
-        audio: false,
-        preferCurrentTab: true,
-        selfBrowserSurface: "include",
-        monitorTypeSurfaces: "exclude"
-      });
-    } catch (err) {
-      if (err && err.name === "NotAllowedError") return false;
-      try {
-        return await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
-      } catch (err2) {
-        if (err2 && err2.name === "NotAllowedError") return false;
-        return null;
-      }
-    }
-  }
   window.portalRecord = async function () {
     if (rec && rec.state === "recording") {
+      saveOnStop = true;
       rec.stop();
       return;
     }
-    var stream = await display();
-    if (stream === false) return;
-    if (!stream) {
-      var c = sky();
-      if (!c || !c.captureStream) return;
-      stream = c.captureStream(30);
-    }
-    try { await begin(stream); } catch (err) {}
+    var c = sky();
+    if (!c || !c.captureStream) return;
+    saveOnStop = false;
+    try { await begin(c.captureStream(30)); } catch (err) {}
   };
   window.portalSaveClip = async function () {
     if (rec && rec.state === "recording") {
