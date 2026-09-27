@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 
 const PROJECT = "emciix-com";
-const LOGIN_V = "login-21";
+const LOGIN_V = "login-22";
 // Private (0700) scratch dir for generated files instead of fixed, world-readable /tmp paths.
 const WORK_DIR = mkdtempSync(join(tmpdir(), "emciix-patch-"));
 
@@ -53,7 +53,7 @@ function materializePlayIndex() {
   const scripts = [
     ["universe-boot.js", "/game/play/universe-boot.js?v=vacant-1"],
     ["vacant-mode.js", "/game/play/vacant-mode.js?v=chairs-1"],
-    ["start-hub.js", "/game/play/start-hub.js?v=hub-1"],
+    ["start-hub.js", "/game/play/start-hub.js?v=hub-2"],
     ["session-name.js", "/game/play/session-name.js?v=name-1"],
   ];
   for (const [key, srcPath] of scripts) {

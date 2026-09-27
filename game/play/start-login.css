@@ -182,11 +182,14 @@
   #start-overlay .public-rank-card,
   #start-overlay .start-jukebox {
     width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: 100%;
+    height: 0 !important;
+    min-height: 100% !important;
+    max-height: none;
     overflow: hidden !important;
     align-self: stretch !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box;
   }
   #start-overlay #jukebox-list,
   #start-overlay .public-rank-list {

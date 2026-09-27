@@ -145,10 +145,34 @@
       });
   }
 
+  function matchColumns() {
+    const center = document.querySelector("#start-overlay .start-main");
+    const left = document.querySelector("#start-overlay .public-rank-card");
+    const right = document.querySelector("#start-overlay .start-jukebox");
+    if (!center || !left || !right) return;
+    if (window.innerWidth < 821) {
+      left.style.height = "";
+      right.style.height = "";
+      return;
+    }
+    center.style.alignSelf = "start";
+    const px = Math.round(center.getBoundingClientRect().height) + "px";
+    center.style.alignSelf = "";
+    if (left.style.height === px && right.style.height === px) return;
+    left.style.height = px;
+    right.style.height = px;
+  }
+
   function boot() {
     fillBoard();
     bindJukebox();
     setInterval(fillBoard, 20000);
+    const center = document.querySelector("#start-overlay .start-main");
+    matchColumns();
+    window.addEventListener("resize", matchColumns);
+    if (center && window.ResizeObserver) new ResizeObserver(matchColumns).observe(center);
+    setTimeout(matchColumns, 300);
+    setTimeout(matchColumns, 1000);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
