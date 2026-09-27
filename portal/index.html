@@ -211,16 +211,19 @@
       display: block;
       cursor: pointer;
       filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.55));
-      animation: blob-float 3.2s ease-in-out infinite;
+      animation: blob-spin 4.8s linear infinite;
     }
     .corner-blob .eye {
       transform-box: fill-box;
       transform-origin: center;
       animation: blob-blink 4.6s ease-in-out infinite;
     }
-    @keyframes blob-float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+    @keyframes blob-spin {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(7px, -6px) rotate(90deg); }
+      50% { transform: translate(0, -10px) rotate(180deg); }
+      75% { transform: translate(-7px, -4px) rotate(270deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
     }
     @keyframes blob-blink {
       0%, 40%, 48%, 100% { transform: scaleY(1); }
