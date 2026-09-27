@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#04040C" />
   <title>Emciix</title>
   <link rel="icon" href="/game/play/favicon.svg?v=bw-rocket-1" type="image/svg+xml" />
-  <link rel="stylesheet" href="/game/play/game.css?v=blob-corner-1" />
+  <link rel="stylesheet" href="/game/play/game.css?v=core-upg-1" />
 </head>
 <body>
   <div id="app">
@@ -96,6 +96,8 @@
               <div class="hit-marker"></div>
             </div>
             <div class="judge" id="judge"></div>
+            <div class="count-in hidden" id="count-in" aria-hidden="true"></div>
+            <div class="core-pop" id="core-pop" aria-hidden="true"></div>
             <div class="chain-box" id="chain-box">CHAIN<br /><span id="chain-val">0</span></div>
             <div class="fever-bar"><div class="fever-fill" id="fever-fill"></div></div>
           </div>
@@ -176,6 +178,7 @@
           <div><span class="dim">GOOD</span><strong id="res-good">0</strong></div>
           <div><span class="dim">MISS</span><strong id="res-miss">0</strong></div>
         </div>
+        <button id="encore-btn" type="button" class="hidden">ENCORE</button>
         <button id="next-level-btn" type="button" class="hidden">NEXT LEVEL →</button>
         <button id="retry-btn" type="button">PLAY AGAIN</button>
         <button id="levels-btn-results" type="button" class="btn-secondary">LEVELS</button>
@@ -253,9 +256,53 @@
               <span class="upgrade-node-lv" data-lv-for="rush">Lv 0/5</span>
             </button>
           </div>
+          <p class="upgrade-tree-head" aria-hidden="true"><span>CORE UPGRADES</span></p>
+          <div class="upgrade-tree upgrade-tree-core" id="upgrade-tree-core">
+            <button type="button" class="upgrade-node track-startup" data-track="startup" aria-pressed="false">
+              <span class="upgrade-node-name">STARTUP STAR</span>
+              <span class="upgrade-node-lv" data-lv-for="startup">Lv 0/3</span>
+            </button>
+            <button type="button" class="upgrade-node track-wide" data-track="wide" aria-pressed="false">
+              <span class="upgrade-node-name">WIDE WINDOW</span>
+              <span class="upgrade-node-lv" data-lv-for="wide">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-guard" data-track="guard" aria-pressed="false">
+              <span class="upgrade-node-name">COMBO SHIELD</span>
+              <span class="upgrade-node-lv" data-lv-for="guard">Lv 0/3</span>
+            </button>
+            <button type="button" class="upgrade-node track-boost" data-track="boost" aria-pressed="false">
+              <span class="upgrade-node-name">SCORE BOOST</span>
+              <span class="upgrade-node-lv" data-lv-for="boost">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-ppulse" data-track="ppulse" aria-pressed="false">
+              <span class="upgrade-node-name">PERFECT PULSE</span>
+              <span class="upgrade-node-lv" data-lv-for="ppulse">Lv 0/5</span>
+            </button>
+            <button type="button" class="upgrade-node track-trail" data-track="trail" aria-pressed="false">
+              <span class="upgrade-node-name">NOTE TRAIL</span>
+              <span class="upgrade-node-lv" data-lv-for="trail">Lv 0/3</span>
+            </button>
+            <button type="button" class="upgrade-node track-grip" data-track="grip" aria-pressed="false">
+              <span class="upgrade-node-name">HOLD GRIP</span>
+              <span class="upgrade-node-lv" data-lv-for="grip">Lv 0/3</span>
+            </button>
+            <button type="button" class="upgrade-node track-recover" data-track="recover" aria-pressed="false">
+              <span class="upgrade-node-name">RECOVERY</span>
+              <span class="upgrade-node-lv" data-lv-for="recover">Lv 0/3</span>
+            </button>
+            <button type="button" class="upgrade-node track-burst" data-track="burst" aria-pressed="false">
+              <span class="upgrade-node-name">FEVER MODE</span>
+              <span class="upgrade-node-lv" data-lv-for="burst">Lv 0/3</span>
+            </button>
+            <button type="button" class="upgrade-node track-encore" data-track="encore" aria-pressed="false">
+              <span class="upgrade-node-name">ENCORE</span>
+              <span class="upgrade-node-lv" data-lv-for="encore">Lv 0/3</span>
+            </button>
+          </div>
           <div class="upgrade-detail" id="upgrade-detail-a">
             <p class="upgrade-detail-name" id="upgrade-a-name">FOCUS</p>
             <p class="upgrade-detail-blurb" id="upgrade-a-blurb">Widen hit timing</p>
+            <p class="upgrade-detail-fx hidden" id="upgrade-a-fx"></p>
             <p class="upgrade-detail-cost">Cost · <strong id="upgrade-a-cost">800</strong></p>
             <button type="button" class="upgrade-buy" id="upgrade-a-buy" data-track="focus">BUY</button>
           </div>
@@ -374,6 +421,97 @@
                 <span class="upgrade-shop-cost" data-cost-for="rush">1050</span>
                 <button type="button" class="upgrade-buy" data-track="rush">BUY</button>
               </div>
+              <p class="upgrade-shop-head" aria-hidden="true">CORE UPGRADES</p>
+              <div class="upgrade-shop-row track-startup" data-track="startup" data-shop="startup">
+                <span class="upgrade-shop-icon" aria-hidden="true">☆</span>
+                <div class="upgrade-shop-meta">
+                  <strong>STARTUP STAR</strong>
+                  <span>Count-in + slower first notes</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="startup">600</span>
+                <button type="button" class="upgrade-buy" data-track="startup">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-wide" data-track="wide" data-shop="wide">
+                <span class="upgrade-shop-icon" aria-hidden="true">↔</span>
+                <div class="upgrade-shop-meta">
+                  <strong>WIDE WINDOW</strong>
+                  <span>Near-misses count as hits</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="wide">900</span>
+                <button type="button" class="upgrade-buy" data-track="wide">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-guard" data-track="guard" data-shop="guard">
+                <span class="upgrade-shop-icon" aria-hidden="true">◊</span>
+                <div class="upgrade-shop-meta">
+                  <strong>COMBO SHIELD</strong>
+                  <span>Combo survives a miss</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="guard">1500</span>
+                <button type="button" class="upgrade-buy" data-track="guard">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-boost" data-track="boost" data-shop="boost">
+                <span class="upgrade-shop-icon" aria-hidden="true">+</span>
+                <div class="upgrade-shop-meta">
+                  <strong>SCORE BOOST</strong>
+                  <span>More points on every hit</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="boost">700</span>
+                <button type="button" class="upgrade-buy" data-track="boost">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-ppulse" data-track="ppulse" data-shop="ppulse">
+                <span class="upgrade-shop-icon" aria-hidden="true">◉</span>
+                <div class="upgrade-shop-meta">
+                  <strong>PERFECT PULSE</strong>
+                  <span>PERFECT bonus + flash</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="ppulse">800</span>
+                <button type="button" class="upgrade-buy" data-track="ppulse">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-trail" data-track="trail" data-shop="trail">
+                <span class="upgrade-shop-icon" aria-hidden="true">≈</span>
+                <div class="upgrade-shop-meta">
+                  <strong>NOTE TRAIL</strong>
+                  <span>Longer glow behind notes</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="trail">500</span>
+                <button type="button" class="upgrade-buy" data-track="trail">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-grip" data-track="grip" data-shop="grip">
+                <span class="upgrade-shop-icon" aria-hidden="true">⊕</span>
+                <div class="upgrade-shop-meta">
+                  <strong>HOLD GRIP</strong>
+                  <span>Holds lock to your finger</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="grip">1000</span>
+                <button type="button" class="upgrade-buy" data-track="grip">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-recover" data-track="recover" data-shop="recover">
+                <span class="upgrade-shop-icon" aria-hidden="true">↺</span>
+                <div class="upgrade-shop-meta">
+                  <strong>RECOVERY</strong>
+                  <span>Bonus points after a miss</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="recover">600</span>
+                <button type="button" class="upgrade-buy" data-track="recover">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-burst" data-track="burst" data-shop="burst">
+                <span class="upgrade-shop-icon" aria-hidden="true">✸</span>
+                <div class="upgrade-shop-meta">
+                  <strong>FEVER MODE</strong>
+                  <span>Combo burst of x2 points</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="burst">2000</span>
+                <button type="button" class="upgrade-buy" data-track="burst">BUY</button>
+              </div>
+              <div class="upgrade-shop-row track-encore" data-track="encore" data-shop="encore">
+                <span class="upgrade-shop-icon" aria-hidden="true">♫</span>
+                <div class="upgrade-shop-meta">
+                  <strong>ENCORE</strong>
+                  <span>No-miss clear: fast replay</span>
+                </div>
+                <span class="upgrade-shop-cost" data-cost-for="encore">3000</span>
+                <button type="button" class="upgrade-buy" data-track="encore">BUY</button>
+              </div>
             </div>
           </div>
         </div>
@@ -439,6 +577,6 @@
   <audio id="start-bgm" loop preload="none"></audio>
   <script>window.EmciixScoresBoot="loading";window.addEventListener("error",function(e){if(e&&e.filename&&String(e.filename).indexOf("firebase")!==-1){window.EmciixScoresBoot=String(e.message||"error");}},true);</script>
   <script type="module" src="/game/play/firebase-scores.js?v=textonly-1"></script>
-  <script src="/game/play/game.js?v=starslip-play-1" defer></script>
+  <script src="/game/play/game.js?v=core-upg-1" defer></script>
 </body>
 </html>

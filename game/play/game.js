@@ -80,7 +80,104 @@
       costs: [1050, 2100, 4200, 8400, 16800],
       color: "rush",
     },
+    // ---- CORE upgrades (second group on the tree) ----
+    startup: {
+      name: "STARTUP STAR",
+      blurb: "Smoother start: a short count-in and slower notes for the first seconds of each song.",
+      costs: [600, 1500, 3200],
+      color: "startup",
+      core: true,
+      fx: (lv) => "count-in · first " + CORE_FX.startupSecs[lv] + "s of notes " + Math.round(CORE_FX.startupSlow[lv] * 100) + "% slower",
+    },
+    wide: {
+      name: "WIDE WINDOW",
+      blurb: "Bigger timing window: near-misses count as hits.",
+      costs: [900, 1800, 3600, 7200, 14400],
+      color: "wide",
+      core: true,
+      fx: (lv) => "+" + Math.round(CORE_FX.wideMs * lv) + "ms hit window",
+    },
+    guard: {
+      name: "COMBO SHIELD",
+      blurb: "Your combo survives a miss without resetting.",
+      costs: [1500, 4500, 10000],
+      color: "guard",
+      core: true,
+      fx: (lv) => lv + (lv === 1 ? " miss" : " misses") + " forgiven per song",
+    },
+    boost: {
+      name: "SCORE BOOST",
+      blurb: "Every hit is worth more points. Stacks per level.",
+      costs: [700, 1400, 2800, 5600, 11200],
+      color: "boost",
+      core: true,
+      fx: (lv) => "+" + Math.round(CORE_FX.boost * lv * 100) + "% points per hit",
+    },
+    ppulse: {
+      name: "PERFECT PULSE",
+      blurb: "PERFECT hits give bonus points and a brighter lane flash.",
+      costs: [800, 1600, 3200, 6400, 12800],
+      color: "ppulse",
+      core: true,
+      fx: (lv) => "+" + CORE_FX.ppulse * lv + " points per PERFECT",
+    },
+    trail: {
+      name: "NOTE TRAIL",
+      blurb: "Notes leave a longer glow, so fast patterns are easier to read.",
+      costs: [500, 1200, 2500],
+      color: "trail",
+      core: true,
+      fx: (lv) => ["", "short", "long", "longest"][lv] + " glow trail",
+    },
+    grip: {
+      name: "HOLD GRIP",
+      blurb: "Hold notes lock to your finger: keep holding for bonus points, even if it slips off the pad.",
+      costs: [1000, 2500, 5000],
+      color: "grip",
+      core: true,
+      fx: (lv) => "+" + CORE_FX.gripTick * lv + " per 0.1s held · " + Math.round(CORE_FX.gripGrace[lv] * 1000) + "ms slip grace",
+    },
+    recover: {
+      name: "RECOVERY",
+      blurb: "After a miss, your next few hits give extra points.",
+      costs: [600, 1500, 3500],
+      color: "recover",
+      core: true,
+      fx: (lv) => "next " + (2 + lv) + " hits +" + Math.round(recoverBonus(lv) * 100) + "%",
+    },
+    burst: {
+      name: "FEVER MODE",
+      blurb: "A long enough combo triggers a short burst of double points.",
+      costs: [2000, 5000, 12000],
+      color: "burst",
+      core: true,
+      fx: (lv) => "every " + CORE_FX.burstEvery[lv] + " combo · " + CORE_FX.burstSecs[lv] + "s of x2",
+    },
+    encore: {
+      name: "ENCORE",
+      blurb: "Clear a song with no misses to unlock a faster replay worth more points.",
+      costs: [3000, 7500, 16000],
+      color: "encore",
+      core: true,
+      fx: (lv) => Math.round(CORE_FX.encoreRate[lv] * 100) + "% speed · x" + CORE_FX.encoreMult[lv].toFixed(2) + " points",
+    },
   };
+  // Per-level numbers for the CORE upgrades (index = upgrade level).
+  const CORE_FX = {
+    startupSecs: [0, 4, 6, 8],
+    startupSlow: [0, 0.2, 0.28, 0.35],
+    wideMs: 12,
+    boost: 0.06,
+    ppulse: 20,
+    trailPx: [0, 56, 96, 140],
+    gripTick: 10,
+    gripGrace: [0, 0.08, 0.16, 0.25],
+    burstEvery: [0, 30, 25, 20],
+    burstSecs: [0, 4, 5, 6],
+    encoreRate: [1, 1.1, 1.15, 1.2],
+    encoreMult: [1, 1.25, 1.35, 1.5],
+  };
+  function recoverBonus(lv) { return lv > 0 ? 0.15 + 0.15 * lv : 0; }
   const SECTIONS = [
     [0.0, 30.0, "ONE FEELING", "LIVE TAKE", "HOPE NODE"],
     [30.0, 45.0, "ONE FEELING", "KEEP IT CLEAN", "HOPE NODE"],
@@ -180,6 +277,21 @@
   /** @type {{focus:number,power:number,flow:number,pulse:number,reach:number,vault:number,spent:number,layout:string}} */
   let upgradesState = { focus: 0, power: 0, flow: 0, pulse: 0, reach: 0, vault: 0, spent: 0, layout: "a" };
   let pulseArmor = 0;
+  // CORE upgrade run state
+  let countInUntil = 0; // performance.now() when the STARTUP STAR count-in ends (0 = none)
+  let countInLeft = 0; // ms left, frozen while paused
+  let countInBeat = 500;
+  let guardLeft = 0; // COMBO SHIELD charges left this song
+  let recoverLeft = 0; // RECOVERY boosted hits left
+  let burstUntil = -1; // FEVER MODE burst end (song time)
+  let burstNextAt = 0; // combo that triggers the next burst
+  let encoreRun = false; // this run is an ENCORE (faster, more points)
+  let pendingEncore = false;
+  let encoreReady = false;
+  let activeHolds = []; // HOLD GRIP: hold notes locked to the pad
+  const heldLanes = [0, 0, 0];
+  const laneReleasedAt = [-1e9, -1e9, -1e9];
+  const pointerLanes = new Map();
 
   /** @type {{displayName:string|null,totalScore:number}|null} */
   let cloudProfile = null;
@@ -292,6 +404,16 @@
       echo: 0,
       shield: 0,
       rush: 0,
+      startup: 0,
+      wide: 0,
+      guard: 0,
+      boost: 0,
+      ppulse: 0,
+      trail: 0,
+      grip: 0,
+      recover: 0,
+      burst: 0,
+      encore: 0,
       spent: 0,
       layout: layout === "b" || layout === "c" ? layout : "a",
     };
@@ -409,15 +531,12 @@
     const guest = normalizeUpgrades(readUpgradesKey(UPGRADES_GUEST_KEY), readLayoutPref() || "a");
     const user = normalizeUpgrades(readUpgradesKey(upgradesStorageKey(uid)), guest.layout);
     const merged = {
-      focus: Math.max(guest.focus, user.focus),
-      power: Math.max(guest.power, user.power),
-      flow: Math.max(guest.flow, user.flow),
-      pulse: Math.max(guest.pulse || 0, user.pulse || 0),
-      reach: Math.max(guest.reach || 0, user.reach || 0),
-      vault: Math.max(guest.vault || 0, user.vault || 0),
       spent: Math.max(guest.spent, user.spent),
       layout: readLayoutPref() || user.layout || guest.layout || "a",
     };
+    Object.keys(UPGRADE_TRACKS).forEach((track) => {
+      merged[track] = Math.max(guest[track] || 0, user[track] || 0);
+    });
     const minSpent = minSpentForLevels(merged);
     merged.spent = Math.max(merged.spent, minSpent);
     upgradesState = normalizeUpgrades(merged, merged.layout);
@@ -452,12 +571,20 @@
   function getWindows() {
     const focus = clampLevel(upgradesState && upgradesState.focus);
     const scale = 1 + 0.08 * focus;
+    // WIDE WINDOW: taps that used to land in the MISS band now count as GOOD hits.
+    const extra = (CORE_FX.wideMs / 1000) * coreLv("wide");
+    const good = BASE_WINDOWS.good * scale + extra;
     return {
       perfect: BASE_WINDOWS.perfect * scale,
-      great: BASE_WINDOWS.great * scale,
-      good: BASE_WINDOWS.good * scale,
-      miss: BASE_WINDOWS.miss * scale,
+      great: BASE_WINDOWS.great * scale + extra * 0.25,
+      good: good,
+      miss: Math.max(BASE_WINDOWS.miss * scale + extra * 0.5, good + 0.02),
     };
+  }
+
+  function coreLv(track) {
+    const lv = clampLevel(upgradesState && upgradesState[track]);
+    return Math.min(lv, trackMaxLevel(track));
   }
 
   function powerScoreMult() {
@@ -1268,6 +1395,18 @@
     nosAltLast = -1;
     setNosUi(false);
     counts = { perfect: 0, great: 0, good: 0, miss: 0 };
+    countInUntil = 0;
+    countInLeft = 0;
+    guardLeft = coreLv("guard");
+    recoverLeft = 0;
+    burstUntil = -1;
+    burstNextAt = burstEvery();
+    encoreReady = false;
+    activeHolds = [];
+    showCountIn("");
+    const trailLv = coreLv("trail");
+    notesLayer.classList.toggle("trail-on", trailLv > 0);
+    notesLayer.style.setProperty("--trail-h", CORE_FX.trailPx[trailLv] + "px");
     notesLayer.innerHTML = "";
     notes = (chart.notes || []).map((n, idx) => ({
       id: idx,
@@ -1299,10 +1438,27 @@
     return el;
   }
 
-  function yForNote(tNow, hitTime) {
-    // note reaches HIT_Y_PCT at hitTime; travels from SPAWN_Y_PCT over fall time
+  function noteFall(n) {
     const fall = getFallTime();
-    const progress = 1 - (hitTime - tNow) / fall;
+    const lv = coreLv("startup");
+    if (!lv) return fall;
+    const win = CORE_FX.startupSecs[lv];
+    if (n.t >= win) return fall;
+    // Slowest at the very start, easing back to normal speed by the end of the window.
+    return fall * (1 + CORE_FX.startupSlow[lv] * (1 - Math.max(0, n.t) / win));
+  }
+
+  function songTime() {
+    if (countInUntil > 0) {
+      const left = paused ? countInLeft : Math.max(0, countInUntil - performance.now());
+      return -left / 1000;
+    }
+    return audio.currentTime;
+  }
+
+  function yForNote(tNow, hitTime, fall) {
+    // note reaches HIT_Y_PCT at hitTime; travels from SPAWN_Y_PCT over fall time
+    const progress = 1 - (hitTime - tNow) / (fall || getFallTime());
     return SPAWN_Y_PCT + progress * (HIT_Y_PCT - SPAWN_Y_PCT);
   }
 
@@ -1313,7 +1469,8 @@
     for (let i = 0; i < notes.length; i++) {
       const n = notes[i];
       if (n.hit) continue;
-      const appear = n.t - getFallTime();
+      const fall = noteFall(n);
+      const appear = n.t - fall;
       const gone = n.t + missWin + 0.15;
       if (tNow < appear || tNow > gone + (n.hold || 0)) {
         if (n.el) {
@@ -1323,7 +1480,7 @@
         continue;
       }
       if (!n.el) spawnNoteEl(n);
-      const yPct = yForNote(tNow, n.t);
+      const yPct = yForNote(tNow, n.t, fall);
       const x = laneCenters[n.lane] || w * ((n.lane + 0.5) / 3);
       if (n.kind === "hold") {
         n.el.style.left = x + "px";
@@ -1349,7 +1506,7 @@
     }, 420);
   }
 
-  function flashLane(lane, spark) {
+  function flashLane(lane, spark, pulse) {
     const el = $$(".lane")[lane];
     if (!el) return;
     el.classList.add("flash");
@@ -1357,13 +1514,166 @@
     if (spark) {
       const flash = el.querySelector(".hit-flash");
       if (flash) {
-        flash.classList.remove("spark");
+        flash.classList.remove("spark", "pulse");
         // force reflow so animation retriggers
         void flash.offsetWidth;
         flash.classList.add("spark");
-        setTimeout(() => flash.classList.remove("spark"), 300);
+        // PERFECT PULSE: brighter, bigger flash on PERFECT hits
+        const pulseLv = pulse ? coreLv("ppulse") : 0;
+        if (pulseLv) {
+          flash.style.setProperty("--pulse-b", String(1.8 + 0.25 * pulseLv));
+          flash.classList.add("pulse");
+        }
+        setTimeout(() => flash.classList.remove("spark", "pulse"), pulseLv ? 380 : 300);
       }
     }
+  }
+
+  const countInEl = $("#count-in");
+  const corePopEl = $("#core-pop");
+  let corePopTimer = 0;
+  function showCountIn(text) {
+    if (!countInEl) return;
+    if (countInEl.textContent !== text) countInEl.textContent = text;
+    countInEl.classList.toggle("hidden", !text);
+  }
+  function corePop(text) {
+    if (!corePopEl) return;
+    corePopEl.textContent = text;
+    corePopEl.classList.remove("show");
+    void corePopEl.offsetWidth;
+    corePopEl.classList.add("show");
+    clearTimeout(corePopTimer);
+    corePopTimer = setTimeout(() => corePopEl.classList.remove("show"), 900);
+  }
+
+  function burstEvery() {
+    return CORE_FX.burstEvery[coreLv("burst")] || 0;
+  }
+  function burstActive() {
+    return burstUntil > 0 && burstUntil > songTime();
+  }
+  function checkBurst() {
+    const every = burstEvery();
+    if (!every || combo < burstNextAt) return;
+    burstUntil = Math.max(songTime(), burstUntil) + CORE_FX.burstSecs[coreLv("burst")];
+    burstNextAt = combo + every;
+    corePop("FEVER MODE x2");
+  }
+
+  // Points for one hit: base -> FEVER / FEVER MODE -> POWER x SCORE BOOST -> VAULT / PERFECT PULSE
+  // -> RECOVERY -> ENCORE. ECHO (combo) is applied on top by the caller.
+  function hitPoints(label) {
+    let pts = SCORE[label];
+    if (fever) pts *= 2;
+    if (burstActive()) pts *= 2;
+    pts = Math.round(pts * powerScoreMult() * (1 + CORE_FX.boost * coreLv("boost")));
+    if (label === "perfect") {
+      const vaultLv = clampLevel(upgradesState && upgradesState.vault);
+      if (vaultLv > 0) pts += Math.floor(SCORE.perfect * 0.08 * vaultLv);
+      pts += CORE_FX.ppulse * coreLv("ppulse");
+    }
+    if (recoverLeft > 0) {
+      recoverLeft -= 1;
+      pts = Math.round(pts * (1 + recoverBonus(coreLv("recover"))));
+    }
+    if (encoreRun) pts = Math.round(pts * CORE_FX.encoreMult[coreLv("encore")]);
+    return pts;
+  }
+
+  // ---- HOLD GRIP --------------------------------------------------------------
+  function laneHeld(lane) {
+    const grace = CORE_FX.gripGrace[coreLv("grip")] * 1000;
+    const now = performance.now();
+    const check = (i) => heldLanes[i] > 0 || now - laneReleasedAt[i] <= grace;
+    if (perfectUnlocked()) return check(0) || check(1) || check(2);
+    return check(lane);
+  }
+  function pressLane(lane) {
+    if (lane >= 0 && lane < 3) heldLanes[lane] += 1;
+  }
+  function releaseLane(lane) {
+    if (lane < 0 || lane > 2) return;
+    heldLanes[lane] = Math.max(0, heldLanes[lane] - 1);
+    if (!heldLanes[lane]) laneReleasedAt[lane] = performance.now();
+  }
+  function lockHold(n, tHit) {
+    if (!coreLv("grip") || n.kind !== "hold" || !(n.hold > 0) || !n.el) return false;
+    n.el.classList.remove("hit");
+    n.el.classList.add("locked");
+    activeHolds.push({ note: n, el: n.el, end: n.t + n.hold, last: Math.max(tHit, n.t), acc: 0, px: parseFloat(n.el.style.height) || 40, pts: 0 });
+    n.el = null;
+    return true;
+  }
+  function updateHolds(t) {
+    if (!activeHolds.length) return;
+    const h = notesLayer.clientHeight || 1;
+    const tick = CORE_FX.gripTick * coreLv("grip");
+    activeHolds = activeHolds.filter((hold) => {
+      const done = t >= hold.end;
+      if (!done && !laneHeld(hold.note.lane)) {
+        if (hold.el.parentNode) hold.el.remove();
+        return false;
+      }
+      const upto = Math.min(t, hold.end);
+      if (upto > hold.last) {
+        hold.acc += upto - hold.last;
+        hold.last = upto;
+        while (hold.acc >= 0.1) {
+          hold.acc -= 0.1;
+          score += tick;
+          hold.pts += tick;
+        }
+      }
+      if (done) {
+        if (hold.el.parentNode) hold.el.remove();
+        if (hold.pts) corePop("HOLD +" + hold.pts);
+        return false;
+      }
+      // Pin the hold's head to the hit line and shrink its tail as it is held.
+      const left = Math.max(0, (hold.end - t) / hold.note.hold);
+      const px = Math.max(12, hold.px * left);
+      hold.el.style.height = px + "px";
+      hold.el.style.top = (HIT_Y_PCT / 100) * h - px + "px";
+      return true;
+    });
+  }
+
+  // ---- STARTUP STAR count-in ------------------------------------------------------
+  function countInSeconds() {
+    if (!coreLv("startup")) return 0;
+    const bpm = Number((chart && chart.bpm) || (levelMeta && levelMeta.bpm)) || 100;
+    countInBeat = Math.max(380, Math.min(750, 60000 / bpm));
+    return (countInBeat * 3) / 1000;
+  }
+  function tickCountIn() {
+    if (!countInUntil || paused) return;
+    const left = countInUntil - performance.now();
+    if (left <= 0) {
+      countInUntil = 0;
+      showCountIn("");
+      try { audio.currentTime = 0; } catch (_) {}
+      audio.play().catch(() => {});
+      return;
+    }
+    showCountIn(String(Math.min(3, Math.ceil(left / countInBeat))));
+  }
+  function pauseSong() {
+    if (countInUntil) countInLeft = Math.max(0, countInUntil - performance.now());
+    try { audio.pause(); } catch (_) {}
+  }
+  function resumeSong() {
+    if (countInUntil) {
+      countInUntil = performance.now() + countInLeft;
+      return;
+    }
+    audio.play().catch(() => {});
+  }
+  function setPlaybackRate(rate) {
+    try {
+      audio.defaultPlaybackRate = rate;
+      audio.playbackRate = rate;
+    } catch (_) {}
   }
 
   function pickNosMode() {
@@ -1432,36 +1742,32 @@
         nosAltLast = lane;
       }
     }
-    updateHUD(audio.currentTime || 0);
+    updateHUD(songTime());
   }
 
   function autoCapture(n) {
     if (!n || n.hit || n.missed) return;
     n.hit = true;
-    if (n.el) {
+    if (n.el && !lockHold(n, songTime())) {
       n.el.classList.add("hit");
       const el = n.el;
       setTimeout(() => { if (el.parentNode) el.remove(); }, 80);
       n.el = null;
     }
     const label = "perfect";
-    let pts = SCORE[label];
-    if (fever) pts *= 2;
-    pts = Math.round(pts * powerScoreMult());
-    const vaultLv = clampLevel(upgradesState && upgradesState.vault);
-    if (vaultLv > 0) pts += Math.floor(SCORE.perfect * 0.08 * vaultLv);
-    score += echoScore(pts);
+    score += echoScore(hitPoints(label));
     combo += 1;
     chain += 1;
     maxCombo = Math.max(maxCombo, combo);
     if (!nosActive) health = Math.min(1, health + 0.02);
     counts[label]++;
     if (combo >= feverComboThreshold()) fever = true;
+    checkBurst();
     showJudge(label);
-    flashLane(n.lane, true);
+    flashLane(n.lane, true, true);
     tryNosActivity(n.lane, label);
     maybeStartNos();
-    updateHUD(audio.currentTime || 0);
+    updateHUD(songTime());
   }
 
   function registerMiss(n) {
@@ -1472,12 +1778,19 @@
     if (pulseArmor > 0) {
       pulseArmor -= 1;
       // PULSE combo armor: keep combo/chain intact on this miss
+    } else if (guardLeft > 0 && combo > 0) {
+      // COMBO SHIELD: this miss doesn't reset the combo
+      guardLeft -= 1;
+      corePop("COMBO SHIELD");
     } else {
       const keepCombo = Math.min(combo, flow);
       combo = keepCombo;
       chain = keepCombo > 0 ? Math.min(chain, keepCombo) : 0;
       if (keepCombo < feverComboThreshold()) fever = false;
+      if (burstEvery()) burstNextAt = combo + burstEvery();
     }
+    const recoverLv = coreLv("recover");
+    if (recoverLv) recoverLeft = 2 + recoverLv;
     const shield = clampLevel(upgradesState && upgradesState.shield);
     let missPenalty = Math.max(0.02, 0.08 - 0.015 * flow);
     missPenalty *= Math.max(0.4, 1 - 0.12 * shield);
@@ -1489,7 +1802,7 @@
     counts.miss++;
     showJudge("miss");
     maybeStartNos();
-    updateHUD(audio.currentTime || 0);
+    updateHUD(songTime());
   }
 
   function findHitNote(lane, tNow) {
@@ -1510,7 +1823,7 @@
 
   function judgeHit(lane) {
     if (!playing || paused) return;
-    const tNow = audio.currentTime;
+    const tNow = songTime();
     const found = findHitNote(lane, tNow);
     if (!found) {
       flashLane(lane, false);
@@ -1525,7 +1838,7 @@
     else if (dt <= win.good) label = "good";
     else label = "miss";
 
-    flashLane(lane, label === "perfect" || label === "great");
+    flashLane(lane, label === "perfect" || label === "great", label === "perfect");
 
     if (label === "miss") {
       registerMiss(note);
@@ -1533,7 +1846,7 @@
     }
 
     note.hit = true;
-    if (note.el) {
+    if (note.el && !lockHold(note, tNow)) {
       note.el.classList.add("hit");
       const el = note.el;
       setTimeout(() => {
@@ -1542,13 +1855,7 @@
       note.el = null;
     }
 
-    let pts = SCORE[label];
-    if (fever) pts *= 2;
-    pts = Math.round(pts * powerScoreMult());
-    if (label === "perfect") {
-      const vaultLv = clampLevel(upgradesState && upgradesState.vault);
-      if (vaultLv > 0) pts += Math.floor(SCORE.perfect * 0.08 * vaultLv);
-    }
+    const pts = hitPoints(label);
     if (label === "good") {
       const pulseLv = clampLevel(upgradesState && upgradesState.pulse);
       if (pulseLv > 0) {
@@ -1566,6 +1873,7 @@
     }
     counts[label]++;
     if (combo >= feverComboThreshold()) fever = true;
+    checkBurst();
     showJudge(label);
     tryNosActivity(lane, label);
     maybeStartNos();
@@ -1578,7 +1886,11 @@
     chainVal.textContent = String(chain);
     timerEl.textContent = formatTime(t);
     feverFill.style.width = Math.min(100, (combo / feverFillDenom()) * 100) + "%";
-    feverTag.classList.toggle("hidden", !fever);
+    const burst = burstActive();
+    feverTag.classList.toggle("hidden", !fever && !burst);
+    feverTag.classList.toggle("burst", burst);
+    const feverText = fever && burst ? "FEVER x4" : burst ? "FEVER MODE x2" : "FEVER x2";
+    if (feverTag.textContent !== feverText) feverTag.textContent = feverText;
     healthFill.style.width = Math.max(0, health * 100) + "%";
     if (nosActive) {
       setNosUi(true);
@@ -1625,9 +1937,11 @@
     if (!playing) return;
     raf = requestAnimationFrame(loop);
     if (paused) return;
-    const t = audio.currentTime;
+    tickCountIn();
+    const t = songTime();
     updateNotePositions(t);
-    updateHUD(t);
+    updateHolds(t);
+    updateHUD(Math.max(0, t));
     animateSides(t);
 
     const dur = chart.duration || audio.duration || 151.2;
@@ -1685,6 +1999,16 @@
       resBest.textContent = "BEST " + String(score);
     }
     if (resNewBest) resNewBest.classList.toggle("hidden", !isNewBest);
+    // ENCORE: a clear with no misses unlocks a faster replay worth more points.
+    const encoreLv = coreLv("encore");
+    encoreReady = encoreLv > 0 && counts.miss === 0 && notes.length > 0;
+    const encoreBtn = $("#encore-btn");
+    if (encoreBtn) {
+      encoreBtn.classList.toggle("hidden", !encoreReady);
+      encoreBtn.textContent = "ENCORE · " + Math.round(CORE_FX.encoreRate[encoreLv] * 100) + "% SPEED · x" + CORE_FX.encoreMult[encoreLv].toFixed(2);
+    }
+    const resTitle = resultsOverlay && resultsOverlay.querySelector("h1");
+    if (resTitle) resTitle.textContent = encoreRun ? "ENCORE RESULTS" : "RESULTS";
 
     $("#res-score").textContent = String(score);
     $("#res-combo").textContent = String(maxCombo);
@@ -1846,7 +2170,7 @@
       levelsOverlay.classList.add("hidden");
     }
     if (playing && !paused) {
-      try { audio.pause(); } catch (_) {}
+      pauseSong();
       paused = true;
       if (pauseBtn) pauseBtn.textContent = "▶";
       if (pauseOverlay) pauseOverlay.classList.add("hidden");
@@ -1892,7 +2216,7 @@
       paused = false;
       if (pauseBtn) pauseBtn.textContent = "❚❚";
       if (pauseOverlay) pauseOverlay.classList.add("hidden");
-      audio.play().catch(() => {});
+      resumeSong();
     } else if (playing && paused && pauseOverlay) {
       pauseOverlay.classList.remove("hidden");
     }
@@ -1914,6 +2238,9 @@
     gameEl.classList.add("hidden");
     playing = false;
     paused = false;
+    countInUntil = 0;
+    showCountIn("");
+    encoreRun = false;
     cancelAnimationFrame(raf);
     try { audio.pause(); } catch (_) {}
     startBtn.disabled = true;
@@ -1952,15 +2279,36 @@
     if (levelsOverlay) levelsOverlay.classList.add("hidden");
     levelsFrom = null;
     gameEl.classList.remove("hidden");
+    encoreRun = pendingEncore && coreLv("encore") > 0;
+    pendingEncore = false;
+    const encoreBtn = $("#encore-btn");
+    if (encoreBtn) encoreBtn.classList.add("hidden");
     resetState();
     measureLanes();
     paused = false;
     playing = true;
     pauseBtn.textContent = "❚❚";
     try {
+      setPlaybackRate(encoreRun ? CORE_FX.encoreRate[coreLv("encore")] : 1);
       audio.currentTime = 0;
-      await audio.play();
+      const countIn = countInSeconds();
+      if (countIn > 0) {
+        // Start (muted) inside the tap so the browser allows playback after the count-in.
+        audio.muted = true;
+        await audio.play();
+        audio.pause();
+        audio.currentTime = 0;
+        applyGameMute();
+        countInUntil = performance.now() + countIn * 1000;
+        showCountIn("3");
+      } else {
+        await audio.play();
+      }
+      if (encoreRun) corePop("ENCORE x" + CORE_FX.encoreMult[coreLv("encore")].toFixed(2));
     } catch (err) {
+      applyGameMute();
+      countInUntil = 0;
+      showCountIn("");
       loadStatus.textContent = "Tap again to unlock audio";
       startOverlay.classList.remove("hidden");
       playing = false;
@@ -1976,14 +2324,14 @@
     // Don't toggle while confirm or levels is open
     if (confirmOverlay && !confirmOverlay.classList.contains("hidden")) return;
     if (levelsOverlay && !levelsOverlay.classList.contains("hidden")) return;
+    if (!paused) pauseSong();
     paused = !paused;
     if (paused) {
-      audio.pause();
       pauseBtn.textContent = "▶";
       if (pauseOverlay) pauseOverlay.classList.remove("hidden");
     } else {
       if (pauseOverlay) pauseOverlay.classList.add("hidden");
-      audio.play().catch(() => {});
+      resumeSong();
       pauseBtn.textContent = "❚❚";
     }
   }
@@ -1993,7 +2341,7 @@
     paused = false;
     if (pauseOverlay) pauseOverlay.classList.add("hidden");
     pauseBtn.textContent = "❚❚";
-    audio.play().catch(() => {});
+    resumeSong();
   }
 
   function onKeyDown(e) {
@@ -2006,6 +2354,7 @@
     const lane = KEY_MAP[e.code];
     if (lane === undefined) return;
     e.preventDefault();
+    pressLane(lane);
     strike(lane);
   }
 
@@ -2041,6 +2390,7 @@
   function onKeyUp(e) {
     const lane = KEY_MAP[e.code];
     if (lane === undefined) return;
+    releaseLane(lane);
     releaseStrike(lane);
   }
 
@@ -2049,6 +2399,7 @@
       const lane = Number(pad.dataset.lane);
       const down = (ev) => {
         ev.preventDefault();
+        trackPointer(ev, lane);
         strike(lane);
       };
       const up = () => pad.classList.remove("pressed");
@@ -2061,9 +2412,24 @@
     $$(".lane").forEach((laneEl) => {
       laneEl.addEventListener("pointerdown", (ev) => {
         ev.preventDefault();
+        trackPointer(ev, Number(laneEl.dataset.lane));
         strike(Number(laneEl.dataset.lane));
       });
     });
+    const up = (ev) => {
+      if (!pointerLanes.has(ev.pointerId)) return;
+      const lane = pointerLanes.get(ev.pointerId);
+      pointerLanes.delete(ev.pointerId);
+      releaseLane(lane);
+    };
+    window.addEventListener("pointerup", up, true);
+    window.addEventListener("pointercancel", up, true);
+  }
+
+  function trackPointer(ev, lane) {
+    if (pointerLanes.has(ev.pointerId)) releaseLane(pointerLanes.get(ev.pointerId));
+    pointerLanes.set(ev.pointerId, lane);
+    pressLane(lane);
   }
 
   function setUpgradeLayout(layout, persist) {
@@ -2107,6 +2473,18 @@
     if (blurbEl) blurbEl.textContent = meta.blurb;
     const cost = nextCost(track);
     const lv = clampLevel(upgradesState[track]);
+    const fxEl = $("#upgrade-a-fx");
+    if (fxEl) {
+      const maxLv = trackMaxLevel(track);
+      let fx = "";
+      if (typeof meta.fx === "function") {
+        const now = lv > 0 ? "NOW · " + meta.fx(lv) : "";
+        const next = lv < maxLv ? "NEXT · " + meta.fx(lv + 1) : "MAXED";
+        fx = "Lv " + lv + "/" + maxLv + (now ? "  " + now : "") + "\n" + next;
+      }
+      fxEl.textContent = fx;
+      fxEl.classList.toggle("hidden", !fx);
+    }
     if (costEl) costEl.textContent = cost == null ? "MAX" : formatPoints(cost);
     if (buyBtn) {
       buyBtn.setAttribute("data-track", track);
@@ -2492,6 +2870,14 @@
       });
     }
     retryBtn.addEventListener("click", startGame);
+    const encoreBtn = $("#encore-btn");
+    if (encoreBtn) {
+      encoreBtn.addEventListener("click", () => {
+        if (!encoreReady) return;
+        pendingEncore = true;
+        startGame().catch(console.error);
+      });
+    }
     const nextLevelBtn = $("#next-level-btn");
     if (nextLevelBtn) nextLevelBtn.addEventListener("click", () => { goNextLevel().catch(console.error); });
     const confirmYes = $("#confirm-yes");
@@ -2545,6 +2931,12 @@
         const node = ev.target.closest && ev.target.closest(".upgrade-node");
         if (node) {
           selectUpgradeTrack(node.getAttribute("data-track"));
+          // Keep the detail / BUY box in view when a lower (CORE) node is picked on small screens.
+          const detail = $("#upgrade-detail-a");
+          if (detail && detail.scrollIntoView) {
+            const r = detail.getBoundingClientRect();
+            if (r.bottom > window.innerHeight || r.top < 0) detail.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          }
           return;
         }
         const buy = ev.target.closest && ev.target.closest(".upgrade-buy");
@@ -2572,7 +2964,7 @@
       goPrevLevel().catch(console.error);
     });
     $("#btn-fwd").addEventListener("click", () => {
-      if (!playing) return;
+      if (!playing || countInUntil) return;
       audio.currentTime = Math.min(audio.duration || 151, audio.currentTime + 5);
     });
     $("#btn-next").addEventListener("click", () => {
