@@ -434,3 +434,35 @@ async function allowLevelRanks() {
   console.log("level rank rules released");
 }
 try { await allowLevelRanks(); } catch (err) { console.log("level rank rules skipped", String(err.message || err).slice(0, 400)); }
+
+async function lockPayoutEmail() {
+  const project = "projects/emciix-com";
+  const releases = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + project + "/releases");
+  const release = (releases.releases || []).find((item) => String(item.name || "").endsWith("/cloud.firestore"));
+  if (!release || !release.rulesetName) return;
+  const ruleset = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + release.rulesetName);
+  const file = ((ruleset.source && ruleset.source.files) || [])[0];
+  if (!file || typeof file.content !== "string") return;
+  if (file.content.includes("match /users/{userId}/private/{docId}")) {
+    console.log("payout privacy rules already set");
+    return;
+  }
+  const marker = "match /databases/{database}/documents {";
+  if (!file.content.includes(marker)) {
+    console.log("rules shape unexpected");
+    return;
+  }
+  const block = `
+    match /users/{userId}/private/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }`;
+  const content = file.content.replace(marker, marker + block);
+  const created = await api(access, "POST", "https://firebaserules.googleapis.com/v1/" + project + "/rulesets", {
+    source: { files: [{ name: file.name || "firestore.rules", content }] },
+  });
+  await api(access, "PATCH", "https://firebaserules.googleapis.com/v1/" + release.name + "?updateMask=rulesetName", {
+    release: { name: release.name, rulesetName: created.name },
+  });
+  console.log("payout privacy rules released");
+}
+try { await lockPayoutEmail(); } catch (err) { console.log("payout privacy skipped", String(err.message || err).slice(0, 400)); }

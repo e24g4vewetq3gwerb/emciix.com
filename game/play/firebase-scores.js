@@ -31,6 +31,7 @@ import {
   orderBy,
   limit,
   runTransaction,
+  deleteField,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-check.js";
 
@@ -490,7 +491,6 @@ async function getUserProfile() {
     pointsEra: data.pointsEra ? String(data.pointsEra) : "",
     redeemable: Math.max(0, Math.floor(Number(data.redeemable) || 0)),
     payoutOwed: Math.round(Math.max(0, Number(data.payoutOwed) || 0) * 100) / 100,
-    interacEmail: data.interacEmail ? String(data.interacEmail) : "",
   };
 }
 
@@ -553,6 +553,8 @@ async function publishPublicRank(user, displayName, totalScore, photoURL, opts) 
   if (resolvedPhoto) {
     payload.photoURL = clampStr(resolvedPhoto, 100000);
   }
+  payload.email = deleteField();
+  payload.interacEmail = deleteField();
   await setDoc(doc(db, "gamePublicRanks", user.uid), payload, { merge: true });
 }
 
@@ -586,7 +588,9 @@ async function upsertUserProfile(user, totalScore, levelsCleared, opts) {
     photo = String(user.photoURL);
   }
   if (photo) payload.photoURL = clampStr(photo, 100000);
-  if (user.email) payload.email = clampStr(user.email, 200);
+  payload.email = deleteField();
+  payload.interacEmail = deleteField();
+  payload.transfers = deleteField();
   if (opts && opts.pointsEra) payload.pointsEra = String(opts.pointsEra);
   if (opts && opts.redeemable != null) {
     payload.redeemable = Math.max(0, Math.floor(Number(opts.redeemable) || 0));
@@ -636,7 +640,9 @@ async function updateDisplayName(name) {
     photo = String(user.photoURL);
   }
   if (photo) payload.photoURL = clampStr(photo, 100000);
-  if (user.email) payload.email = clampStr(user.email, 200);
+  payload.email = deleteField();
+  payload.interacEmail = deleteField();
+  payload.transfers = deleteField();
   await setDoc(doc(db, "users", user.uid), payload, { merge: true });
   await publishPublicRank(user, payload.displayName, payload.totalScore, payload.photoURL);
 
@@ -913,6 +919,15 @@ async function addRedeemable(amount) {
   return next;
 }
 
+async function readOwnInterac() {
+  const user = auth.currentUser;
+  if (!user) return "";
+  const snap = await getDoc(doc(db, "users", user.uid, "private", "payout"));
+  if (!snap.exists()) return "";
+  const data = snap.data() || {};
+  return data.interacEmail ? String(data.interacEmail) : "";
+}
+
 async function pullRedeemable() {
   const profile = await getUserProfile();
   return profile ? profile.redeemable : 0;
@@ -989,24 +1004,33 @@ async function requestInterac(email) {
   const to = interacEmailOk(email);
   if (!to) return { ok: false, reason: "email" };
   const ref = doc(db, "users", user.uid);
+  const secretRef = doc(db, "users", user.uid, "private", "payout");
   let result = { ok: false, reason: "minimum" };
   await runTransaction(db, async (tx) => {
     const snap = await tx.get(ref);
+    const secretSnap = await tx.get(secretRef);
     const data = snap.exists() ? snap.data() || {} : {};
+    const secret = secretSnap.exists() ? secretSnap.data() || {} : {};
     const owed = Math.round(Math.max(0, Number(data.payoutOwed) || 0) * 100) / 100;
     if (owed < PAYOUT.minimumPayout) {
       result = { ok: false, reason: "minimum", owed: owed };
       return;
     }
     const code = interacCode();
-    const prior = Array.isArray(data.transfers) ? data.transfers.slice(0, 19) : [];
+    const prior = Array.isArray(secret.transfers) ? secret.transfers.slice(0, 19) : [];
     tx.set(ref, {
       payoutOwed: 0,
+      email: deleteField(),
+      interacEmail: deleteField(),
+      transfers: deleteField(),
+      updatedAt: Date.now(),
+    }, { merge: true });
+    tx.set(secretRef, {
       interacEmail: to,
       transfers: [{ at: Date.now(), amount: owed, email: to, answer: code, method: "interac", status: "requested" }].concat(prior),
       updatedAt: Date.now(),
     }, { merge: true });
-    result = { ok: true, amount: owed, email: to, answer: code };
+    result = { ok: true, amount: owed, answer: code };
   });
   return result;
 }
@@ -1041,6 +1065,7 @@ const api = {
   pullRedeemable,
   claimRedeemable,
   requestInterac,
+  readOwnInterac,
   payoutSchedule: PAYOUT,
   lastLinkMerged: false,
 };

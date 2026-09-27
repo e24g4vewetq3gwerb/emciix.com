@@ -471,7 +471,7 @@
         else noteRedeem("E-Transfer opens at $" + schedule.minimumPayout);
         return;
       }
-      noteRedeem("Requested $" + Number(res.amount).toFixed(2) + " to " + res.email + ". Security answer: " + res.answer);
+      noteRedeem("Requested $" + Number(res.amount).toFixed(2) + ". Security answer: " + res.answer);
     }).catch(() => {
       if (btn) btn.disabled = false;
       noteRedeem("Could not request the e-Transfer");
@@ -1135,7 +1135,10 @@
           if (api.getUserProfile) {
             const profile = await api.getUserProfile();
             const mail = $("#interac-email");
-            if (mail && profile && profile.interacEmail && !mail.value) mail.value = profile.interacEmail;
+            if (mail && !mail.value && api.readOwnInterac) {
+              const saved = await api.readOwnInterac();
+              if (saved) mail.value = saved;
+            }
             if (profile && profile.payoutOwed) {
               const owedLine = "$" + Number(profile.payoutOwed).toFixed(2) + " owed. E-Transfer at $" + payoutSchedule().minimumPayout + ".";
               const auth = $("#auth-redeem-val");
