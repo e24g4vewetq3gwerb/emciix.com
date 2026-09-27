@@ -325,6 +325,7 @@
       transform: scale(0.72);
       transform-origin: bottom center;
     }
+    .play-row.rec-row { grid-template-columns: 1fr 1fr; }
   </style>
 </head>
 <body>
@@ -744,5 +745,129 @@
 })();
 </script>
 <script src="/portal/galactic-call.js?v=text-1" defer></script>
+<script>
+(function () {
+  if (document.documentElement.classList.contains("portal-bg")) return;
+  var rec = null;
+  var chunks = [];
+  var blob = null;
+  function stamp() {
+    var d = new Date();
+    function p(n) { return String(n).padStart(2, "0"); }
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes());
+  }
+  function download(file, name) {
+    var a = document.createElement("a");
+    var href = URL.createObjectURL(file);
+    a.href = href;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(href); }, 4000);
+  }
+  function sky() {
+    return document.querySelector("#root canvas");
+  }
+  function sync() {
+    var button = document.getElementById("portal-record");
+    if (!button) return;
+    var on = !!(rec && rec.state === "recording");
+    var label = on ? "Stop" : "Record";
+    if (button.textContent !== label) button.textContent = label;
+    button.classList.toggle("is-on", on);
+    button.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  function mime() {
+    var types = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
+    for (var i = 0; i < types.length; i++) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(types[i])) return types[i];
+    }
+    return "";
+  }
+  async function begin(stream) {
+    chunks = [];
+    blob = null;
+    var type = mime();
+    rec = new MediaRecorder(stream, type ? { mimeType: type } : undefined);
+    rec.ondataavailable = function (event) {
+      if (event.data && event.data.size) chunks.push(event.data);
+    };
+    rec.onstop = function () {
+      stream.getTracks().forEach(function (track) { try { track.stop(); } catch (err) {} });
+      blob = new Blob(chunks, { type: (rec && rec.mimeType) || "video/webm" });
+      rec = null;
+      sync();
+    };
+    var track = stream.getVideoTracks()[0];
+    if (track) track.addEventListener("ended", function () {
+      if (rec && rec.state === "recording") rec.stop();
+    });
+    rec.start(250);
+    sync();
+  }
+  async function display() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) return null;
+    try {
+      return await navigator.mediaDevices.getDisplayMedia({
+        video: { frameRate: 30 },
+        audio: false,
+        preferCurrentTab: true,
+        selfBrowserSurface: "include",
+        monitorTypeSurfaces: "exclude"
+      });
+    } catch (err) {
+      if (err && err.name === "NotAllowedError") return false;
+      try {
+        return await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+      } catch (err2) {
+        if (err2 && err2.name === "NotAllowedError") return false;
+        return null;
+      }
+    }
+  }
+  window.portalRecord = async function () {
+    if (rec && rec.state === "recording") {
+      rec.stop();
+      return;
+    }
+    var stream = await display();
+    if (stream === false) return;
+    if (!stream) {
+      var c = sky();
+      if (!c || !c.captureStream) return;
+      stream = c.captureStream(30);
+    }
+    try { await begin(stream); } catch (err) {}
+  };
+  window.portalSaveClip = async function () {
+    if (rec && rec.state === "recording") {
+      rec.stop();
+      await new Promise(function (resolve) {
+        var tries = 0;
+        var timer = setInterval(function () {
+          if (blob || tries++ > 40) { clearInterval(timer); resolve(); }
+        }, 50);
+      });
+    }
+    if (blob) {
+      download(blob, "portal-" + stamp() + ".webm");
+      return;
+    }
+    var c = sky();
+    if (!c) return;
+    var shot = document.createElement("canvas");
+    shot.width = c.width || c.clientWidth;
+    shot.height = c.height || c.clientHeight;
+    var ctx = shot.getContext("2d");
+    try { ctx.drawImage(c, 0, 0, shot.width, shot.height); } catch (err) { return; }
+    shot.toBlob(function (file) {
+      if (file) download(file, "portal-" + stamp() + ".png");
+    }, "image/png");
+  };
+  var root = document.getElementById("root");
+  if (root) new MutationObserver(sync).observe(root, { childList: true, subtree: true });
+})();
+</script>
 </body>
 </html>
