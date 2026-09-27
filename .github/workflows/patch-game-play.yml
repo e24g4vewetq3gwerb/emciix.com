@@ -28,6 +28,7 @@ on:
       - game/play/levels/glitch-by-glitch/**
       - game/play/levels/watch-it-brppp/**
       - game/play/levels/starslip/**
+      - game/play/levels/idk-what-im-doing/**
       - scripts/patch-hosting.mjs
       - views-boot.js
       - shelf-boot.js

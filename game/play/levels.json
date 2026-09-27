@@ -289,7 +289,7 @@
     "chart": "/game/play/levels/watch-it-brppp/chart.json",
     "lyrics": "/game/play/levels/watch-it-brppp/lyrics.json",
     "audio": "/game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3",
-    "youtube": "",
+    "youtube": "https://www.youtube.com/watch?v=U5ju6EligjY",
     "sideLeft": "WATCH IT",
     "sideRight": "BRPPP"
   },
