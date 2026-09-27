@@ -1337,6 +1337,16 @@ html, body {
   z-index: 0;
   pointer-events: none;
 }
+.corner-blob {
+  position: fixed;
+  z-index: 70;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, env(safe-area-inset-right));
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.55));
+}
 #start-overlay .start-layout {
   position: relative;
   z-index: 1;
