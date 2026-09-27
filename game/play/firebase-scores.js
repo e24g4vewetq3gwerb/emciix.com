@@ -487,6 +487,8 @@ async function getUserProfile() {
     totalScore: Math.max(0, Math.floor(Number(data.totalScore) || 0)),
     levelsCleared: Math.max(0, Math.floor(Number(data.levelsCleared) || 0)),
     photoURL: data.photoURL ? String(data.photoURL) : null,
+    pointsEra: data.pointsEra ? String(data.pointsEra) : "",
+    redeemable: Math.max(0, Math.floor(Number(data.redeemable) || 0)),
   };
 }
 
@@ -515,8 +517,9 @@ function resolveDisplayName(user, opts, existing) {
  * @returns {Promise<string>} resolved displayName
  */
 
-async function publishPublicRank(user, displayName, totalScore, photoURL) {
+async function publishPublicRank(user, displayName, totalScore, photoURL, opts) {
   if (!user) return;
+  const force = !!(opts && opts.force);
   let resolvedPhoto = photoURL != null ? String(photoURL) : "";
   if (!resolvedPhoto) {
     try {
@@ -542,7 +545,7 @@ async function publishPublicRank(user, displayName, totalScore, photoURL) {
   const newTotal = Math.max(0, Math.floor(Number(totalScore) || 0));
   const payload = {
     displayName: clampStr(displayName || "Player", 80) || "Player",
-    totalScore: Math.max(existingRankTotal, newTotal),
+    totalScore: force ? newTotal : Math.max(existingRankTotal, newTotal),
     updatedAt: Date.now(),
   };
   if (resolvedPhoto) {
@@ -558,11 +561,15 @@ async function upsertUserProfile(user, totalScore, levelsCleared, opts) {
   const existingTotal = existing
     ? Math.max(0, Math.floor(Number(existing.totalScore) || 0))
     : 0;
+  const force = !!(opts && opts.force);
+  const nextTotal = Math.max(0, Math.floor(Number(totalScore) || 0));
   const payload = {
     displayName,
     updatedAt: Date.now(),
-    totalScore: Math.max(existingTotal, Math.max(0, Math.floor(Number(totalScore) || 0))),
-    levelsCleared: Math.max(
+    totalScore: force ? nextTotal : Math.max(existingTotal, nextTotal),
+    levelsCleared: force
+      ? Math.max(0, Math.floor(Number(levelsCleared) || 0))
+      : Math.max(
       existing ? Math.max(0, Math.floor(Number(existing.levelsCleared) || 0)) : 0,
       Math.max(0, Math.floor(Number(levelsCleared) || 0))
     ),
@@ -578,8 +585,16 @@ async function upsertUserProfile(user, totalScore, levelsCleared, opts) {
   }
   if (photo) payload.photoURL = clampStr(photo, 100000);
   if (user.email) payload.email = clampStr(user.email, 200);
+  if (opts && opts.pointsEra) payload.pointsEra = String(opts.pointsEra);
+  if (opts && opts.redeemable != null) {
+    payload.redeemable = Math.max(0, Math.floor(Number(opts.redeemable) || 0));
+  }
   await setDoc(doc(db, "users", user.uid), payload, { merge: true });
-  await publishPublicRank(user, payload.displayName, payload.totalScore, payload.photoURL);
+  if (force && nextTotal === 0) {
+    try { await deleteDoc(doc(db, "gamePublicRanks", user.uid)); } catch (_) {}
+  } else {
+    await publishPublicRank(user, payload.displayName, payload.totalScore, payload.photoURL, { force: force });
+  }
   return displayName;
 }
 
@@ -847,6 +862,60 @@ async function loadLevelRanks() {
   return levels && typeof levels === "object" ? levels : {};
 }
 
+const POINTS_ERA = "pay-1";
+
+async function clearLevelRanksForUser(uid) {
+  const ref = LEVEL_RANKS();
+  await runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    if (!snap.exists() || !snap.data().levels) return;
+    const levels = { ...snap.data().levels };
+    Object.keys(levels).forEach((id) => {
+      const row = levels[id] || {};
+      const tops = Array.isArray(row.tops) ? row.tops.filter((item) => item && item.uid !== uid) : [];
+      levels[id] = Object.assign({}, row, { tops: tops });
+    });
+    tx.set(ref, { levels: levels, updatedAt: Date.now() }, { merge: true });
+  });
+}
+
+async function resetAccountPoints() {
+  const user = auth.currentUser;
+  if (!user) return false;
+  const profile = await getUserProfile();
+  if (profile && profile.pointsEra === POINTS_ERA) return false;
+  const bests = await loadCloudBests();
+  const ids = Object.keys(bests);
+  for (let i = 0; i < ids.length; i += 200) {
+    const batch = writeBatch(db);
+    ids.slice(i, i + 200).forEach((levelId) => {
+      batch.delete(doc(db, "users", user.uid, "scores", levelId));
+      batch.delete(doc(db, "gameLeaderboard", levelId, "entries", user.uid));
+    });
+    await batch.commit();
+  }
+  try { await clearLevelRanksForUser(user.uid); } catch (err) { console.warn("level rank reset", err); }
+  await upsertUserProfile(user, 0, 0, { force: true, pointsEra: POINTS_ERA, redeemable: profile && profile.redeemable ? profile.redeemable : 0 });
+  return true;
+}
+
+async function addRedeemable(amount) {
+  const user = auth.currentUser;
+  const add = Math.max(0, Math.floor(Number(amount) || 0));
+  if (!user || !add) return 0;
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+  const prev = snap.exists() ? Math.max(0, Math.floor(Number(snap.data().redeemable) || 0)) : 0;
+  const next = prev + add;
+  await setDoc(ref, { redeemable: next, updatedAt: Date.now() }, { merge: true });
+  return next;
+}
+
+async function pullRedeemable() {
+  const profile = await getUserProfile();
+  return profile ? profile.redeemable : 0;
+}
+
 const api = {
   signInGoogle,
   signInX,
@@ -872,6 +941,9 @@ const api = {
   applyPendingMergeIfAny,
   mergeBestsMaps,
   sumCloudBests,
+  resetAccountPoints,
+  addRedeemable,
+  pullRedeemable,
   lastLinkMerged: false,
 };
 
@@ -902,4 +974,7 @@ export {
   applyPendingMergeIfAny,
   mergeBestsMaps,
   sumCloudBests,
+  resetAccountPoints,
+  addRedeemable,
+  pullRedeemable,
 };

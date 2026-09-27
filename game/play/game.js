@@ -16,6 +16,8 @@
   };
   const SCORE = { perfect: 300, great: 200, good: 100, miss: 0 };
   const BESTS_KEY = "emciix-rhythm-bests";
+  const POINTS_ERA = "pay-1";
+  const REDEEM_KEY = "emciix-redeem";
   const UPGRADES_GUEST_KEY = "emciix-upgrades";
   const UPGRADE_LAYOUT_KEY = "emciix-upgrade-layout";
   const MAX_UPGRADE_LV = 5;
@@ -323,6 +325,63 @@
     } catch (_) {}
   }
 
+  function redeemStorageKey(uid) {
+    return uid ? REDEEM_KEY + ":" + uid : REDEEM_KEY;
+  }
+
+  function readRedeem(uid) {
+    try {
+      return Math.max(0, Math.floor(Number(localStorage.getItem(redeemStorageKey(uid))) || 0));
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  function writeRedeem(uid, amount) {
+    try {
+      localStorage.setItem(redeemStorageKey(uid), String(Math.max(0, Math.floor(Number(amount) || 0))));
+    } catch (_) {}
+  }
+
+  function paintRedeem(amount) {
+    const val = formatPoints(amount);
+    const auth = $("#auth-redeem-val");
+    if (auth) auth.textContent = val + " REDEEM";
+    const levels = $("#levels-redeem-val");
+    if (levels) levels.textContent = val;
+    const results = $("#res-redeem");
+    if (results && !results.dataset.locked) results.textContent = "REDEEM " + val;
+  }
+
+  function resetLocalPointsOnce() {
+    try {
+      if (localStorage.getItem("emciix.pointsEra") === POINTS_ERA) return false;
+      saveBests({});
+      localStorage.setItem("emciix.pointsEra", POINTS_ERA);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function addRedeemable(points) {
+    const add = Math.max(0, Math.floor(Number(points) || 0));
+    const uid = currentAuthUid();
+    const next = readRedeem(uid) + add;
+    writeRedeem(uid, next);
+    if (uid) writeRedeem(null, Math.max(readRedeem(null), next));
+    paintRedeem(next);
+    const api = window.EmciixScores;
+    if (uid && api && api.addRedeemable) {
+      api.addRedeemable(add).then((cloud) => {
+        const merged = Math.max(next, Math.floor(Number(cloud) || 0));
+        writeRedeem(uid, merged);
+        paintRedeem(merged);
+      }).catch(() => {});
+    }
+    return next;
+  }
+
   function getBest(levelId) {
     if (!levelId) return null;
     const bests = loadBests();
@@ -375,6 +434,7 @@
       const signedIn = !!(cloudProfile || (window.EmciixScores && window.EmciixScores.getCurrentUser && window.EmciixScores.getCurrentUser()));
       levelsPts.classList.toggle("hidden", !signedIn);
     }
+    paintRedeem(readRedeem(currentAuthUid()));
   }
 
   function clampLevel(n) {
@@ -843,9 +903,11 @@
       return;
     }
     if (!user) {
+      resetLocalPointsOnce();
       setSyncStatus("Local only");
       updateAuthChip(null);
       loadUpgrades();
+      paintRedeem(readRedeem(null));
       return;
     }
     cloudProfile = cloudProfile || {
@@ -855,6 +917,19 @@
     mergeUpgradesOnSignIn(user.uid);
     updateAuthChip(user);
     setSyncStatus("Syncing…");
+    resetLocalPointsOnce();
+    try {
+      if (api.resetAccountPoints) {
+        const wiped = await api.resetAccountPoints();
+        if (wiped) {
+          saveBests({});
+          if (cloudProfile) cloudProfile.totalScore = 0;
+          setPointsUI(0);
+        }
+      }
+    } catch (resetErr) {
+      console.warn("points reset", resetErr);
+    }
     try {
       await refreshCloudProfile(api, user);
       const cloud = await api.loadCloudBests();
@@ -926,6 +1001,14 @@
       }
       await refreshPublicRanks();
       await refreshLevelRanks();
+      if (api.pullRedeemable) {
+        try {
+          const cloudRedeem = await api.pullRedeemable();
+          const merged = Math.max(readRedeem(user.uid), Math.floor(Number(cloudRedeem) || 0));
+          writeRedeem(user.uid, merged);
+          paintRedeem(merged);
+        } catch (_) {}
+      }
     } catch (err) {
       console.error(err);
       setSyncStatus("Sync error", "error");
@@ -2011,6 +2094,12 @@
     if (resTitle) resTitle.textContent = encoreRun ? "ENCORE RESULTS" : "RESULTS";
 
     $("#res-score").textContent = String(score);
+    const redeemNow = addRedeemable(score);
+    const resRedeem = $("#res-redeem");
+    if (resRedeem) {
+      resRedeem.dataset.locked = "1";
+      resRedeem.textContent = "REDEEM +" + formatPoints(score) + " · " + formatPoints(redeemNow);
+    }
     $("#res-combo").textContent = String(maxCombo);
     $("#res-perfect").textContent = String(counts.perfect);
     $("#res-great").textContent = String(counts.great);

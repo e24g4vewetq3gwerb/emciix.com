@@ -16,6 +16,7 @@
         '<div class="auth-chip-meta">' +
           '<strong id="auth-chip-name">Signed in</strong>' +
           '<span id="auth-points-val">0</span> PTS' +
+          '<span class="redeem" id="auth-redeem-val">0 REDEEM</span>' +
         '</div>' +
         '<button type="button" id="btn-google-signout" class="start-action-btn btn-secondary">LOG OUT</button>' +
       '</div>' +
