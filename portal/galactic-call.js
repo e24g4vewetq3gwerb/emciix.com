@@ -175,6 +175,10 @@
       }
       window.emciixIsExplicit = isExplicit;
       window.emciixHasLink = hasLink;
+      function initialOf(text) {
+        var ch = String(text || "").replace(/^[@\s]+/, "").match(/[\p{L}\p{N}]/u);
+        return ch ? ch[0].toUpperCase() : "";
+      }
       function paint(card) {
         card = card || {};
         if (card.source) {
@@ -191,27 +195,29 @@
         var shown = card.label || heldName || "Have Fun";
         if (shown === "Galactic call:" || shown === "Galactic call") shown = heldName || "Have Fun";
         if (ask) ask.textContent = shown;
-        if (card.avatar) heldAvatar = card.avatar;
-        else if (!card.keepPhoto) heldAvatar = "";
+        // Text only: avatars / photos / thumbnails are never shown or fetched; a local initial badge stands in.
+        heldAvatar = "";
+        var badge = initialOf(heldName || source);
         if (photo) {
           photo.classList.toggle("is-on", mode !== "youtube");
-          photo.classList.toggle("has-photo", mode !== "youtube" && !!heldAvatar);
-          photo.style.backgroundImage = mode !== "youtube" && heldAvatar ? "url(\"" + String(heldAvatar).replace(/"/g, "") + "\")" : "";
-          photo.textContent = "";
+          photo.classList.remove("has-photo");
+          photo.style.backgroundImage = "";
+          photo.textContent = badge || "x";
         }
         if (yt) {
           yt.classList.toggle("is-on", mode === "youtube");
-          yt.classList.toggle("has-photo", mode === "youtube" && !!heldAvatar);
-          yt.style.backgroundImage = mode === "youtube" && heldAvatar ? "url(\"" + String(heldAvatar).replace(/"/g, "") + "\")" : "";
-          yt.textContent = "";
+          yt.classList.remove("has-photo");
+          yt.style.backgroundImage = "";
+          yt.textContent = badge || "yt";
         }
         try {
-          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, avatar: heldAvatar, source: source, label: ask ? ask.textContent : "Have Fun" }));
+          localStorage.setItem(key, JSON.stringify({ title: input.value, name: heldName, source: source, label: ask ? ask.textContent : "Have Fun" }));
         } catch (err) {}
         form.classList.add("is-saved");
       }
       try {
         var saved = JSON.parse(localStorage.getItem(key) || "null");
+        if (saved && typeof saved === "object") delete saved.avatar;
         if (saved && typeof saved === "object" && safeCard(saved) && !hasLink(saved.title, saved.name, saved.label, saved.source)) paint(saved);
         else if (typeof saved === "string" && saved && !isExplicit(saved) && !hasLink(saved)) paint({ title: saved });
       } catch (e) {
@@ -265,11 +271,7 @@
         return "";
       }
       function thumbUrl(list) {
-        if (!Array.isArray(list) || !list.length) return "";
-        var best = list[list.length - 1] || list[0];
-        var url = (best && best.url) || "";
-        if (url.indexOf("//") === 0) url = "https:" + url;
-        return url;
+        return ""; // text only: channel thumbnails are not used
       }
       async function channelLookup(query) {
         var q = String(query || "").replace(/^@/, "").trim();
@@ -313,7 +315,7 @@
           if (isExplicit(info.title, info.author, item && item.title)) return { blocked: true };
           var dirty = ((json && json.items) || []).slice(0, 8).filter(function (row) { return row && isExplicit(row.title); }).length;
           if (dirty >= 2) return { blocked: true };
-          if (item && item.title) return { name: found.name || info.title || query, avatar: found.avatar || info.image || "", title: item.title, url: item.link || "" };
+          if (item && item.title) return { name: found.name || info.title || query, avatar: "", title: item.title, url: item.link || "" };
         } catch (err) {}
         try {
           var alt = await fetch("https://invidious.f5.si/api/v1/channels/" + encodeURIComponent(found.id) + "/videos?sort_by=newest");
@@ -462,7 +464,7 @@
             if (listedInfo.title || (listedItem && listedItem.title)) {
               return {
                 name: listedInfo.title || "",
-                avatar: listedInfo.image || "",
+                avatar: "",
                 title: (listedItem && listedItem.title) || listedInfo.title || "",
                 url: (listedItem && listedItem.link) || ("https://www.youtube.com/playlist?list=" + list)
               };
@@ -490,13 +492,13 @@
         if (isExplicit(info.title, info.author, item && item.title)) return { blocked: true };
         return {
           name: name || info.title || "",
-          avatar: avatar || info.image || "",
+          avatar: "",
           title: (item && item.title) || title,
           url: (item && item.link) || url.href
         };
       }
       function biggerAvatar(url) {
-        return String(url || "").replace("_normal.", "_200x200.");
+        return ""; // text only: X profile photos are not used
       }
       async function xCard(url) {
         var parts = url.pathname.split("/").filter(Boolean);
@@ -523,11 +525,10 @@
         var html = data && data.contents ? String(data.contents) : "";
         var desc = metaContent(html, "og:description");
         var title = metaContent(html, "og:title");
-        var image = metaContent(html, "og:image");
         var name = String(title || "").replace(/\s*[|–-]\s*(LinkedIn|Facebook)\s*$/i, "").trim();
         var post = "";
         if (desc && !/log in|sign in|join linkedin|facebook/i.test(desc)) post = firstLine(desc);
-        return { name: name, avatar: image, title: post };
+        return { name: name, avatar: "", title: post };
       }
       async function fetchCard(raw) {
         var url = parseLink(raw);
@@ -703,8 +704,7 @@
           // Text only: no anchors or hrefs to channels, videos or X posts.
           var ava = document.createElement("span");
           ava.className = "call-ava";
-          if (row.avatar) ava.style.backgroundImage = "url(\"" + String(row.avatar).replace(/"/g, "") + "\")";
-          else ava.textContent = "x";
+          ava.textContent = initialOf(row.name || row.handle) || "x";
           var copy = document.createElement("span");
           copy.className = "call-copy";
           var who = document.createElement("strong");
@@ -726,7 +726,7 @@
         return {
           handle: fields.handle && fields.handle.stringValue || "",
           name: fields.name && fields.name.stringValue || "",
-          avatar: fields.avatar && fields.avatar.stringValue || "",
+          avatar: "",
           post: fields.post && fields.post.stringValue || "",
           at: at
         };
@@ -741,6 +741,7 @@
         if (isExplicit(row.handle, row.name, row.post, queryOf(row.url))) return null;
         if (hasLink(row.handle, row.name, row.post)) return null;
         row.url = "";
+        row.avatar = "";
         row.at = Number(row.at) || 0;
         return row;
       }
@@ -803,7 +804,7 @@
         if (!entry || !entry.handle || !liveCall({ handle: entry.handle })) return;
         if (isExplicit(entry.handle, entry.name, entry.post, queryOf(entry.url))) return;
         if (hasLink(entry.handle, entry.name, entry.post)) return;
-        entry.avatar = String(entry.avatar || "").slice(0, 480);
+        entry.avatar = "";
         entry.post = String(entry.post || "").slice(0, 180);
         entry.name = String(entry.name || entry.handle).slice(0, 70);
         entry.url = "";

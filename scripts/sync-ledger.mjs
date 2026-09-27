@@ -190,7 +190,8 @@ function keep(list) {
       if (!prev || row.at >= prev.at) best.set(id, row);
     });
   // No links in the public ledger: the url field is dropped (the call display is text only).
-  return [...best.values()].map((row) => ({ ...row, url: "" })).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 20);
+  // Text only: no links and no avatar / image URLs in the public ledger.
+  return [...best.values()].map((row) => { const out = { ...row, url: "", avatar: "" }; delete out.image; delete out.thumbnail; return out; }).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 20);
 }
 
 const res = await fetch(listUrl);
@@ -230,7 +231,7 @@ for (const doc of data.documents || []) {
   found.push({
     handle,
     name: (fields.name && fields.name.stringValue) || handle,
-    avatar: (fields.avatar && fields.avatar.stringValue) || "",
+    avatar: "",
     post: (fields.post && fields.post.stringValue) || "",
     url: (fields.url && fields.url.stringValue) || "",
     at: fields.at && fields.at.integerValue != null ? Number(fields.at.integerValue) || 0 : 0,
