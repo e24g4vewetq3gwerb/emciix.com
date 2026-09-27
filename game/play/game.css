@@ -664,7 +664,7 @@ html, body {
   min-height: 64px;
   font-family: inherit;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 2rem;
   letter-spacing: 0.1em;
   color: var(--txt);
   background: rgba(10, 12, 24, 0.9);
@@ -679,9 +679,9 @@ html, body {
   touch-action: manipulation;
 }
 .pad span { font-size: 0.65rem; opacity: 0.55; font-weight: 600; letter-spacing: 0.05em; }
-.pad-a { border-color: var(--mag); box-shadow: 0 0 12px rgba(255,0,220,0.25); }
-.pad-sync { border-color: var(--cya); box-shadow: 0 0 12px rgba(0,245,255,0.25); }
-.pad-b { border-color: var(--yel); box-shadow: 0 0 12px rgba(255,230,40,0.25); }
+.pad-a { border-color: var(--mag); color: var(--mag); box-shadow: 0 0 12px rgba(255,0,220,0.25); }
+.pad-sync { border-color: var(--cya); color: var(--cya); box-shadow: 0 0 12px rgba(0,245,255,0.25); }
+.pad-b { border-color: var(--yel); color: var(--yel); box-shadow: 0 0 12px rgba(255,230,40,0.25); }
 .pad:active, .pad.pressed {
   transform: scale(0.96);
   background: rgba(255,255,255,0.08);
