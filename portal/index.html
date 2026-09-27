@@ -27,7 +27,9 @@
       cursor: grab;
       visibility: hidden;
       background: url("/portal/assets/planet.webp?v=up-2") center / cover no-repeat;
-      box-shadow: 0 0 28px rgba(255, 168, 60, 0.35);
+      box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.72),
+        0 0 22px rgba(210, 225, 255, 0.55);
       pointer-events: auto;
       will-change: transform;
       transform: translate3d(-200px, -200px, 0) scale(0.2);
@@ -143,6 +145,15 @@
       cursor: pointer;
     }
 
+    .warp-planet::after {
+      content: "";
+      position: absolute;
+      inset: -8%;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.28);
+      pointer-events: none;
+    }
     .warp-planet .plus {
       position: absolute;
       left: 50%;
@@ -155,7 +166,7 @@
     .warp-planet .plus path {
       fill: none;
       stroke: rgba(255,255,255,.92);
-      stroke-width: 1.6;
+      stroke-width: 2.2;
       stroke-linecap: round;
     }
     #planet-connect {
@@ -560,13 +571,13 @@
       var sy = 0.5 + planet.wy / Math.max(planet.z, 1) * focal;
       planet.x = sx;
       planet.y = sy;
-      var scale = Math.max(0.16, Math.min(0.72, (scaleMul || 7.2) / planet.z));
+      var scale = Math.max(0.48, Math.min(0.92, 16 / planet.z));
       el.style.visibility = "visible";
       el.style.transform = "translate3d(" + (sx * w).toFixed(2) + "px," + (sy * h).toFixed(2) + "px,0) scale(" + scale.toFixed(4) + ")";
     }
     function seed(planet, index) {
       if (planet.z != null) return;
-      planet.z = 18 + (index % 5) * 6;
+      planet.z = 12 + (index % 4) * 4;
       planet.wx = (planet.x - 0.5) * planet.z / focal;
       planet.wy = (planet.y - 0.5) * planet.z / focal;
     }
@@ -580,7 +591,7 @@
         var held = document.getElementById("planet-" + planet.id);
         if (!held) continue;
         held.style.visibility = "visible";
-        held.style.transform = "translate3d(" + (planet.x * w).toFixed(2) + "px," + (planet.y * h).toFixed(2) + "px,0) scale(0.4)";
+        held.style.transform = "translate3d(" + (planet.x * w).toFixed(2) + "px," + (planet.y * h).toFixed(2) + "px,0) scale(0.72)";
         continue;
       }
       var cyaw = Math.cos(dyaw), syaw = Math.sin(dyaw);
@@ -591,7 +602,7 @@
       z = -planet.wy * spitch + z * cpitch;
       z -= speed * dt * 0.42;
       if (z < 7) {
-        z = 42 + Math.random() * 16;
+        z = 22 + Math.random() * 8;
         var ang = Math.random() * Math.PI * 2;
         var spread = 1.5 + Math.random() * 5;
         x = Math.cos(ang) * spread;
@@ -638,7 +649,7 @@
       el.className = "warp-planet";
       el.id = "planet-" + planet.id;
       el.href = planet.href || "#";
-      if (planet.href) el.style.filter = "hue-rotate(" + (index * 46) + "deg)";
+      if (planet.href) el.style.filter = "hue-rotate(" + (index * 46) + "deg) brightness(1.35) contrast(1.12)";
       el.setAttribute("aria-label", planet.href ? (planet.id === "game" ? "Open the game" : planet.id === "music" ? "Open the playlist" : planet.id === "x" ? "Open X" : "Open link") : "Connect a link");
       if (!planet.href) el.insertAdjacentHTML("beforeend", PLUS);
       el.addEventListener("pointerdown", function (event) {
