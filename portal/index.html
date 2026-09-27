@@ -215,23 +215,16 @@
       display: block;
       cursor: pointer;
       filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.55));
-      animation: blob-orbit 7s linear infinite, blob-glow 2.6s ease-in-out infinite;
+      animation: blob-float 4.8s ease-in-out infinite, blob-glow 2.6s ease-in-out infinite;
     }
     .corner-blob .eye {
       transform-box: fill-box;
       transform-origin: center;
       animation: blob-blink 4.6s ease-in-out infinite;
     }
-    @keyframes blob-orbit {
-      0% { transform: translate(0, -9px) rotate(0deg) scale(1); }
-      12.5% { transform: translate(6px, -6px) rotate(45deg) scale(1.06); }
-      25% { transform: translate(9px, 0) rotate(90deg) scale(1); }
-      37.5% { transform: translate(6px, 6px) rotate(135deg) scale(0.94); }
-      50% { transform: translate(0, 9px) rotate(180deg) scale(1); }
-      62.5% { transform: translate(-6px, 6px) rotate(225deg) scale(1.06); }
-      75% { transform: translate(-9px, 0) rotate(270deg) scale(1); }
-      87.5% { transform: translate(-6px, -6px) rotate(315deg) scale(0.94); }
-      100% { transform: translate(0, -9px) rotate(360deg) scale(1); }
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) rotate(-7deg); }
+      50% { transform: translate(0, -8px) rotate(7deg); }
     }
     @keyframes blob-glow {
       0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.28)); }
