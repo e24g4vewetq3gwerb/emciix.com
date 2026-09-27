@@ -227,6 +227,7 @@
 <script>
 (function () {
   var KEY = "portal-planets-local";
+  var GAME = "https://emciix.com/game/play";
   var layer = document.getElementById("planet-layer");
   var form = document.getElementById("planet-connect");
   var field = document.getElementById("planet-connect-input");
@@ -280,6 +281,10 @@
     if (!list.some(function (p) { return !p.href; }) && list.length < 12) {
       var next = spotFrom(list);
       list.push({ id: "p" + Date.now().toString(36), x: next.x, y: next.y, href: "" });
+    }
+    if (!list.some(function (p) { return /\/game\/play\/?$/.test(p.href || ""); }) && list.length < 12) {
+      var gameSpot = spotFrom(list);
+      list.unshift({ id: "game", x: gameSpot.x, y: gameSpot.y, href: GAME });
     }
     return list;
   }
@@ -336,7 +341,7 @@
       el.id = "planet-" + planet.id;
       el.href = planet.href || "#";
       if (planet.href) el.style.filter = "hue-rotate(" + (index * 46) + "deg)";
-      el.setAttribute("aria-label", planet.href ? "Open link" : "Connect a link");
+      el.setAttribute("aria-label", planet.href ? (planet.id === "game" ? "Open the game" : "Open link") : "Connect a link");
       if (!planet.href) el.insertAdjacentHTML("beforeend", PLUS);
       el.addEventListener("pointerdown", function (event) {
         event.stopPropagation();
