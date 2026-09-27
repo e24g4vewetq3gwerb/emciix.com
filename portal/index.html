@@ -163,10 +163,10 @@
       z-index: 50;
       left: 0;
       top: 0;
-      transform: translate(-50%, 0);
+      transform: translate(0, -50%);
       display: flex;
       gap: 8px;
-      width: min(320px, calc(100% - 24px));
+      width: min(300px, calc(100% - 96px));
       margin: 0;
       padding: 8px 8px 8px 16px;
       box-sizing: border-box;
@@ -301,10 +301,13 @@
     }
     if (form && !form.hidden && linking) {
       var box = form.getBoundingClientRect();
-      var fw = box.width || 280;
-      var cx = Math.min(w - fw / 2 - 8, Math.max(fw / 2 + 8, linking.x * w));
-      form.style.left = cx.toFixed(2) + "px";
-      form.style.top = (linking.y * h + 36).toFixed(2) + "px";
+      var fw = box.width || 220;
+      var gap = 34;
+      var cx = linking.x * w;
+      var left = cx + gap;
+      if (left + fw > w - 8) left = Math.max(8, cx - gap - fw);
+      form.style.left = left.toFixed(2) + "px";
+      form.style.top = (linking.y * h).toFixed(2) + "px";
     }
     requestAnimationFrame(paint);
   }
