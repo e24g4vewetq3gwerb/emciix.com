@@ -19,9 +19,9 @@
       z-index: 20;
       left: 0;
       top: 0;
-      width: 176px;
-      height: 176px;
-      margin: -88px 0 0 -88px;
+      width: 120px;
+      height: 120px;
+      margin: -60px 0 0 -60px;
       border-radius: 50%;
       text-decoration: none;
       touch-action: none;
@@ -573,7 +573,7 @@
       var sy = 0.5 + planet.wy / Math.max(planet.z, 1) * focal;
       planet.x = sx;
       planet.y = sy;
-      var scale = Math.max(0.62, Math.min(1.05, 15 / planet.z));
+      var scale = Math.max(0.42, Math.min(0.62, 9 / planet.z));
       el.style.visibility = "visible";
       el.style.transform = "translate3d(" + (sx * w).toFixed(2) + "px," + (sy * h).toFixed(2) + "px,0) scale(" + scale.toFixed(4) + ")";
     }
@@ -593,7 +593,7 @@
         var held = document.getElementById("planet-" + planet.id);
         if (!held) continue;
         held.style.visibility = "visible";
-        held.style.transform = "translate3d(" + (planet.x * w).toFixed(2) + "px," + (planet.y * h).toFixed(2) + "px,0) scale(0.9)";
+        held.style.transform = "translate3d(" + (planet.x * w).toFixed(2) + "px," + (planet.y * h).toFixed(2) + "px,0) scale(0.52)";
         continue;
       }
       var cyaw = Math.cos(dyaw), syaw = Math.sin(dyaw);
