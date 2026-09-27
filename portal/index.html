@@ -200,7 +200,11 @@
     html.portal-embed #portal-share,
     html.portal-bg #portal-share,
     html.portal-embed .corner-blob,
-    html.portal-bg .corner-blob { display: none !important; }
+    html.portal-bg .corner-blob,
+    html.portal-embed #local-open,
+    html.portal-bg #local-open,
+    html.portal-embed #local-panel,
+    html.portal-bg #local-panel { display: none !important; }
     .corner-blob {
       position: fixed;
       z-index: 45;
@@ -245,6 +249,59 @@
       border-radius: 999px;
       cursor: pointer;
     }
+    #local-open {
+      position: fixed;
+      z-index: 45;
+      left: 14px;
+      bottom: 14px;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(18,18,20,.55);
+      color: #f5f5f7;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: 500 12px/1 system-ui, sans-serif;
+      cursor: pointer;
+    }
+    #local-panel {
+      position: fixed;
+      z-index: 60;
+      left: 12px;
+      right: 12px;
+      bottom: 52px;
+      max-width: 420px;
+      max-height: min(60vh, 420px);
+      overflow: auto;
+      margin: 0 auto;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(12,12,14,.92);
+      color: #f5f5f7;
+      font: 500 13px/1.3 system-ui, sans-serif;
+    }
+    #local-panel h2 { margin: 0 0 8px; font-size: 13px; letter-spacing: .04em; }
+    #local-panel label { display: grid; gap: 4px; margin: 0 0 8px; }
+    #local-panel input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid rgba(255,255,255,.22);
+      background: transparent;
+      color: #f5f5f7;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font: inherit;
+    }
+    .local-row { grid-template-columns: 72px 1fr; align-items: center; }
+    #local-actions { display: flex; gap: 8px; }
+    #local-actions button {
+      border: 1px solid rgba(255,255,255,.28);
+      background: transparent;
+      color: #f5f5f7;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
     .sky-hint {
       top: auto !important;
       bottom: 30% !important;
@@ -272,13 +329,24 @@
 <button type="button" id="portal-share" aria-label="Share"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 3.5v9.2M8.6 6.8 12 3.5l3.4 3.3M6.2 11v7.2A1.6 1.6 0 0 0 7.8 19.8h8.4a1.6 1.6 0 0 0 1.6-1.6V11"/></svg></button>
 <a class="corner-blob" href="https://x.ai/bot" aria-label="Grokbot">
   <svg viewBox="0 0 64 64" width="32" height="32">
-    <circle cx="32" cy="32" r="28" fill="#f7f7f7"/>
+    <circle class="blob-face" cx="32" cy="32" r="28" fill="#f7f7f7"/>
     <circle class="eye" cx="22" cy="26" r="4.2" fill="#111"/>
     <circle class="eye" cx="42" cy="26" r="4.2" fill="#111"/>
     <rect x="16" y="36" width="32" height="16" rx="3" fill="#111"/>
     <rect x="20" y="39.5" width="24" height="9" rx="1.5" fill="#f7f7f7"/>
   </svg>
 </a>
+<button type="button" id="local-open">Local</button>
+<div id="local-panel" hidden>
+  <h2>On this device</h2>
+  <label>Blob link<input id="blob-link" type="text" maxlength="300" placeholder="Link" autocomplete="off" /></label>
+  <label>Blob face<input id="blob-face" type="color" value="#f7f7f7" /></label>
+  <div id="local-planets"></div>
+  <div id="local-actions">
+    <button type="button" id="local-save">Update</button>
+    <button type="button" id="local-close">Close</button>
+  </div>
+</div>
 <form id="planet-connect" hidden>
   <input id="planet-connect-input" type="text" placeholder="Link" autocomplete="off" maxlength="300" aria-label="Link" />
   <button type="submit">Connect</button>
@@ -501,11 +569,81 @@
     save();
     drawPlanets();
   });
+  function applyBlob(cfg) {
+    var blob = document.querySelector(".corner-blob");
+    if (!blob) return;
+    blob.href = cleanHref(cfg.href) || "https://x.ai/bot";
+    var face = blob.querySelector(".blob-face");
+    var color = /^#[0-9a-fA-F]{6}$/.test(cfg.face || "") ? cfg.face : "#f7f7f7";
+    if (face) face.setAttribute("fill", color);
+  }
+  function readBlob() {
+    try {
+      var saved = JSON.parse(localStorage.getItem("portal-blob-local") || "null");
+      if (saved && typeof saved === "object") return saved;
+    } catch (err) {}
+    return { href: "https://x.ai/bot", face: "#f7f7f7" };
+  }
+  function fillLocal() {
+    var box = document.getElementById("local-planets");
+    if (!box) return;
+    box.replaceChildren();
+    planets.forEach(function (planet) {
+      var row = document.createElement("label");
+      row.className = "local-row";
+      var name = document.createElement("span");
+      name.textContent = planet.id === "game" ? "Game" : planet.id === "music" ? "Playlist" : planet.id === "x" ? "X" : "Planet";
+      var input = document.createElement("input");
+      input.type = "text";
+      input.value = planet.href || "";
+      input.placeholder = "Link";
+      input.maxLength = 300;
+      input.setAttribute("data-id", planet.id);
+      row.appendChild(name);
+      row.appendChild(input);
+      box.appendChild(row);
+    });
+    var cfg = readBlob();
+    var link = document.getElementById("blob-link");
+    var color = document.getElementById("blob-face");
+    if (link) link.value = cfg.href || "https://x.ai/bot";
+    if (color && /^#[0-9a-fA-F]{6}$/.test(cfg.face || "")) color.value = cfg.face;
+  }
+  function saveLocal() {
+    document.querySelectorAll("#local-planets input").forEach(function (input) {
+      var planet = planets.filter(function (p) { return p.id === input.getAttribute("data-id"); })[0];
+      if (planet) planet.href = cleanHref(input.value);
+    });
+    if (!planets.some(function (p) { return !p.href; }) && planets.length < 12) {
+      var next = spot();
+      planets.push({ id: "p" + Date.now().toString(36), x: next.x, y: next.y, href: "" });
+    }
+    save();
+    drawPlanets();
+    var cfg = {
+      href: cleanHref((document.getElementById("blob-link") || {}).value) || "https://x.ai/bot",
+      face: (document.getElementById("blob-face") || {}).value || "#f7f7f7"
+    };
+    try { localStorage.setItem("portal-blob-local", JSON.stringify(cfg)); } catch (err) {}
+    applyBlob(cfg);
+    fillLocal();
+  }
   if (!document.documentElement.classList.contains("portal-bg") && layer) {
     planets = load();
     save();
     drawPlanets();
     requestAnimationFrame(paint);
+    applyBlob(readBlob());
+    var localOpen = document.getElementById("local-open");
+    var localPanel = document.getElementById("local-panel");
+    var localSave = document.getElementById("local-save");
+    var localClose = document.getElementById("local-close");
+    if (localOpen && localPanel) localOpen.addEventListener("click", function () {
+      fillLocal();
+      localPanel.hidden = false;
+    });
+    if (localClose && localPanel) localClose.addEventListener("click", function () { localPanel.hidden = true; });
+    if (localSave) localSave.addEventListener("click", saveLocal);
     var shareBtn = document.getElementById("portal-share");
     if (shareBtn) shareBtn.addEventListener("click", function () {
       var links = planets.filter(function (p) { return p.href; }).map(function (p) { return p.href; });
