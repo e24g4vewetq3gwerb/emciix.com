@@ -519,6 +519,8 @@ function resolveDisplayName(user, opts, existing) {
  * @returns {Promise<string>} resolved displayName
  */
 
+const BOARD_ERA = "board-2";
+
 async function publishPublicRank(user, displayName, totalScore, photoURL, opts) {
   if (!user) return;
   const force = !!(opts && opts.force);
@@ -537,7 +539,7 @@ async function publishPublicRank(user, displayName, totalScore, photoURL, opts) 
   let existingRankTotal = 0;
   try {
     const rankSnap = await getDoc(doc(db, "gamePublicRanks", user.uid));
-    if (rankSnap.exists()) {
+    if (rankSnap.exists() && String((rankSnap.data() || {}).era || "") === BOARD_ERA) {
       existingRankTotal = Math.max(
         0,
         Math.floor(Number(rankSnap.data().totalScore) || 0)
@@ -547,6 +549,7 @@ async function publishPublicRank(user, displayName, totalScore, photoURL, opts) 
   const newTotal = Math.max(0, Math.floor(Number(totalScore) || 0));
   const payload = {
     displayName: clampStr(displayName || "Player", 80) || "Player",
+    era: BOARD_ERA,
     totalScore: force ? newTotal : Math.max(existingRankTotal, newTotal),
     updatedAt: Date.now(),
   };
@@ -783,6 +786,17 @@ async function saveCloudBest(levelId, best, title) {
  * @param {number} [n=10]
  * @returns {Promise<Array<{uid:string,displayName:string,totalScore:number}>>}
  */
+async function clearStalePublicRank() {
+  const user = auth.currentUser;
+  if (!user) return false;
+  const ref = doc(db, "gamePublicRanks", user.uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return false;
+  if (String((snap.data() || {}).era || "") === BOARD_ERA) return false;
+  await deleteDoc(ref);
+  return true;
+}
+
 async function loadPublicRanks(n) {
   const take = Math.max(1, Math.min(25, Number(n) || 10));
   const mapDoc = (d) => {
@@ -794,6 +808,10 @@ async function loadPublicRanks(n) {
       photoURL: data.photoURL ? String(data.photoURL) : null,
     };
   };
+  const keep = (row, data) => {
+    if (!row || row.totalScore <= 0) return false;
+    return String((data && data.era) || "") === BOARD_ERA;
+  };
   try {
     const q = query(
       collection(db, "gamePublicRanks"),
@@ -802,13 +820,19 @@ async function loadPublicRanks(n) {
     );
     const snap = await getDocs(q);
     const out = [];
-    snap.forEach((d) => out.push(mapDoc(d)));
+    snap.forEach((d) => {
+      const row = mapDoc(d);
+      if (keep(row, d.data())) out.push(row);
+    });
     return out;
   } catch (err) {
     console.warn("loadPublicRanks ordered query failed, falling back", err);
     const snap = await getDocs(collection(db, "gamePublicRanks"));
     const out = [];
-    snap.forEach((d) => out.push(mapDoc(d)));
+    snap.forEach((d) => {
+      const row = mapDoc(d);
+      if (keep(row, d.data())) out.push(row);
+    });
     out.sort((a, b) => b.totalScore - a.totalScore);
     return out.slice(0, take);
   }
@@ -1156,6 +1180,7 @@ const api = {
   publishLevelRank,
   syncLevelRanks,
   publishPublicRank,
+  clearStalePublicRank,
   abandonPublicRank,
   applyMergedBests,
   applyPendingMergeIfAny,
@@ -1195,6 +1220,7 @@ export {
   publishLevelRank,
   syncLevelRanks,
   publishPublicRank,
+  clearStalePublicRank,
   abandonPublicRank,
   applyMergedBests,
   applyPendingMergeIfAny,

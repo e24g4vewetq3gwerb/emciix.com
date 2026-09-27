@@ -1101,6 +1101,12 @@
     updateAuthChip(user);
     setSyncStatus("Syncing…");
     resetLocalPointsOnce();
+    let boardCleared = false;
+    try {
+      if (api.clearStalePublicRank) boardCleared = await api.clearStalePublicRank();
+    } catch (err) {
+      console.warn("board clear", err);
+    }
     try {
       if (api.resetAccountPoints) {
         const wiped = await api.resetAccountPoints();
@@ -1114,6 +1120,7 @@
       console.warn("points reset", resetErr);
     }
     try {
+      if (boardCleared) saveBests({});
       await refreshCloudProfile(api, user);
       const cloud = await api.loadCloudBests();
       mergeCloudIntoLocal(cloud);
@@ -1123,6 +1130,7 @@
         if (m && m.id) titleById[m.id] = m.title || m.id;
       });
       for (const id of Object.keys(bests)) {
+        if (boardCleared) break;
         const local = bests[id];
         const c = cloud[id];
         if (!c || Number(local.score) > Number(c.score)) {
@@ -1138,8 +1146,8 @@
           0
         );
       } catch (_) {}
-      const localSum = sumLocalBests();
-      const totalAfter = Math.max(localSum, cloudSum);
+      const localSum = boardCleared ? 0 : sumLocalBests();
+      const totalAfter = boardCleared ? 0 : Math.max(localSum, cloudSum);
       if (cloudProfile) cloudProfile.totalScore = totalAfter;
       else cloudProfile = {
         displayName: user.displayName || "Player",
@@ -1150,7 +1158,7 @@
         if (profile) {
           if (profile.displayName) cloudProfile.displayName = profile.displayName;
           if (profile.photoURL) cloudProfile.photoURL = profile.photoURL;
-          if (typeof profile.totalScore === "number") {
+          if (typeof profile.totalScore === "number" && !boardCleared) {
             cloudProfile.totalScore = Math.max(profile.totalScore, totalAfter);
           }
         }
@@ -1166,7 +1174,8 @@
             user,
             cloudProfile.displayName || user.displayName || "Player",
             cloudProfile.totalScore || 0,
-            cloudProfile.photoURL || user.photoURL || null
+            cloudProfile.photoURL || user.photoURL || null,
+            boardCleared ? { force: true } : undefined
           );
         } else if (api.upsertUserProfile && cloudProfile) {
           await api.upsertUserProfile(
