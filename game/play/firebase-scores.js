@@ -916,21 +916,53 @@ async function pullRedeemable() {
   return profile ? profile.redeemable : 0;
 }
 
+const PAYOUT = {
+  ratePerThousand: null,
+  minimumPoints: 1000,
+  monthlyCapPoints: null,
+};
+
+function payoutMonthKey() {
+  return new Date().toISOString().slice(0, 7);
+}
+
 async function claimRedeemable(amount) {
   const user = auth.currentUser;
-  if (!user) return 0;
+  if (!user) return { ok: false, reason: "signin" };
   const take = Math.max(0, Math.floor(Number(amount) || 0));
   const ref = doc(db, "users", user.uid);
-  let moved = 0;
+  let result = { ok: false, reason: "minimum" };
   await runTransaction(db, async (tx) => {
     const snap = await tx.get(ref);
     const data = snap.exists() ? snap.data() || {} : {};
     const prev = Math.max(0, Math.floor(Number(data.redeemable) || 0));
     const cashed = Math.max(0, Math.floor(Number(data.redeemed) || 0));
-    moved = Math.max(prev, take);
-    tx.set(ref, { redeemable: 0, redeemed: cashed + moved, updatedAt: Date.now() }, { merge: true });
+    const month = payoutMonthKey();
+    const used = data.payoutMonth === month ? Math.max(0, Math.floor(Number(data.payoutMonthPoints) || 0)) : 0;
+    let moving = Math.min(prev, take);
+    if (PAYOUT.monthlyCapPoints) {
+      moving = Math.min(moving, Math.max(0, PAYOUT.monthlyCapPoints - used));
+    }
+    if (moving < PAYOUT.minimumPoints) {
+      result = { ok: false, reason: moving <= 0 && PAYOUT.monthlyCapPoints ? "cap" : "minimum", have: prev, left: prev };
+      return;
+    }
+    const rate = PAYOUT.ratePerThousand;
+    const status = rate == null ? "held" : "pending";
+    const owed = rate == null ? null : Math.round((moving / 1000) * Number(rate) * 100) / 100;
+    const prior = Array.isArray(data.payouts) ? data.payouts.slice(0, 19) : [];
+    const entry = { at: Date.now(), points: moving, status: status, rate: rate, amount: owed };
+    tx.set(ref, {
+      redeemable: prev - moving,
+      redeemed: cashed + moving,
+      payoutMonth: month,
+      payoutMonthPoints: used + moving,
+      payouts: [entry].concat(prior),
+      updatedAt: Date.now(),
+    }, { merge: true });
+    result = { ok: true, moved: moving, left: prev - moving, status: status, amount: owed, rate: rate };
   });
-  return moved;
+  return result;
 }
 
 const api = {
@@ -962,6 +994,7 @@ const api = {
   addRedeemable,
   pullRedeemable,
   claimRedeemable,
+  payoutSchedule: PAYOUT,
   lastLinkMerged: false,
 };
 

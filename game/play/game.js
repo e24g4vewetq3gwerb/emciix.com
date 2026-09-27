@@ -343,21 +343,8 @@
     } catch (_) {}
   }
 
-  function paintRedeem(amount) {
-    const val = formatPoints(amount);
-    const auth = $("#auth-redeem-val");
-    if (auth) auth.textContent = val + " REDEEM";
-    const levels = $("#levels-redeem-val");
-    if (levels) levels.textContent = val;
-    const results = $("#res-redeem");
-    if (results && !results.dataset.locked) results.textContent = "REDEEM " + val;
-    document.querySelectorAll("[data-redeem]").forEach((btn) => {
-      btn.disabled = amount <= 0;
-    });
-  }
-
   function cashedKey(uid) {
-    return (uid ? REDEEM_KEY + "-cashed:" + uid : REDEEM_KEY + "-cashed");
+    return REDEEM_KEY + "-cashed:" + (uid || "guest");
   }
 
   function readCashed(uid) {
@@ -374,29 +361,89 @@
     } catch (_) {}
   }
 
+  function payoutSchedule() {
+    const api = window.EmciixScores;
+    const schedule = api && api.payoutSchedule;
+    return {
+      ratePerThousand: schedule && schedule.ratePerThousand != null ? Number(schedule.ratePerThousand) : null,
+      minimumPoints: schedule && schedule.minimumPoints ? Math.floor(schedule.minimumPoints) : 1000,
+      monthlyCapPoints: schedule && schedule.monthlyCapPoints ? Math.floor(schedule.monthlyCapPoints) : null,
+    };
+  }
+
+  function paintRedeem(amount) {
+    const val = formatPoints(amount);
+    const auth = $("#auth-redeem-val");
+    if (auth) auth.textContent = val + " REDEEM";
+    const levels = $("#levels-redeem-val");
+    if (levels) levels.textContent = val;
+    const results = $("#res-redeem");
+    if (results && !results.dataset.locked) results.textContent = "REDEEM " + val;
+    document.querySelectorAll("[data-redeem]").forEach((btn) => {
+      btn.disabled = amount <= 0;
+    });
+  }
+
+  function noteRedeem(text) {
+    const results = $("#res-redeem");
+    if (results) {
+      results.dataset.locked = "1";
+      results.textContent = text;
+    }
+    const auth = $("#auth-redeem-val");
+    if (auth) auth.textContent = text;
+    const err = $("#auth-error");
+    if (err) {
+      err.textContent = text;
+      err.classList.remove("hidden");
+    }
+  }
+
   function redeemNow() {
     const uid = currentAuthUid();
+    const schedule = payoutSchedule();
+    if (!uid) {
+      noteRedeem("Sign in to redeem");
+      return;
+    }
     const amount = readRedeem(uid);
     if (!amount) {
       paintRedeem(0);
       return;
     }
-    writeRedeem(uid, 0);
-    if (uid) writeRedeem(null, 0);
-    const cashed = readCashed(uid) + amount;
-    writeCashed(uid, cashed);
-    const results = $("#res-redeem");
-    if (results) {
-      results.dataset.locked = "1";
-      results.textContent = "REDEEMED " + formatPoints(amount);
+    if (amount < schedule.minimumPoints) {
+      noteRedeem("Need " + formatPoints(schedule.minimumPoints) + " to redeem");
+      paintRedeem(amount);
+      return;
     }
-    paintRedeem(0);
-    const auth = $("#auth-redeem-val");
-    if (auth) auth.textContent = "REDEEMED " + formatPoints(cashed);
     const api = window.EmciixScores;
-    if (uid && api && api.claimRedeemable) {
-      api.claimRedeemable(amount).catch(() => {});
+    if (!api || !api.claimRedeemable) {
+      noteRedeem("Sign in to redeem");
+      return;
     }
+    document.querySelectorAll("[data-redeem]").forEach((btn) => { btn.disabled = true; });
+    api.claimRedeemable(amount).then((res) => {
+      if (!res || !res.ok) {
+        const reason = res && res.reason;
+        noteRedeem(reason === "cap" ? "Monthly cap reached" : "Need " + formatPoints(schedule.minimumPoints) + " to redeem");
+        paintRedeem(readRedeem(uid));
+        return;
+      }
+      writeRedeem(uid, res.left);
+      writeRedeem(null, res.left);
+      const cashed = readCashed(uid) + res.moved;
+      writeCashed(uid, cashed);
+      const line = res.status === "held"
+        ? "Recorded " + formatPoints(res.moved) + ". Pay starts when the rate is set."
+        : "Owed " + res.amount + ". Pending payout.";
+      noteRedeem(line);
+      paintRedeem(res.left);
+      const auth = $("#auth-redeem-val");
+      if (auth) auth.textContent = line;
+    }).catch(() => {
+      noteRedeem("Could not redeem");
+      paintRedeem(readRedeem(uid));
+    });
   }
 
   function resetLocalPointsOnce() {
