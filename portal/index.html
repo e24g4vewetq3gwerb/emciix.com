@@ -198,7 +198,19 @@
     html.portal-embed #planet-connect,
     html.portal-bg #planet-connect,
     html.portal-embed #portal-share,
-    html.portal-bg #portal-share { display: none !important; }
+    html.portal-bg #portal-share,
+    html.portal-embed .corner-blob,
+    html.portal-bg .corner-blob { display: none !important; }
+    .corner-blob {
+      position: fixed;
+      z-index: 45;
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+      width: 46px;
+      height: 46px;
+      pointer-events: none;
+      filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.55));
+    }
     #portal-share {
       position: fixed;
       z-index: 45;
@@ -238,6 +250,15 @@
 <span id="warp-atmo" aria-hidden="true"></span>
 <div id="planet-layer"></div>
 <button type="button" id="portal-share">Share</button>
+<div class="corner-blob" aria-hidden="true">
+  <svg viewBox="0 0 64 64" width="46" height="46">
+    <circle cx="32" cy="32" r="28" fill="#f7f7f7"/>
+    <circle cx="22" cy="26" r="4.2" fill="#111"/>
+    <circle cx="42" cy="26" r="4.2" fill="#111"/>
+    <rect x="16" y="36" width="32" height="16" rx="3" fill="#111"/>
+    <rect x="20" y="39.5" width="24" height="9" rx="1.5" fill="#f7f7f7"/>
+  </svg>
+</div>
 <form id="planet-connect" hidden>
   <input id="planet-connect-input" type="text" placeholder="Link" autocomplete="off" maxlength="300" aria-label="Link" />
   <button type="submit">Connect</button>
