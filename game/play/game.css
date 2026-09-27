@@ -2523,3 +2523,43 @@ html, body {
 }
 #encore-btn:hover { background: rgba(154, 215, 255, 0.24); }
 #encore-btn.hidden { display: none; }
+  border: 2px solid #9ad7ff;
+  border-radius: 12px;
+  background: rgba(154, 215, 255, 0.12);
+  color: #f5f5fa;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(154, 215, 255, 0.35);
+}
+#encore-btn:hover { background: rgba(154, 215, 255, 0.24); }
+#encore-btn.hidden { display: none; }
+
+html, body, #app, .overlay, .levels-grid, .upgrade-card, .public-rank-list, .start-layout {
+  scrollbar-width: thin;
+  scrollbar-color: #00f5ff transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00f5ff, #ff00dc);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-button,
+*::-webkit-scrollbar-button:single-button,
+*::-webkit-scrollbar-button:vertical:start:decrement,
+*::-webkit-scrollbar-button:vertical:end:increment {
+  display: none;
+  width: 0;
+  height: 0;
+}
+*::-webkit-scrollbar-corner { background: transparent; }
