@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 
 const PROJECT = "emciix-com";
-const LOGIN_V = "login-15";
+const LOGIN_V = "login-16";
 // Private (0700) scratch dir for generated files instead of fixed, world-readable /tmp paths.
 const WORK_DIR = mkdtempSync(join(tmpdir(), "emciix-patch-"));
 
@@ -128,7 +128,7 @@ if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
-["starslip/privacy.html","starslip/support.html","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json","game/play/levels/idk-what-im-doing/audio/idk-what-im-doing.mp3","game/play/levels/idk-what-im-doing/chart.json","game/play/levels/idk-what-im-doing/lyrics.json"].forEach((file) => {
+["starslip/privacy.html","starslip/support.html","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
 

@@ -44,8 +44,47 @@
 #start-overlay .start-login-methods .login-half:hover{
   background:rgba(255,77,227,.12) !important;
 }
-.start-login .auth-chip{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-top:.35rem}
-.start-login .auth-chip.hidden{display:none}
+.start-login .auth-chip{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  flex-wrap:nowrap;
+  gap:.5rem;
+  width:100%;
+  box-sizing:border-box;
+  overflow:visible;
+  padding:0.7rem 0.75rem 0.8rem;
+}
+.start-login .auth-chip.hidden{display:none !important}
+.start-login .auth-chip-meta,
+.start-login #auth-chip-name,
+.start-login #auth-points-val,
+.start-login #auth-redeem-val{
+  width:100%;
+  text-align:center;
+  align-items:center;
+}
+.start-login .interac-row,
+.start-login .payout-note{
+  display:block;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  box-sizing:border-box;
+  text-align:left;
+}
+.start-login .interac-row input{
+  display:block;
+  width:100%;
+  max-width:100%;
+  margin:0.35rem 0 0;
+  box-sizing:border-box;
+}
+.start-login .auth-chip .start-action-btn{
+  width:100% !important;
+  align-self:stretch;
+  flex:0 0 auto;
+}
 .start-login .auth-error{margin:.4rem 0 0;color:#ff6b8a;font-size:.7rem}
 .start-login .auth-error.hidden{display:none}
 .start-login .payout-note{margin:.45rem 0 0;font-size:.68rem;letter-spacing:.04em;color:rgba(245,245,250,.72)}
