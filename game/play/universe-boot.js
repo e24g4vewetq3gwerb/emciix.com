@@ -104,14 +104,23 @@
 
   audio.disableRemotePlayback = false;
   if (document.getElementById("btn-cast")) return;
-  const cast = document.createElement("button");
-  cast.type = "button";
-  cast.id = "btn-cast";
-  cast.setAttribute("aria-pressed", "false");
-  cast.setAttribute("aria-label", "Cast");
-  cast.title = "Cast";
-  cast.textContent = "CAST";
-  cast.style.cssText = [
+  let castUrl = "";
+  function rememberTrack() {
+    const raw = audio.getAttribute("src") || "";
+    if (!raw || raw.indexOf("blob:") === 0) return;
+    try { castUrl = new URL(raw, location.href).href; } catch (err) {}
+  }
+  audio.addEventListener("loadstart", rememberTrack);
+  rememberTrack();
+
+  const castBtn = document.createElement("button");
+  castBtn.type = "button";
+  castBtn.id = "btn-cast";
+  castBtn.setAttribute("aria-pressed", "false");
+  castBtn.setAttribute("aria-label", "Cast");
+  castBtn.title = "Cast this track";
+  castBtn.textContent = "CAST";
+  castBtn.style.cssText = [
     "position:fixed",
     "z-index:80",
     "top:max(10px, env(safe-area-inset-top))",
@@ -126,31 +135,84 @@
     "letter-spacing:.16em",
     "cursor:pointer",
   ].join(";");
-  document.body.appendChild(cast);
-  const remote = audio.remote;
-  function paint() {
-    const state = (remote && remote.state) || "disconnected";
-    const on = state === "connected";
-    cast.style.borderColor = on ? "#ffe628" : "rgba(0,245,255,.75)";
-    cast.style.color = on ? "#ffe628" : "#7ef6ff";
-    cast.style.opacity = state === "connecting" ? "0.55" : "1";
-    cast.setAttribute("aria-pressed", on ? "true" : "false");
-    cast.textContent = on ? "CASTING" : "CAST";
+  document.body.appendChild(castBtn);
+
+  let castReady = false;
+  function sessionOn() {
+    try {
+      const api = window.cast;
+      return !!(api && api.framework.CastContext.getInstance().getCurrentSession());
+    } catch (err) {
+      return false;
+    }
   }
-  if (remote) {
-    ["connect", "connecting", "disconnect"].forEach((name) => {
-      remote.addEventListener(name, paint);
-    });
+  function paint(note) {
+    const on = sessionOn();
+    castBtn.style.borderColor = on ? "#ffe628" : "rgba(0,245,255,.75)";
+    castBtn.style.color = on ? "#ffe628" : "#7ef6ff";
+    castBtn.style.opacity = "1";
+    castBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    castBtn.textContent = on ? "CASTING" : "CAST";
+    if (note) castBtn.title = note;
   }
-  cast.addEventListener("click", () => {
-    if (!remote || typeof remote.prompt !== "function") {
-      cast.title = "Cast is not available in this browser";
+  window.__onGCastApiAvailable = function (isAvailable) {
+    const api = window.cast;
+    if (!isAvailable || !api || !api.framework) {
+      paint("Cast is not available in this browser");
       return;
     }
-    cast.style.opacity = "0.55";
-    remote.prompt().then(paint).catch(() => {
-      cast.style.opacity = "1";
-      cast.title = "No cast device, or cast was cancelled";
+    try {
+      const ctx = api.framework.CastContext.getInstance();
+      ctx.setOptions({
+        receiverApplicationId: window.chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+        autoJoinPolicy: window.chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+      });
+      ctx.addEventListener(api.framework.CastContextEventType.SESSION_STATE_CHANGED, function () { paint(); });
+      castReady = true;
+      paint("Cast this track");
+    } catch (err) {
+      paint("Cast failed to start");
+    }
+  };
+  const sdk = document.createElement("script");
+  sdk.src = "https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1";
+  sdk.async = true;
+  sdk.onerror = function () { paint("Cast script was blocked"); };
+  document.head.appendChild(sdk);
+
+  function loadOnTv(session) {
+    rememberTrack();
+    if (!castUrl) throw new Error("No track loaded yet");
+    const mediaInfo = new window.chrome.cast.media.MediaInfo(castUrl, "audio/mpeg");
+    const meta = new window.chrome.cast.media.MusicTrackMediaMetadata();
+    const titleEl = document.querySelector(".title-box h2");
+    meta.title = (titleEl && titleEl.textContent.trim()) || "Emciix";
+    meta.artist = "emciix";
+    mediaInfo.metadata = meta;
+    mediaInfo.streamType = window.chrome.cast.media.StreamType.BUFFERED;
+    const request = new window.chrome.cast.media.LoadRequest(mediaInfo);
+    const at = Number(audio.currentTime) || 0;
+    if (at > 1 && String(audio.currentSrc || "").indexOf("blob:") !== 0) request.currentTime = at;
+    return session.loadMedia(request);
+  }
+
+  castBtn.addEventListener("click", function () {
+    if (!castReady || !window.cast || !window.cast.framework) {
+      paint("Cast is still loading. Tap again.");
+      return;
+    }
+    castBtn.style.opacity = "0.55";
+    const ctx = window.cast.framework.CastContext.getInstance();
+    const existing = ctx.getCurrentSession();
+    const opening = existing ? Promise.resolve(existing) : ctx.requestSession();
+    opening.then(function (session) {
+      return loadOnTv(session || ctx.getCurrentSession());
+    }).then(function () {
+      try { audio.pause(); } catch (err) {}
+      paint("Playing on the TV");
+    }).catch(function (err) {
+      const code = err && (err.code || err.description || err.message);
+      paint(code ? String(code) : "No cast device, or cast was cancelled");
     });
   });
 })();
