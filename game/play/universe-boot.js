@@ -102,23 +102,13 @@
     }).observe(grid, { childList: true });
   }
 
-  audio.disableRemotePlayback = false;
   if (document.getElementById("btn-cast")) return;
-  let castUrl = "";
-  function rememberTrack() {
-    const raw = audio.getAttribute("src") || "";
-    if (!raw || raw.indexOf("blob:") === 0) return;
-    try { castUrl = new URL(raw, location.href).href; } catch (err) {}
-  }
-  audio.addEventListener("loadstart", rememberTrack);
-  rememberTrack();
-
   const castBtn = document.createElement("button");
   castBtn.type = "button";
   castBtn.id = "btn-cast";
   castBtn.setAttribute("aria-pressed", "false");
   castBtn.setAttribute("aria-label", "Cast");
-  castBtn.title = "Cast this track";
+  castBtn.title = "Show this page on a TV";
   castBtn.textContent = "CAST";
   castBtn.style.cssText = [
     "position:fixed",
@@ -137,82 +127,49 @@
   ].join(";");
   document.body.appendChild(castBtn);
 
-  let castReady = false;
-  function sessionOn() {
-    try {
-      const api = window.cast;
-      return !!(api && api.framework.CastContext.getInstance().getCurrentSession());
-    } catch (err) {
-      return false;
-    }
+  const pageUrl = location.origin + "/game/play";
+  let presentation = null;
+  let connection = null;
+  if (window.PresentationRequest) {
+    presentation = new PresentationRequest([pageUrl]);
+    if (navigator.presentation) navigator.presentation.defaultRequest = presentation;
+    presentation.addEventListener("connectionavailable", function (event) {
+      connection = event.connection;
+      paint("The page is on the TV");
+    });
   }
+
   function paint(note) {
-    const on = sessionOn();
+    const on = !!(connection && connection.state === "connected");
     castBtn.style.borderColor = on ? "#ffe628" : "rgba(0,245,255,.75)";
     castBtn.style.color = on ? "#ffe628" : "#7ef6ff";
     castBtn.style.opacity = "1";
     castBtn.setAttribute("aria-pressed", on ? "true" : "false");
-    castBtn.textContent = on ? "CASTING" : "CAST";
+    castBtn.textContent = on ? "ON TV" : "CAST";
     if (note) castBtn.title = note;
-  }
-  window.__onGCastApiAvailable = function (isAvailable) {
-    const api = window.cast;
-    if (!isAvailable || !api || !api.framework) {
-      paint("Cast is not available in this browser");
-      return;
-    }
-    try {
-      const ctx = api.framework.CastContext.getInstance();
-      ctx.setOptions({
-        receiverApplicationId: window.chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
-        autoJoinPolicy: window.chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
-      });
-      ctx.addEventListener(api.framework.CastContextEventType.SESSION_STATE_CHANGED, function () { paint(); });
-      castReady = true;
-      paint("Cast this track");
-    } catch (err) {
-      paint("Cast failed to start");
-    }
-  };
-  const sdk = document.createElement("script");
-  sdk.src = "https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1";
-  sdk.async = true;
-  sdk.onerror = function () { paint("Cast script was blocked"); };
-  document.head.appendChild(sdk);
-
-  function loadOnTv(session) {
-    rememberTrack();
-    if (!castUrl) throw new Error("No track loaded yet");
-    const mediaInfo = new window.chrome.cast.media.MediaInfo(castUrl, "audio/mpeg");
-    const meta = new window.chrome.cast.media.MusicTrackMediaMetadata();
-    const titleEl = document.querySelector(".title-box h2");
-    meta.title = (titleEl && titleEl.textContent.trim()) || "Emciix";
-    meta.artist = "emciix";
-    mediaInfo.metadata = meta;
-    mediaInfo.streamType = window.chrome.cast.media.StreamType.BUFFERED;
-    const request = new window.chrome.cast.media.LoadRequest(mediaInfo);
-    const at = Number(audio.currentTime) || 0;
-    if (at > 1 && String(audio.currentSrc || "").indexOf("blob:") !== 0) request.currentTime = at;
-    return session.loadMedia(request);
   }
 
   castBtn.addEventListener("click", function () {
-    if (!castReady || !window.cast || !window.cast.framework) {
-      paint("Cast is still loading. Tap again.");
+    if (!presentation) {
+      paint("This browser cannot show the page on a TV");
+      return;
+    }
+    if (connection && connection.state === "connected") {
+      connection.terminate();
+      connection = null;
+      paint("Show this page on a TV");
       return;
     }
     castBtn.style.opacity = "0.55";
-    const ctx = window.cast.framework.CastContext.getInstance();
-    const existing = ctx.getCurrentSession();
-    const opening = existing ? Promise.resolve(existing) : ctx.requestSession();
-    opening.then(function (session) {
-      return loadOnTv(session || ctx.getCurrentSession());
-    }).then(function () {
-      try { audio.pause(); } catch (err) {}
-      paint("Playing on the TV");
+    presentation.start().then(function (next) {
+      connection = next;
+      next.addEventListener("close", function () {
+        connection = null;
+        paint("Show this page on a TV");
+      });
+      paint("The page is on the TV");
     }).catch(function (err) {
-      const code = err && (err.code || err.description || err.message);
-      paint(code ? String(code) : "No cast device, or cast was cancelled");
+      paint((err && err.message) || "No screen, or cast was cancelled");
     });
   });
 })();
