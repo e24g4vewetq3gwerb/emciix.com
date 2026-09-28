@@ -1229,11 +1229,6 @@ function applyMostPopularTrack(views) {
   return true;
 }
 function fetchViewsMap() {
-  try {
-    if (window.EmciixLiveYtViews && Object.keys(window.EmciixLiveYtViews).length) {
-      return Promise.resolve(window.EmciixLiveYtViews);
-    }
-  } catch (e) {}
   var ids = [];
   for (var i = 0; i < SONGS.length; i++) {
     if (SONGS[i] && SONGS[i].id) ids.push(SONGS[i].id);
@@ -1379,18 +1374,19 @@ function fetchLatestFromAtom() {
     });
 }
 function fetchLatestFromRss() {
-  var atom = "https://www.youtube.com/feeds/videos.xml?playlist_id=PLZX_2WN1sEAg";
-  var url = "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(atom);
+  var url = "https://inv.nadeko.net/api/v1/playlists/PLZX_2WN1sEAg?t=" + Date.now();
   return fetch(url, { cache: "no-store" })
     .then(function (r) {
-      if (!r.ok) throw new Error("rss2json " + r.status);
+      if (!r.ok) throw new Error("playlist " + r.status);
       return r.json();
     })
     .then(function (data) {
-      if (!data || data.status !== "ok" || !data.items) throw new Error("rss2json bad");
-      var track = pickLatestFromRssItems(data.items);
-      if (!track) throw new Error("rss2json empty");
-      return track;
+      var videos = data && data.videos;
+      if (!videos || !videos.length) throw new Error("playlist empty");
+      var v = videos[0];
+      var id = v.videoId || v.id;
+      if (!id) throw new Error("playlist no id");
+      return { id: id, title: v.title || id };
     });
 }
 function fetchLatestFromChannel() {
@@ -1464,12 +1460,51 @@ function applyPlaylistFeed(videos) {
   if (!isPlayingNow()) paint({ soft: true, animate: false });
   return true;
 }
-function syncPlaylistFeed() {
-  return fetch("https://invidious.darkness.services/api/v1/playlists/PLZX_2WN1sEAg?t=" + Date.now(), { cache: "no-store" })
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) { return applyPlaylistFeed(data && data.videos); })
-    .catch(function () { return false; });
+function playlistIds(videos) {
+  var ids = [];
+  var seen = {};
+  if (!videos) return ids;
+  for (var i = 0; i < videos.length; i++) {
+    var id = videos[i] && (videos[i].videoId || videos[i].id);
+    if (!id || seen[id]) continue;
+    seen[id] = 1;
+    ids.push(id);
+  }
+  return ids;
 }
+function playlistUnchanged(videos) {
+  var ids = playlistIds(videos);
+  if (!ids.length || ids.length !== SONGS.length) return false;
+  for (var i = 0; i < ids.length; i++) {
+    if (!SONGS[i] || SONGS[i].id !== ids[i]) return false;
+  }
+  return true;
+}
+function syncPlaylistFeed() {
+  var bases = [
+    "https://inv.nadeko.net/api/v1/playlists/PLZX_2WN1sEAg",
+    "https://invidious.darkness.services/api/v1/playlists/PLZX_2WN1sEAg"
+  ];
+  function tryAt(i) {
+    if (i >= bases.length) return Promise.resolve(false);
+    var url = bases[i] + "?t=" + Date.now();
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        var videos = data && data.videos;
+        if (!videos || playlistIds(videos).length < 8) return tryAt(i + 1);
+        if (playlistUnchanged(videos)) return true;
+        return applyPlaylistFeed(videos);
+      })
+      .catch(function () { return tryAt(i + 1); });
+  }
+  return tryAt(0);
+}
+setInterval(function () { syncPlaylistFeed(); }, 15000);
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === "visible") syncPlaylistFeed();
+});
+window.addEventListener("focus", function () { syncPlaylistFeed(); });
 function bootPlayer() {
   parseDeepLink();
   paintNeed();
