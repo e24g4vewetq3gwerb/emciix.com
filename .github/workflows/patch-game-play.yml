@@ -34,7 +34,6 @@ on:
       - shelf-boot.js
       - stats-boot.js
       - index.html
-      - calls/ledger.json
       - app.js
       - need/assets/index-Bsi7rUKP.js
       - portal/**

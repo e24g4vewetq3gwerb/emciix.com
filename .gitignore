@@ -1,4 +1,6 @@
-# --- Secrets: never commit these ---
+# --- Private. Never publish this folder. ---
+calls/
+
 .env
 .env.*
 !.env.example
