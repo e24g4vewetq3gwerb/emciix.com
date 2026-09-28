@@ -443,15 +443,36 @@
     if (!startLayout) startLayout = STARTS[Math.random() < 0.5 ? 0 : 1];
     return startLayout;
   }
-  var PLUS = '<svg class="plus" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  function plusIcon() {
+    var ns = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class", "plus");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    var path = document.createElementNS(ns, "path");
+    path.setAttribute("d", "M12 5v14M5 12h14");
+    svg.appendChild(path);
+    return svg;
+  }
+  // Percent-encode HTML/attribute meta-characters so a link can never carry markup.
+  function encodeUrlMeta(href) {
+    return String(href).replace(/[<>"'`\s]/g, function (c) {
+      return "%" + ("0" + c.charCodeAt(0).toString(16).toUpperCase()).slice(-2);
+    });
+  }
+  // Only same-origin paths and http(s) URLs are allowed; anything else becomes "".
   function cleanHref(value) {
     var v = String(value || "").trim();
     if (!v) return "";
-    if (v.charAt(0) === "/" && v.charAt(1) !== "/") return v;
-    if (!/^https?:\/\//i.test(v)) v = "https://" + v.replace(/^\/+/, "");
+    var local = v.charAt(0) === "/" && v.charAt(1) !== "/" && v.charAt(1) !== "\\";
+    if (!local && !/^https?:\/\//i.test(v)) v = "https://" + v.replace(/^[\/\\]+/, "");
     try {
       var url = new URL(v, location.origin);
-      if (url.protocol === "http:" || url.protocol === "https:") return url.href;
+      if (local) {
+        if (url.origin !== location.origin) return "";
+        return encodeUrlMeta(url.pathname + url.search + url.hash);
+      }
+      if (url.protocol === "http:" || url.protocol === "https:") return encodeUrlMeta(url.href);
     } catch (err) {}
     return "";
   }
@@ -653,7 +674,7 @@
       el.href = planet.href || "#";
       if (planet.href) el.style.filter = "hue-rotate(" + (index * 18) + "deg) saturate(1.5) contrast(1.18)";
       el.setAttribute("aria-label", planet.href ? (planet.id === "game" ? "Open the game" : planet.id === "music" ? "Open the playlist" : planet.id === "x" ? "Open X" : "Open link") : "Connect a link");
-      if (!planet.href) el.insertAdjacentHTML("beforeend", PLUS);
+      if (!planet.href) el.appendChild(plusIcon());
       el.addEventListener("pointerdown", function (event) {
         event.stopPropagation();
         event.preventDefault();

@@ -4,6 +4,10 @@ name: Galactic ledger
 on:
   workflow_dispatch:
 
+# Only echoes a notice; never writes to the repo.
+permissions:
+  contents: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest
