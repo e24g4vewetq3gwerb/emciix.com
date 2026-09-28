@@ -101,4 +101,56 @@
       });
     }).observe(grid, { childList: true });
   }
+
+  audio.disableRemotePlayback = false;
+  if (document.getElementById("btn-cast")) return;
+  const cast = document.createElement("button");
+  cast.type = "button";
+  cast.id = "btn-cast";
+  cast.setAttribute("aria-pressed", "false");
+  cast.setAttribute("aria-label", "Cast");
+  cast.title = "Cast";
+  cast.textContent = "CAST";
+  cast.style.cssText = [
+    "position:fixed",
+    "z-index:80",
+    "top:max(10px, env(safe-area-inset-top))",
+    "left:max(10px, env(safe-area-inset-left))",
+    "height:32px",
+    "padding:0 12px",
+    "border-radius:999px",
+    "border:1px solid rgba(0,245,255,.75)",
+    "background:rgba(4,8,16,.78)",
+    "color:#7ef6ff",
+    "font:700 11px/1 ui-sans-serif,system-ui,sans-serif",
+    "letter-spacing:.16em",
+    "cursor:pointer",
+  ].join(";");
+  document.body.appendChild(cast);
+  const remote = audio.remote;
+  function paint() {
+    const state = (remote && remote.state) || "disconnected";
+    const on = state === "connected";
+    cast.style.borderColor = on ? "#ffe628" : "rgba(0,245,255,.75)";
+    cast.style.color = on ? "#ffe628" : "#7ef6ff";
+    cast.style.opacity = state === "connecting" ? "0.55" : "1";
+    cast.setAttribute("aria-pressed", on ? "true" : "false");
+    cast.textContent = on ? "CASTING" : "CAST";
+  }
+  if (remote) {
+    ["connect", "connecting", "disconnect"].forEach((name) => {
+      remote.addEventListener(name, paint);
+    });
+  }
+  cast.addEventListener("click", () => {
+    if (!remote || typeof remote.prompt !== "function") {
+      cast.title = "Cast is not available in this browser";
+      return;
+    }
+    cast.style.opacity = "0.55";
+    remote.prompt().then(paint).catch(() => {
+      cast.style.opacity = "1";
+      cast.title = "No cast device, or cast was cancelled";
+    });
+  });
 })();
