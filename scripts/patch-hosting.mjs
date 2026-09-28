@@ -259,7 +259,7 @@ await pruneStorage();
 
 function widenConnect(config) {
   const extras = {
-    "connect-src": ["https://api.fxtwitter.com", "https://invidious.f5.si", "https://invidious.darkness.services", "https://raw.githubusercontent.com", "https://api.github.com", "https://ntfy.sh", "https://noembed.com", "https://api.rss2json.com", "https://api.microlink.io", "https://r.jina.ai", "https://www.google.com", "https://www.recaptcha.net", "https://firebaseappcheck.googleapis.com", "https://content-firebaseappcheck.googleapis.com",
+    "connect-src": ["https://api.fxtwitter.com", "https://invidious.f5.si", "https://invidious.darkness.services", "https://emciix-playlist.vercel.app", "https://emciix-yt-views.vercel.app", "https://raw.githubusercontent.com", "https://api.github.com", "https://ntfy.sh", "https://noembed.com", "https://api.rss2json.com", "https://api.microlink.io", "https://r.jina.ai", "https://www.google.com", "https://www.recaptcha.net", "https://firebaseappcheck.googleapis.com", "https://content-firebaseappcheck.googleapis.com",
       // Firebase Auth, Firestore (emciix-com + need-inc-app), Storage avatars, Installations
       "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://firestore.googleapis.com", "https://firebasestorage.googleapis.com", "https://firebaseinstallations.googleapis.com"],
     // reCAPTCHA Enterprise + Firebase App Check

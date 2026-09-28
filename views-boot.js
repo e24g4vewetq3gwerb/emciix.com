@@ -457,7 +457,7 @@
     var ch = null;
     try { ch = typeof YT_CHANNEL_ID !== "undefined" ? YT_CHANNEL_ID : null; } catch (e) {}
     if (!ch) ch = "UCt8dYnrvcrZSCx9uS0aLBSQ";
-    var playlist = fetch("https://invidious.darkness.services/api/v1/playlists/PLZX_2WN1sEAg?t=" + Date.now(), { cache: "no-store" })
+    var playlist = fetch("https://emciix-playlist.vercel.app/playlist?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         var videos = data && data.videos || [];

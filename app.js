@@ -1374,7 +1374,7 @@ function fetchLatestFromAtom() {
     });
 }
 function fetchLatestFromRss() {
-  var url = "https://inv.nadeko.net/api/v1/playlists/PLZX_2WN1sEAg?t=" + Date.now();
+  var url = "https://emciix-playlist.vercel.app/playlist?t=" + Date.now();
   return fetch(url, { cache: "no-store" })
     .then(function (r) {
       if (!r.ok) throw new Error("playlist " + r.status);
@@ -1482,8 +1482,9 @@ function playlistUnchanged(videos) {
 }
 function syncPlaylistFeed() {
   var bases = [
+    "https://emciix-playlist.vercel.app/playlist",
     "https://inv.nadeko.net/api/v1/playlists/PLZX_2WN1sEAg",
-    "https://invidious.darkness.services/api/v1/playlists/PLZX_2WN1sEAg"
+    "https://invidious.f5.si/api/v1/playlists/PLZX_2WN1sEAg"
   ];
   function tryAt(i) {
     if (i >= bases.length) return Promise.resolve(false);
