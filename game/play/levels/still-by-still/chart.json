@@ -1,0 +1,483 @@
+{
+  "title": "Still by Still",
+  "youtubeId": "18vahr8bhuU",
+  "bpm": 96,
+  "duration": 30.84,
+  "offset": 0.0,
+  "notes": [
+    {
+      "t": 1.05,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 1.36,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 1.68,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 1.99,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 2.3,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 2.92,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 3.55,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 3.86,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 4.17,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 4.49,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 4.8,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 5.11,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 5.42,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 5.74,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 6.05,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 6.36,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 6.67,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 6.99,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 7.3,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 7.61,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 8.24,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 8.55,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 8.86,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 9.49,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 9.8,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 10.11,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 10.74,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 11.05,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 11.68,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 11.99,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 12.3,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 12.61,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 13.24,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 13.55,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 13.86,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 14.49,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 14.8,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 15.11,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 15.43,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 15.74,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 16.05,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 16.36,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 16.68,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 17.3,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 17.61,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 17.93,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 18.24,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 18.55,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 18.86,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 19.49,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 19.8,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 20.11,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 20.43,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 20.74,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 21.05,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 21.36,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 21.68,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 21.99,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 22.3,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 22.61,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 23.24,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 23.55,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 23.86,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 24.18,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 24.49,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 24.8,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 25.11,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 25.43,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 25.74,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 26.05,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 26.36,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 26.99,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 27.3,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 27.93,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 28.24,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 28.55,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 28.86,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 29.18,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 29.49,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    }
+  ]
+}

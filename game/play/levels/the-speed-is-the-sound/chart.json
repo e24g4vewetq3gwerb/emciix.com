@@ -1,0 +1,1551 @@
+{
+  "title": "The Speed Is the Sound",
+  "youtubeId": "DC7UVw8mrjw",
+  "bpm": 118,
+  "duration": 109.92,
+  "offset": 0.0,
+  "notes": [
+    {
+      "t": 1.1,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 1.61,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 2.12,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 2.63,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 3.13,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 3.64,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 4.15,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 4.66,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 5.17,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 5.68,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 6.18,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 6.69,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 7.2,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 7.71,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 8.22,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 8.73,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 9.24,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 9.74,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 10.25,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 10.76,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 11.27,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 11.78,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 12.29,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 12.79,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 13.3,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 13.81,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 14.32,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 14.83,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 15.34,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 15.85,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 16.35,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 16.86,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 17.37,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 17.88,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 18.39,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 18.9,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 19.41,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 19.91,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 20.42,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 20.93,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 21.44,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 21.95,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 22.46,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 22.96,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 23.47,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 23.98,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 24.49,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 25.0,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 25.51,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 26.02,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 26.52,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 27.03,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 27.54,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 28.05,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 28.56,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 29.07,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 29.57,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 30.08,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 30.59,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 31.1,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 31.61,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 32.12,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 32.63,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 33.13,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 33.64,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 34.15,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 34.66,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 35.17,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 35.68,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 36.18,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 36.69,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 37.2,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 37.71,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 38.22,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 38.73,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 39.24,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 39.74,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 40.25,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 40.76,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 41.27,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 41.78,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 42.29,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 42.79,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 43.3,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 43.81,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 44.32,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 44.83,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 45.34,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 45.85,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 46.35,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 46.86,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 47.37,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 47.88,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 48.39,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 48.9,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 49.41,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 49.91,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 50.28,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 50.65,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 51.01,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 51.38,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 51.74,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 52.11,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 52.48,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 52.84,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 53.21,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 53.57,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 53.94,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 54.31,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 54.67,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 55.04,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 55.41,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 55.77,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 56.14,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 56.5,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 56.87,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 57.24,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 57.6,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 57.97,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 58.33,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 58.7,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 59.07,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 59.43,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 59.8,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 60.16,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 60.53,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 60.9,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 61.26,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 61.63,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 61.99,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 62.36,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 62.73,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 63.09,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 63.46,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 63.83,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 64.19,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 64.56,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 64.92,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 65.29,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 65.66,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 66.02,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 66.39,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 66.75,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 67.12,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 67.49,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 67.85,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 68.22,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 68.58,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 68.95,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 69.32,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 69.68,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 70.05,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 70.42,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 70.78,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 71.15,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 71.51,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 71.88,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 72.25,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 72.61,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 72.98,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 73.34,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 73.71,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 74.08,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 74.44,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 74.81,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 75.17,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 75.54,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 75.91,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 76.27,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 76.64,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 77.01,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 77.37,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 77.74,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 78.1,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 78.47,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 78.84,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 79.2,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 79.57,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 79.93,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 80.3,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 80.67,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 81.03,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 81.4,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 81.76,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 82.13,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 82.5,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 82.86,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 83.23,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 83.59,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 83.96,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 84.33,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 84.69,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 85.06,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 85.43,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 85.79,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 86.16,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 86.52,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 86.89,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 87.26,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 87.62,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 87.99,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 88.35,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 88.72,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 89.09,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 89.45,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 89.82,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 90.18,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 90.55,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 90.92,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 91.28,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 91.65,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 92.02,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 92.38,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 92.75,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 93.11,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 93.48,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 93.85,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 94.21,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 94.58,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 94.94,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 95.31,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 95.68,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 96.04,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 96.41,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 96.77,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 97.14,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 97.51,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 97.87,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 98.24,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 98.61,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 98.97,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 99.34,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 99.7,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 100.07,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 100.44,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 100.8,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 101.17,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 101.53,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 101.9,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 102.27,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 102.63,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 103.0,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 103.36,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 103.73,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 104.1,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 104.46,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 104.83,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 105.19,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 105.56,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 105.93,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 106.29,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 106.66,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 107.03,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 107.39,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 107.76,
+      "lane": 0,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 108.12,
+      "lane": 1,
+      "kind": "circle",
+      "hold": 0.0
+    },
+    {
+      "t": 108.49,
+      "lane": 2,
+      "kind": "circle",
+      "hold": 0.0
+    }
+  ]
+}

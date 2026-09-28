@@ -131,6 +131,12 @@ if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
 ["starslip/privacy.html","starslip/support.html","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
+["mr44","make-it-loud","one-more-take","the-next-one","x-ad-press-play","leave-it-open-youtube","the-speed-is-the-sound","leave-the-door-open","the-door-will-still-be","still-by-still","thats-the-fix"].forEach((id) => {
+  ["audio/" + id + ".mp3", "chart.json", "lyrics.json"].forEach((part) => {
+    const file = "game/play/levels/" + id + "/" + part;
+    if (existsSync(file)) PATCHES.push([file, "/" + file]);
+  });
+});
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
