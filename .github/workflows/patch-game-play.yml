@@ -24,6 +24,11 @@ on:
       - game/play/firebase-scores.js
       - game/play/session-guest.js
       - game/play/levels.json
+      - game/play/levels/the-bot-can-wait/**
+      - game/play/levels/fix-the-profile/**
+      - game/play/levels/everything-passing-through/**
+      - game/play/levels/thats-the-fix-x-fix-the-profile/**
+      - game/play/levels/fix-the-profile-x-thats-the-fix/**
       - game/play/levels/no-room-for-me/**
       - game/play/levels/glitch-by-glitch/**
       - game/play/levels/watch-it-brppp/**
