@@ -437,5 +437,65 @@
     "youtube": "https://www.youtube.com/watch?v=-AYApi793Mg",
     "sideLeft": "THE",
     "sideRight": "FIX"
+  },
+  {
+    "id": "the-bot-can-wait",
+    "title": "The Bot Can Wait",
+    "short": "THE BOT",
+    "blurb": "A third one steps out of the short bar and stays.",
+    "chart": "/game/play/levels/the-bot-can-wait/chart.json",
+    "lyrics": "/game/play/levels/the-bot-can-wait/lyrics.json",
+    "audio": "/game/play/levels/the-bot-can-wait/audio/the-bot-can-wait.mp3",
+    "youtube": "",
+    "sideLeft": "THE BOT",
+    "sideRight": "CAN WAIT"
+  },
+  {
+    "id": "fix-the-profile",
+    "title": "Fix the Profile",
+    "short": "PROFILE",
+    "blurb": "One prompt. Five thousand unread. The webs pull the junk out.",
+    "chart": "/game/play/levels/fix-the-profile/chart.json",
+    "lyrics": "/game/play/levels/fix-the-profile/lyrics.json",
+    "audio": "/game/play/levels/fix-the-profile/audio/fix-the-profile.mp3",
+    "youtube": "",
+    "sideLeft": "FIX",
+    "sideRight": "PROFILE"
+  },
+  {
+    "id": "everything-passing-through",
+    "title": "Everything Passing Through",
+    "short": "PASSING",
+    "blurb": "Seven days, a bill, and Starslip still in the queue.",
+    "chart": "/game/play/levels/everything-passing-through/chart.json",
+    "lyrics": "/game/play/levels/everything-passing-through/lyrics.json",
+    "audio": "/game/play/levels/everything-passing-through/audio/everything-passing-through.mp3",
+    "youtube": "",
+    "sideLeft": "BILL",
+    "sideRight": "DUE"
+  },
+  {
+    "id": "thats-the-fix-x-fix-the-profile",
+    "title": "That's the Fix x Fix the Profile",
+    "short": "MASHUP",
+    "blurb": "Couch is the office. Don't get up. The sheet still wants more.",
+    "chart": "/game/play/levels/thats-the-fix-x-fix-the-profile/chart.json",
+    "lyrics": "/game/play/levels/thats-the-fix-x-fix-the-profile/lyrics.json",
+    "audio": "/game/play/levels/thats-the-fix-x-fix-the-profile/audio/thats-the-fix-x-fix-the-profile.mp3",
+    "youtube": "",
+    "sideLeft": "THE",
+    "sideRight": "COUCH"
+  },
+  {
+    "id": "fix-the-profile-x-thats-the-fix",
+    "title": "Fix the Profile x That's the Fix",
+    "short": "OTHER CUT",
+    "blurb": "The other mashup. Same webs, same fix, the long way through.",
+    "chart": "/game/play/levels/fix-the-profile-x-thats-the-fix/chart.json",
+    "lyrics": "/game/play/levels/fix-the-profile-x-thats-the-fix/lyrics.json",
+    "audio": "/game/play/levels/fix-the-profile-x-thats-the-fix/audio/fix-the-profile-x-thats-the-fix.mp3",
+    "youtube": "",
+    "sideLeft": "SAME",
+    "sideRight": "FIX"
   }
 ]

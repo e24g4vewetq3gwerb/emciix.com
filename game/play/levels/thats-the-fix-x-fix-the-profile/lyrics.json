@@ -1,0 +1,52 @@
+[
+  {
+    "start": 1.0,
+    "end": 10.23,
+    "text": "Couch is the new bed. The bill is still due."
+  },
+  {
+    "start": 10.38,
+    "end": 19.61,
+    "text": "Starslip. Still in the queue."
+  },
+  {
+    "start": 19.76,
+    "end": 28.99,
+    "text": "Couch is the office. Laptop on the floor."
+  },
+  {
+    "start": 29.13,
+    "end": 38.36,
+    "text": "Pass it through. Don't get up no more."
+  },
+  {
+    "start": 38.51,
+    "end": 47.74,
+    "text": "Seven days gone. The eighth one just hit."
+  },
+  {
+    "start": 47.89,
+    "end": 57.12,
+    "text": "MJ didn't move. Write it from the groove."
+  },
+  {
+    "start": 57.27,
+    "end": 66.5,
+    "text": "Thirty-five was the sheet. Now the sheet wants more."
+  },
+  {
+    "start": 66.65,
+    "end": 75.88,
+    "text": "Starslip, where you at? How fast from the floor?"
+  },
+  {
+    "start": 76.02,
+    "end": 85.25,
+    "text": "I didn't leave the room."
+  },
+  {
+    "start": 85.4,
+    "end": 94.63,
+    "text": "Retire can wait. The couch still makes the rate."
+  }
+]
