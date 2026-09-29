@@ -101,4 +101,105 @@
       });
     }).observe(grid, { childList: true });
   }
+
+  // The portal sits behind the start buttons. A translucent button lets a
+  // piece of that scene show through and look like a broken cast icon.
+  const plate = document.createElement("style");
+  plate.textContent = [
+    "google-cast-launcher{display:none!important;width:0!important;height:0!important;overflow:hidden!important;pointer-events:none!important}",
+    "#start-overlay .start-actions{position:relative;z-index:4;background:#08060f;border-radius:16px}",
+    "#start-overlay #start-btn.start-action-btn{background:#241028!important}",
+    "#start-overlay .btn-secondary.start-action-btn{background:#06222a!important}",
+    ".corner-blob{position:fixed!important;top:max(10px,env(safe-area-inset-top))!important;right:max(10px,env(safe-area-inset-right))!important;left:auto!important;bottom:auto!important;z-index:60!important;pointer-events:none!important}",
+  ].join("");
+  document.head.appendChild(plate);
+
+  function sweepLaunchers() {
+    document.querySelectorAll("google-cast-launcher").forEach((el) => el.remove());
+  }
+  sweepLaunchers();
+  new MutationObserver(sweepLaunchers).observe(document.documentElement, { childList: true, subtree: true });
+
+  document.querySelectorAll("audio,video").forEach((el) => {
+    try { el.disableRemotePlayback = true; } catch (err) {}
+  });
+
+  const screen = /(?:\?|&)screen=1(?:&|$)/.test(location.search);
+  const receiver = !!(navigator.presentation && navigator.presentation.receiver);
+  if (screen || receiver || document.getElementById("btn-cast")) return;
+
+  const castBtn = document.createElement("button");
+  castBtn.type = "button";
+  castBtn.id = "btn-cast";
+  castBtn.setAttribute("aria-pressed", "false");
+  castBtn.setAttribute("aria-label", "Cast this page");
+  castBtn.title = "Show this page on a TV";
+  castBtn.textContent = "CAST";
+  castBtn.style.cssText = [
+    "position:fixed",
+    "z-index:90",
+    "top:max(10px, env(safe-area-inset-top))",
+    "left:max(10px, env(safe-area-inset-left))",
+    "height:32px",
+    "padding:0 12px",
+    "border-radius:999px",
+    "border:1px solid rgba(0,245,255,.75)",
+    "background:rgba(4,8,16,.92)",
+    "color:#7ef6ff",
+    "font:700 11px/1 ui-sans-serif,system-ui,sans-serif",
+    "letter-spacing:.16em",
+    "cursor:pointer",
+  ].join(";");
+  document.body.appendChild(castBtn);
+
+  const pageUrl = location.origin + "/game/play/?screen=1";
+  let presentation = null;
+  let connection = null;
+  if (window.PresentationRequest) {
+    try {
+      presentation = new PresentationRequest([pageUrl]);
+      if (navigator.presentation) navigator.presentation.defaultRequest = presentation;
+    } catch (err) {
+      presentation = null;
+    }
+  }
+
+  function paint(note) {
+    const on = !!(connection && connection.state === "connected");
+    castBtn.style.borderColor = on ? "#ffe628" : "rgba(0,245,255,.75)";
+    castBtn.style.color = on ? "#ffe628" : "#7ef6ff";
+    castBtn.style.opacity = "1";
+    castBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    castBtn.textContent = on ? "ON TV" : "CAST";
+    if (note) castBtn.title = note;
+  }
+
+  castBtn.addEventListener("click", function () {
+    if (!presentation) {
+      paint("Use the browser Cast menu, then choose Cast tab");
+      return;
+    }
+    if (connection && connection.state === "connected") {
+      try { connection.terminate(); } catch (err) {}
+      connection = null;
+      paint("Show this page on a TV");
+      return;
+    }
+    castBtn.style.opacity = "0.55";
+    presentation.start().then(function (next) {
+      connection = next;
+      next.addEventListener("close", function () {
+        connection = null;
+        paint("Show this page on a TV");
+      });
+      paint("This page is on the TV");
+    }).catch(function (err) {
+      const name = err && err.name;
+      if (name === "NotAllowedError" || name === "AbortError") {
+        paint("Show this page on a TV");
+        return;
+      }
+      paint((err && err.message) || "No screen found");
+    });
+  });
 })();
