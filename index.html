@@ -95,7 +95,11 @@ window.SITE = {
     note: "Prices in Canadian dollars (CAD).",
     plans: [
       { name: "Business website", price: "from $1,500", unit: "", text: "New site or redesign, with contact, booking or menu pages." },
-      { name: "Care plan", price: "$100", unit: "/ month", text: "Hosting, updates and small edits, all handled." }
+      { name: "Care plan", price: "$100", unit: "/ month", text: "Hosting, updates and small edits, all handled." },
+      { name: "AI coaching", price: "$300", unit: "one-time", id: "ai-coaching", wide: true,
+        text: "One hands-on visit at your place of business, about 2 hours. No subscription.",
+        points: ["Use AI to optimize your own website", "Write and clean up emails", "Make short videos", "Everyday tasks: social posts, flyers, replying to reviews", "Take-home cheat sheet"],
+        book: { label: "Book a session", tel: "tel:+17052575717", mail: "mailto:cue@dialchad.com?subject=AI%20coaching%20session" } }
     ],
     links: [{ label: "See services & pricing", href: "/hire", primary: true }, { label: "See a demo site", href: "/demo/roofing" }]
   },
@@ -240,6 +244,13 @@ ul.ticks li::before { content: ""; position: absolute; left: 3px; top: .62em; wi
 /* Services */
 .plans { display: grid; gap: 14px; margin-bottom: 22px; }
 @media (min-width: 640px) { .plans { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 640px) { .plans .card-wide { grid-column: 1 / -1; } .plans .card-wide ul.ticks { columns: 2; column-gap: 28px; } .plans .card-wide ul.ticks li { break-inside: avoid; } }
+.plans .card { display: flex; flex-direction: column; }
+.plans ul.ticks { margin: 12px 0 0; font-size: .92rem; }
+.plans ul.ticks li:first-child { margin-top: 0; }
+.plan-cta { margin-top: auto; padding-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.plan-cta .alt { font-size: .9rem; color: var(--dim); }
+.plan-cta .alt a { color: var(--ink); }
 .card .price { color: var(--ink); font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin: 6px 0 6px; }
 .price-note { color: var(--dim); font-size: .85rem; margin: -8px 0 20px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
@@ -529,7 +540,12 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
 
   var V = S.services;
   h += '<section class="block" id="hire" aria-labelledby="hire-h"><div class="wrap">' + head(V.kicker, V.title, "hire-h") + '<p class="sub">' + esc(V.text) + '</p>' +
-    '<div class="plans">' + V.plans.map(function (p) { return '<article class="card"><h3>' + esc(p.name) + '</h3><p class="price">' + esc(p.price) + (p.unit ? ' <small>' + esc(p.unit) + '</small>' : '') + '</p><p>' + esc(p.text) + '</p></article>'; }).join("") + '</div>' +
+    '<div class="plans">' + V.plans.map(function (p) {
+      return '<article class="card' + (p.wide ? ' card-wide' : '') + '"' + (p.id ? ' id="' + esc(p.id) + '"' : '') + '><h3>' + esc(p.name) + '</h3><p class="price">' + esc(p.price) + (p.unit ? ' <small>' + esc(p.unit) + '</small>' : '') + '</p><p>' + esc(p.text) + '</p>' +
+        (p.points ? ticks(p.points) : '') +
+        (p.book ? '<div class="plan-cta"><a class="btn btn-ghost btn-sm" href="' + esc(p.book.tel) + '">' + I.phone + esc(p.book.label) + '</a><span class="alt">or <a href="' + esc(p.book.mail) + '">email</a></span></div>' : '') +
+        '</article>';
+    }).join("") + '</div>' +
     (V.note ? '<p class="price-note">' + esc(V.note) + '</p>' : '') + links(V.links) + '</div></section>';
 
   var CD = S.cityDemo;
