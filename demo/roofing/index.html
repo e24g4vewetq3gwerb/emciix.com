@@ -191,7 +191,9 @@ nav.main a:hover { color: var(--primary); text-decoration: underline; }
 .hero { background: linear-gradient(180deg, #fff 0%, var(--bg) 100%); padding: 28px 0 36px; border-bottom: 1px solid var(--line); }
 .hero .wrap { display: grid; gap: 28px; align-items: center; }
 @media (min-width: 900px) { .hero { padding: 56px 0 64px; } .hero .wrap { grid-template-columns: 1.05fr .95fr; gap: 48px; } }
-.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, transparent); padding: 6px 10px; border-radius: 999px; margin: 0 0 14px; }
+.eyebrow .loc-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: min(60vw, 28rem); }
+.eyebrow .loc-area { flex: none; white-space: nowrap; }
+.eyebrow { max-width: 100%; display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, transparent); padding: 6px 10px; border-radius: 999px; margin: 0 0 14px; }
 .hero h1 { font-size: clamp(2rem, 7.6vw, 3.4rem); line-height: 1.08; letter-spacing: -.025em; margin: 0 0 14px; text-wrap: balance; }
 .hero p.lede { font-size: 1.08rem; color: var(--muted); margin: 0 0 22px; max-width: 36rem; }
 .hero .ctas { display: grid; gap: 10px; }
@@ -448,7 +450,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   html += '<main>';
   html += '<section class="hero"><div class="wrap"><div>' +
-    '<p class="eyebrow">' + I.pin.replace('aria-hidden="true"', 'aria-hidden="true" width="14" height="14"') + esc(B.city) + ' &amp; area</p>' +
+    '<p class="eyebrow" id="loc-pill">' + I.pin.replace('aria-hidden="true"', 'aria-hidden="true" width="14" height="14"') + '<span class="loc-text">' + esc(B.city) + '</span><span class="loc-area">&nbsp;&amp; area</span></p>' +
     '<h1>' + esc(B.heroTitle) + '</h1><p class="lede">' + esc(B.heroText) + '</p>' +
     '<div class="ctas"><a class="btn btn-accent" href="' + tel() + '">' + I.phone + 'Call ' + esc(B.phoneDisplay) + '</a>' +
     '<a class="btn btn-outline" href="#quote">' + I.doc + 'Get a free quote</a></div>' +
@@ -554,6 +556,40 @@ noscript p { margin: 24px; font-size: 1.1rem; }
   tag.id = "business-jsonld";
   tag.textContent = JSON.stringify(ld);
   document.head.appendChild(tag);
+
+  // ---------- visitor location pill: shows the visitor's area, falls back to the config city ----------
+  // Visitor location (privacy-first): one call per browser session to our own Vercel endpoint,
+  // which reads only Vercel's coarse geo headers and returns {local:true|false, label:"City, ON"|null}.
+  // Nothing is logged or stored server-side; the answer is cached in sessionStorage (emciix.geo + emciix.local).
+  // Test overrides: ?city=Some%20City (pill label), ?local=ssm / ?local=off (local copy).
+  function geoLookup(apply) {
+    var q = location.search, forced = /[?&]local=(ssm|off)(?:&|$)/.test(q), city = null, cached = null;
+    var m = q.match(/[?&]city=([^&#]*)/);
+    if (m) { try { city = decodeURIComponent(m[1].replace(/\+/g, " ")).replace(/\s+/g, " ").trim().slice(0, 48) || null; } catch (e) {} }
+    try { cached = JSON.parse(sessionStorage.getItem("emciix.geo") || "null"); } catch (e) {}
+    function done(d) {
+      apply({ local: !forced && d ? d.local === true : null, label: city || (d && typeof d.label === "string" && d.label ? d.label : null) });
+    }
+    if (city || cached || !/(^|\.)emciix\.(com|ca)$/.test(location.hostname) || !window.fetch) { done(cached); return; }
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 3000);
+    fetch("https://emciix-yt-views.vercel.app/geo", { cache: "no-store", credentials: "omit", signal: ctl ? ctl.signal : undefined })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (d) {
+        clearTimeout(timer);
+        if (!d || typeof d.local !== "boolean") { done(null); return; }
+        var keep = { local: d.local, label: typeof d.label === "string" ? d.label.slice(0, 64) : null };
+        try { sessionStorage.setItem("emciix.geo", JSON.stringify(keep)); sessionStorage.setItem("emciix.local", d.local ? "1" : "0"); } catch (e) {}
+        done(keep);
+      })
+      .catch(function () { clearTimeout(timer); done(null); });
+  }
+  geoLookup(function (g) {
+    var pill = document.getElementById("loc-pill");
+    if (!pill || !g.label) return;
+    pill.querySelector(".loc-text").textContent = g.label;
+    pill.setAttribute("title", g.label + " & area");
+  });
 })();
 </script>
 </body>

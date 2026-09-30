@@ -27,6 +27,30 @@ const cases = [
 ];
 let n = 0;
 for (const [h, want] of cases) { assert.strictEqual(geo.isLocal(h), want, JSON.stringify(h)); n++; }
+// display labels
+const labels = [
+  [H("CA", "ON", "Sault%20Ste.%20Marie"), "Sault Ste. Marie, ON"],
+  [H("CA", "ON", "Toronto"), "Toronto, ON"],
+  [H("CA", "QC", "Montr%C3%A9al"), "Montréal, QC"],
+  [H("US", "MI", "Sault%20Ste.%20Marie"), "Sault Ste. Marie, MI"],
+  [H("US", "NY", "New York"), "New York, NY"],
+  [H("GB", "ENG", "London"), "London, UK"],
+  [H("DE", "BE", "Berlin"), "Berlin, Germany"],
+  [H("JP", "13", "Tokyo"), "Tokyo, Japan"],
+  [H("FR", "IDF", "Saint-%C3%89tienne"), "Saint-Étienne, France"],
+  [H("CA", "", "Toronto"), "Toronto, Canada"],
+  [H("CA", "ON", ""), "Canada"],
+  [H("IN", "", ""), "India"],
+  [H("", "", "Somewhere"), "Somewhere"],
+  [H("", "", ""), null],
+  [{}, null],
+  [H("ZZ", "", ""), null],
+  [H("CA", "ON", "%3Cscript%3Ealert(1)%3C%2Fscript%3E"), "script alert(1) script, ON"],
+  [H("CA", "ON", "%E0%A4%A"), "E0 A4 A, ON"], // malformed encoding: never throws, stays inert
+  [H("CA", "ON", "12345"), "Canada"],
+  [H("CA", "ON", "A".repeat(80)), "A".repeat(48) + ", ON"],
+];
+for (const [h, want] of labels) { assert.strictEqual(geo.geoLabel(h), want, JSON.stringify(h)); n++; }
 // handler: response shape + headers
 function run(headers, method = "GET") {
   const out = { h: {}, body: "", status: 0 };
@@ -34,12 +58,12 @@ function run(headers, method = "GET") {
   geo({ method, headers }, res); return out;
 }
 let r = run({ origin: "https://emciix.com", ...H("CA", "ON", "Sault Ste. Marie") });
-assert.deepStrictEqual(JSON.parse(r.body), { local: true }); assert.strictEqual(r.h["access-control-allow-origin"], "https://emciix.com"); assert.match(r.h["cache-control"], /private, no-store/);
+assert.deepStrictEqual(JSON.parse(r.body), { local: true, label: "Sault Ste. Marie, ON" }); assert.strictEqual(r.h["access-control-allow-origin"], "https://emciix.com"); assert.match(r.h["cache-control"], /private, no-store/);
 r = run({ origin: "https://emciix.ca", ...H("US", "MI", "Sault Ste. Marie") });
-assert.deepStrictEqual(JSON.parse(r.body), { local: false }); assert.strictEqual(r.h["access-control-allow-origin"], "https://emciix.ca");
+assert.deepStrictEqual(JSON.parse(r.body), { local: false, label: "Sault Ste. Marie, MI" }); assert.strictEqual(r.h["access-control-allow-origin"], "https://emciix.ca");
 r = run({ origin: "https://evil.example", ...H("CA", "ON", "Sault Ste. Marie") });
 assert.strictEqual(r.h["access-control-allow-origin"], undefined);
-assert.deepStrictEqual(Object.keys(JSON.parse(r.body)), ["local"]);
+assert.deepStrictEqual(Object.keys(JSON.parse(r.body)), ["local", "label"]);
 r = run({ origin: "https://emciix.com" }, "OPTIONS"); assert.strictEqual(r.status, 204);
 r = run({}, "POST"); assert.strictEqual(r.status, 405);
-console.log("geo tests passed:", n, "matcher cases + 5 handler checks");
+console.log("geo tests passed:", n, "matcher/label cases + 5 handler checks");

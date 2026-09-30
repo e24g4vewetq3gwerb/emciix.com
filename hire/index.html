@@ -111,6 +111,13 @@ a:focus-visible, .btn:focus-visible { outline: 2px solid var(--gold); outline-of
   .hero-planet::after { content: ""; position: absolute; inset: -5%; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); }
   .hero-moon { position: absolute; right: -6px; top: 18px; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f4f3f0, #8f8d88 70%, #2a2a2a); box-shadow: 0 0 0 1.5px rgba(255,255,255,.7); }
 }
+/* Visitor location pill (from /demo/roofing): height is always reserved; fades in once a label is known */
+.loc-pill { display: flex; width: fit-content; max-width: 100%; align-items: center; gap: 8px; min-height: 28px; margin: 0 0 14px; padding: 5px 11px; border-radius: 999px; font: 700 .74rem/1.2 var(--font); letter-spacing: .08em; text-transform: uppercase; color: var(--gold); background: rgba(242,212,138,.1); border: 1px solid rgba(242,212,138,.22); visibility: hidden; opacity: 0; transition: opacity .35s ease, visibility 0s linear .35s; }
+.loc-pill.on { visibility: visible; opacity: 1; transition: opacity .35s ease, visibility 0s linear 0s; }
+.loc-pill svg { flex: none; }
+.loc-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.loc-area { flex: none; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .loc-pill, .loc-pill.on { transition: none; } }
 .kicker { font: 500 .72rem/1.2 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
 h1 { font-size: clamp(2.1rem, 8.4vw, 4rem); line-height: 1.04; letter-spacing: -.025em; margin: 0 0 18px; font-weight: 700; max-width: 16ch; text-wrap: balance; }
 h1 .soft { color: var(--dim); }
@@ -228,28 +235,48 @@ html.js .cx-panel.open { grid-template-rows: 1fr; visibility: visible; transitio
       function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
       var g = C.global, l = C.local;
       // Both variants share one grid cell so the taller one reserves the space (no layout jump on swap).
-      el.innerHTML = '<p class="kicker swap"><span class="v-g">' + esc(g.kicker) + '</span><span class="v-l">' + esc(l.kicker) + '</span></p>' +
+      el.innerHTML = '<p class="loc-pill" id="loc-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span class="loc-text"></span><span class="loc-area">&nbsp;&amp; area</span></p>' +
+        '<p class="kicker swap"><span class="v-g">' + esc(g.kicker) + '</span><span class="v-l">' + esc(l.kicker) + '</span></p>' +
         '<h1 class="swap"><span class="v-g">' + esc(g.title) + ' <span class="soft">' + esc(g.titleSoft) + '</span></span>' +
         '<span class="v-l">' + esc(l.title) + ' <span class="soft">' + esc(l.titleSoft) + '</span></span></h1>' +
         '<div class="swap"><p class="lede v-g">' + esc(g.text) + '</p><p class="lede v-l">' + esc(l.text) + '</p></div>';
-      // Privacy-first detection: our own Vercel endpoint returns only {local:true|false}; nothing is logged or stored.
-      var r = document.documentElement;
-      try {
-        if (/[?&]local=(ssm|off)(?:&|$)/.test(location.search)) return;
-        if (sessionStorage.getItem("emciix.local") !== null) return;
-      } catch (e) { return; }
-      if (!/(^|\.)emciix\.(com|ca)$/.test(location.hostname) || !window.fetch) return;
-      var ctl = window.AbortController ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 3000);
-      fetch("https://emciix-yt-views.vercel.app/geo", { cache: "no-store", credentials: "omit", signal: ctl ? ctl.signal : undefined })
-        .then(function (res) { return res.ok ? res.json() : null; })
-        .then(function (d) {
-          clearTimeout(timer);
-          if (!d || typeof d.local !== "boolean") return;
-          try { sessionStorage.setItem("emciix.local", d.local ? "1" : "0"); } catch (e) {}
-          if (d.local) r.setAttribute("data-local", "1");
-        })
-        .catch(function () { clearTimeout(timer); });
+      // Visitor location (privacy-first): one call per browser session to our own Vercel endpoint,
+      // which reads only Vercel's coarse geo headers and returns {local:true|false, label:"City, ON"|null}.
+      // Nothing is logged or stored server-side; the answer is cached in sessionStorage (emciix.geo + emciix.local).
+      // Test overrides: ?city=Some%20City (pill label), ?local=ssm / ?local=off (local copy).
+      function geoLookup(apply) {
+        var q = location.search, forced = /[?&]local=(ssm|off)(?:&|$)/.test(q), city = null, cached = null;
+        var m = q.match(/[?&]city=([^&#]*)/);
+        if (m) { try { city = decodeURIComponent(m[1].replace(/\+/g, " ")).replace(/\s+/g, " ").trim().slice(0, 48) || null; } catch (e) {} }
+        try { cached = JSON.parse(sessionStorage.getItem("emciix.geo") || "null"); } catch (e) {}
+        function done(d) {
+          apply({ local: !forced && d ? d.local === true : null, label: city || (d && typeof d.label === "string" && d.label ? d.label : null) });
+        }
+        if (city || cached || !/(^|\.)emciix\.(com|ca)$/.test(location.hostname) || !window.fetch) { done(cached); return; }
+        var ctl = window.AbortController ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 3000);
+        fetch("https://emciix-yt-views.vercel.app/geo", { cache: "no-store", credentials: "omit", signal: ctl ? ctl.signal : undefined })
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (d) {
+            clearTimeout(timer);
+            if (!d || typeof d.local !== "boolean") { done(null); return; }
+            var keep = { local: d.local, label: typeof d.label === "string" ? d.label.slice(0, 64) : null };
+            try { sessionStorage.setItem("emciix.geo", JSON.stringify(keep)); sessionStorage.setItem("emciix.local", d.local ? "1" : "0"); } catch (e) {}
+            done(keep);
+          })
+          .catch(function () { clearTimeout(timer); done(null); });
+      }
+      function showPill(label) {
+        var pill = document.getElementById("loc-pill");
+        if (!pill || !label) return;
+        pill.querySelector(".loc-text").textContent = label;
+        pill.setAttribute("title", label + " & area");
+        pill.classList.add("on");
+      }
+      geoLookup(function (g) {
+        if (g.local) document.documentElement.setAttribute("data-local", "1");
+        showPill(g.label);
+      });
     })();
     </script>
     <div class="cta-row">

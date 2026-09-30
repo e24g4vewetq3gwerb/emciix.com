@@ -25,3 +25,15 @@ Source copy + unit test: `docs/vercel-geo/` (`node docs/vercel-geo/geo.test.js`)
 - No IP is read, nothing is logged or stored. CORS only for https://(www.)emciix.com and
   https://(www.)emciix.ca. `Cache-Control: private, no-store`.
 - `connect-src` already allowed `https://emciix-yt-views.vercel.app`, so no CSP change was needed.
+
+## Visitor location pill (added 2026-09-30)
+
+`/geo` now returns `{"local": bool, "label": "City, ON" | "City, Country" | null}`. The label is
+built only from Vercel's geo headers: URI-decoded city (sanitised: letters/marks/digits/space/.'’()-,
+max 48 chars) plus the region code for CA/US, or the country name elsewhere (GB -> UK, AE -> UAE).
+
+The homepage, /hire and /demo/roofing show a pin pill above the hero ("TORONTO, ON & AREA").
+One `/geo` call per browser session; the result is cached in `sessionStorage["emciix.geo"]`
+(and `emciix.local`). On / and /hire the pill's height is always reserved and it fades in once a
+label is known (hidden if none). On the roofing demo it falls back to the config city.
+Test override: `?city=Some%20City`.
