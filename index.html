@@ -308,7 +308,19 @@ footer .about p { margin: 12px 0; max-width: 22rem; }
 noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
 
 /* ===== Look switch button (the header blob) ===== */
-.brand-wrap { display: inline-flex; align-items: center; gap: 4px; margin-left: -8px; }
+.brand-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; margin-left: -8px; }
+/* "Try tapping it" hint for the look-switch button: text + arrow in the left gutter on wide screens, arrow + text under it on narrow ones */
+.tap-hint { position: absolute; top: 100%; left: 13px; display: flex; align-items: flex-end; gap: 3px; margin-top: -4px; font: 500 .72rem/1.2 var(--font); letter-spacing: .01em; color: var(--dim); white-space: nowrap; pointer-events: none; opacity: .9; transition: opacity .3s ease; }
+.tap-hint svg { flex: none; display: block; }
+.tap-hint .th-right { display: none; }
+.tap-hint.away, .tap-hint.gone { opacity: 0; }
+@media (min-width: 1260px) {
+  .tap-hint { top: 50%; left: auto; right: 100%; margin-top: 0; align-items: center; transform: translateY(-50%); gap: 2px; padding-right: 1px; }
+  .tap-hint .th-up { display: none; }
+  .tap-hint .th-right { display: block; }
+  .tap-hint.away { opacity: .9; }
+}
+@media (prefers-reduced-motion: reduce) { .tap-hint { transition: none; } }
 .mode-btn { appearance: none; -webkit-appearance: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; margin: 0; border: 0; border-radius: 12px; background: transparent; cursor: pointer; }
 .mode-btn:hover .dot { transform: scale(1.08); }
 .mode-btn:active .dot { transform: scale(.94); }
@@ -505,6 +517,11 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
   }
 
   h += '<header class="head"><div class="wrap"><div class="brand-wrap"><button type="button" class="mode-btn" id="mode-btn" aria-label="Switch look" title="Switch look"><span class="dot" aria-hidden="true"></span></button>' +
+    '<span class="tap-hint" id="tap-hint" aria-hidden="true">' +
+      '<svg class="th-up" viewBox="0 0 18 20" width="15" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18.5c-6.5-1-9.5-6-8.6-15"/><path d="M2.4 6.2 5.5 2.6l3.2 3.3"/></svg>' +
+      '<span>Try tapping it</span>' +
+      '<svg class="th-right" viewBox="0 0 24 14" width="20" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 9.5c5-5.2 11.5-6.2 20-2.6"/><path d="M17.6 3.2l4.1 3.8-4.8 2.6"/></svg>' +
+    '</span>' +
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
     '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
     '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
@@ -597,6 +614,19 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     if (animate) live.textContent = MODE_NAMES[mode] + " look";
   }
   applyMode(currentMode(), false);
+  // "Try tapping it" hint: gone after the first tap (this visit); the under-button version fades while scrolled
+  var hint = document.getElementById("tap-hint");
+  if (hint) {
+    try { if (sessionStorage.getItem("emciix.tapHint") === "1") hint.parentNode.removeChild(hint), hint = null; } catch (e) {}
+  }
+  if (hint) {
+    var onScroll = function () { hint.classList.toggle("away", window.scrollY > 4); };
+    window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+    btn.addEventListener("click", function () {
+      hint.classList.add("gone");
+      try { sessionStorage.setItem("emciix.tapHint", "1"); } catch (e) {}
+    }, { once: true });
+  }
   btn.addEventListener("click", function () {
     var next = MODES[(MODES.indexOf(currentMode()) + 1) % MODES.length];
     applyMode(next, true);
