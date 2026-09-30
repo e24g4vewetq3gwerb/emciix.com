@@ -553,7 +553,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<div class="seg" role="tablist" aria-label="Demo version">' + CD.tabs.map(function (t, i) {
       return '<button type="button" role="tab" id="city-tab-' + i + '" aria-controls="city-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-i="' + i + '">' + esc(t.label) + '</button>';
     }).join("") + '</div>' +
-    '<form class="city-form" id="city-form" hidden><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="e.g. Berlin, Germany" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
+    '<form class="city-form" id="city-form" hidden><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="Your City" aria-label="Your city: type a city to preview the demo" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
     '<div class="bframe" id="city-panel" role="tabpanel" aria-labelledby="city-tab-0"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
     '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
     '<div class="row"><a class="btn btn-primary" id="city-open" href="/demo/roofing">Open full demo</a></div></div></section>';
