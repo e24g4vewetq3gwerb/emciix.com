@@ -191,9 +191,7 @@ nav.main a:hover { color: var(--primary); text-decoration: underline; }
 .hero { background: linear-gradient(180deg, #fff 0%, var(--bg) 100%); padding: 28px 0 36px; border-bottom: 1px solid var(--line); }
 .hero .wrap { display: grid; gap: 28px; align-items: center; }
 @media (min-width: 900px) { .hero { padding: 56px 0 64px; } .hero .wrap { grid-template-columns: 1.05fr .95fr; gap: 48px; } }
-.eyebrow .loc-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: min(60vw, 28rem); }
-.eyebrow .loc-area { flex: none; white-space: nowrap; margin-left: -8px; }
-.eyebrow { max-width: 100%; display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, transparent); padding: 6px 10px; border-radius: 999px; margin: 0 0 14px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, transparent); padding: 6px 10px; border-radius: 999px; margin: 0 0 14px; }
 .hero h1 { font-size: clamp(2rem, 7.6vw, 3.4rem); line-height: 1.08; letter-spacing: -.025em; margin: 0 0 14px; text-wrap: balance; }
 .hero p.lede { font-size: 1.08rem; color: var(--muted); margin: 0 0 22px; max-width: 36rem; }
 .hero .ctas { display: grid; gap: 10px; }
@@ -222,7 +220,6 @@ nav.main a:hover { color: var(--primary); text-decoration: underline; }
 .hours td + td { text-align: right; font-weight: 600; }
 .areas { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .areas li { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; font-size: .9rem; font-weight: 600; }
-.areas li.areas-more { background: none; border-color: transparent; padding-left: 2px; font-weight: 500; color: var(--muted); }
 .panel p { margin: 0 0 12px; color: var(--muted); font-size: .95rem; }
 
 /* Sections */
@@ -326,20 +323,21 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 <script>
 (function () {
   "use strict";
-  var BASE = JSON.parse(JSON.stringify(window.SITE));   // pristine config (Sault Ste. Marie fallback)
+  try { sessionStorage.removeItem("emciix.geo"); sessionStorage.removeItem("emciix.local"); } catch (e) {}   // stale values from the retired location feature
   var S = window.SITE, B = S.business, C = S.colors, D = S.demo || {};
 
   // ---------- helpers ----------
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function tel() { return "tel:" + B.phoneTel; }
-  function place() { return B.city + (B.region ? ", " + B.region : ""); }
-  function mapUrl() { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(B.mapQuery || place()); }
+  function mapUrl() { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(B.mapQuery || (B.city + ", " + B.region)); }
   function sample(label) { return D.enabled ? ' <span class="sample-tag">' + esc(label || "Sample") + "</span>" : ""; }
 
   // ---------- colours from config ----------
   var root = document.documentElement.style;
   [["primary","--primary"],["primaryInk","--primary-ink"],["accent","--accent"],["accentInk","--accent-ink"],["bg","--bg"],["surface","--surface"],["ink","--ink"],["muted","--muted"],["line","--line"]]
     .forEach(function (p) { if (C[p[0]]) root.setProperty(p[1], C[p[0]]); });
+  document.title = B.name + " | " + B.city + ", " + B.region + (D.enabled ? " (demo)" : "");
+  var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", B.tagline + " " + B.city + ", " + B.region + ".");
   var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute("content", C.primary);
 
   // ---------- icons ----------
@@ -362,7 +360,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
   function logo(cls) {
     return '<a class="logo ' + (cls || "") + '" href="#top" aria-label="' + esc(B.name) + ' home">' +
       '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="' + esc(C.primary) + '"/><path d="M6 22 20 10l14 12" fill="none" stroke="' + esc(C.accent) + '" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 21v10h18V21" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><rect x="17.5" y="24" width="5" height="7" fill="#fff"/></svg>' +
-      '<span>' + esc(B.shortName || B.name) + '<small>' + esc(place()) + '</small></span></a>';
+      '<span>' + esc(B.shortName || B.name) + '<small>' + esc(B.city) + ', ' + esc(B.region) + '</small></span></a>';
   }
 
   // ---------- award badge (placeholder) ----------
@@ -441,9 +439,6 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   // ---------- sections ----------
   var nav = [["#services","Services"],["#work","Our work"],["#reviews","Reviews"],["#faq","FAQ"],["#quote","Free quote"]];
-  function render() {
-  document.title = B.name + " | " + place() + (D.enabled ? " (demo)" : "");
-  var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", B.tagline + " " + place() + ".");
   var html = "";
 
   if (D.enabled) html += '<div class="ribbon">' + esc(D.ribbonText) + ', <a href="' + esc(D.ribbonHref) + '">' + esc(D.ribbonLinkText) + '</a>. Fictional business; calls and emails reach Need.</div>';
@@ -454,7 +449,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   html += '<main>';
   html += '<section class="hero"><div class="wrap"><div>' +
-    '<p class="eyebrow" id="loc-pill">' + I.pin.replace('aria-hidden="true"', 'aria-hidden="true" width="14" height="14"') + '<span class="loc-text">' + esc(B.pillLabel || B.city) + '</span><span class="loc-area">&nbsp;&amp; area</span></p>' +
+    '<p class="eyebrow">' + I.pin.replace('aria-hidden="true"', 'aria-hidden="true" width="14" height="14"') + esc(B.city) + ' &amp; area</p>' +
     '<h1>' + esc(B.heroTitle) + '</h1><p class="lede">' + esc(B.heroText) + '</p>' +
     '<div class="ctas"><a class="btn btn-accent" href="' + tel() + '">' + I.phone + 'Call ' + esc(B.phoneDisplay) + '</a>' +
     '<a class="btn btn-outline" href="#quote">' + I.doc + 'Get a free quote</a></div>' +
@@ -464,8 +459,8 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   html += '<div class="info"><div class="wrap">' +
     '<div class="panel"><h2>' + I.clock + 'Hours</h2><table class="hours"><tbody>' + S.hours.map(function (h) { return '<tr><td>' + esc(h[0]) + '</td><td>' + esc(h[1]) + '</td></tr>'; }).join("") + '</tbody></table></div>' +
-    '<div class="panel"><h2>' + I.pin + 'Service area</h2><ul class="areas">' + S.serviceAreas.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + (S.areaSuffix ? '<li class="areas-more">' + esc(S.areaSuffix) + '</li>' : '') + '</ul></div>' +
-    '<div class="panel"><h2>' + I.map + 'Find us</h2><p>' + esc(B.street) + '<br />' + esc(place()) + (B.postal ? ' ' + esc(B.postal) : '') + (D.enabled ? ' <span class="sample-tag">Demo address</span>' : '') + '</p>' +
+    '<div class="panel"><h2>' + I.pin + 'Service area</h2><ul class="areas">' + S.serviceAreas.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + '</ul></div>' +
+    '<div class="panel"><h2>' + I.map + 'Find us</h2><p>' + esc(B.street) + '<br />' + esc(B.city) + ', ' + esc(B.region) + ' ' + esc(B.postal) + (D.enabled ? ' <span class="sample-tag">Demo address</span>' : '') + '</p>' +
     '<a class="btn btn-outline btn-sm" href="' + mapUrl() + '" target="_blank" rel="noopener">' + I.map + 'Open in Google Maps</a></div>' +
     '</div></div>';
 
@@ -491,7 +486,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
     '<div class="field"><label for="q-name">Name</label><input id="q-name" name="name" autocomplete="name" required /></div>' +
     '<div class="field"><label for="q-phone">Phone</label><input id="q-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" /></div>' +
     '<div class="field"><label for="q-service">Service</label><select id="q-service" name="service">' + S.services.map(function (v) { return '<option>' + esc(v.name) + '</option>'; }).join("") + '<option>Something else</option></select></div>' +
-    '<div class="field"><label for="q-area">Area</label><select id="q-area" name="area">' + S.serviceAreas.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join("") + (S.areaSuffix ? '<option>Surrounding area</option>' : '') + '<option>Other</option></select></div>' +
+    '<div class="field"><label for="q-area">Area</label><select id="q-area" name="area">' + S.serviceAreas.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join("") + '<option>Other</option></select></div>' +
     '<div class="field full"><label for="q-address">Street address (optional)</label><input id="q-address" name="address" autocomplete="street-address" /></div>' +
     '<div class="field full"><label for="q-details">Tell us about the job</label><textarea id="q-details" name="details" placeholder="e.g. Two-storey house, shingles about 20 years old, small leak near the chimney."></textarea></div>' +
     '<p class="privacy full">' + I.lock + esc(Q.privacy) + '</p>' +
@@ -505,9 +500,9 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   html += '<footer class="site-foot"><div class="wrap"><div class="foot-grid">' +
     '<div>' + logo("foot-logo") + '<p style="margin:12px 0 0">' + esc(B.tagline) + '</p></div>' +
-    '<div><h2>Contact</h2><ul><li><a href="' + tel() + '">' + esc(B.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(B.email) + '">' + esc(B.email) + '</a></li><li>' + esc(B.street) + ', ' + esc(place()) + '</li><li><a href="' + mapUrl() + '" target="_blank" rel="noopener">Map</a></li></ul></div>' +
+    '<div><h2>Contact</h2><ul><li><a href="' + tel() + '">' + esc(B.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(B.email) + '">' + esc(B.email) + '</a></li><li>' + esc(B.street) + ', ' + esc(B.city) + ', ' + esc(B.region) + '</li><li><a href="' + mapUrl() + '" target="_blank" rel="noopener">Map</a></li></ul></div>' +
     '<div><h2>Hours</h2><ul>' + S.hours.map(function (h) { return '<li>' + esc(h[0]) + ': ' + esc(h[1]) + '</li>'; }).join("") + '</ul></div>' +
-    '<div><h2>Service area</h2><ul>' + S.serviceAreas.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + (S.areaSuffix ? '<li>' + esc(S.areaSuffix) + '</li>' : '') + '</ul></div>' +
+    '<div><h2>Service area</h2><ul>' + S.serviceAreas.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + '</ul></div>' +
     '</div>' + (D.enabled ? '<p class="disclaimer">' + esc(D.disclaimer) + '</p>' : '') +
     '<div class="foot-base"><span>© ' + new Date().getFullYear() + ' ' + esc(B.name) + '</span><span><a href="' + esc(S.footerCredit.href) + '">' + esc(S.footerCredit.text) + '</a></span></div></div></footer>';
 
@@ -550,84 +545,16 @@ noscript p { margin: 24px; font-size: 1.1rem; }
     "email": B.email,
     "priceRange": B.priceRange,
     "foundingDate": B.founded,
-    "address": { "@type": "PostalAddress", "streetAddress": B.street, "addressLocality": B.city, "addressRegion": (B.region && B.region !== B.country) ? B.region : undefined, "postalCode": B.postal || undefined, "addressCountry": B.country || undefined },
-    "areaServed": S.serviceAreas.map(function (a) { return { "@type": "Place", "name": a + (B.region ? ", " + B.region : "") }; }),
+    "address": { "@type": "PostalAddress", "streetAddress": B.street, "addressLocality": B.city, "addressRegion": B.region, "postalCode": B.postal, "addressCountry": B.country },
+    "areaServed": S.serviceAreas.map(function (a) { return { "@type": "Place", "name": a + ", " + B.region }; }),
     "openingHoursSpecification": S.hoursSchema.map(function (h) { return { "@type": "OpeningHoursSpecification", "dayOfWeek": h.days, "opens": h.opens, "closes": h.closes }; }),
     "hasOfferCatalog": { "@type": "OfferCatalog", "name": "Services", "itemListElement": S.services.map(function (v) { return { "@type": "Offer", "itemOffered": { "@type": "Service", "name": v.name, "description": v.text }, "description": v.price }; }) }
   };
-  var old = document.getElementById("business-jsonld"); if (old) old.remove();
   var tag = document.createElement("script");
   tag.type = "application/ld+json";
   tag.id = "business-jsonld";
   tag.textContent = JSON.stringify(ld);
   document.head.appendChild(tag);
-  }
-
-  // ---------- visitor location pill: shows the visitor's area, falls back to the config city ----------
-  // Visitor location (privacy-first): one call per browser session to our own Vercel endpoint,
-  // which reads only Vercel's coarse geo headers and returns {local:true|false, label:"City, ON"|null}.
-  // Nothing is logged or stored server-side; the answer is cached in sessionStorage (emciix.geo + emciix.local).
-  // Test overrides: ?city=Some%20City (pill label), ?local=ssm / ?local=off (local copy).
-  function geoLookup(apply) {
-    var q = location.search, forced = /[?&]local=(ssm|off)(?:&|$)/.test(q), city = null, cached = null;
-    var m = q.match(/[?&]city=([^&#]*)/);
-    if (m) { try { city = decodeURIComponent(m[1].replace(/\+/g, " ")).replace(/\s+/g, " ").trim().slice(0, 48) || null; } catch (e) {} }
-    try { cached = JSON.parse(sessionStorage.getItem("emciix.geo") || "null"); } catch (e) {}
-    function done(d) {
-      apply({ local: !forced && d ? d.local === true : null, label: city || (d && typeof d.label === "string" && d.label ? d.label : null) });
-    }
-    if (city || cached || !/(^|\.)emciix\.(com|ca)$/.test(location.hostname) || !window.fetch) { done(cached); return; }
-    var ctl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 3000);
-    fetch("https://emciix-yt-views.vercel.app/geo", { cache: "no-store", credentials: "omit", signal: ctl ? ctl.signal : undefined })
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (d) {
-        clearTimeout(timer);
-        if (!d || typeof d.local !== "boolean") { done(null); return; }
-        var keep = { local: d.local, label: typeof d.label === "string" ? d.label.slice(0, 64) : null };
-        try { sessionStorage.setItem("emciix.geo", JSON.stringify(keep)); sessionStorage.setItem("emciix.local", d.local ? "1" : "0"); } catch (e) {}
-        done(keep);
-      })
-      .catch(function () { clearTimeout(timer); done(null); });
-  }
-  // ---------- follow the visitor's city (label "City, ON" / "City, Country"); no label = Sault Ste. Marie config ----------
-  var CA_REGIONS = /^(AB|BC|MB|NB|NL|NS|NT|NU|ON|PE|QC|SK|YT)$/;
-  var US_REGIONS = /^(AL|AK|AZ|AR|CA|CO|CT|DE|DC|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|PR)$/;
-  function localize(label) {
-    var parts = String(label).split(","), city = parts[0].trim(), region = parts.slice(1).join(",").trim();
-    if (!city) return null;
-    var country = CA_REGIONS.test(region) || /^canada$/i.test(region) || (!region && /^canada$/i.test(city)) ? "CA"
-      : US_REGIONS.test(region) || /^(usa|united states)$/i.test(region) ? "US" : region;
-    var isCA = country === "CA", season = isCA ? "winters" : "weather", ON = region === "ON";
-    var X = JSON.parse(JSON.stringify(BASE)), b = X.business;
-    b.city = city; b.region = region; b.postal = ""; b.country = country; b.mapQuery = label; b.pillLabel = label;
-    b.tagline = "Roofing done right, built for " + city + " " + season + ".";
-    b.heroTitle = "Roofs that stand up to " + city + " " + season;
-    b.heroText = "Shingle and metal roofs, leak repairs and eavestroughs across " + city + " and area. Free written quotes, clean job sites, and a crew that picks up the phone.";
-    X.serviceAreas = [city]; X.areaSuffix = "and surrounding area";
-    X.gallery.forEach(function (g) { g.place = "Sample project, " + city; });
-    X.reviews.forEach(function (r) { r.place = city; });
-    X.faq = X.faq.map(function (f) {
-      var q = f[0], a = f[1];
-      if (/^How much does a new roof cost in /.test(q)) q = "How much does a new roof cost in " + city + "?";
-      if (/^Is metal roofing worth it up north\?$/.test(q)) q = "Is metal roofing worth it in " + city + "?";
-      if (!ON) a = a.replace("WSIB coverage", "workers' compensation coverage");
-      return [q, a];
-    });
-    return X;
-  }
-  var rendered = false;
-  geoLookup(function (g) {
-    var X = g.label ? localize(g.label) : null;
-    if (!X) return;
-    if (!rendered) { S = X; B = S.business; return; }   // cached / ?city: localized before the first paint
-    var form = document.getElementById("quote-form");
-    var busy = form && (form.contains(document.activeElement) || [].some.call(form.elements, function (el) { return el.value && el.tagName !== "SELECT" && el.tagName !== "BUTTON"; }));
-    if (busy) return;                            // never wipe a form the visitor is filling in
-    S = X; B = S.business; render();             // first visit: quick swap once /geo answers
-  });
-  render();
-  rendered = true;
 })();
 </script>
 </body>
