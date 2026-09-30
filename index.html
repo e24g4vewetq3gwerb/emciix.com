@@ -6,6 +6,9 @@
 <!-- Look switch: runs before first paint. Modes: dark (default gold) | alt (light trades, from /demo/roofing) | global (neutral white + blue).
      ?mode=dark|alt|global overrides for this visit; the header blob button cycles and saves the choice (localStorage emciix.homeMode). -->
 <script>(function(){try{var m=(location.search.match(/[?&]mode=(alt|dark|global)(?:&|$)/)||[])[1];if(!m){m=localStorage.getItem("emciix.homeMode");}if(m==="alt"||m==="global"){document.documentElement.setAttribute("data-mode",m);}}catch(e){}})();</script>
+<!-- Local copy: visitors in Sault Ste. Marie, ON get the local hero copy (see hero.local in the config).
+     ?local=ssm forces local, ?local=off forces global (this visit only); a detected result is cached in sessionStorage emciix.local. -->
+<script>(function(){try{var q=(location.search.match(/[?&]local=(ssm|off)(?:&|$)/)||[])[1];var v=q?(q==="ssm"?"1":"0"):sessionStorage.getItem("emciix.local");if(v==="1"){document.documentElement.setAttribute("data-local","1");}}catch(e){}})();</script>
 <title>EMCIIX | Music, games &amp; web builds by Need</title>
 <meta name="description" content="EMCIIX by Need: music by Velc air, a browser rhythm game, the Starslip iOS app, and fast websites for small businesses anywhere." />
 <link rel="canonical" href="https://emciix.com/" />
@@ -54,6 +57,13 @@ window.SITE = {
     primary: { label: "Enter the portal", href: "/portal" },
     secondary: { label: "Play the game", href: "/game/play" },
     tertiary: { label: "Hire me", href: "/hire" },
+    // Shown instead of the copy above to visitors detected in Sault Ste. Marie, Ontario (or with ?local=ssm).
+    local: {
+      kicker: "Sault Ste. Marie · Music · Games · Web",
+      title: "Music, games & web builds,",
+      titleSoft: "made in the Soo.",
+      text: "EMCIIX is where Need puts everything: songs by Velc air, a starfield portal you can steer, a rhythm game that runs in your browser, and websites built for local businesses."
+    }
   },
   cards: [
     { icon: "music", title: "Listen", text: "Songs by Velc air, in the portal and on YouTube.", link: { label: "Enter the portal", href: "/portal" } },
@@ -174,6 +184,10 @@ nav.main a:hover { color: var(--ink); }
 .kicker { font: 500 .72rem/1.3 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
 h1 { font-size: clamp(2.2rem, 9vw, 4.2rem); line-height: 1.03; letter-spacing: -.025em; margin: 0 0 18px; font-weight: 700; max-width: 15ch; text-wrap: balance; }
 h1 .soft { color: var(--dim); }
+.swap { display: grid; }
+.swap > * { grid-area: 1 / 1; min-width: 0; }
+.swap > .v-l, html[data-local="1"] .swap > .v-g { visibility: hidden; }
+html[data-local="1"] .swap > .v-l { visibility: visible; }
 .lede { font-size: clamp(1.05rem, 3.6vw, 1.22rem); color: #d7d5cf; max-width: 38rem; margin: 0 0 26px; }
 .planet { display: none; }
 @media (min-width: 1040px) {
@@ -440,6 +454,13 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     build: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M9 12l-2 2 2 2M15 12l2 2-2 2"/></svg>'
   };
   var H = S.hero, h = "";
+  // Hero copy: both variants share one grid cell so the taller one reserves the space (no layout jump on swap).
+  function heroCopy(g, l) {
+    return '<p class="kicker swap"><span class="v-g">' + esc(g.kicker) + '</span><span class="v-l">' + esc(l.kicker) + '</span></p>' +
+      '<h1 class="swap"><span class="v-g">' + esc(g.title) + ' <span class="soft">' + esc(g.titleSoft) + '</span></span>' +
+      '<span class="v-l">' + esc(l.title) + ' <span class="soft">' + esc(l.titleSoft) + '</span></span></h1>' +
+      '<div class="swap"><p class="lede v-g">' + esc(g.text) + '</p><p class="lede v-l">' + esc(l.text) + '</p></div>';
+  }
 
   h += '<header class="head"><div class="wrap"><div class="brand-wrap"><button type="button" class="mode-btn" id="mode-btn" aria-label="Switch look" title="Switch look"><span class="dot" aria-hidden="true"></span></button>' +
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
@@ -447,9 +468,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
 
   h += '<main id="main"><div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
-    '<p class="kicker">' + esc(H.kicker) + '</p>' +
-    '<h1>' + esc(H.title) + ' <span class="soft">' + esc(H.titleSoft) + '</span></h1>' +
-    '<p class="lede">' + esc(H.text) + '</p>' +
+    heroCopy(H, H.local || H) +
     '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + '</div>' +
     '</div>';
 
@@ -527,6 +546,29 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     applyMode(next, true);
     try { localStorage.setItem("emciix.homeMode", next); } catch (e) {}
   });
+
+  // ---------- local copy detection (privacy-first) ----------
+  // Asks our own Vercel endpoint for {local:true|false}. It reads Vercel's coarse geo headers
+  // for that one request and returns only a boolean; nothing is logged or stored server-side.
+  (function () {
+    var r = document.documentElement;
+    try {
+      if (/[?&]local=(ssm|off)(?:&|$)/.test(location.search)) return;
+      if (sessionStorage.getItem("emciix.local") !== null) return;
+    } catch (e) { return; }
+    if (!/(^|\.)emciix\.(com|ca)$/.test(location.hostname) || !window.fetch) return;
+    var ctl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 3000);
+    fetch("https://emciix-yt-views.vercel.app/geo", { cache: "no-store", credentials: "omit", signal: ctl ? ctl.signal : undefined })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (d) {
+        clearTimeout(timer);
+        if (!d || typeof d.local !== "boolean") return;
+        try { sessionStorage.setItem("emciix.local", d.local ? "1" : "0"); } catch (e) {}
+        if (d.local) r.setAttribute("data-local", "1");
+      })
+      .catch(function () { clearTimeout(timer); });
+  })();
 
   var ld = { "@context": "https://schema.org", "@graph": [
     { "@type": "WebSite", "name": S.brand.name, "url": S.brand.url },
