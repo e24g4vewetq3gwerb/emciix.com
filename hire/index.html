@@ -138,6 +138,9 @@ ul.ticks li::before { content: ""; position: absolute; left: 2px; top: .62em; wi
 .work .card a.more { margin-top: 14px; font-weight: 600; font-size: .95rem; }
 .work .card .soon { margin-top: 14px; font-weight: 600; font-size: .95rem; color: var(--dim); }
 
+.work .demo-card { margin-top: 14px; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; border-color: rgba(242,212,138,.35); background: radial-gradient(120% 160% at 0% 0%, rgba(242,212,138,.08), transparent 60%), var(--card); }
+.work .demo-card > div { flex: 1 1 22rem; display: flex; flex-direction: column; }
+.work .demo-card p { max-width: 42rem; }
 /* Steps */
 ol.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; }
 ol.steps li { counter-increment: s; position: relative; padding-left: 58px; }
@@ -269,6 +272,14 @@ footer a:hover { color: var(--ink); }
           <span class="soon">iOS app, coming to the App Store</span>
         </article>
       </div>
+      <article class="card demo-card" id="demo">
+        <div>
+          <span class="tag">Demo site</span>
+          <h3>See a demo: a local roofing company website</h3>
+          <p>A sample small-business site for a fictional SSM roofer, with tap-to-call, hours, service areas, prices, before/after gallery, reviews and a quote request. Easy to reskin for salons, HVAC, restaurants and more.</p>
+        </div>
+        <a class="btn btn-primary" href="/demo/roofing">See the demo →</a>
+      </article>
     </div>
   </section>
 
