@@ -111,6 +111,7 @@ window.SITE = {
     id: "ai-cheat-sheet", tag: "Free PDF · 2 pages", title: "AI Cheat Sheet", price: "$0",
     text: "Two pages of ready-to-copy prompts for ChatGPT, Gemini, Claude or Grok: website copy, emails, short videos, social posts, review replies and flyers. Fill in the brackets and go.",
     img: "/assets/home/cheatsheet-preview.webp", alt: "Blurred preview of page 1 of the AI Cheat Sheet for Small Business",
+    navLabel: "Free AI Cheat Sheet", navBadge: "$0",   // header top-bar item (same link)
     buyLabel: "Free download", buyUrl: CHEATSHEET_BUY_URL, download: "AI-Cheat-Sheet-for-Small-Business.pdf", note: ""
   },
   cityDemo: {
@@ -187,6 +188,25 @@ nav.main { display: none; gap: 22px; }
 nav.main a { color: var(--dim); text-decoration: none; font-size: .92rem; font-weight: 600; }
 nav.main a:hover { color: var(--ink); }
 @media (min-width: 900px) { nav.main { display: flex; } }
+/* Header: Free AI Cheat Sheet (full nav item >=1200px; compact icon button with a $0 badge below that) */
+.head-r { display: flex; align-items: center; gap: 8px; flex: none; }
+.head-cta .xs { display: none; }
+@media (max-width: 419px) { .head-cta .lg { display: none; } .head-cta .xs { display: inline; } }
+.cs-badge { display: inline-block; font: 800 .62rem/1 var(--font); letter-spacing: .02em; padding: 3px 5px; border-radius: 999px; background: var(--gold); color: #141414; }
+.nav-cs { display: none !important; align-items: center; gap: 6px; color: var(--ink) !important; white-space: nowrap; }
+.nav-cs svg { width: 16px; height: 16px; flex: none; color: var(--gold); }
+.nav-cs:hover span { text-decoration: underline; }
+.cs-ico { position: relative; display: grid; place-items: center; width: 38px; height: 38px; flex: none; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink); text-decoration: none; }
+.cs-ico svg { width: 17px; height: 17px; }
+.cs-ico .cs-badge { position: absolute; top: -5px; right: -7px; padding: 2px 4px; font-size: .56rem; box-shadow: 0 0 0 2px var(--bg); }
+.cs-ico:hover { border-color: var(--gold); }
+@media (min-width: 1200px) { .nav-cs { display: inline-flex !important; } .cs-ico { display: none; } }
+html[data-mode="alt"] .cs-badge { color: #fff; }
+html[data-mode="alt"] .cs-ico { border-radius: 10px; border: 2px solid var(--navy); color: var(--navy); }
+html[data-mode="alt"] .cs-ico .cs-badge { box-shadow: 0 0 0 2px #fff; }
+html[data-mode="global"] .cs-badge { color: #fff; }
+html[data-mode="global"] .cs-ico { border-radius: 10px; background: #fff; color: var(--ink); }
+html[data-mode="global"] .cs-ico .cs-badge { box-shadow: 0 0 0 2px #fff; }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px; font: 600 1rem/1 var(--font); text-decoration: none; border: 1px solid var(--line-2); color: var(--ink); background: transparent; white-space: nowrap; }
@@ -531,6 +551,11 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     mail: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
     build: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M9 12l-2 2 2 2M15 12l2 2-2 2"/></svg>'
   };
+  // AI Cheat Sheet link attributes, shared by the header item, header icon and the card: href from CHEATSHEET_BUY_URL,
+  // and a download attribute only while it points at a file on this site (a Stripe/PayPal URL later just opens normally).
+  function csAttrs(C) {
+    return 'href="' + esc(C.buyUrl) + '"' + (C.download && /^\/(?!\/)/.test(C.buyUrl) ? ' download="' + esc(C.download) + '" type="application/pdf"' : '');
+  }
   var H = S.hero, h = "";
   // Hero copy: global for everyone; the local variant only with ?local=ssm (set on <html> in the head). Nothing reserved.
   function heroCopy(g, l) {
@@ -547,8 +572,10 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
       '<svg class="th-right" viewBox="0 0 24 14" width="20" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 9.5c5-5.2 11.5-6.2 20-2.6"/><path d="M17.6 3.2l4.1 3.8-4.8 2.6"/></svg>' +
     '</span>' +
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
-    '<nav class="main" aria-label="Main"><a href="#city-demo">Your city</a><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
-    '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
+    '<nav class="main" aria-label="Main"><a href="#city-demo">Your city</a><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>' +
+      '<a class="nav-cs" id="nav-cs" ' + csAttrs(S.cheatsheet) + ' title="' + esc(S.cheatsheet.navLabel) + ' (PDF)">' + I.dl + '<span>' + esc(S.cheatsheet.navLabel) + '</span><b class="cs-badge">' + esc(S.cheatsheet.navBadge) + '</b></a></nav>' +
+    '<div class="head-r"><a class="cs-ico" id="cs-ico" ' + csAttrs(S.cheatsheet) + ' aria-label="' + esc(S.cheatsheet.navLabel) + ' (PDF download)" title="' + esc(S.cheatsheet.navLabel) + ' (PDF)">' + I.dl + '<b class="cs-badge" aria-hidden="true">' + esc(S.cheatsheet.navBadge) + '</b></a>' +
+    '<a class="btn btn-ghost btn-sm head-cta" href="' + esc(H.primary.href) + '" aria-label="' + esc(H.primary.label) + '"><span class="lg">' + esc(H.primary.label) + '</span><span class="xs" aria-hidden="true">Portal</span></a></div></div></header>';
 
   h += '<main id="main"><div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
     heroCopy(H, H.local || H) +
@@ -596,7 +623,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     (function (C) {   // AI Cheat Sheet product card (free download for now); button href comes from CHEATSHEET_BUY_URL
       return '<article class="card product" id="' + esc(C.id) + '" aria-labelledby="cs-h"><div class="product-thumb"><img src="' + esc(C.img) + '" alt="' + esc(C.alt) + '" width="480" height="384" loading="lazy" decoding="async" /></div>' +
         '<div><p class="product-tag">' + esc(C.tag) + '</p><h3 id="cs-h">' + esc(C.title) + ': <span>' + esc(C.price) + '</span></h3><p>' + esc(C.text) + '</p>' +
-        '<div class="plan-cta"><a class="btn btn-primary btn-sm" id="cs-buy" href="' + esc(C.buyUrl) + '"' + (C.download && /^\/(?!\/)/.test(C.buyUrl) ? ' download="' + esc(C.download) + '" type="application/pdf"' : '') + '>' + I.dl + esc(C.buyLabel) + '</a>' + (C.note ? '<span class="alt">' + esc(C.note) + '</span>' : '') + '</div></div></article>';
+        '<div class="plan-cta"><a class="btn btn-primary btn-sm" id="cs-buy" ' + csAttrs(C) + '>' + I.dl + esc(C.buyLabel) + '</a>' + (C.note ? '<span class="alt">' + esc(C.note) + '</span>' : '') + '</div></div></article>';
     })(S.cheatsheet) +
     (V.note ? '<p class="price-note">' + esc(V.note) + '</p>' : '') + links(V.links) + '</div></section>';
 
