@@ -32,3 +32,11 @@ No geo lookup, nothing stored. Without `?city=` it is the fixed Sault Ste. Marie
 The homepage "Built for your city" section previews it in a same-origin iframe
 (`sandbox="allow-scripts"`, `loading="lazy"`, not interactive); existing headers already allow it
 (`frame-src 'self'`, `frame-ancestors 'self'`, `X-Frame-Options: SAMEORIGIN`).
+
+## Neutral mode on the roofing demo
+`/demo/roofing?neutral=1` names no city, province or country: headline "Roofs built for real
+winters", pill / service area "Serving your area", address card just "123 Demo Street" (no map
+link), FAQ without a city and "workers' compensation" instead of WSIB, title/meta/JSON-LD without a
+locality. `?city=` wins if both are given; no param = the Sault Ste. Marie version. The homepage
+"Built for your city" preview and its "Open full demo" link use `?neutral=1` until a city is previewed
+(an empty Preview returns to neutral).

@@ -333,7 +333,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
   // ---------- helpers ----------
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function tel() { return "tel:" + B.phoneTel; }
-  function place() { return B.city + (B.region ? ", " + B.region : ""); }
+  function place() { return B.neutral ? B.placeLabel : B.city + (B.region ? ", " + B.region : ""); }
   function mapUrl() { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(B.mapQuery || place()); }
   function sample(label) { return D.enabled ? ' <span class="sample-tag">' + esc(label || "Sample") + "</span>" : ""; }
 
@@ -443,8 +443,8 @@ noscript p { margin: 24px; font-size: 1.1rem; }
   // ---------- sections ----------
   var nav = [["#services","Services"],["#work","Our work"],["#reviews","Reviews"],["#faq","FAQ"],["#quote","Free quote"]];
   function render() {
-  document.title = B.name + " | " + place() + (D.enabled ? " (demo)" : "");
-  var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", B.tagline + " " + place() + ".");
+  document.title = B.name + " | " + (B.neutral ? "Roofing & eavestroughs" : place()) + (D.enabled ? " (demo)" : "");
+  var md = document.querySelector('meta[name="description"]'); if (md) md.setAttribute("content", B.tagline + (B.neutral ? "" : " " + place() + "."));
   var html = "";
 
   if (D.enabled) html += '<div class="ribbon">' + esc(D.ribbonText) + ', <a href="' + esc(D.ribbonHref) + '">' + esc(D.ribbonLinkText) + '</a>. Fictional business; calls and emails reach Need.</div>';
@@ -455,7 +455,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   html += '<main>';
   html += '<section class="hero"><div class="wrap"><div>' +
-    '<p class="eyebrow" id="loc-pill">' + I.pin.replace('aria-hidden="true"', 'aria-hidden="true" width="14" height="14"') + '<span class="loc-text">' + esc(B.pillLabel || B.city) + '</span><span class="loc-area">&nbsp;&amp; area</span></p>' +
+    '<p class="eyebrow" id="loc-pill">' + I.pin.replace('aria-hidden="true"', 'aria-hidden="true" width="14" height="14"') + '<span class="loc-text">' + esc(B.pillLabel || B.city) + '</span>' + (B.neutral ? '' : '<span class="loc-area">&nbsp;&amp; area</span>') + '</p>' +
     '<h1>' + esc(B.heroTitle) + '</h1><p class="lede">' + esc(B.heroText) + '</p>' +
     '<div class="ctas"><a class="btn btn-accent" href="' + tel() + '">' + I.phone + 'Call ' + esc(B.phoneDisplay) + '</a>' +
     '<a class="btn btn-outline" href="#quote">' + I.doc + 'Get a free quote</a></div>' +
@@ -466,11 +466,11 @@ noscript p { margin: 24px; font-size: 1.1rem; }
   html += '<div class="info"><div class="wrap">' +
     '<div class="panel"><h2>' + I.clock + 'Hours</h2><table class="hours"><tbody>' + S.hours.map(function (h) { return '<tr><td>' + esc(h[0]) + '</td><td>' + esc(h[1]) + '</td></tr>'; }).join("") + '</tbody></table></div>' +
     '<div class="panel"><h2>' + I.pin + 'Service area</h2><ul class="areas">' + S.serviceAreas.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + (S.areaSuffix ? '<li class="areas-more">' + esc(S.areaSuffix) + '</li>' : '') + '</ul></div>' +
-    '<div class="panel"><h2>' + I.map + 'Find us</h2><p>' + esc(B.street) + '<br />' + esc(place()) + (B.postal ? ' ' + esc(B.postal) : '') + (D.enabled ? ' <span class="sample-tag">Demo address</span>' : '') + '</p>' +
-    '<a class="btn btn-outline btn-sm" href="' + mapUrl() + '" target="_blank" rel="noopener">' + I.map + 'Open in Google Maps</a></div>' +
+    '<div class="panel"><h2>' + I.map + 'Find us</h2><p>' + esc(B.street) + (B.neutral ? '' : '<br />' + esc(place()) + (B.postal ? ' ' + esc(B.postal) : '')) + (D.enabled ? ' <span class="sample-tag">Demo address</span>' : '') + '</p>' +
+    (B.neutral ? '' : '<a class="btn btn-outline btn-sm" href="' + mapUrl() + '" target="_blank" rel="noopener">' + I.map + 'Open in Google Maps</a>') + '</div>' +
     '</div></div>';
 
-  html += '<section class="block alt" id="services"><div class="wrap"><div class="sec-head"><p class="kicker">Services</p><h2>What we do</h2><p>Residential roofing across ' + esc(B.city) + ' and the surrounding area.</p></div><div class="services">' +
+  html += '<section class="block alt" id="services"><div class="wrap"><div class="sec-head"><p class="kicker">Services</p><h2>What we do</h2><p>Residential roofing across ' + (B.neutral ? 'your area' : esc(B.city) + ' and the surrounding area') + '.</p></div><div class="services">' +
     S.services.map(function (v) { return '<article class="svc"><div class="ico">' + (I[v.icon] || I.shingle) + '</div><h3>' + esc(v.name) + '</h3><p class="price">' + esc(v.price) + '</p><p>' + esc(v.text) + '</p><a href="#quote" data-service="' + esc(v.name) + '">Get a quote →</a></article>'; }).join("") +
     '<article class="svc svc-cta"><h3>Not sure what you need?</h3><p>Call us and we\'ll come take a look. Quotes are always free.</p><a class="btn btn-accent" href="' + tel() + '">' + I.phone + esc(B.phoneDisplay) + '</a></article>' +
     '</div><p class="note">' + esc(S.priceNote) + (D.enabled ? " Demo prices." : "") + '</p></div></section>';
@@ -492,7 +492,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
     '<div class="field"><label for="q-name">Name</label><input id="q-name" name="name" autocomplete="name" required /></div>' +
     '<div class="field"><label for="q-phone">Phone</label><input id="q-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" /></div>' +
     '<div class="field"><label for="q-service">Service</label><select id="q-service" name="service">' + S.services.map(function (v) { return '<option>' + esc(v.name) + '</option>'; }).join("") + '<option>Something else</option></select></div>' +
-    '<div class="field"><label for="q-area">Area</label><select id="q-area" name="area">' + S.serviceAreas.map(function (a) { return '<option>' + esc(a) + '</option>'; }).join("") + (S.areaSuffix ? '<option>Surrounding area</option>' : '') + '<option>Other</option></select></div>' +
+    '<div class="field"><label for="q-area">Area</label><select id="q-area" name="area">' + (S.areaOptions || S.serviceAreas).map(function (a) { return '<option>' + esc(a) + '</option>'; }).join("") + (S.areaSuffix ? '<option>Surrounding area</option>' : '') + '<option>Other</option></select></div>' +
     '<div class="field full"><label for="q-address">Street address (optional)</label><input id="q-address" name="address" autocomplete="street-address" /></div>' +
     '<div class="field full"><label for="q-details">Tell us about the job</label><textarea id="q-details" name="details" placeholder="e.g. Two-storey house, shingles about 20 years old, small leak near the chimney."></textarea></div>' +
     '<p class="privacy full">' + I.lock + esc(Q.privacy) + '</p>' +
@@ -506,7 +506,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 
   html += '<footer class="site-foot"><div class="wrap"><div class="foot-grid">' +
     '<div>' + logo("foot-logo") + '<p style="margin:12px 0 0">' + esc(B.tagline) + '</p></div>' +
-    '<div><h2>Contact</h2><ul><li><a href="' + tel() + '">' + esc(B.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(B.email) + '">' + esc(B.email) + '</a></li><li>' + esc(B.street) + ', ' + esc(place()) + '</li><li><a href="' + mapUrl() + '" target="_blank" rel="noopener">Map</a></li></ul></div>' +
+    '<div><h2>Contact</h2><ul><li><a href="' + tel() + '">' + esc(B.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(B.email) + '">' + esc(B.email) + '</a></li><li>' + esc(B.street) + (B.neutral ? '' : ', ' + esc(place())) + '</li>' + (B.neutral ? '' : '<li><a href="' + mapUrl() + '" target="_blank" rel="noopener">Map</a></li>') + '</ul></div>' +
     '<div><h2>Hours</h2><ul>' + S.hours.map(function (h) { return '<li>' + esc(h[0]) + ': ' + esc(h[1]) + '</li>'; }).join("") + '</ul></div>' +
     '<div><h2>Service area</h2><ul>' + S.serviceAreas.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + (S.areaSuffix ? '<li>' + esc(S.areaSuffix) + '</li>' : '') + '</ul></div>' +
     '</div>' + (D.enabled ? '<p class="disclaimer">' + esc(D.disclaimer) + '</p>' : '') +
@@ -551,8 +551,8 @@ noscript p { margin: 24px; font-size: 1.1rem; }
     "email": B.email,
     "priceRange": B.priceRange,
     "foundingDate": B.founded,
-    "address": { "@type": "PostalAddress", "streetAddress": B.street, "addressLocality": B.city, "addressRegion": (B.region && B.region !== B.country) ? B.region : undefined, "postalCode": B.postal || undefined, "addressCountry": B.country || undefined },
-    "areaServed": S.serviceAreas.map(function (a) { return { "@type": "Place", "name": a + (B.region ? ", " + B.region : "") }; }),
+    "address": { "@type": "PostalAddress", "streetAddress": B.street, "addressLocality": B.neutral ? undefined : B.city, "addressRegion": (B.region && B.region !== B.country) ? B.region : undefined, "postalCode": B.postal || undefined, "addressCountry": B.country || undefined },
+    "areaServed": B.neutral ? undefined : S.serviceAreas.map(function (a) { return { "@type": "Place", "name": a + (B.region ? ", " + B.region : "") }; }),
     "openingHoursSpecification": S.hoursSchema.map(function (h) { return { "@type": "OpeningHoursSpecification", "dayOfWeek": h.days, "opens": h.opens, "closes": h.closes }; }),
     "hasOfferCatalog": { "@type": "OfferCatalog", "name": "Services", "itemListElement": S.services.map(function (v) { return { "@type": "Offer", "itemOffered": { "@type": "Service", "name": v.name, "description": v.text }, "description": v.price }; }) }
   };
@@ -599,7 +599,26 @@ noscript p { margin: 24px; font-size: 1.1rem; }
     });
     return X;
   }
-  var cityLabel = cityParam(), X = cityLabel ? localize(cityLabel) : null;
+  // ---------- explicit neutral mode (?neutral=1): names no city, province or country anywhere ----------
+  function neutralize() {
+    var X = JSON.parse(JSON.stringify(BASE)), b = X.business;
+    b.neutral = true; b.placeLabel = "Serving your area"; b.pillLabel = "Serving your area";
+    b.city = ""; b.region = ""; b.postal = ""; b.country = ""; b.mapQuery = "";
+    b.tagline = "Roofing done right, built for real winters.";
+    b.heroTitle = "Roofs built for real winters";
+    b.heroText = "Shingle and metal roofs, leak repairs and eavestroughs for homes in your area. Free written quotes, clean job sites, and a crew that picks up the phone.";
+    X.serviceAreas = ["Serving your area"]; X.areaSuffix = ""; X.areaOptions = ["My area"];
+    X.gallery.forEach(function (g) { g.place = "Sample project"; });
+    X.reviews.forEach(function (r) { r.place = "Homeowner"; });
+    X.faq = X.faq.map(function (f) {
+      var q = f[0], a = f[1];
+      if (/^How much does a new roof cost in /.test(q)) q = "How much does a new roof cost?";
+      if (/^Is metal roofing worth it up north\?$/.test(q)) q = "Is metal roofing worth it?";
+      return [q, a.replace("WSIB coverage", "workers' compensation coverage")];
+    });
+    return X;
+  }
+  var cityLabel = cityParam(), X = cityLabel ? localize(cityLabel) : /[?&]neutral=1(?:&|$)/.test(location.search) ? neutralize() : null;
   if (X) { S = X; B = S.business; }
   render();
 })();

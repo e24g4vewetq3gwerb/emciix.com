@@ -550,8 +550,8 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<div class="seg" aria-hidden="true"><span class="seg-on">' + esc(CD.pill) + '</span></div>' +
     '<form class="city-form" id="city-form"><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="Your City" aria-label="Your city: type a city to preview the demo" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
     '<div class="bframe" id="city-panel" role="group" aria-label="Demo site preview"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
-    '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
-    '<div class="row"><a class="btn btn-primary" id="city-open" href="/demo/roofing">Open full demo</a></div></div></section>';
+    '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing?neutral=1" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
+    '<div class="row"><a class="btn btn-primary" id="city-open" href="/demo/roofing?neutral=1">Open full demo</a></div></div></section>';
 
   h += '<section class="block" id="work" aria-labelledby="work-h"><div class="wrap"><p class="kicker">Gallery</p><h2 id="work-h">Built here</h2><p class="sub">Everything on this site is designed and built by Need.</p><div class="gallery">' +
     S.gallery.map(function (g) { return '<a class="tile" href="' + esc(g.href) + '"><img src="' + esc(g.img) + '" alt="' + esc(g.alt) + '" width="640" height="400" decoding="async" /><div><b>' + esc(g.title) + '</b><span class="tag">' + esc(g.tag) + '</span></div></a>'; }).join("") +
@@ -640,7 +640,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     }
     var cur = frame.getAttribute("src");
     function show(city) {
-      var href = "/demo/roofing" + (city ? "?city=" + encodeURIComponent(city) : "");
+      var href = "/demo/roofing" + (city ? "?city=" + encodeURIComponent(city) : "?neutral=1");   // neutral (no city named) until a city is previewed
       if (cur !== href) {   // swap in a fresh iframe: no race with a pending load, no extra history entries
         cur = href;
         var nf = frame.cloneNode(false);
@@ -649,13 +649,13 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
         frame = nf;
       }
       open.setAttribute("href", href);
-      url.textContent = "emciix.com/demo/roofing" + (city ? "?city=" + city : "");
+      url.textContent = "emciix.com/demo/roofing" + (city ? "?city=" + city : "");   // address bar stays clean in neutral mode
     }
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var c = clean(input.value);
       input.value = c;
-      show(c);                 // empty = back to the default demo
+      show(c);                 // empty = back to the neutral demo
       if (!c) input.focus();
     });
     // Render the demo at a real viewport size (desktop, or phone on narrow screens) and scale it to fit the card.
