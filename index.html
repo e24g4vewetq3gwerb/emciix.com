@@ -99,6 +99,11 @@ window.SITE = {
     ],
     links: [{ label: "See services & pricing", href: "/hire", primary: true }, { label: "See a demo site", href: "/demo/roofing" }]
   },
+  cityDemo: {
+    kicker: "Demo", title: "Built for your city",
+    text: "The same roofing demo site, rewritten for a different town: headline, service area, address, FAQ and search data. Pick a version to preview it live.",
+    tabs: [{ label: "Sault Ste. Marie", city: "" }, { label: "Toronto", city: "Toronto, ON" }, { label: "Your city", city: null }]
+  },
   gallery: [
     { title: "The portal", tag: "Web", img: "/assets/home/portal.webp", alt: "Screenshot of the EMCIIX starfield portal with planets", href: "/portal" },
     { title: "Rhythm game", tag: "Game", img: "/assets/home/game.webp", alt: "Screenshot of the rhythm game start screen with level list", href: "/game/play" },
@@ -305,6 +310,24 @@ html.mode-anim body, html.mode-anim body *, html.mode-anim body::before, html.mo
   transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease, opacity .35s ease, border-radius .35s ease, background .35s ease !important;
 }
 
+/* Built for your city: live, scaled preview of /demo/roofing (same-origin iframe, sandboxed, not interactive) */
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; margin: 0 0 14px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--card); max-width: 100%; }
+.seg button { appearance: none; -webkit-appearance: none; border: 0; margin: 0; min-height: 38px; padding: 0 16px; border-radius: 999px; background: transparent; color: var(--dim); font: 600 .92rem/1 var(--font); cursor: pointer; white-space: nowrap; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.city-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 14px; max-width: 30rem; }
+.city-form[hidden] { display: none; }
+.city-form input { flex: 1 1 12rem; min-width: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--card-2); color: var(--ink); font: 500 1rem/1 var(--font); }
+.city-form input::placeholder { color: var(--dim); }
+.bframe { border: 1px solid var(--line-2); border-radius: var(--r); overflow: hidden; background: var(--card); box-shadow: 0 20px 60px rgba(0,0,0,.35); margin: 0 0 18px; }
+.bbar { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--line); background: var(--card-2); min-width: 0; }
+.bdots { display: inline-flex; gap: 6px; flex: none; }
+.bdots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-2); }
+.burl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 .78rem/1.6 var(--mono); color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 1px 12px; background: var(--card); }
+.bview { position: relative; overflow: hidden; height: 480px; background: #f6f5f2; }
+.bview iframe { position: absolute; left: 0; top: 0; width: 100%; height: 480px; border: 0; transform-origin: 0 0; pointer-events: none; background: #f6f5f2; }
+html[data-mode="alt"] .bframe, html[data-mode="global"] .bframe { box-shadow: var(--shadow); }
+
 /* ===== ALT MODE: light trades look (matches /demo/roofing) ===== */
 html[data-mode="alt"] {
   color-scheme: light;
@@ -509,6 +532,16 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<div class="plans">' + V.plans.map(function (p) { return '<article class="card"><h3>' + esc(p.name) + '</h3><p class="price">' + esc(p.price) + (p.unit ? ' <small>' + esc(p.unit) + '</small>' : '') + '</p><p>' + esc(p.text) + '</p></article>'; }).join("") + '</div>' +
     (V.note ? '<p class="price-note">' + esc(V.note) + '</p>' : '') + links(V.links) + '</div></section>';
 
+  var CD = S.cityDemo;
+  h += '<section class="block" id="city-demo" aria-labelledby="city-h"><div class="wrap">' + head(CD.kicker, CD.title, "city-h") + '<p class="sub">' + esc(CD.text) + '</p>' +
+    '<div class="seg" role="tablist" aria-label="Demo version">' + CD.tabs.map(function (t, i) {
+      return '<button type="button" role="tab" id="city-tab-' + i + '" aria-controls="city-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-i="' + i + '">' + esc(t.label) + '</button>';
+    }).join("") + '</div>' +
+    '<form class="city-form" id="city-form" hidden><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="e.g. Berlin, Germany" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
+    '<div class="bframe" id="city-panel" role="tabpanel" aria-labelledby="city-tab-0"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
+    '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
+    '<div class="row"><a class="btn btn-primary" id="city-open" href="/demo/roofing">Open full demo</a></div></div></section>';
+
   h += '<section class="block" id="work" aria-labelledby="work-h"><div class="wrap"><p class="kicker">Gallery</p><h2 id="work-h">Built here</h2><p class="sub">Everything on this site is designed and built by Need.</p><div class="gallery">' +
     S.gallery.map(function (g) { return '<a class="tile" href="' + esc(g.href) + '"><img src="' + esc(g.img) + '" alt="' + esc(g.alt) + '" width="640" height="400" decoding="async" /><div><b>' + esc(g.title) + '</b><span class="tag">' + esc(g.tag) + '</span></div></a>'; }).join("") +
     '</div></div></section>';
@@ -583,6 +616,62 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
       reveal(false);
       window.addEventListener("load", function () { reveal(false); });
     }
+  })();
+
+  // ---------- Built for your city: tabs + scaled live preview ----------
+  (function () {
+    var tabs = [].slice.call(document.querySelectorAll('#city-demo [role="tab"]')), frame = document.getElementById("city-frame"),
+      view = document.getElementById("city-view"), form = document.getElementById("city-form"), input = document.getElementById("city-in"),
+      open = document.getElementById("city-open"), url = document.getElementById("city-url"), panel = document.getElementById("city-panel");
+    if (!frame || !tabs.length) return;
+    function clean(v) {   // same rules as the demo: letters, digits, spaces, . , ' - ( ), max 48
+      return String(v || "").replace(/[\u2018\u2019]/g, "'").replace(/[^\p{L}\p{M}\p{N} .,'()\-]/gu, "").replace(/\s+/g, " ").replace(/\s*,\s*/g, ", ")
+        .replace(/^[\s,]+|[\s,]+$/g, "").slice(0, 48).replace(/[\s,]+$/, "");
+    }
+    var cur = frame.getAttribute("src");
+    function show(city) {
+      var href = "/demo/roofing" + (city ? "?city=" + encodeURIComponent(city) : "");
+      if (cur !== href) {   // swap in a fresh iframe: no race with a pending load, no extra history entries
+        cur = href;
+        var nf = frame.cloneNode(false);
+        nf.setAttribute("src", href);
+        frame.parentNode.replaceChild(nf, frame);
+        frame = nf;
+      }
+      open.setAttribute("href", href);
+      url.textContent = "emciix.com/demo/roofing" + (city ? "?city=" + city : "");
+    }
+    function select(i, focus) {
+      tabs.forEach(function (t, j) { t.setAttribute("aria-selected", String(j === i)); t.tabIndex = j === i ? 0 : -1; });
+      panel.setAttribute("aria-labelledby", tabs[i].id);
+      if (focus) tabs[i].focus();
+      var city = S.cityDemo.tabs[i].city;
+      form.hidden = city !== null;
+      if (city !== null) show(city);
+      else if (clean(input.value)) show(clean(input.value));
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { select(i, false); if (S.cityDemo.tabs[i].city === null) input.focus(); });
+      t.addEventListener("keydown", function (e) {
+        var k = e.key, n = tabs.length, j = k === "ArrowRight" ? (i + 1) % n : k === "ArrowLeft" ? (i + n - 1) % n : k === "Home" ? 0 : k === "End" ? n - 1 : -1;
+        if (j < 0) return; e.preventDefault(); select(j, true);
+      });
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var c = clean(input.value);
+      input.value = c;
+      if (c) show(c); else input.focus();
+    });
+    // Render the demo at a real viewport size (desktop, or phone on narrow screens) and scale it to fit the card.
+    function fit() {
+      var cw = view.clientWidth; if (!cw) return;
+      var vw = cw < 560 ? 390 : 1280, vh = cw < 560 ? 740 : 800, k = cw / vw;
+      frame.style.width = vw + "px"; frame.style.height = vh + "px"; frame.style.transform = "scale(" + k + ")";
+      view.style.height = Math.round(vh * k) + "px";
+    }
+    fit();
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(view); else window.addEventListener("resize", fit);
   })();
 
   var ld = { "@context": "https://schema.org", "@graph": [

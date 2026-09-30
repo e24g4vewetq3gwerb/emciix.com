@@ -23,3 +23,12 @@
 Source copy + tests: `docs/vercel-geo/` (`node docs/vercel-geo/geo.test.js`). `/views` and
 `/uploads` in the same project are unrelated and unchanged. To remove `/geo` later, delete
 `api/geo.js` and its rewrite in that project's `vercel.json` and redeploy.
+
+## Explicit city override on the roofing demo (no detection)
+`/demo/roofing?city=Toronto%2C%20ON` localizes the demo copy (header, headline winters/weather,
+intro, service area, address without postal code, FAQ incl. WSIB -> workers' compensation outside
+ON, footer, title, JSON-LD). The value is sanitized (letters, digits, spaces, . , ' - ( ), max 48).
+No geo lookup, nothing stored. Without `?city=` it is the fixed Sault Ste. Marie version.
+The homepage "Built for your city" section previews it in a same-origin iframe
+(`sandbox="allow-scripts"`, `loading="lazy"`, not interactive); existing headers already allow it
+(`frame-src 'self'`, `frame-ancestors 'self'`, `X-Frame-Options: SAMEORIGIN`).
