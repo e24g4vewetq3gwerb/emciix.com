@@ -47,7 +47,7 @@ window.SITE = {
     email: "cue@dialchad.com",
     x: "https://x.com/emciixcom", xHandle: "@emciixcom",
     youtube: "https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ", youtubeName: "Velc air",
-    linkedin: "https://www.linkedin.com/in/abdullah-nafis-b78485416/"
+    linkedin: "https://www.linkedin.com/in/abdullah-nafis-b78485416/", linkedinName: "Abdullah Nafis"
   },
   hero: {
     kicker: "Music · Games · Web",
@@ -509,7 +509,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
   var F = S.footer;
   h += '<footer><div class="wrap"><div class="foot-grid"><div class="about"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + '</a>' +
     '<p>Music, games &amp; web builds by ' + esc(S.brand.by) + '. Working remotely, worldwide.</p>' +
-    '<ul><li><a href="tel:' + esc(K.phoneTel) + '">' + esc(K.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li><li><a href="' + esc(K.linkedin) + '" target="_blank" rel="noopener me">LinkedIn</a></li></ul></div>' +
+    '<ul><li><a href="tel:' + esc(K.phoneTel) + '">' + esc(K.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li><li><a href="' + esc(K.linkedin) + '" target="_blank" rel="noopener me">LinkedIn: ' + esc(K.linkedinName) + '</a></li></ul></div>' +
     F.columns.map(function (c) { return '<div><h2>' + esc(c.title) + '</h2><ul>' + c.links.map(function (l) { return '<li><a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a></li>'; }).join("") + '</ul></div>'; }).join("") +
     '</div><div class="foot-base"><span>' + esc(F.note) + '</span><span>No trackers · No ads</span></div></div></footer>';
 
