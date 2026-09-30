@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync, existsSync, copyFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync, existsSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -134,6 +134,11 @@ if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
 ["hire/index.html","hire/og.png","demo/roofing/index.html","assets/home/og.png","assets/home/portal.webp","assets/home/game.webp","assets/home/roofing.webp","assets/home/hire.webp","assets/home/cheatsheet-preview.webp","downloads/ai-cheat-sheet.pdf","starslip/privacy.html","starslip/support.html","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
+// Private lead previews: every demo/p/<slug>-<random>/index.html (never linked; noindex meta + X-Robots-Tag below).
+if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileTypes: true })) {
+  const file = "demo/p/" + dir.name + "/index.html";
+  if (dir.isDirectory() && existsSync(file)) PATCHES.push([file, "/" + file]);
+}
 ["mr44","make-it-loud","one-more-take","the-next-one","x-ad-press-play","leave-it-open-youtube","the-speed-is-the-sound","leave-the-door-open","the-door-will-still-be","still-by-still","thats-the-fix","the-bot-can-wait","fix-the-profile","everything-passing-through","thats-the-fix-x-fix-the-profile","fix-the-profile-x-thats-the-fix"].forEach((id) => {
   ["audio/" + id + ".mp3", "chart.json", "lyrics.json"].forEach((part) => {
     const file = "game/play/levels/" + id + "/" + part;
@@ -324,6 +329,16 @@ function cacheStatic(config) {
   return config;
 }
 
+// Keep the private lead previews out of search engines (header on top of the per-page noindex meta).
+const NOINDEX_GLOBS = ["/demo/p/**"];
+function noindexPreviews(config) {
+  config = config || {};
+  const headers = (config.headers || []).filter((h) => !NOINDEX_GLOBS.includes(h.glob));
+  for (const glob of NOINDEX_GLOBS) headers.push({ glob, headers: { "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet" } });
+  config.headers = headers;
+  return config;
+}
+
 function routeHomeToPortal(config) {
   config = config || {};
   const redirects = (config.redirects || []).filter((rule) => rule && rule.glob !== "/" && rule.glob !== "/index.html");
@@ -333,7 +348,7 @@ function routeHomeToPortal(config) {
   return config;
 }
 
-const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: routeHomeToPortal(cacheStatic(widenConnect(current.config || {}))) });
+const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: routeHomeToPortal(noindexPreviews(cacheStatic(widenConnect(current.config || {})))) });
 const newVersion = created.name;
 const populated = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + ":populateFiles", { files });
 const required = new Set(populated.uploadRequiredHashes || []);
