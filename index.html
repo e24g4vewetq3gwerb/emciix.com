@@ -105,8 +105,8 @@ window.SITE = {
   },
   cityDemo: {
     kicker: "Demo", title: "Built for your city",
-    text: "The same roofing demo site, rewritten for a different town: headline, service area, address, FAQ and search data. Pick a version to preview it live.",
-    tabs: [{ label: "Sault Ste. Marie", city: "" }, { label: "Toronto", city: "Toronto, ON" }, { label: "Your city", city: null }]
+    text: "The same roofing demo site, rewritten for your town: headline, service area, address, FAQ and search data. Type your city and press Preview to see it live.",
+    pill: "Your city"
   },
   gallery: [
     { title: "The portal", tag: "Web", img: "/assets/home/portal.webp", alt: "Screenshot of the EMCIIX starfield portal with planets", href: "/portal" },
@@ -323,11 +323,8 @@ html.mode-anim body, html.mode-anim body *, html.mode-anim body::before, html.mo
 
 /* Built for your city: live, scaled preview of /demo/roofing (same-origin iframe, sandboxed, not interactive) */
 .seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; margin: 0 0 14px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--card); max-width: 100%; }
-.seg button { appearance: none; -webkit-appearance: none; border: 0; margin: 0; min-height: 38px; padding: 0 16px; border-radius: 999px; background: transparent; color: var(--dim); font: 600 .92rem/1 var(--font); cursor: pointer; white-space: nowrap; }
-.seg button:hover { color: var(--ink); }
-.seg button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.seg .seg-on { display: inline-flex; align-items: center; min-height: 38px; padding: 0 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 .92rem/1 var(--font); white-space: nowrap; }
 .city-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 14px; max-width: 30rem; }
-.city-form[hidden] { display: none; }
 .city-form input { flex: 1 1 12rem; min-width: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--card-2); color: var(--ink); font: 500 1rem/1 var(--font); }
 .city-form input::placeholder { color: var(--dim); }
 .bframe { border: 1px solid var(--line-2); border-radius: var(--r); overflow: hidden; background: var(--card); box-shadow: 0 20px 60px rgba(0,0,0,.35); margin: 0 0 18px; }
@@ -550,11 +547,9 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
 
   var CD = S.cityDemo;
   h += '<section class="block" id="city-demo" aria-labelledby="city-h"><div class="wrap">' + head(CD.kicker, CD.title, "city-h") + '<p class="sub">' + esc(CD.text) + '</p>' +
-    '<div class="seg" role="tablist" aria-label="Demo version">' + CD.tabs.map(function (t, i) {
-      return '<button type="button" role="tab" id="city-tab-' + i + '" aria-controls="city-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-i="' + i + '">' + esc(t.label) + '</button>';
-    }).join("") + '</div>' +
-    '<form class="city-form" id="city-form" hidden><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="Your City" aria-label="Your city: type a city to preview the demo" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
-    '<div class="bframe" id="city-panel" role="tabpanel" aria-labelledby="city-tab-0"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
+    '<div class="seg" aria-hidden="true"><span class="seg-on">' + esc(CD.pill) + '</span></div>' +
+    '<form class="city-form" id="city-form"><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="Your City" aria-label="Your city: type a city to preview the demo" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
+    '<div class="bframe" id="city-panel" role="group" aria-label="Demo site preview"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
     '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
     '<div class="row"><a class="btn btn-primary" id="city-open" href="/demo/roofing">Open full demo</a></div></div></section>';
 
@@ -634,12 +629,11 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     }
   })();
 
-  // ---------- Built for your city: tabs + scaled live preview ----------
+  // ---------- Built for your city: city input + scaled live preview (default demo until a city is entered) ----------
   (function () {
-    var tabs = [].slice.call(document.querySelectorAll('#city-demo [role="tab"]')), frame = document.getElementById("city-frame"),
-      view = document.getElementById("city-view"), form = document.getElementById("city-form"), input = document.getElementById("city-in"),
-      open = document.getElementById("city-open"), url = document.getElementById("city-url"), panel = document.getElementById("city-panel");
-    if (!frame || !tabs.length) return;
+    var frame = document.getElementById("city-frame"), view = document.getElementById("city-view"), form = document.getElementById("city-form"),
+      input = document.getElementById("city-in"), open = document.getElementById("city-open"), url = document.getElementById("city-url");
+    if (!frame || !form) return;
     function clean(v) {   // same rules as the demo: letters, digits, spaces, . , ' - ( ), max 48
       return String(v || "").replace(/[\u2018\u2019]/g, "'").replace(/[^\p{L}\p{M}\p{N} .,'()\-]/gu, "").replace(/\s+/g, " ").replace(/\s*,\s*/g, ", ")
         .replace(/^[\s,]+|[\s,]+$/g, "").slice(0, 48).replace(/[\s,]+$/, "");
@@ -657,27 +651,12 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
       open.setAttribute("href", href);
       url.textContent = "emciix.com/demo/roofing" + (city ? "?city=" + city : "");
     }
-    function select(i, focus) {
-      tabs.forEach(function (t, j) { t.setAttribute("aria-selected", String(j === i)); t.tabIndex = j === i ? 0 : -1; });
-      panel.setAttribute("aria-labelledby", tabs[i].id);
-      if (focus) tabs[i].focus();
-      var city = S.cityDemo.tabs[i].city;
-      form.hidden = city !== null;
-      if (city !== null) show(city);
-      else if (clean(input.value)) show(clean(input.value));
-    }
-    tabs.forEach(function (t, i) {
-      t.addEventListener("click", function () { select(i, false); if (S.cityDemo.tabs[i].city === null) input.focus(); });
-      t.addEventListener("keydown", function (e) {
-        var k = e.key, n = tabs.length, j = k === "ArrowRight" ? (i + 1) % n : k === "ArrowLeft" ? (i + n - 1) % n : k === "Home" ? 0 : k === "End" ? n - 1 : -1;
-        if (j < 0) return; e.preventDefault(); select(j, true);
-      });
-    });
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var c = clean(input.value);
       input.value = c;
-      if (c) show(c); else input.focus();
+      show(c);                 // empty = back to the default demo
+      if (!c) input.focus();
     });
     // Render the demo at a real viewport size (desktop, or phone on narrow screens) and scale it to fit the card.
     function fit() {
