@@ -46,6 +46,7 @@ on:
       - need/wide.css
       - delta.html
       - starslip/**
+      - hire/**
       - .github/workflows/patch-game-play.yml
 
 permissions:
