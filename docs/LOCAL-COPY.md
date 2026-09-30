@@ -37,3 +37,13 @@ One `/geo` call per browser session; the result is cached in `sessionStorage["em
 (and `emciix.local`). On / and /hire the pill's height is always reserved and it fades in once a
 label is known (hidden if none). On the roofing demo it falls back to the config city.
 Test override: `?city=Some%20City`.
+
+## Roofing demo follows the visitor's city
+`/demo/roofing` re-renders its copy from the same `/geo` label (or `?city=`): header subtitle,
+page title/description, hero ("Roofs that stand up to {City} winters" for Canada, "weather"
+elsewhere), intro, services intro, service area ("{City}" + "and surrounding area"), address
+card ("123 Demo Street / {City}, {Region}", no postal code), map link, gallery/review places, FAQ
+(outside ON "WSIB" becomes "workers' compensation"), footer and JSON-LD address. With a cached
+label or `?city=` it localizes before the first paint; otherwise it renders the Sault Ste. Marie
+config and swaps once `/geo` answers (skipped if the quote form is being filled in). No label =
+original Sault Ste. Marie content, unchanged.
