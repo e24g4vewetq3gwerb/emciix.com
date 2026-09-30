@@ -49,6 +49,7 @@ on:
       - hire/**
       - demo/**
       - assets/home/**
+      - downloads/**
       - .github/workflows/patch-game-play.yml
 
 permissions:
