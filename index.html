@@ -44,6 +44,7 @@ window.SITE = {
     email: "cue@dialchad.com",
     x: "https://x.com/emciixcom", xHandle: "@emciixcom",
     youtube: "https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ", youtubeName: "Velc air",
+    linkedin: "https://www.linkedin.com/in/abdullah-nafis-b78485416/",
     city: "Sault Ste. Marie", region: "Ontario", regionCode: "ON", country: "CA"
   },
   hero: {
@@ -421,7 +422,7 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
   var F = S.footer;
   h += '<footer><div class="wrap"><div class="foot-grid"><div class="about"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + '</a>' +
     '<p>Music, games &amp; web builds by ' + esc(S.brand.by) + ', from ' + esc(K.city) + ', ' + esc(K.region) + '.</p>' +
-    '<ul><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li></ul></div>' +
+    '<ul><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li><li><a href="' + esc(K.linkedin) + '" target="_blank" rel="noopener me">LinkedIn</a></li></ul></div>' +
     F.columns.map(function (c) { return '<div><h2>' + esc(c.title) + '</h2><ul>' + c.links.map(function (l) { return '<li><a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a></li>'; }).join("") + '</ul></div>'; }).join("") +
     '</div><div class="foot-base"><span>' + esc(F.note) + '</span><span>No trackers · No ads</span></div></div></footer>';
 
@@ -451,7 +452,7 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
 
   var ld = { "@context": "https://schema.org", "@graph": [
     { "@type": "WebSite", "name": S.brand.name, "url": S.brand.url },
-    { "@type": "Organization", "name": S.brand.by, "alternateName": S.brand.name, "url": S.brand.url, "email": K.email, "sameAs": [K.x, K.youtube],
+    { "@type": "Organization", "name": S.brand.by, "alternateName": S.brand.name, "url": S.brand.url, "email": K.email, "sameAs": [K.x, K.youtube, K.linkedin],
       "address": { "@type": "PostalAddress", "addressLocality": K.city, "addressRegion": K.regionCode, "addressCountry": K.country } }
   ] };
   var tag = document.createElement("script"); tag.type = "application/ld+json"; tag.textContent = JSON.stringify(ld); document.head.appendChild(tag);
