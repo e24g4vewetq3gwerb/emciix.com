@@ -30,7 +30,7 @@ window.SITE = {
     ribbonText: "Demo site built by Need",
     ribbonLinkText: "emciix.com/hire",
     ribbonHref: "/hire",
-    disclaimer: "Northshore Roofing Co. is a fictional business. This is a demo website; the phone number, email, prices, award and reviews are examples only."
+    disclaimer: "Northshore Roofing Co. is a fictional business. This is a demo website; the prices, award and reviews are examples; calls and emails reach Need."
   },
   business: {
     name: "Northshore Roofing Co.",
@@ -317,7 +317,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
 </style>
 </head>
 <body>
-<noscript><p>This demo site needs JavaScript to display. Call <a href="tel:+17052575717">705-257-5717</a> (demo number).</p></noscript>
+<noscript><p>This demo site needs JavaScript to display. Call <a href="tel:+17052575717">705-257-5717</a>.</p></noscript>
 <div id="app"></div>
 
 <script>
@@ -440,7 +440,7 @@ noscript p { margin: 24px; font-size: 1.1rem; }
   var nav = [["#services","Services"],["#work","Our work"],["#reviews","Reviews"],["#faq","FAQ"],["#quote","Free quote"]];
   var html = "";
 
-  if (D.enabled) html += '<div class="ribbon">' + esc(D.ribbonText) + ', <a href="' + esc(D.ribbonHref) + '">' + esc(D.ribbonLinkText) + '</a>. Fictional business; details are examples.</div>';
+  if (D.enabled) html += '<div class="ribbon">' + esc(D.ribbonText) + ', <a href="' + esc(D.ribbonHref) + '">' + esc(D.ribbonLinkText) + '</a>. Fictional business; calls and emails reach Need.</div>';
 
   html += '<header class="site-head" id="top"><div class="wrap">' + logo() +
     '<nav class="main" aria-label="Main">' + nav.map(function (n) { return '<a href="' + n[0] + '">' + n[1] + '</a>'; }).join("") + '</nav>' +
