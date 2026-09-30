@@ -138,6 +138,8 @@ if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
 if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileTypes: true })) {
   const file = "demo/p/" + dir.name + "/index.html";
   if (dir.isDirectory() && existsSync(file)) PATCHES.push([file, "/" + file]);
+  const shot = "demo/p/" + dir.name + "/preview.jpg";
+  if (dir.isDirectory() && existsSync(shot)) PATCHES.push([shot, "/" + shot]);
 }
 ["mr44","make-it-loud","one-more-take","the-next-one","x-ad-press-play","leave-it-open-youtube","the-speed-is-the-sound","leave-the-door-open","the-door-will-still-be","still-by-still","thats-the-fix","the-bot-can-wait","fix-the-profile","everything-passing-through","thats-the-fix-x-fix-the-profile","fix-the-profile-x-thats-the-fix"].forEach((id) => {
   ["audio/" + id + ".mp3", "chart.json", "lyrics.json"].forEach((part) => {
