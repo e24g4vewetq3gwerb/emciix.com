@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Local copy: visitors in Sault Ste. Marie, ON get the local hero copy (see HIRE_COPY below the hero).
      ?local=ssm forces local, ?local=off forces global (this visit only); a detected result is cached in sessionStorage emciix.local. -->
+<script>document.documentElement.classList.add("js");</script>
 <script>(function(){try{var q=(location.search.match(/[?&]local=(ssm|off)(?:&|$)/)||[])[1];var v=q?(q==="ssm"?"1":"0"):sessionStorage.getItem("emciix.local");if(v==="1"){document.documentElement.setAttribute("data-local","1");}}catch(e){}})();</script>
 <title>Modern Websites &amp; Simple Apps for Small Businesses | Need</title>
 <meta name="description" content="Need builds fast, mobile-friendly websites and simple iOS apps for small businesses anywhere, working remotely by call, email or video. New sites, redesigns and a monthly care plan." />
@@ -167,6 +168,19 @@ footer { border-top: 1px solid var(--line); padding: 26px 0 max(34px, env(safe-a
 footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between; }
 footer a { color: var(--dim); }
 footer a:hover { color: var(--ink); }
+/* Footer "Contact" disclosure: collapsed by default (JS only), smooth expand, no motion if reduced */
+.cx-btn { appearance: none; -webkit-appearance: none; display: inline-flex; align-items: center; gap: 8px; min-height: 24px; padding: 2px 0; margin: 0; border: 0; vertical-align: middle; background: none; color: var(--dim); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.cx-btn:hover { color: var(--ink); }
+.cx-chev { display: inline-block; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .25s ease; }
+.cx-btn[aria-expanded="true"] .cx-chev { transform: translateY(1px) rotate(-135deg); }
+html:not(.js) .cx-btn, html:not(.js) .cx-sep { display: none; }
+.cx-sep { margin-left: 4px; }
+.cx-panel { flex-basis: 100%; }
+html.js .cx-panel { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .3s ease, visibility 0s linear .3s; }
+html.js .cx-panel.open { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows .3s ease, visibility 0s linear 0s; }
+.cx-inner { overflow: hidden; min-height: 0; }
+.cx-list { list-style: none; margin: 0; padding: 4px 0 0; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: flex-end; }
+@media (prefers-reduced-motion: reduce) { html.js .cx-panel, html.js .cx-panel.open, .cx-chev { transition: none; } }
 @media (min-width: 720px) {
   .hero { padding-top: 84px; padding-bottom: 60px; }
   section { padding: 64px 0; }
@@ -376,8 +390,24 @@ footer a:hover { color: var(--ink); }
 <footer>
   <div class="wrap">
     <span>© 2026 Need</span>
-    <span><a href="tel:+17052575717">(705) 257-5717</a> · <a href="mailto:cue@dialchad.com?subject=Website%20quote">cue@dialchad.com</a> · <a href="https://x.com/emciixcom" rel="noopener">X @emciixcom</a> · <a href="https://www.linkedin.com/in/abdullah-nafis-b78485416/" target="_blank" rel="noopener me">LinkedIn: Abdullah Nafis</a> · <a href="https://emciix.com">emciix.com</a></span>
+    <span><button type="button" class="cx-btn" id="foot-contact-btn" aria-expanded="false" aria-controls="foot-contact">Contact <span class="cx-chev" aria-hidden="true"></span></button><span class="cx-sep"> · </span><a href="https://emciix.com">emciix.com</a></span>
+    <div class="cx-panel" id="foot-contact" role="region" aria-labelledby="foot-contact-btn"><div class="cx-inner"><ul class="cx-list">
+      <li><a href="tel:+17052575717">(705) 257-5717</a></li>
+      <li><a href="mailto:cue@dialchad.com?subject=Website%20quote">cue@dialchad.com</a></li>
+      <li><a href="https://x.com/emciixcom" rel="noopener">X @emciixcom</a></li>
+      <li><a href="https://www.linkedin.com/in/abdullah-nafis-b78485416/" target="_blank" rel="noopener me">LinkedIn: Abdullah Nafis</a></li>
+    </ul></div></div>
   </div>
+  <script>
+  (function () {
+    var btn = document.getElementById("foot-contact-btn"), panel = document.getElementById("foot-contact");
+    btn.addEventListener("click", function () {
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      panel.classList.toggle("open", open);
+    });
+  })();
+  </script>
 </footer>
 </body>
 </html>

@@ -276,6 +276,17 @@ footer li { margin: 5px 0; }
 footer a { color: var(--ink); text-decoration: none; }
 footer a:hover { text-decoration: underline; }
 footer .about p { margin: 12px 0; max-width: 22rem; }
+/* Footer "Contact" disclosure: collapsed by default, smooth expand (grid-rows trick), no motion if reduced */
+.cx { margin-top: 14px; }
+.cx-btn { appearance: none; -webkit-appearance: none; display: inline-flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 16px; margin: 0; border: 1px solid var(--line-2); border-radius: 999px; background: transparent; color: var(--ink); font: 600 .92rem/1 var(--font); cursor: pointer; }
+.cx-btn:hover { border-color: rgba(255,255,255,.5); }
+.cx-chev { display: inline-block; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .25s ease; }
+.cx-btn[aria-expanded="true"] .cx-chev { transform: translateY(1px) rotate(-135deg); }
+.cx-panel { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .3s ease, visibility 0s linear .3s; }
+.cx-panel.open { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows .3s ease, visibility 0s linear 0s; }
+.cx-inner { overflow: hidden; min-height: 0; }
+.cx-inner ul { padding-top: 8px; }
+@media (prefers-reduced-motion: reduce) { .cx-panel, .cx-panel.open, .cx-chev { transition: none; } }
 .foot-base { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between; font-size: .85rem; }
 
 /* Sticky mobile bar */
@@ -354,6 +365,8 @@ html[data-mode="alt"] .faq summary::after { color: var(--orange); font-weight: 4
 html[data-mode="alt"] footer { background: var(--navy); color: rgba(255,255,255,.86); border-top-color: var(--navy); }
 html[data-mode="alt"] footer a, html[data-mode="alt"] footer .brand { color: #fff; }
 html[data-mode="alt"] footer h2 { color: #fff; font-family: var(--font); font-weight: 800; }
+html[data-mode="alt"] .cx-btn { color: #fff; border-color: rgba(255,255,255,.45); border-radius: 10px; font-weight: 700; }
+html[data-mode="alt"] .cx-btn:hover { background: rgba(255,255,255,.1); border-color: #fff; }
 html[data-mode="alt"] footer .dot { background: rgba(255,255,255,.12); }
 html[data-mode="alt"] .foot-base { border-top-color: rgba(255,255,255,.18); color: rgba(255,255,255,.72); }
 
@@ -423,6 +436,8 @@ html[data-mode="global"] .faq summary::after { color: var(--blue); font-weight: 
 html[data-mode="global"] footer { background: #f9fafb; color: var(--dim); border-top-color: var(--line); }
 html[data-mode="global"] footer a, html[data-mode="global"] footer .brand { color: var(--ink); }
 html[data-mode="global"] footer h2 { color: var(--blue-dark); font-family: var(--font); font-weight: 700; }
+html[data-mode="global"] .cx-btn { color: var(--ink); background: #fff; border-color: var(--line-2); border-radius: 10px; }
+html[data-mode="global"] .cx-btn:hover { border-color: var(--blue); color: var(--blue-dark); }
 html[data-mode="global"] .foot-base { border-top-color: var(--line); color: var(--dim); }
 
 html[data-mode="global"] .mbar { background: rgba(255,255,255,.97); border-top-color: var(--line); box-shadow: 0 -4px 14px rgba(17,24,39,.06); }
@@ -464,7 +479,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
 
   h += '<header class="head"><div class="wrap"><div class="brand-wrap"><button type="button" class="mode-btn" id="mode-btn" aria-label="Switch look" title="Switch look"><span class="dot" aria-hidden="true"></span></button>' +
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
-    '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a></nav>' +
+    '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
     '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
 
   h += '<main id="main"><div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
@@ -509,7 +524,8 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
   var F = S.footer;
   h += '<footer><div class="wrap"><div class="foot-grid"><div class="about"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + '</a>' +
     '<p>Music, games &amp; web builds by ' + esc(S.brand.by) + '. Working remotely, worldwide.</p>' +
-    '<ul><li><a href="tel:' + esc(K.phoneTel) + '">' + esc(K.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li><li><a href="' + esc(K.linkedin) + '" target="_blank" rel="noopener me">LinkedIn: ' + esc(K.linkedinName) + '</a></li></ul></div>' +
+    '<div class="cx" id="contact"><button type="button" class="cx-btn" id="contact-btn" aria-expanded="false" aria-controls="contact-list">Contact <span class="cx-chev" aria-hidden="true"></span></button>' +
+    '<div class="cx-panel" id="contact-list" role="region" aria-labelledby="contact-btn"><div class="cx-inner"><ul><li><a href="tel:' + esc(K.phoneTel) + '">' + esc(K.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li><li><a href="' + esc(K.linkedin) + '" target="_blank" rel="noopener me">LinkedIn: ' + esc(K.linkedinName) + '</a></li></ul></div></div></div></div>' +
     F.columns.map(function (c) { return '<div><h2>' + esc(c.title) + '</h2><ul>' + c.links.map(function (l) { return '<li><a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a></li>'; }).join("") + '</ul></div>'; }).join("") +
     '</div><div class="foot-base"><span>' + esc(F.note) + '</span><span>No trackers · No ads</span></div></div></footer>';
 
@@ -546,6 +562,32 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     applyMode(next, true);
     try { localStorage.setItem("emciix.homeMode", next); } catch (e) {}
   });
+
+  // ---------- footer Contact disclosure (+ header nav link and #contact) ----------
+  (function () {
+    var btn = document.getElementById("contact-btn"), panel = document.getElementById("contact-list"), box = document.getElementById("contact");
+    if (!btn || !panel) return;
+    function reduced() { return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }
+    function setOpen(open) { btn.setAttribute("aria-expanded", open ? "true" : "false"); panel.classList.toggle("open", open); }
+    function reveal(animate) {
+      setOpen(true);
+      setTimeout(function () { box.scrollIntoView({ behavior: animate && !reduced() ? "smooth" : "auto", block: "center" }); }, animate && !reduced() ? 320 : 0);
+    }
+    btn.addEventListener("click", function () { setOpen(btn.getAttribute("aria-expanded") !== "true"); });
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest('a[href="#contact"]');
+      if (!a) return;
+      e.preventDefault();
+      if (history.replaceState) history.replaceState(null, "", "#contact");
+      btn.focus({ preventScroll: true });
+      reveal(true);
+    });
+    window.addEventListener("hashchange", function () { if (location.hash === "#contact") reveal(true); });
+    if (location.hash === "#contact") {
+      reveal(false);
+      window.addEventListener("load", function () { reveal(false); });
+    }
+  })();
 
   // ---------- local copy detection (privacy-first) ----------
   // Asks our own Vercel endpoint for {local:true|false}. It reads Vercel's coarse geo headers
