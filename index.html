@@ -56,7 +56,6 @@ window.SITE = {
     primary: { label: "Enter the portal", href: "/portal" },
     secondary: { label: "Play the game", href: "/game/play" },
     tertiary: { label: "Hire me", href: "/hire" },
-    chips: ["Free to play", "No download", "Made in SSM", "No ads"]
   },
   cards: [
     { icon: "music", title: "Listen", text: "Songs by Velc air, in the portal and on YouTube.", link: { label: "Enter the portal", href: "/portal" } },
@@ -177,11 +176,6 @@ nav.main a:hover { color: var(--ink); }
 h1 { font-size: clamp(2.2rem, 9vw, 4.2rem); line-height: 1.03; letter-spacing: -.025em; margin: 0 0 18px; font-weight: 700; max-width: 15ch; text-wrap: balance; }
 h1 .soft { color: var(--dim); }
 .lede { font-size: clamp(1.05rem, 3.6vw, 1.22rem); color: #d7d5cf; max-width: 38rem; margin: 0 0 26px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
-.reach { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0 0; }
-.reach .btn svg { width: 18px; height: 18px; flex: none; }
-.reach-label { color: var(--dim); font-size: .9rem; margin-right: 2px; }
-.chips li { font-size: .85rem; color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
 .planet { display: none; }
 @media (min-width: 1040px) {
   .planet { display: block; position: absolute; right: 40px; top: 90px; width: 270px; height: 270px; border-radius: 50%; pointer-events: none;
@@ -320,7 +314,6 @@ html[data-mode="alt"] .btn-text { color: var(--navy); border-color: transparent;
 html[data-mode="alt"] .kicker { color: var(--orange); font-family: var(--font); font-weight: 800; letter-spacing: .12em; }
 html[data-mode="alt"] h1 .soft { color: var(--dim); }
 html[data-mode="alt"] .lede { color: var(--dim); }
-html[data-mode="alt"] .chips li { background: #fff; border-color: var(--line); color: var(--ink); font-weight: 600; }
 html[data-mode="alt"] .planet { background: radial-gradient(circle at 34% 30%, #ffd9b0 0%, #f39a52 36%, #e8702a 62%, #9c3f0c 100%); box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--navy), 0 18px 40px rgba(16,24,40,.18); }
 html[data-mode="alt"] .planet::after { border-color: rgba(31,58,95,.35); }
 html[data-mode="alt"] .moon { background: radial-gradient(circle at 35% 30%, #8fa7c7, #1f3a5f 70%, #0f1d30); box-shadow: 0 0 0 2px #fff; }
@@ -389,9 +382,7 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
     '<h1>' + esc(H.title) + ' <span class="soft">' + esc(H.titleSoft) + '</span></h1>' +
     '<p class="lede">' + esc(H.text) + '</p>' +
     '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + '</div>' +
-    '<ul class="chips" aria-label="Highlights">' + H.chips.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join("") + '</ul>' +
-    '<p class="reach" id="contact"><span class="reach-label">Talk to Need:</span><a class="btn btn-ghost btn-sm" href="tel:' + esc(K.phoneTel) + '">' + I.phone + esc(K.phoneDisplay) + '</a>' +
-    '<a class="btn btn-ghost btn-sm" href="mailto:' + esc(K.email) + '">' + I.mail + esc(K.email) + '</a></p></div>';
+    '</div>';
 
   h += '<div class="wrap cards">' + S.cards.map(function (c) {
     return '<article class="card info-card"><div class="ico">' + (I[c.icon] || "") + '</div><h3>' + esc(c.title) + '</h3><p>' + esc(c.text) + '</p><a href="' + esc(c.link.href) + '">' + esc(c.link.label) + ' →</a></article>';
