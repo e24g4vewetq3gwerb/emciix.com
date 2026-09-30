@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<!-- Look switch: runs before first paint. "alt" = light trades look (from /demo/roofing).
+     ?mode=alt or ?mode=dark overrides for this visit; the header blob button saves the choice. -->
+<script>(function(){try{var m=(location.search.match(/[?&]mode=(alt|dark)(?:&|$)/)||[])[1];if(!m){m=localStorage.getItem("emciix.homeMode");}if(m==="alt"){document.documentElement.setAttribute("data-mode","alt");}}catch(e){}})();</script>
 <title>EMCIIX | Music, games &amp; web builds from Sault Ste. Marie</title>
 <meta name="description" content="EMCIIX by Need: music by Velc air, a browser rhythm game, the Starslip iOS app, and fast websites for Sault Ste. Marie businesses." />
 <link rel="canonical" href="https://emciix.com/" />
@@ -150,7 +153,7 @@ a { color: var(--gold); text-underline-offset: 3px; }
 .head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; padding-top: env(safe-area-inset-top); }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 750; letter-spacing: .12em; font-size: 1rem; }
 .brand small { font-weight: 500; letter-spacing: .02em; color: var(--dim); font-size: .8rem; }
-.dot { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe6a8, #c9a227 55%, #3a2c08 100%); box-shadow: 0 0 0 1.5px rgba(255,255,255,.8), 0 0 16px rgba(242,212,138,.35); }
+.dot { position: relative; display: block; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe6a8, #c9a227 55%, #3a2c08 100%); box-shadow: 0 0 0 1.5px rgba(255,255,255,.8), 0 0 16px rgba(242,212,138,.35); }
 nav.main { display: none; gap: 22px; }
 nav.main a { color: var(--dim); text-decoration: none; font-size: .92rem; font-weight: 600; }
 nav.main a:hover { color: var(--ink); }
@@ -266,6 +269,82 @@ footer .about p { margin: 12px 0; max-width: 22rem; }
 .mbar .btn { min-height: 52px; font-size: 1.05rem; }
 @media (min-width: 820px) { .mbar { display: none; } }
 noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
+
+/* ===== Look switch button (the header blob) ===== */
+.brand-wrap { display: inline-flex; align-items: center; gap: 4px; margin-left: -8px; }
+.mode-btn { appearance: none; -webkit-appearance: none; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; margin: 0; border: 0; border-radius: 12px; background: transparent; cursor: pointer; }
+.mode-btn:hover .dot { transform: scale(1.08); }
+.mode-btn:active .dot { transform: scale(.94); }
+.mode-btn .dot { transition: transform .2s ease; }
+.dot::before { content: ""; position: absolute; left: 50%; top: 58%; width: 9px; height: 9px; border-top: 3px solid #e8702a; border-left: 3px solid #e8702a; transform: translate(-50%, -50%) rotate(45deg); opacity: 0; }
+
+/* Smooth switch (class only added while toggling, so no first-paint animation) */
+html.mode-anim body, html.mode-anim body *, html.mode-anim body::before, html.mode-anim body *::before, html.mode-anim body *::after {
+  transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease, opacity .35s ease, border-radius .35s ease, background .35s ease !important;
+}
+
+/* ===== ALT MODE: light trades look (matches /demo/roofing) ===== */
+html[data-mode="alt"] {
+  color-scheme: light;
+  --bg: #f6f5f2; --card: #ffffff; --card-2: #ffffff;
+  --line: #e3e1dc; --line-2: #cfd3d9;
+  --ink: #18212e; --dim: #5b6573; --gold: #e8702a;
+  --navy: #1f3a5f; --orange: #e8702a;
+  --r: 14px;
+  --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 18px rgba(16,24,40,.06);
+}
+html[data-mode="alt"] body { background: var(--bg); color: var(--ink); }
+html[data-mode="alt"] body::before { opacity: 0; }
+html[data-mode="alt"] a { color: var(--navy); }
+html[data-mode="alt"] .head { background: rgba(255,255,255,.96); border-bottom-color: var(--line); }
+html[data-mode="alt"] .brand { color: var(--ink); font-weight: 800; }
+html[data-mode="alt"] nav.main a { color: var(--ink); }
+html[data-mode="alt"] nav.main a:hover { color: var(--navy); text-decoration: underline; }
+html[data-mode="alt"] .dot { border-radius: 8px; background: var(--navy); box-shadow: 0 1px 3px rgba(16,24,40,.25); width: 28px; height: 28px; }
+html[data-mode="alt"] .dot::before { opacity: 1; }
+html[data-mode="alt"] .mode-btn:focus-visible { outline-color: var(--orange); }
+html[data-mode="alt"] :focus-visible { outline-color: var(--orange); }
+
+html[data-mode="alt"] .btn { border-radius: 10px; font-weight: 700; }
+html[data-mode="alt"] .btn-primary { background: var(--orange); border-color: var(--orange); color: #fff; }
+html[data-mode="alt"] .btn-primary:hover { background: #d9641f; }
+html[data-mode="alt"] .btn-ghost { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+html[data-mode="alt"] .btn-ghost:hover { background: var(--navy); color: #fff; }
+html[data-mode="alt"] .btn-text { color: var(--navy); border-color: transparent; }
+
+html[data-mode="alt"] .kicker { color: var(--orange); font-family: var(--font); font-weight: 800; letter-spacing: .12em; }
+html[data-mode="alt"] h1 .soft { color: var(--dim); }
+html[data-mode="alt"] .lede { color: var(--dim); }
+html[data-mode="alt"] .chips li { background: #fff; border-color: var(--line); color: var(--ink); font-weight: 600; }
+html[data-mode="alt"] .planet { background: radial-gradient(circle at 34% 30%, #ffd9b0 0%, #f39a52 36%, #e8702a 62%, #9c3f0c 100%); box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--navy), 0 18px 40px rgba(16,24,40,.18); }
+html[data-mode="alt"] .planet::after { border-color: rgba(31,58,95,.35); }
+html[data-mode="alt"] .moon { background: radial-gradient(circle at 35% 30%, #8fa7c7, #1f3a5f 70%, #0f1d30); box-shadow: 0 0 0 2px #fff; }
+
+html[data-mode="alt"] .card, html[data-mode="alt"] .stat, html[data-mode="alt"] .tile, html[data-mode="alt"] .faq details { background: #fff; border-color: var(--line); box-shadow: var(--shadow); }
+html[data-mode="alt"] .card p, html[data-mode="alt"] ul.ticks, html[data-mode="alt"] .faq details p { color: var(--dim); }
+html[data-mode="alt"] .card h3, html[data-mode="alt"] .card .price, html[data-mode="alt"] .stat b { color: var(--ink); }
+html[data-mode="alt"] .info-card a { color: var(--navy); font-weight: 700; }
+html[data-mode="alt"] .ico { border: 0; background: rgba(31,58,95,.09); color: var(--navy); border-radius: 12px; }
+html[data-mode="alt"] ul.ticks li::before { background: var(--orange); opacity: 1; }
+html[data-mode="alt"] section.block { border-top-color: var(--line); }
+html[data-mode="alt"] section.block:nth-of-type(even) { background: #fff; }
+html[data-mode="alt"] .shot { background: #fff; border-color: var(--line); box-shadow: var(--shadow); }
+html[data-mode="alt"] .status { color: var(--ink); background: rgba(232,112,42,.1); border-color: rgba(232,112,42,.4); }
+html[data-mode="alt"] .status::before { background: var(--orange); box-shadow: none; }
+html[data-mode="alt"] .phone .p-planet { background: radial-gradient(circle at 34% 30%, #ffd9b0 0%, #f39a52 36%, #e8702a 62%, #9c3f0c 100%); }
+html[data-mode="alt"] .phone { border-color: rgba(24,33,46,.55); box-shadow: 0 24px 50px rgba(16,24,40,.22); }
+html[data-mode="alt"] .tag { color: var(--dim); border-color: var(--line); background: var(--bg); }
+html[data-mode="alt"] .tile { color: var(--ink); }
+html[data-mode="alt"] .faq summary::after { color: var(--orange); font-weight: 400; }
+
+html[data-mode="alt"] footer { background: var(--navy); color: rgba(255,255,255,.86); border-top-color: var(--navy); }
+html[data-mode="alt"] footer a, html[data-mode="alt"] footer .brand { color: #fff; }
+html[data-mode="alt"] footer h2 { color: #fff; font-family: var(--font); font-weight: 800; }
+html[data-mode="alt"] footer .dot { background: rgba(255,255,255,.12); }
+html[data-mode="alt"] .foot-base { border-top-color: rgba(255,255,255,.18); color: rgba(255,255,255,.72); }
+
+html[data-mode="alt"] .mbar { background: rgba(255,255,255,.97); border-top-color: var(--line); box-shadow: 0 -6px 18px rgba(16,24,40,.08); }
+html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: var(--navy); color: #fff; }
 </style>
 </head>
 <body>
@@ -292,7 +371,9 @@ noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
   };
   var H = S.hero, h = "";
 
-  h += '<header class="head"><div class="wrap"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a>' +
+  var isAlt = document.documentElement.getAttribute("data-mode") === "alt";
+  h += '<header class="head"><div class="wrap"><div class="brand-wrap"><button type="button" class="mode-btn" id="mode-btn" aria-label="Switch look" aria-pressed="' + (isAlt ? "true" : "false") + '" title="Switch look"><span class="dot" aria-hidden="true"></span></button>' +
+    '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
     '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a></nav>' +
     '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
 
@@ -347,6 +428,26 @@ noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
   h += '<nav class="mbar" aria-label="Quick actions">' + S.mobileBar.map(function (l) { return link(l); }).join("") + '</nav>';
 
   document.getElementById("app").innerHTML = h;
+
+  // ---------- look switch (dark gold <-> light trades) ----------
+  var rootEl = document.documentElement, btn = document.getElementById("mode-btn");
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  function applyMode(alt, animate) {
+    if (animate && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+      rootEl.classList.add("mode-anim");
+      clearTimeout(applyMode.t);
+      applyMode.t = setTimeout(function () { rootEl.classList.remove("mode-anim"); }, 500);
+    }
+    if (alt) rootEl.setAttribute("data-mode", "alt"); else rootEl.removeAttribute("data-mode");
+    btn.setAttribute("aria-pressed", alt ? "true" : "false");
+    if (themeMeta) themeMeta.setAttribute("content", alt ? "#ffffff" : "#000000");
+  }
+  applyMode(rootEl.getAttribute("data-mode") === "alt", false);
+  btn.addEventListener("click", function () {
+    var alt = rootEl.getAttribute("data-mode") !== "alt";
+    applyMode(alt, true);
+    try { localStorage.setItem("emciix.homeMode", alt ? "alt" : "dark"); } catch (e) {}
+  });
 
   var ld = { "@context": "https://schema.org", "@graph": [
     { "@type": "WebSite", "name": S.brand.name, "url": S.brand.url },
