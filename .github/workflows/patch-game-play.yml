@@ -48,6 +48,7 @@ on:
       - starslip/**
       - hire/**
       - demo/**
+      - assets/home/**
       - .github/workflows/patch-game-play.yml
 
 permissions:

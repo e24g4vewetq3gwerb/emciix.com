@@ -1,12 +1,360 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA" data-home="landing">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>portal</title>
-<meta http-equiv="refresh" content="0;url=/portal" />
-<link rel="canonical" href="https://emciix.com/portal" />
-<script>location.replace("/portal");</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>EMCIIX | Music, games &amp; web builds from Sault Ste. Marie</title>
+<meta name="description" content="EMCIIX by Need: music by Velc air, a browser rhythm game, the Starslip iOS app, and fast websites for Sault Ste. Marie businesses." />
+<link rel="canonical" href="https://emciix.com/" />
+<meta name="theme-color" content="#000000" />
+<meta name="color-scheme" content="dark" />
+<meta name="robots" content="index, follow" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="EMCIIX" />
+<meta property="og:locale" content="en_CA" />
+<meta property="og:url" content="https://emciix.com/" />
+<meta property="og:title" content="EMCIIX: music, games &amp; web builds from Sault Ste. Marie" />
+<meta property="og:description" content="Enter the portal, play the browser rhythm game, or hire Need to build your business website." />
+<meta property="og:image" content="https://emciix.com/assets/home/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="EMCIIX: music, games and web builds, made in the Soo" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@emciixcom" />
+<meta name="twitter:title" content="EMCIIX: music, games &amp; web builds from Sault Ste. Marie" />
+<meta name="twitter:description" content="Enter the portal, play the browser rhythm game, or hire Need to build your business website." />
+<meta name="twitter:image" content="https://emciix.com/assets/home/og.png" />
+
+<!--
+  =====================================================================
+  SITE CONFIG: edit ONLY this block to change the homepage.
+  Every section below (hero, cards, music, game, Starslip, services,
+  gallery, FAQ, footer, sticky mobile bar, JSON-LD) renders from it.
+  Static <head> meta above: update title/description/OG by hand.
+  =====================================================================
+-->
+<script>
+window.SITE = {
+  brand: { name: "EMCIIX", by: "Need", url: "https://emciix.com/" },
+  contact: {
+    email: "cue@dialchad.com",
+    x: "https://x.com/emciixcom", xHandle: "@emciixcom",
+    youtube: "https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ", youtubeName: "Velc air",
+    city: "Sault Ste. Marie", region: "Ontario", regionCode: "ON", country: "CA"
+  },
+  hero: {
+    kicker: "Sault Ste. Marie · Music · Games · Web",
+    title: "Music, games & web builds,",
+    titleSoft: "made in the Soo.",
+    text: "EMCIIX is where Need puts everything: songs by Velc air, a starfield portal you can steer, a rhythm game that runs in your browser, and websites built for local businesses.",
+    primary: { label: "Enter the portal", href: "/portal" },
+    secondary: { label: "Play the game", href: "/game/play" },
+    tertiary: { label: "Hire me", href: "/hire" },
+    chips: ["Free to play", "No download", "Made in SSM", "No ads"]
+  },
+  cards: [
+    { icon: "music", title: "Listen", text: "Songs by Velc air, in the portal and on YouTube.", link: { label: "Enter the portal", href: "/portal" } },
+    { icon: "game", title: "Play", text: "41 levels, upgrades and synced ranks.", link: { label: "Play the game", href: "/game/play" } },
+    { icon: "build", title: "Build", text: "Websites for SSM businesses, from $1,500 CAD.", link: { label: "Hire me", href: "/hire" } }
+  ],
+  music: {
+    kicker: "Music", title: "Velc air",
+    text: "Original songs about job hunts, too many tabs, phones and staying up late shipping things. Fly through them in the portal, or watch on YouTube.",
+    points: ["Warp-speed starfield portal you can steer", "Songs play right in the browser", "New tracks land in the game too"],
+    links: [{ label: "Enter the portal", href: "/portal", primary: true }, { label: "Velc air on YouTube", href: "https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ", external: true }]
+  },
+  game: {
+    kicker: "Game", title: "Browser rhythm game",
+    text: "Tap the lanes (or press D, F, J) in time with the music. Each level is set to a song, with lyrics along the way. Earn points, spend them on upgrades, and climb the synced ranks.",
+    stats: [["41", "levels"], ["5", "upgrade levels"], ["0", "downloads"]],
+    points: ["Play as a guest, or sign in to sync scores", "Upgrade tree powered by your best scores", "Works on phones, tablets and desktop"],
+    links: [{ label: "Play the game", href: "/game/play", primary: true }]
+  },
+  starslip: {
+    kicker: "iOS app", title: "Starslip",
+    status: "iOS app, coming to the App Store",
+    text: "A warp-speed starfield you can steer, with a planet launcher for your favourite apps and links and a bundled rhythm game. No account, works offline, and no data collected.",
+    links: [{ label: "Support", href: "/starslip/support" }, { label: "Privacy", href: "/starslip/privacy" }]
+  },
+  services: {
+    kicker: "Hire Need", title: "Websites & simple apps for local businesses",
+    text: "Fast, mobile-friendly, Google-ready sites for shops, trades, salons and restaurants in Sault Ste. Marie. Built in about 1–2 weeks.",
+    plans: [
+      { name: "Business website", price: "from $1,500", unit: "CAD", text: "New site or redesign, with contact, booking or menu pages." },
+      { name: "Care plan", price: "$100", unit: "CAD / month", text: "Hosting, updates and small edits, all handled." }
+    ],
+    links: [{ label: "See services & pricing", href: "/hire", primary: true }, { label: "See a demo site", href: "/demo/roofing" }]
+  },
+  gallery: [
+    { title: "The portal", tag: "Web", img: "/assets/home/portal.webp", alt: "Screenshot of the EMCIIX starfield portal with planets", href: "/portal" },
+    { title: "Rhythm game", tag: "Game", img: "/assets/home/game.webp", alt: "Screenshot of the rhythm game start screen with level list", href: "/game/play" },
+    { title: "Roofing demo site", tag: "Template", img: "/assets/home/roofing.webp", alt: "Screenshot of the Northshore Roofing demo website", href: "/demo/roofing" },
+    { title: "Hire page", tag: "Web", img: "/assets/home/hire.webp", alt: "Screenshot of the Need hire page", href: "/hire" }
+  ],
+  faq: [
+    ["What is EMCIIX?", "It's the home for everything Need makes: music by Velc air, the portal, a browser rhythm game, the Starslip iOS app and website work for local businesses."],
+    ["Is the game free? Do I need an account?", "Yes, it's free and runs in your browser. You can play as a guest; signing in is optional and only syncs your scores and ranks."],
+    ["When is Starslip coming out?", "Starslip is an iOS app coming to the App Store. This page will link to it once it's live."],
+    ["Can you build a website for my business?", "Yes. Websites start from $1,500 CAD and the care plan is $100/month. See the hire page or the roofing demo, then email for a free quote."],
+    ["Does this site track me?", "No analytics or ad trackers on this page. The game saves progress on your device, and syncs scores only if you choose to sign in."],
+    ["How do I get in touch?", "Email cue@dialchad.com or message @emciixcom on X."]
+  ],
+  footer: {
+    columns: [
+      { title: "Explore", links: [["Portal", "/portal"], ["Play the game", "/game/play"], ["Need", "/need"]] },
+      { title: "Work", links: [["Hire me", "/hire"], ["Roofing demo", "/demo/roofing"]] },
+      { title: "Starslip", links: [["Support", "/starslip/support"], ["Privacy policy", "/starslip/privacy"]] }
+    ],
+    note: "© 2026 Need · Sault Ste. Marie, Ontario, Canada"
+  },
+  mobileBar: [{ label: "Play", href: "/game/play", primary: true }, { label: "Hire me", href: "/hire" }]
+};
+</script>
+
+<style>
+:root {
+  --bg: #000; --card: #0c0c0d; --card-2: #121214;
+  --line: rgba(255,255,255,.12); --line-2: rgba(255,255,255,.22);
+  --ink: #f4f3f0; --dim: #a3a19b; --gold: #f2d48a;
+  --pill: #f2f2f4; --pill-ink: #121212; --r: 18px;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 76px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--font); -webkit-font-smoothing: antialiased; padding-bottom: 80px; overflow-x: hidden; }
+@media (min-width: 820px) { body { padding-bottom: 0; } }
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.55), transparent 60%),
+    radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,.4), transparent 60%),
+    radial-gradient(1.5px 1.5px at 64% 42%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(1px 1px at 30% 66%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(1px 1px at 88% 78%, rgba(255,255,255,.45), transparent 60%),
+    radial-gradient(1.5px 1.5px at 8% 88%, rgba(255,255,255,.3), transparent 60%),
+    radial-gradient(1px 1px at 48% 8%, rgba(255,255,255,.3), transparent 60%),
+    radial-gradient(1px 1px at 22% 40%, rgba(255,255,255,.3), transparent 60%),
+    radial-gradient(1px 1px at 92% 46%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(1px 1px at 52% 92%, rgba(255,255,255,.3), transparent 60%); }
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--gold); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.wrap { width: min(1080px, 100%); margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--pill); color: var(--pill-ink); padding: 8px 14px; border-radius: 999px; z-index: 60; }
+.skip:focus { left: 12px; }
+
+/* Header */
+.head { position: sticky; top: 0; z-index: 40; background: rgba(0,0,0,.78); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; }
+.head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 62px; padding-top: env(safe-area-inset-top); }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-weight: 750; letter-spacing: .12em; font-size: 1rem; }
+.brand small { font-weight: 500; letter-spacing: .02em; color: var(--dim); font-size: .8rem; }
+.dot { width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe6a8, #c9a227 55%, #3a2c08 100%); box-shadow: 0 0 0 1.5px rgba(255,255,255,.8), 0 0 16px rgba(242,212,138,.35); }
+nav.main { display: none; gap: 22px; }
+nav.main a { color: var(--dim); text-decoration: none; font-size: .92rem; font-weight: 600; }
+nav.main a:hover { color: var(--ink); }
+@media (min-width: 900px) { nav.main { display: flex; } }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px; font: 600 1rem/1 var(--font); text-decoration: none; border: 1px solid var(--line-2); color: var(--ink); background: transparent; white-space: nowrap; }
+.btn-primary { background: var(--pill); color: var(--pill-ink); border-color: var(--pill); }
+.btn-primary:hover { background: #fff; }
+.btn-ghost:hover { border-color: rgba(255,255,255,.5); }
+.btn-sm { min-height: 38px; padding: 0 16px; font-size: .9rem; }
+.btn-text { border-color: transparent; color: var(--gold); padding: 0 8px; }
+.btn-text:hover { text-decoration: underline; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+/* Hero */
+.hero { position: relative; padding-top: 44px; padding-bottom: 34px; }
+.kicker { font: 500 .72rem/1.3 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
+h1 { font-size: clamp(2.2rem, 9vw, 4.2rem); line-height: 1.03; letter-spacing: -.025em; margin: 0 0 18px; font-weight: 700; max-width: 15ch; text-wrap: balance; }
+h1 .soft { color: var(--dim); }
+.lede { font-size: clamp(1.05rem, 3.6vw, 1.22rem); color: #d7d5cf; max-width: 38rem; margin: 0 0 26px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; list-style: none; }
+.chips li { font-size: .85rem; color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+.planet { display: none; }
+@media (min-width: 1040px) {
+  .planet { display: block; position: absolute; right: 40px; top: 90px; width: 270px; height: 270px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle at 34% 30%, #ffe9b0 0%, #d9b24a 34%, #8a6a1c 68%, #1e1604 100%);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.85), 0 0 60px rgba(242,212,138,.28); }
+  .planet::after { content: ""; position: absolute; inset: -5%; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); }
+  .moon { position: absolute; right: -6px; top: 18px; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f4f3f0, #8f8d88 70%, #2a2a2a); box-shadow: 0 0 0 1.5px rgba(255,255,255,.7); }
+}
+@media (min-width: 720px) { .hero { padding-top: 84px; padding-bottom: 60px; } }
+
+/* Cards row */
+.cards { display: grid; gap: 14px; grid-template-columns: 1fr; padding-bottom: 44px; }
+@media (min-width: 760px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+.card { background: linear-gradient(180deg, var(--card-2), var(--card)); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; }
+.card h3 { margin: 0 0 6px; font-size: 1.12rem; font-weight: 650; }
+.card p { margin: 0; color: #cfcdc7; font-size: .96rem; }
+.info-card { display: flex; flex-direction: column; }
+.info-card p { flex: 1; }
+.info-card a { margin-top: 12px; font-weight: 600; font-size: .95rem; }
+.ico { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; border: 1px solid var(--line-2); margin-bottom: 14px; color: var(--gold); }
+.ico svg { width: 20px; height: 20px; }
+
+/* Sections */
+section.block { padding: 48px 0; border-top: 1px solid var(--line); }
+@media (min-width: 720px) { section.block { padding: 68px 0; } }
+h2 { font-size: clamp(1.6rem, 5.6vw, 2.4rem); line-height: 1.12; letter-spacing: -.02em; margin: 0 0 10px; font-weight: 700; text-wrap: balance; }
+.sub { color: var(--dim); margin: 0 0 22px; max-width: 40rem; }
+.split { display: grid; gap: 22px; align-items: center; }
+@media (min-width: 880px) { .split { grid-template-columns: 1.05fr .95fr; gap: 44px; } .split.flip > :first-child { order: 2; } }
+ul.ticks { list-style: none; padding: 0; margin: 0 0 24px; color: #cfcdc7; }
+ul.ticks li { position: relative; padding-left: 22px; margin: 6px 0; }
+ul.ticks li::before { content: ""; position: absolute; left: 3px; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); opacity: .85; }
+.shot { display: block; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line-2); background: #0a0a0a; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+.shot img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 22px; }
+.stat { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); }
+.stat b { display: block; font-size: 1.6rem; line-height: 1.1; letter-spacing: -.02em; }
+.stat span { color: var(--dim); font-size: .82rem; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .92rem; color: var(--ink); border: 1px solid rgba(242,212,138,.4); background: rgba(242,212,138,.08); border-radius: 999px; padding: 7px 14px; margin: 0 0 18px; }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(242,212,138,.8); }
+.phone { width: min(260px, 70%); margin: 0 auto; aspect-ratio: 9 / 19; border-radius: 38px; border: 2px solid rgba(255,255,255,.28); background: radial-gradient(circle at 50% 42%, rgba(242,212,138,.12), transparent 60%), #030303; position: relative; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+.phone::before { content: ""; position: absolute; left: 50%; top: 12px; width: 32%; height: 20px; border-radius: 12px; background: #111; transform: translateX(-50%); }
+.phone .p-planet { position: absolute; left: 50%; top: 42%; width: 44%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle at 34% 30%, #ffe9b0 0%, #d9b24a 34%, #8a6a1c 68%, #1e1604 100%); box-shadow: 0 0 0 2px rgba(255,255,255,.85), 0 0 40px rgba(242,212,138,.3); }
+.phone .p-orb { position: absolute; width: 13%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #9fd3ff, #2d6aa0 60%, #0b1c2c); box-shadow: 0 0 0 1.5px rgba(255,255,255,.7); }
+.phone .p-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; opacity: .7; }
+.phone .p-bar { position: absolute; left: 10%; right: 10%; bottom: 7%; height: 11%; border-radius: 18px; border: 1px solid rgba(255,255,255,.22); background: rgba(18,18,20,.9); display: flex; align-items: center; justify-content: center; font: 600 .7rem/1 var(--mono); letter-spacing: .2em; color: var(--dim); }
+
+/* Services */
+.plans { display: grid; gap: 14px; margin-bottom: 22px; }
+@media (min-width: 640px) { .plans { grid-template-columns: 1fr 1fr; } }
+.card .price { color: var(--ink); font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin: 6px 0 6px; }
+.card .price small { font-size: .9rem; font-weight: 500; color: var(--dim); letter-spacing: 0; }
+
+/* Gallery */
+.gallery { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 600px) { .gallery { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .gallery { grid-template-columns: repeat(4, 1fr); } }
+.tile { display: block; text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.tile:hover { border-color: var(--line-2); }
+.tile img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-bottom: 1px solid var(--line); }
+.tile div { padding: 12px 14px 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tile b { font-weight: 650; }
+.tag { font: 500 .66rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; white-space: nowrap; }
+
+/* FAQ */
+.faq { display: grid; gap: 10px; max-width: 820px; }
+.faq details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 0 18px; }
+.faq summary { cursor: pointer; list-style: none; font-weight: 650; padding: 16px 28px 16px 0; position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 0; top: 11px; font-size: 1.5rem; font-weight: 300; color: var(--gold); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { margin: 0 0 16px; color: #cfcdc7; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); padding: 40px 0 30px; color: var(--dim); font-size: .92rem; }
+.foot-grid { display: grid; gap: 26px; grid-template-columns: 1fr 1fr; }
+@media (min-width: 820px) { .foot-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+.foot-grid > :first-child { grid-column: 1 / -1; }
+@media (min-width: 820px) { .foot-grid > :first-child { grid-column: auto; } }
+footer h2 { font: 500 .72rem/1.3 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
+footer ul { list-style: none; margin: 0; padding: 0; }
+footer li { margin: 5px 0; }
+footer a { color: var(--ink); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer .about p { margin: 12px 0; max-width: 22rem; }
+.foot-base { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between; font-size: .85rem; }
+
+/* Sticky mobile bar */
+.mbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(0,0,0,.88); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+.mbar .btn { min-height: 52px; font-size: 1.05rem; }
+@media (min-width: 820px) { .mbar { display: none; } }
+noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
+</style>
 </head>
-<body></body>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<noscript><div class="wrap"><h1>EMCIIX</h1><p>Music, games &amp; web builds from Sault Ste. Marie.</p><p><a href="/portal">Enter the portal</a> · <a href="/game/play">Play the game</a> · <a href="/hire">Hire me</a> · <a href="/starslip/support">Starslip</a> · <a href="mailto:cue@dialchad.com">cue@dialchad.com</a></p></div></noscript>
+<div id="app"></div>
+
+<script>
+(function () {
+  "use strict";
+  var S = window.SITE, K = S.contact;
+  function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function link(l, cls) {
+    var ext = l.external || /^https?:/.test(l.href);
+    return '<a class="btn ' + (cls || (l.primary ? "btn-primary" : "btn-ghost")) + '" href="' + esc(l.href) + '"' + (ext ? ' rel="noopener"' : "") + '>' + esc(l.label) + (ext ? " ↗" : "") + '</a>';
+  }
+  function links(arr) { return '<div class="row">' + arr.map(function (l) { return link(l); }).join("") + '</div>'; }
+  function ticks(arr) { return '<ul class="ticks">' + arr.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>'; }
+  function head(k, t, id) { return '<p class="kicker">' + esc(k) + '</p><h2 id="' + id + '">' + esc(t) + '</h2>'; }
+  var I = {
+    music: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+    game: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.5" r="1"/><circle cx="18" cy="13.5" r="1"/></svg>',
+    build: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M9 12l-2 2 2 2M15 12l2 2-2 2"/></svg>'
+  };
+  var H = S.hero, h = "";
+
+  h += '<header class="head"><div class="wrap"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a>' +
+    '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a></nav>' +
+    '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
+
+  h += '<main id="main"><div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
+    '<p class="kicker">' + esc(H.kicker) + '</p>' +
+    '<h1>' + esc(H.title) + ' <span class="soft">' + esc(H.titleSoft) + '</span></h1>' +
+    '<p class="lede">' + esc(H.text) + '</p>' +
+    '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + '</div>' +
+    '<ul class="chips" aria-label="Highlights">' + H.chips.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join("") + '</ul></div>';
+
+  h += '<div class="wrap cards">' + S.cards.map(function (c) {
+    return '<article class="card info-card"><div class="ico">' + (I[c.icon] || "") + '</div><h3>' + esc(c.title) + '</h3><p>' + esc(c.text) + '</p><a href="' + esc(c.link.href) + '">' + esc(c.link.label) + ' →</a></article>';
+  }).join("") + '</div>';
+
+  var M = S.music;
+  h += '<section class="block" id="music" aria-labelledby="music-h"><div class="wrap split"><div>' + head(M.kicker, M.title, "music-h") +
+    '<p class="sub">' + esc(M.text) + '</p>' + ticks(M.points) + links(M.links) + '</div>' +
+    '<a class="shot" href="/portal"><img src="/assets/home/portal.webp" alt="The EMCIIX starfield portal" width="640" height="400" decoding="async" /></a></div></section>';
+
+  var G = S.game;
+  h += '<section class="block" id="game" aria-labelledby="game-h"><div class="wrap split flip"><div>' + head(G.kicker, G.title, "game-h") +
+    '<p class="sub">' + esc(G.text) + '</p><div class="stats">' + G.stats.map(function (s) { return '<div class="stat"><b>' + esc(s[0]) + '</b><span>' + esc(s[1]) + '</span></div>'; }).join("") + '</div>' +
+    ticks(G.points) + links(G.links) + '</div>' +
+    '<a class="shot" href="/game/play"><img src="/assets/home/game.webp" alt="Rhythm game start screen" width="640" height="400" decoding="async" /></a></div></section>';
+
+  var T = S.starslip;
+  h += '<section class="block" id="starslip" aria-labelledby="starslip-h"><div class="wrap split"><div>' + head(T.kicker, T.title, "starslip-h") +
+    '<p class="status">' + esc(T.status) + '</p><p class="sub">' + esc(T.text) + '</p>' + links(T.links) + '</div>' +
+    '<div class="phone" role="img" aria-label="Illustration of Starslip on an iPhone"><span class="p-star" style="left:18%;top:20%"></span><span class="p-star" style="left:78%;top:16%"></span><span class="p-star" style="left:66%;top:64%"></span><span class="p-star" style="left:26%;top:72%"></span><span class="p-star" style="left:48%;top:12%"></span>' +
+    '<span class="p-planet"></span><span class="p-orb" style="left:14%;top:52%"></span><span class="p-orb" style="left:72%;top:26%"></span><span class="p-orb" style="left:68%;top:58%;width:10%"></span><span class="p-bar">PORTAL</span></div></div></section>';
+
+  var V = S.services;
+  h += '<section class="block" id="hire" aria-labelledby="hire-h"><div class="wrap">' + head(V.kicker, V.title, "hire-h") + '<p class="sub">' + esc(V.text) + '</p>' +
+    '<div class="plans">' + V.plans.map(function (p) { return '<article class="card"><h3>' + esc(p.name) + '</h3><p class="price">' + esc(p.price) + ' <small>' + esc(p.unit) + '</small></p><p>' + esc(p.text) + '</p></article>'; }).join("") + '</div>' +
+    links(V.links) + '</div></section>';
+
+  h += '<section class="block" id="work" aria-labelledby="work-h"><div class="wrap"><p class="kicker">Gallery</p><h2 id="work-h">Built here</h2><p class="sub">Everything on this site is designed and built by Need.</p><div class="gallery">' +
+    S.gallery.map(function (g) { return '<a class="tile" href="' + esc(g.href) + '"><img src="' + esc(g.img) + '" alt="' + esc(g.alt) + '" width="640" height="400" decoding="async" /><div><b>' + esc(g.title) + '</b><span class="tag">' + esc(g.tag) + '</span></div></a>'; }).join("") +
+    '</div></div></section>';
+
+  h += '<section class="block" id="faq" aria-labelledby="faq-h"><div class="wrap"><p class="kicker">FAQ</p><h2 id="faq-h">Questions</h2><div class="faq">' +
+    S.faq.map(function (f, i) { return '<details' + (i === 0 ? " open" : "") + '><summary>' + esc(f[0]) + '</summary><p>' + esc(f[1]) + '</p></details>'; }).join("") +
+    '</div></div></section></main>';
+
+  var F = S.footer;
+  h += '<footer><div class="wrap"><div class="foot-grid"><div class="about"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + '</a>' +
+    '<p>Music, games &amp; web builds by ' + esc(S.brand.by) + ', from ' + esc(K.city) + ', ' + esc(K.region) + '.</p>' +
+    '<ul><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li></ul></div>' +
+    F.columns.map(function (c) { return '<div><h2>' + esc(c.title) + '</h2><ul>' + c.links.map(function (l) { return '<li><a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a></li>'; }).join("") + '</ul></div>'; }).join("") +
+    '</div><div class="foot-base"><span>' + esc(F.note) + '</span><span>No trackers · No ads</span></div></div></footer>';
+
+  h += '<nav class="mbar" aria-label="Quick actions">' + S.mobileBar.map(function (l) { return link(l); }).join("") + '</nav>';
+
+  document.getElementById("app").innerHTML = h;
+
+  var ld = { "@context": "https://schema.org", "@graph": [
+    { "@type": "WebSite", "name": S.brand.name, "url": S.brand.url },
+    { "@type": "Organization", "name": S.brand.by, "alternateName": S.brand.name, "url": S.brand.url, "email": K.email, "sameAs": [K.x, K.youtube],
+      "address": { "@type": "PostalAddress", "addressLocality": K.city, "addressRegion": K.regionCode, "addressCountry": K.country } }
+  ] };
+  var tag = document.createElement("script"); tag.type = "application/ld+json"; tag.textContent = JSON.stringify(ld); document.head.appendChild(tag);
+})();
+</script>
+</body>
 </html>
