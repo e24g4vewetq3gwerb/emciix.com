@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en-CA" data-home="landing">
+<html lang="en" data-home="landing">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<!-- Look switch: runs before first paint. "alt" = light trades look (from /demo/roofing).
-     ?mode=alt or ?mode=dark overrides for this visit; the header blob button saves the choice. -->
-<script>(function(){try{var m=(location.search.match(/[?&]mode=(alt|dark)(?:&|$)/)||[])[1];if(!m){m=localStorage.getItem("emciix.homeMode");}if(m==="alt"){document.documentElement.setAttribute("data-mode","alt");}}catch(e){}})();</script>
-<title>EMCIIX | Music, games &amp; web builds from Sault Ste. Marie</title>
-<meta name="description" content="EMCIIX by Need: music by Velc air, a browser rhythm game, the Starslip iOS app, and fast websites for Sault Ste. Marie businesses." />
+<!-- Look switch: runs before first paint. Modes: dark (default gold) | alt (light trades, from /demo/roofing) | global (neutral white + blue).
+     ?mode=dark|alt|global overrides for this visit; the header blob button cycles and saves the choice (localStorage emciix.homeMode). -->
+<script>(function(){try{var m=(location.search.match(/[?&]mode=(alt|dark|global)(?:&|$)/)||[])[1];if(!m){m=localStorage.getItem("emciix.homeMode");}if(m==="alt"||m==="global"){document.documentElement.setAttribute("data-mode",m);}}catch(e){}})();</script>
+<title>EMCIIX | Music, games &amp; web builds by Need</title>
+<meta name="description" content="EMCIIX by Need: music by Velc air, a browser rhythm game, the Starslip iOS app, and fast websites for small businesses anywhere." />
 <link rel="canonical" href="https://emciix.com/" />
 <meta name="theme-color" content="#000000" />
 <meta name="color-scheme" content="dark" />
@@ -15,17 +15,16 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="EMCIIX" />
-<meta property="og:locale" content="en_CA" />
 <meta property="og:url" content="https://emciix.com/" />
-<meta property="og:title" content="EMCIIX: music, games &amp; web builds from Sault Ste. Marie" />
+<meta property="og:title" content="EMCIIX: music, games &amp; web builds, made to travel" />
 <meta property="og:description" content="Enter the portal, play the browser rhythm game, or hire Need to build your business website." />
 <meta property="og:image" content="https://emciix.com/assets/home/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="EMCIIX: music, games and web builds, made in the Soo" />
+<meta property="og:image:alt" content="EMCIIX: music, games and web builds, made to travel" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@emciixcom" />
-<meta name="twitter:title" content="EMCIIX: music, games &amp; web builds from Sault Ste. Marie" />
+<meta name="twitter:title" content="EMCIIX: music, games &amp; web builds, made to travel" />
 <meta name="twitter:description" content="Enter the portal, play the browser rhythm game, or hire Need to build your business website." />
 <meta name="twitter:image" content="https://emciix.com/assets/home/og.png" />
 
@@ -45,14 +44,13 @@ window.SITE = {
     email: "cue@dialchad.com",
     x: "https://x.com/emciixcom", xHandle: "@emciixcom",
     youtube: "https://www.youtube.com/channel/UCt8dYnrvcrZSCx9uS0aLBSQ", youtubeName: "Velc air",
-    linkedin: "https://www.linkedin.com/in/abdullah-nafis-b78485416/",
-    city: "Sault Ste. Marie", region: "Ontario", regionCode: "ON", country: "CA"
+    linkedin: "https://www.linkedin.com/in/abdullah-nafis-b78485416/"
   },
   hero: {
-    kicker: "Sault Ste. Marie · Music · Games · Web",
+    kicker: "Music · Games · Web",
     title: "Music, games & web builds,",
-    titleSoft: "made in the Soo.",
-    text: "EMCIIX is where Need puts everything: songs by Velc air, a starfield portal you can steer, a rhythm game that runs in your browser, and websites built for local businesses.",
+    titleSoft: "made to travel.",
+    text: "EMCIIX is where Need puts everything: songs by Velc air, a starfield portal you can steer, a rhythm game that runs in any browser, and websites built for small businesses anywhere.",
     primary: { label: "Enter the portal", href: "/portal" },
     secondary: { label: "Play the game", href: "/game/play" },
     tertiary: { label: "Hire me", href: "/hire" },
@@ -60,7 +58,7 @@ window.SITE = {
   cards: [
     { icon: "music", title: "Listen", text: "Songs by Velc air, in the portal and on YouTube.", link: { label: "Enter the portal", href: "/portal" } },
     { icon: "game", title: "Play", text: "41 levels, upgrades and synced ranks.", link: { label: "Play the game", href: "/game/play" } },
-    { icon: "build", title: "Build", text: "Websites for SSM businesses, from $1,500 CAD.", link: { label: "Hire me", href: "/hire" } }
+    { icon: "build", title: "Build", text: "Websites for small businesses, from $1,500.", link: { label: "Hire me", href: "/hire" } }
   ],
   music: {
     kicker: "Music", title: "Velc air",
@@ -82,11 +80,12 @@ window.SITE = {
     links: [{ label: "Support", href: "/starslip/support" }, { label: "Privacy", href: "/starslip/privacy" }]
   },
   services: {
-    kicker: "Hire Need", title: "Websites & simple apps for local businesses",
-    text: "Fast, mobile-friendly, Google-ready sites for shops, trades, salons and restaurants in Sault Ste. Marie. Built in about 1–2 weeks.",
+    kicker: "Hire Need", title: "Websites & simple apps for small businesses",
+    text: "Fast, mobile-friendly, Google-ready sites for shops, trades, salons and restaurants, wherever you are. Built remotely in about 1–2 weeks, by call, email or video.",
+    note: "Prices in Canadian dollars (CAD).",
     plans: [
-      { name: "Business website", price: "from $1,500", unit: "CAD", text: "New site or redesign, with contact, booking or menu pages." },
-      { name: "Care plan", price: "$100", unit: "CAD / month", text: "Hosting, updates and small edits, all handled." }
+      { name: "Business website", price: "from $1,500", unit: "", text: "New site or redesign, with contact, booking or menu pages." },
+      { name: "Care plan", price: "$100", unit: "/ month", text: "Hosting, updates and small edits, all handled." }
     ],
     links: [{ label: "See services & pricing", href: "/hire", primary: true }, { label: "See a demo site", href: "/demo/roofing" }]
   },
@@ -97,10 +96,10 @@ window.SITE = {
     { title: "Hire page", tag: "Web", img: "/assets/home/hire.webp", alt: "Screenshot of the Need hire page", href: "/hire" }
   ],
   faq: [
-    ["What is EMCIIX?", "It's the home for everything Need makes: music by Velc air, the portal, a browser rhythm game, the Starslip iOS app and website work for local businesses."],
+    ["What is EMCIIX?", "It's the home for everything Need makes: music by Velc air, the portal, a browser rhythm game, the Starslip iOS app and website work for small businesses anywhere."],
     ["Is the game free? Do I need an account?", "Yes, it's free and runs in your browser. You can play as a guest; signing in is optional and only syncs your scores and ranks."],
     ["When is Starslip coming out?", "Starslip is an iOS app coming to the App Store. This page will link to it once it's live."],
-    ["Can you build a website for my business?", "Yes. Websites start from $1,500 CAD and the care plan is $100/month. See the hire page or the roofing demo, then email for a free quote."],
+    ["Can you build a website for my business?", "Yes, wherever you are. Websites start from $1,500 and the care plan is $100/month (CAD). Everything runs by call, email or video. See the hire page or the roofing demo, then email for a free quote."],
     ["Does this site track me?", "No analytics or ad trackers on this page. The game saves progress on your device, and syncs scores only if you choose to sign in."],
     ["How do I get in touch?", "Email cue@dialchad.com or message @emciixcom on X."]
   ],
@@ -110,7 +109,7 @@ window.SITE = {
       { title: "Work", links: [["Hire me", "/hire"], ["Roofing demo", "/demo/roofing"]] },
       { title: "Starslip", links: [["Support", "/starslip/support"], ["Privacy policy", "/starslip/privacy"]] }
     ],
-    note: "© 2026 Need · Sault Ste. Marie, Ontario, Canada"
+    note: "© 2026 Need"
   },
   mobileBar: [{ label: "Play", href: "/game/play", primary: true }, { label: "Hire me", href: "/hire" }]
 };
@@ -227,6 +226,8 @@ ul.ticks li::before { content: ""; position: absolute; left: 3px; top: .62em; wi
 .plans { display: grid; gap: 14px; margin-bottom: 22px; }
 @media (min-width: 640px) { .plans { grid-template-columns: 1fr 1fr; } }
 .card .price { color: var(--ink); font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin: 6px 0 6px; }
+.price-note { color: var(--dim); font-size: .85rem; margin: -8px 0 20px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .card .price small { font-size: .9rem; font-weight: 500; color: var(--dim); letter-spacing: 0; }
 
 /* Gallery */
@@ -275,6 +276,7 @@ noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
 .mode-btn:hover .dot { transform: scale(1.08); }
 .mode-btn:active .dot { transform: scale(.94); }
 .mode-btn .dot { transition: transform .2s ease; }
+.dot::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; margin-top: -.75px; background: rgba(255,255,255,.9); opacity: 0; }
 .dot::before { content: ""; position: absolute; left: 50%; top: 58%; width: 9px; height: 9px; border-top: 3px solid #e8702a; border-left: 3px solid #e8702a; transform: translate(-50%, -50%) rotate(45deg); opacity: 0; }
 
 /* Smooth switch (class only added while toggling, so no first-paint animation) */
@@ -343,11 +345,79 @@ html[data-mode="alt"] .foot-base { border-top-color: rgba(255,255,255,.18); colo
 
 html[data-mode="alt"] .mbar { background: rgba(255,255,255,.97); border-top-color: var(--line); box-shadow: 0 -6px 18px rgba(16,24,40,.08); }
 html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+/* ===== GLOBAL MODE: neutral, international, high-contrast (white + calm blue) ===== */
+html[data-mode="global"] {
+  color-scheme: light;
+  --bg: #ffffff; --card: #ffffff; --card-2: #ffffff;
+  --line: #e5e7eb; --line-2: #d1d5db;
+  --ink: #111827; --dim: #4b5563; --gold: #2563eb;
+  --blue: #2563eb; --blue-dark: #1d4ed8;
+  --r: 16px;
+  --shadow: 0 1px 2px rgba(17,24,39,.05), 0 4px 14px rgba(17,24,39,.05);
+}
+html[data-mode="global"] body { background: #fff; color: var(--ink); }
+html[data-mode="global"] body::before { opacity: 0; }
+html[data-mode="global"] a { color: var(--blue-dark); }
+html[data-mode="global"] :focus-visible { outline-color: var(--blue); }
+html[data-mode="global"] .head { background: rgba(255,255,255,.96); border-bottom-color: var(--line); }
+html[data-mode="global"] .brand { color: var(--ink); font-weight: 700; letter-spacing: .1em; }
+html[data-mode="global"] .brand small { color: var(--dim); }
+html[data-mode="global"] nav.main a { color: var(--dim); }
+html[data-mode="global"] nav.main a:hover { color: var(--ink); }
+/* blob = blue globe */
+html[data-mode="global"] .dot { width: 28px; height: 28px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #93c5fd 0%, #3b82f6 45%, #1e40af 100%); box-shadow: 0 0 0 1.5px #1e40af; overflow: hidden; }
+html[data-mode="global"] .dot::before { opacity: 1; top: 50%; left: 50%; width: 42%; height: 100%; border: 1.5px solid rgba(255,255,255,.9); border-radius: 50%; transform: translate(-50%, -50%); box-sizing: border-box; }
+html[data-mode="global"] .dot::after { opacity: 1; }
+html[data-mode="global"] footer .dot { box-shadow: 0 0 0 1.5px #1e40af; }
+
+html[data-mode="global"] .btn { border-radius: 10px; font-weight: 600; }
+html[data-mode="global"] .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+html[data-mode="global"] .btn-primary:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+html[data-mode="global"] .btn-ghost { background: #fff; color: var(--ink); border: 1px solid var(--line-2); }
+html[data-mode="global"] .btn-ghost:hover { border-color: var(--blue); color: var(--blue-dark); }
+html[data-mode="global"] .btn-text { color: var(--blue-dark); }
+
+html[data-mode="global"] .kicker { color: var(--blue-dark); font-family: var(--font); font-weight: 700; letter-spacing: .1em; }
+html[data-mode="global"] h1 .soft { color: var(--dim); }
+html[data-mode="global"] .lede { color: var(--dim); }
+html[data-mode="global"] .planet { background:
+    repeating-linear-gradient(0deg, transparent 0 34px, rgba(255,255,255,.28) 34px 35.5px),
+    radial-gradient(circle at 34% 30%, #bfdbfe 0%, #60a5fa 30%, #2563eb 62%, #1e3a8a 100%);
+  box-shadow: 0 0 0 1px #dbeafe, 0 24px 60px rgba(37,99,235,.18); overflow: hidden; }
+html[data-mode="global"] .planet::after { inset: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.4); transform: scaleX(.42); }
+html[data-mode="global"] .planet::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.3); transform: scaleX(.8); }
+html[data-mode="global"] .moon { display: none; }
+
+html[data-mode="global"] .card, html[data-mode="global"] .stat, html[data-mode="global"] .tile, html[data-mode="global"] .faq details { background: #fff; border-color: var(--line); box-shadow: var(--shadow); }
+html[data-mode="global"] .card p, html[data-mode="global"] ul.ticks, html[data-mode="global"] .faq details p { color: var(--dim); }
+html[data-mode="global"] .card h3, html[data-mode="global"] .card .price, html[data-mode="global"] .stat b { color: var(--ink); }
+html[data-mode="global"] .info-card a { color: var(--blue-dark); }
+html[data-mode="global"] .ico { border: 0; background: #eff6ff; color: var(--blue-dark); }
+html[data-mode="global"] ul.ticks li::before { background: var(--blue); opacity: 1; }
+html[data-mode="global"] section.block { border-top-color: var(--line); }
+@media (min-width: 720px) { html[data-mode="global"] section.block { padding: 88px 0; } html[data-mode="global"] .hero { padding-top: 96px; padding-bottom: 72px; } }
+html[data-mode="global"] .shot { background: #fff; border-color: var(--line); box-shadow: var(--shadow); }
+html[data-mode="global"] .status { color: var(--ink); background: #eff6ff; border-color: #bfdbfe; }
+html[data-mode="global"] .status::before { background: var(--blue); box-shadow: none; }
+html[data-mode="global"] .phone { border-color: #d1d5db; box-shadow: 0 24px 50px rgba(17,24,39,.14); }
+html[data-mode="global"] .phone .p-planet { background: radial-gradient(circle at 34% 30%, #bfdbfe 0%, #60a5fa 30%, #2563eb 62%, #1e3a8a 100%); }
+html[data-mode="global"] .tag { color: var(--dim); border-color: var(--line); background: #f9fafb; }
+html[data-mode="global"] .tile { color: var(--ink); }
+html[data-mode="global"] .faq summary::after { color: var(--blue); font-weight: 400; }
+
+html[data-mode="global"] footer { background: #f9fafb; color: var(--dim); border-top-color: var(--line); }
+html[data-mode="global"] footer a, html[data-mode="global"] footer .brand { color: var(--ink); }
+html[data-mode="global"] footer h2 { color: var(--blue-dark); font-family: var(--font); font-weight: 700; }
+html[data-mode="global"] .foot-base { border-top-color: var(--line); color: var(--dim); }
+
+html[data-mode="global"] .mbar { background: rgba(255,255,255,.97); border-top-color: var(--line); box-shadow: 0 -4px 14px rgba(17,24,39,.06); }
+html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line-2); }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<noscript><div class="wrap"><h1>EMCIIX</h1><p>Music, games &amp; web builds from Sault Ste. Marie.</p><p><a href="/portal">Enter the portal</a> · <a href="/game/play">Play the game</a> · <a href="/hire">Hire me</a> · <a href="/starslip/support">Starslip</a> · <a href="mailto:cue@dialchad.com">cue@dialchad.com</a></p></div></noscript>
+<noscript><div class="wrap"><h1>EMCIIX</h1><p>Music, games &amp; web builds, made to travel.</p><p><a href="/portal">Enter the portal</a> · <a href="/game/play">Play the game</a> · <a href="/hire">Hire me</a> · <a href="/starslip/support">Starslip</a> · <a href="mailto:cue@dialchad.com">cue@dialchad.com</a></p></div></noscript>
 <div id="app"></div>
 
 <script>
@@ -371,8 +441,7 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
   };
   var H = S.hero, h = "";
 
-  var isAlt = document.documentElement.getAttribute("data-mode") === "alt";
-  h += '<header class="head"><div class="wrap"><div class="brand-wrap"><button type="button" class="mode-btn" id="mode-btn" aria-label="Switch look" aria-pressed="' + (isAlt ? "true" : "false") + '" title="Switch look"><span class="dot" aria-hidden="true"></span></button>' +
+  h += '<header class="head"><div class="wrap"><div class="brand-wrap"><button type="button" class="mode-btn" id="mode-btn" aria-label="Switch look" title="Switch look"><span class="dot" aria-hidden="true"></span></button>' +
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
     '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a></nav>' +
     '<a class="btn btn-ghost btn-sm" href="' + esc(H.primary.href) + '">' + esc(H.primary.label) + '</a></div></header>';
@@ -407,8 +476,8 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
 
   var V = S.services;
   h += '<section class="block" id="hire" aria-labelledby="hire-h"><div class="wrap">' + head(V.kicker, V.title, "hire-h") + '<p class="sub">' + esc(V.text) + '</p>' +
-    '<div class="plans">' + V.plans.map(function (p) { return '<article class="card"><h3>' + esc(p.name) + '</h3><p class="price">' + esc(p.price) + ' <small>' + esc(p.unit) + '</small></p><p>' + esc(p.text) + '</p></article>'; }).join("") + '</div>' +
-    links(V.links) + '</div></section>';
+    '<div class="plans">' + V.plans.map(function (p) { return '<article class="card"><h3>' + esc(p.name) + '</h3><p class="price">' + esc(p.price) + (p.unit ? ' <small>' + esc(p.unit) + '</small>' : '') + '</p><p>' + esc(p.text) + '</p></article>'; }).join("") + '</div>' +
+    (V.note ? '<p class="price-note">' + esc(V.note) + '</p>' : '') + links(V.links) + '</div></section>';
 
   h += '<section class="block" id="work" aria-labelledby="work-h"><div class="wrap"><p class="kicker">Gallery</p><h2 id="work-h">Built here</h2><p class="sub">Everything on this site is designed and built by Need.</p><div class="gallery">' +
     S.gallery.map(function (g) { return '<a class="tile" href="' + esc(g.href) + '"><img src="' + esc(g.img) + '" alt="' + esc(g.alt) + '" width="640" height="400" decoding="async" /><div><b>' + esc(g.title) + '</b><span class="tag">' + esc(g.tag) + '</span></div></a>'; }).join("") +
@@ -420,7 +489,7 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
 
   var F = S.footer;
   h += '<footer><div class="wrap"><div class="foot-grid"><div class="about"><a class="brand" href="/"><span class="dot" aria-hidden="true"></span>' + esc(S.brand.name) + '</a>' +
-    '<p>Music, games &amp; web builds by ' + esc(S.brand.by) + ', from ' + esc(K.city) + ', ' + esc(K.region) + '.</p>' +
+    '<p>Music, games &amp; web builds by ' + esc(S.brand.by) + '. Working remotely, worldwide.</p>' +
     '<ul><li><a href="tel:' + esc(K.phoneTel) + '">' + esc(K.phoneDisplay) + '</a></li><li><a href="mailto:' + esc(K.email) + '">' + esc(K.email) + '</a></li><li><a href="' + esc(K.x) + '" rel="noopener">X ' + esc(K.xHandle) + '</a></li><li><a href="' + esc(K.youtube) + '" rel="noopener">YouTube: ' + esc(K.youtubeName) + '</a></li><li><a href="' + esc(K.linkedin) + '" target="_blank" rel="noopener me">LinkedIn</a></li></ul></div>' +
     F.columns.map(function (c) { return '<div><h2>' + esc(c.title) + '</h2><ul>' + c.links.map(function (l) { return '<li><a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a></li>'; }).join("") + '</ul></div>'; }).join("") +
     '</div><div class="foot-base"><span>' + esc(F.note) + '</span><span>No trackers · No ads</span></div></div></footer>';
@@ -429,30 +498,39 @@ html[data-mode="alt"] .mbar .btn-ghost { background: var(--navy); border-color: 
 
   document.getElementById("app").innerHTML = h;
 
-  // ---------- look switch (dark gold <-> light trades) ----------
+  // ---------- look switch: dark (gold) -> alt (light trades) -> global (neutral blue) -> dark ----------
+  var MODES = ["dark", "alt", "global"];
+  var MODE_NAMES = { dark: "Dark", alt: "Light", global: "Global" };
+  var MODE_THEME = { dark: "#000000", alt: "#ffffff", global: "#ffffff" };
   var rootEl = document.documentElement, btn = document.getElementById("mode-btn");
   var themeMeta = document.querySelector('meta[name="theme-color"]');
-  function applyMode(alt, animate) {
+  var live = document.createElement("span");
+  live.className = "sr-only"; live.setAttribute("aria-live", "polite"); live.id = "mode-live";
+  document.body.appendChild(live);
+  function currentMode() { var m = rootEl.getAttribute("data-mode"); return MODES.indexOf(m) > 0 ? m : "dark"; }
+  function applyMode(mode, animate) {
     if (animate && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) {
       rootEl.classList.add("mode-anim");
       clearTimeout(applyMode.t);
       applyMode.t = setTimeout(function () { rootEl.classList.remove("mode-anim"); }, 500);
     }
-    if (alt) rootEl.setAttribute("data-mode", "alt"); else rootEl.removeAttribute("data-mode");
-    btn.setAttribute("aria-pressed", alt ? "true" : "false");
-    if (themeMeta) themeMeta.setAttribute("content", alt ? "#ffffff" : "#000000");
+    if (mode === "dark") rootEl.removeAttribute("data-mode"); else rootEl.setAttribute("data-mode", mode);
+    var label = "Switch look (current: " + MODE_NAMES[mode] + ")";
+    btn.setAttribute("aria-label", label);
+    btn.setAttribute("title", label);
+    if (themeMeta) themeMeta.setAttribute("content", MODE_THEME[mode]);
+    if (animate) live.textContent = MODE_NAMES[mode] + " look";
   }
-  applyMode(rootEl.getAttribute("data-mode") === "alt", false);
+  applyMode(currentMode(), false);
   btn.addEventListener("click", function () {
-    var alt = rootEl.getAttribute("data-mode") !== "alt";
-    applyMode(alt, true);
-    try { localStorage.setItem("emciix.homeMode", alt ? "alt" : "dark"); } catch (e) {}
+    var next = MODES[(MODES.indexOf(currentMode()) + 1) % MODES.length];
+    applyMode(next, true);
+    try { localStorage.setItem("emciix.homeMode", next); } catch (e) {}
   });
 
   var ld = { "@context": "https://schema.org", "@graph": [
     { "@type": "WebSite", "name": S.brand.name, "url": S.brand.url },
-    { "@type": "Organization", "name": S.brand.by, "alternateName": S.brand.name, "url": S.brand.url, "telephone": K.phoneTel, "email": K.email, "sameAs": [K.x, K.youtube, K.linkedin],
-      "address": { "@type": "PostalAddress", "addressLocality": K.city, "addressRegion": K.regionCode, "addressCountry": K.country } }
+    { "@type": "Organization", "name": S.brand.by, "alternateName": S.brand.name, "url": S.brand.url, "telephone": K.phoneTel, "email": K.email, "sameAs": [K.x, K.youtube, K.linkedin] }
   ] };
   var tag = document.createElement("script"); tag.type = "application/ld+json"; tag.textContent = JSON.stringify(ld); document.head.appendChild(tag);
 })();
