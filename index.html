@@ -40,6 +40,10 @@
   =====================================================================
 -->
 <script>
+// "Buy for $1" button on the AI Cheat Sheet card. No payment processor yet: it opens an email order.
+// Swap in a Stripe Payment Link / PayPal URL here later; nothing else needs to change.
+var CHEATSHEET_BUY_URL = "mailto:cue@dialchad.com?subject=AI%20Cheat%20Sheet%20order%20(%241)&body=Hi%20Need%2C%0A%0AI%20would%20like%20to%20buy%20the%20AI%20Cheat%20Sheet%20for%20Small%20Business%20(%241).%0APlease%20send%20me%20the%20e-Transfer%20details%2C%20then%20email%20the%20PDF%20to%20this%20address.%0A%0AName%3A%0ABusiness%20(optional)%3A%0A%0AThanks!";
+
 window.SITE = {
   brand: { name: "EMCIIX", by: "Need", url: "https://emciix.com/" },
   contact: {
@@ -102,6 +106,12 @@ window.SITE = {
         book: { label: "Book a session", tel: "tel:+17052575717", mail: "mailto:cue@dialchad.com?subject=AI%20coaching%20session" } }
     ],
     links: [{ label: "See services & pricing", href: "/hire", primary: true }, { label: "See a demo site", href: "/demo/roofing" }]
+  },
+  cheatsheet: {
+    id: "ai-cheat-sheet", tag: "Digital download · PDF", title: "AI Cheat Sheet", price: "$1",
+    text: "Two pages of ready-to-copy prompts for ChatGPT, Gemini, Claude or Grok: website copy, emails, short videos, social posts, review replies and flyers. Fill in the brackets and go.",
+    img: "/assets/home/cheatsheet-preview.webp", alt: "Blurred preview of page 1 of the AI Cheat Sheet for Small Business",
+    buyLabel: "Buy for $1", buyUrl: CHEATSHEET_BUY_URL, note: "Pay by e-Transfer; PDF sent by email"
   },
   cityDemo: {
     kicker: "Demo", title: "Built for your city",
@@ -254,6 +264,17 @@ ul.ticks li::before { content: ""; position: absolute; left: 3px; top: .62em; wi
 .card .price { color: var(--ink); font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; margin: 6px 0 6px; }
 .price-note { color: var(--dim); font-size: .85rem; margin: -8px 0 20px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* AI Cheat Sheet product card (inside #hire, under the plans) */
+.product { display: grid; gap: 14px; margin: 0 0 22px; padding: 16px; align-items: center; }
+@media (min-width: 640px) { .product { grid-template-columns: 210px 1fr; gap: 24px; padding: 18px 22px 18px 18px; } }
+.product-thumb { border-radius: 10px; overflow: hidden; border: 1px solid var(--line-2); background: #fff; }
+.product-thumb img { width: 100%; aspect-ratio: 480 / 170; object-fit: cover; object-position: top; }
+@media (min-width: 640px) { .product-thumb img { aspect-ratio: 480 / 384; } }
+.product-tag { font: 500 .7rem/1.3 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--dim) !important; margin: 0 0 6px !important; }
+.product h3 { font-size: 1.3rem; margin-bottom: 6px; }
+.product h3 span { color: var(--gold); }
+.product .plan-cta { padding-top: 14px; }
+html[data-mode="alt"] .product-tag, html[data-mode="global"] .product-tag { font-family: var(--font); font-weight: 700; letter-spacing: .1em; }
 .card .price small { font-size: .9rem; font-weight: 500; color: var(--dim); letter-spacing: 0; }
 
 /* Gallery */
@@ -560,6 +581,11 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
         (p.book ? '<div class="plan-cta"><a class="btn btn-ghost btn-sm" href="' + esc(p.book.tel) + '">' + I.phone + esc(p.book.label) + '</a><span class="alt">or <a href="' + esc(p.book.mail) + '">email</a></span></div>' : '') +
         '</article>';
     }).join("") + '</div>' +
+    (function (C) {   // AI Cheat Sheet product card; button href comes from CHEATSHEET_BUY_URL
+      return '<article class="card product" id="' + esc(C.id) + '" aria-labelledby="cs-h"><div class="product-thumb"><img src="' + esc(C.img) + '" alt="' + esc(C.alt) + '" width="480" height="384" loading="lazy" decoding="async" /></div>' +
+        '<div><p class="product-tag">' + esc(C.tag) + '</p><h3 id="cs-h">' + esc(C.title) + ': <span>' + esc(C.price) + '</span></h3><p>' + esc(C.text) + '</p>' +
+        '<div class="plan-cta"><a class="btn btn-primary btn-sm" id="cs-buy" href="' + esc(C.buyUrl) + '">' + esc(C.buyLabel) + '</a><span class="alt">' + esc(C.note) + '</span></div></div></article>';
+    })(S.cheatsheet) +
     (V.note ? '<p class="price-note">' + esc(V.note) + '</p>' : '') + links(V.links) + '</div></section>';
 
   var CD = S.cityDemo;
