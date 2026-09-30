@@ -116,8 +116,7 @@ window.SITE = {
   },
   cityDemo: {
     kicker: "Demo", title: "Built for your city",
-    text: "The same roofing demo site, rewritten for your town: headline, service area, address, FAQ and search data. Type your city and press Preview to see it live.",
-    pill: "Your city"
+    text: "The same roofing demo site, rewritten for your town: headline, service area, address, FAQ and search data. Type your city and press Preview to see it live."
   },
   gallery: [
     { title: "The portal", tag: "Web", img: "/assets/home/portal.webp", alt: "Screenshot of the EMCIIX starfield portal with planets", href: "/portal" },
@@ -377,9 +376,7 @@ html.mode-anim body, html.mode-anim body *, html.mode-anim body::before, html.mo
 }
 
 /* Built for your city: live, scaled preview of /demo/roofing (same-origin iframe, sandboxed, not interactive) */
-.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; margin: 0 0 14px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--card); max-width: 100%; }
-.seg .seg-on { display: inline-flex; align-items: center; min-height: 38px; padding: 0 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 .92rem/1 var(--font); white-space: nowrap; }
-.city-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 14px; max-width: 30rem; }
+.city-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -4px 0 20px; max-width: 30rem; }
 .city-form input { flex: 1 1 12rem; min-width: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--card-2); color: var(--ink); font: 500 1rem/1 var(--font); }
 .city-form input::placeholder { color: var(--dim); }
 .bframe { border: 1px solid var(--line-2); border-radius: var(--r); overflow: hidden; background: var(--card); box-shadow: 0 20px 60px rgba(0,0,0,.35); margin: 0 0 18px; }
@@ -585,7 +582,6 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
   // Built for your city: first section right after the hero
   var CD = S.cityDemo;
   h += '<section class="block" id="city-demo" aria-labelledby="city-h"><div class="wrap">' + head(CD.kicker, CD.title, "city-h") + '<p class="sub">' + esc(CD.text) + '</p>' +
-    '<div class="seg" aria-hidden="true"><span class="seg-on">' + esc(CD.pill) + '</span></div>' +
     '<form class="city-form" id="city-form"><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="Your City" aria-label="Your city: type a city to preview the demo" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
     '<div class="bframe" id="city-panel" role="group" aria-label="Demo site preview"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
     '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing?neutral=1" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
