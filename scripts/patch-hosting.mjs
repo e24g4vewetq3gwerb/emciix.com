@@ -148,6 +148,14 @@ if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileType
   });
 });
 
+// Faast Wash web version (built in e24g4vewetq3gwerb/faast-wash-web, copied here by its publish script):
+// every file under faast-wash/ is served at /faast-wash/...; stale files from older builds are dropped below.
+function listFiles(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? listFiles(dir + "/" + e.name) : [dir + "/" + e.name]));
+}
+const FAAST_WASH_FILES = existsSync("faast-wash") ? listFiles("faast-wash") : [];
+for (const file of FAAST_WASH_FILES) PATCHES.push([file, "/" + file]);
+
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
 
@@ -226,6 +234,13 @@ for (const path of Object.keys(files)) {
     "assets/home/cheatsheet-preview.webp",
     "downloads/ai-cheat-sheet.pdf",
   ].includes(bare)) delete files[path];
+}
+
+// Replace the whole /faast-wash/ tree with the current build (hashed bundles change name every build).
+if (FAAST_WASH_FILES.length) {
+  for (const path of Object.keys(files)) {
+    if (path.startsWith("/faast-wash/") || path.startsWith("faast-wash/")) delete files[path];
+  }
 }
 
 const uploads = new Map();
@@ -343,6 +358,21 @@ function noindexPreviews(config) {
   return config;
 }
 
+// Faast Wash routing + headers from scripts/faast-wash-hosting.json (source: faast-wash-web/hosting/hosting.json).
+// Rewrites go first (first match wins; they only cover /faast-wash/app, the SPA). Headers go last because
+// Hosting applies the LAST matching header rule per key: the /faast-wash CSP and Permissions-Policy
+// (geolocation/camera for the app, OSM tiles, Firebase) replace the site-wide ones only under /faast-wash.
+function faastWash(config) {
+  config = config || {};
+  if (!existsSync("scripts/faast-wash-hosting.json")) return config;
+  const fw = JSON.parse(readFileSync("scripts/faast-wash-hosting.json", "utf8"));
+  const ours = (rule) => rule && typeof rule.glob === "string" && rule.glob.startsWith("/faast-wash");
+  config.rewrites = [...(fw.rewrites || []), ...(config.rewrites || []).filter((r) => !ours(r))];
+  config.headers = [...(config.headers || []).filter((h) => !ours(h)), ...(fw.headers || [])];
+  console.log("faast-wash", FAAST_WASH_FILES.length, "files,", (fw.rewrites || []).length, "rewrites,", (fw.headers || []).length, "header rules");
+  return config;
+}
+
 function routeHomeToPortal(config) {
   config = config || {};
   const redirects = (config.redirects || []).filter((rule) => rule && rule.glob !== "/" && rule.glob !== "/index.html");
@@ -352,7 +382,7 @@ function routeHomeToPortal(config) {
   return config;
 }
 
-const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: routeHomeToPortal(noindexPreviews(cacheStatic(widenConnect(current.config || {})))) });
+const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: faastWash(routeHomeToPortal(noindexPreviews(cacheStatic(widenConnect(current.config || {}))))) });
 const newVersion = created.name;
 const populated = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + ":populateFiles", { files });
 const required = new Set(populated.uploadRequiredHashes || []);

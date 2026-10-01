@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Faast Wash</title>
+    <meta name="description" content="Faast Wash: book a car wash that comes to your car, or earn as an independent washer. Try the demo." />
+    <meta name="theme-color" content="#F5F5F5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex" />
+    <!-- PWA: one manifest for the whole /faast-wash/ site (landing + app). Paths are absolute because the
+         app is exported under the base path /faast-wash/app (app.json experiments.baseUrl). -->
+    <link rel="manifest" href="/faast-wash/manifest.webmanifest" />
+    <link rel="icon" href="/faast-wash/icons/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/faast-wash/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Faast Wash" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <style id="expo-reset">
+      html, body { height: 100%; }
+      body { overflow: hidden; margin: 0; background: #F5F5F5; }
+      @media (prefers-color-scheme: dark) { body { background: #000; } }
+      #root { display: flex; height: 100%; flex: 1; }
+      /* Keyboard users get a visible focus ring; mouse and touch don't. */
+      :focus { outline: none; }
+      :focus-visible { outline: 3px solid #1E5EFF !important; outline-offset: 2px; border-radius: 8px; }
+      @media (prefers-color-scheme: dark) { :focus-visible { outline-color: #5B8CFF !important; } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+      .fw-skip { position: absolute; left: -9999px; top: 8px; z-index: 10; background: #1E5EFF; color: #fff; padding: 10px 14px; border-radius: 10px; font: 600 15px system-ui, sans-serif; }
+      .fw-skip:focus { left: 8px; }
+    </style>
+  <meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="/faast-wash/app/favicon.ico"/><link rel="preload" href="/faast-wash/app/_expo/static/css/leaflet-df687fead8c4838a4e6b8bcb2f176a0e.css" as="style">
+<link rel="stylesheet" href="/faast-wash/app/_expo/static/css/leaflet-df687fead8c4838a4e6b8bcb2f176a0e.css"></head>
+  <body>
+    <a class="fw-skip" href="/faast-wash/">Faast Wash home</a>
+    <noscript>
+      <p style="font: 16px system-ui, sans-serif; padding: 24px">Faast Wash needs JavaScript. <a href="/faast-wash/">Back to the Faast Wash home page</a>.</p>
+    </noscript>
+    <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        addEventListener('load', function () { navigator.serviceWorker.register('/faast-wash/sw.js', { scope: '/faast-wash/' }).catch(function () {}); });
+      }
+    </script>
+  <script src="/faast-wash/app/_expo/static/js/web/entry-02d5e011a7cecfb0044cd0dd6c76126b.js" defer></script>
+</body>
+</html>

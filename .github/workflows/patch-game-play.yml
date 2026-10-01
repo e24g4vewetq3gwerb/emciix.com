@@ -50,6 +50,8 @@ on:
       - demo/**
       - assets/home/**
       - downloads/**
+      - faast-wash/**
+      - scripts/faast-wash-hosting.json
       - .github/workflows/patch-game-play.yml
 
 permissions:

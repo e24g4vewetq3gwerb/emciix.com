@@ -1,0 +1,59 @@
+{
+  "id": "/faast-wash/",
+  "name": "Faast Wash",
+  "short_name": "Faast Wash",
+  "description": "Book a car wash wherever your car is parked, or earn as an independent washer and keep 100% of your price. $2.99 booking fee, every 10th booking free.",
+  "lang": "en-CA",
+  "start_url": "/faast-wash/app/?source=pwa",
+  "scope": "/faast-wash/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F5F5F5",
+  "theme_color": "#0A0A0A",
+  "categories": [
+    "lifestyle",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/faast-wash/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/faast-wash/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/faast-wash/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book a wash (demo)",
+      "url": "/faast-wash/app/?demo=owner",
+      "icons": [
+        {
+          "src": "/faast-wash/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Washer (demo)",
+      "url": "/faast-wash/app/?demo=washer",
+      "icons": [
+        {
+          "src": "/faast-wash/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
