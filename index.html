@@ -351,11 +351,19 @@ noscript .wrap { padding-top: 40px; padding-bottom: 40px; }
 
 /* ===== Look switch button (the header blob) ===== */
 .brand-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; margin-left: -8px; }
-/* "Try tapping it" hint for the look-switch button: text + arrow in the left gutter on wide screens, arrow + text under it on narrow ones */
-.tap-hint { position: absolute; top: 100%; left: 13px; display: flex; align-items: flex-end; gap: 3px; margin-top: -4px; font: 500 .72rem/1.2 var(--font); letter-spacing: .01em; color: var(--dim); white-space: nowrap; pointer-events: none; opacity: .9; transition: opacity .3s ease; }
+/* "Try tapping it" sits on its own row under the brand on narrow screens, and in the left gutter on wide ones. */
+.tap-hint { position: absolute; top: calc(100% + 8px); left: 2px; display: flex; align-items: center; gap: 4px; margin: 0; font: 500 .72rem/1 var(--font); letter-spacing: .01em; color: var(--dim); white-space: nowrap; pointer-events: none; opacity: .9; transition: opacity .3s ease; }
 .tap-hint svg { flex: none; display: block; }
+.tap-hint .th-up { width: 14px; height: 12px; }
 .tap-hint .th-right { display: none; }
 .tap-hint.away, .tap-hint.gone { opacity: 0; }
+/* Room under the wordmark so the hint clears EMCIIX and the header rule. */
+@media (max-width: 1259px) {
+  .head .wrap:has(#tap-hint:not(.gone)) {
+    min-height: calc(88px + env(safe-area-inset-top));
+    padding-bottom: 26px;
+  }
+}
 @media (min-width: 1260px) {
   .tap-hint { top: 50%; left: auto; right: 100%; margin-top: 0; align-items: center; transform: translateY(-50%); gap: 2px; padding-right: 1px; }
   .tap-hint .th-up { display: none; }
