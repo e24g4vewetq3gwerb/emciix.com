@@ -51,6 +51,8 @@ on:
       - assets/home/**
       - downloads/**
       - faast-wash/**
+      - faast/**
+      - scripts/faast-hosting.json
       - .github/workflows/patch-game-play.yml
 
 permissions:

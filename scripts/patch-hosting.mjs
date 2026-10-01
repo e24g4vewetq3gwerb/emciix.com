@@ -154,6 +154,13 @@ if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileType
 const FAAST_WASH_KILL_SW = "faast-wash/sw.js";
 if (existsSync(FAAST_WASH_KILL_SW)) PATCHES.push([FAAST_WASH_KILL_SW, "/" + FAAST_WASH_KILL_SW]);
 
+// Faast Wash one-page site: https://emciix.com/faast serves the single file faast/index.html (built and copied in by
+// e24g4vewetq3gwerb/faast-page, `npm run publish:emciix`). The site's clean-URL settings make /faast serve it and
+// 301 /faast/ -> /faast. Headers for /faast only come from scripts/faast-hosting.json (see faastPage below).
+const FAAST_PAGE = "faast/index.html";
+const FAAST_HOSTING = "scripts/faast-hosting.json";
+if (existsSync(FAAST_PAGE)) PATCHES.push([FAAST_PAGE, "/" + FAAST_PAGE]);
+
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
 
@@ -239,6 +246,11 @@ for (const path of Object.keys(files)) {
 for (const path of Object.keys(files)) {
   const bare = path.replace(/^\//, "");
   if (bare.startsWith("faast-wash/") || bare.startsWith("assets/home/faast-wash/")) delete files[path];
+}
+// /faast is exactly one file: drop anything else left under /faast/ (faast/index.html is re-added from PATCHES).
+for (const path of Object.keys(files)) {
+  const bare = path.replace(/^\//, "");
+  if (bare.startsWith("faast/")) delete files[path];
 }
 
 const uploads = new Map();
@@ -370,6 +382,21 @@ function faastWash(config) {
   return config;
 }
 
+// /faast headers (CSP for map tiles, Firebase and Google/Apple sign-in; geolocation=(self)). Applied last so they
+// replace the site-wide CSP / Permissions-Policy for /faast only. Old /faast rules are always stripped first.
+function faastPage(config) {
+  const ours = (rule) => rule && typeof rule.glob === "string" && (rule.glob === "/faast" || rule.glob.startsWith("/faast/"));
+  config.rewrites = (config.rewrites || []).filter((r) => !ours(r));
+  config.redirects = (config.redirects || []).filter((r) => !ours(r));
+  config.headers = (config.headers || []).filter((h) => !ours(h));
+  if (existsSync(FAAST_PAGE) && existsSync(FAAST_HOSTING)) {
+    const extra = JSON.parse(readFileSync(FAAST_HOSTING, "utf8"));
+    for (const rule of extra.headers || []) if (ours(rule)) config.headers.push({ glob: rule.glob, headers: rule.headers });
+  }
+  console.log("faast page:", existsSync(FAAST_PAGE) ? "faast/index.html + " + config.headers.filter(ours).length + " header rules" : "not shipped");
+  return config;
+}
+
 function routeHomeToPortal(config) {
   config = config || {};
   const redirects = (config.redirects || []).filter((rule) => rule && rule.glob !== "/" && rule.glob !== "/index.html");
@@ -379,7 +406,7 @@ function routeHomeToPortal(config) {
   return config;
 }
 
-const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: faastWash(routeHomeToPortal(noindexPreviews(cacheStatic(widenConnect(current.config || {}))))) });
+const created = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/versions", { config: faastPage(faastWash(routeHomeToPortal(noindexPreviews(cacheStatic(widenConnect(current.config || {})))))) });
 const newVersion = created.name;
 const populated = await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + ":populateFiles", { files });
 const required = new Set(populated.uploadRequiredHashes || []);
