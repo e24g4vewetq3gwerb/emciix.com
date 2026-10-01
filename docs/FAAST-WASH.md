@@ -5,7 +5,7 @@ Not published to hosting (docs only).
 - **Source:** https://github.com/e24g4vewetq3gwerb/faast-wash-web (private).
 - **Build there:** `npm run build && npm run publish:emciix -- <this repo>`.
 - That copies the build into `faast-wash/` and the routing/header rules into `scripts/faast-wash-hosting.json`. Commit and push both here.
-- Live at https://emciix.ca/faast-wash/ and https://emciix.com/faast-wash/ (same Hosting site).
+- Live at https://emciix.ca/faast-wash and https://emciix.com/faast-wash (same Hosting site). The site uses `trailingSlashBehavior: REMOVE`, so the build links to URLs without a trailing slash.
 
 ## What `scripts/patch-hosting.mjs` does for it
 - Uploads every file under `faast-wash/` to `/faast-wash/...`.

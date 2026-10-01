@@ -1,11 +1,11 @@
-// Faast Wash service worker (scope /faast-wash/). Keeps the web app installable and usable on flaky
+// Faast Wash service worker (scope /faast-wash; the site serves URLs without a trailing slash). Keeps the web app installable and usable on flaky
 // connections without serving stale code: content-hashed bundles are cache-first (they never change),
 // pages and everything else are network-first with the cached copy as an offline fallback.
-const CACHE = 'faast-wash-5ec922d-mupyuhj7';
+const CACHE = 'faast-wash-b849f5d-mupz2jdo';
 const IMMUTABLE = /\/faast-wash\/app\/(_expo\/static|assets)\//;
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/faast-wash/', '/faast-wash/app/'])).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/faast-wash', '/faast-wash/app'])).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith('faast-wash-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -13,7 +13,7 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   const url = new URL(req.url);
-  if (req.method !== 'GET' || url.origin !== location.origin || !url.pathname.startsWith('/faast-wash/')) return;
+  if (req.method !== 'GET' || url.origin !== location.origin || !(url.pathname === '/faast-wash' || url.pathname.startsWith('/faast-wash/'))) return;
   if (IMMUTABLE.test(url.pathname)) {
     e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); } return res; })));
     return;
@@ -21,5 +21,5 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(fetch(req).then((res) => {
     if (res.ok && (req.mode === 'navigate' || url.pathname.endsWith('.webmanifest'))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
     return res;
-  }).catch(() => caches.match(req).then((hit) => hit || (req.mode === 'navigate' && url.pathname.startsWith('/faast-wash/app') ? caches.match('/faast-wash/app/') : caches.match('/faast-wash/')))));
+  }).catch(() => caches.match(req).then((hit) => hit || (req.mode === 'navigate' && url.pathname.startsWith('/faast-wash/app') ? caches.match('/faast-wash/app') : caches.match('/faast-wash')))));
 });
