@@ -48,3 +48,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Faast Wash web build: Expo puts hashed library assets under app/assets/node_modules/ (they are build output, not deps)
+!/faast-wash/app/assets/node_modules/
