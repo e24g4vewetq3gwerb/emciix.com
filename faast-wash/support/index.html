@@ -11,28 +11,35 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Faast Wash">
+<meta property="og:locale" content="en_CA">
 <meta property="og:title" content="Support · Faast Wash">
 <meta property="og:description" content="Questions, problems with a booking, or a safety concern? Email contact@emciix.com. We aim to reply within 2 business days (safety reports within 24 hours).">
 <meta property="og:url" content="https://emciix.ca/faast-wash/support">
 <meta property="og:image" content="https://emciix.ca/faast-wash/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Faast Wash · A car wash that comes to your car.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Support · Faast Wash">
+<meta name="twitter:description" content="Questions, problems with a booking, or a safety concern? Email contact@emciix.com. We aim to reply within 2 business days (safety reports within 24 hours).">
 <link rel="manifest" href="/faast-wash/manifest.webmanifest">
 <link rel="icon" href="/faast-wash/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/faast-wash/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Faast Wash">
 
-<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--blue:#1E5EFF;--onblue:#FFF;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--blue:#5B8CFF;--onblue:#0A0A0A;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
+<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--blue)}
+a{color:var(--text);text-underline-offset:2px}
 img{max-width:100%;height:auto}
 .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
-.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--blue);color:var(--onblue);padding:10px 14px;border-radius:10px;font-weight:700}
+.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--ink);color:var(--onink);padding:10px 14px;border-radius:10px;font-weight:700}
 .skip:focus{left:8px}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:8px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:8px}
 .muted{color:var(--muted)}.small{font-size:14px}
 .top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
 .top-in{display:flex;align-items:center;gap:16px;min-height:64px;padding-top:env(safe-area-inset-top)}
@@ -48,9 +55,9 @@ img{max-width:100%;height:auto}
 .btn:active{transform:scale(.98)}
 .btn:hover{opacity:.92}
 .btn-sm{min-height:40px;padding:8px 16px;font-size:15px;border-radius:12px}
-.btn-primary{background:var(--blue);color:var(--onblue)}
+.btn-primary{background:var(--red);color:var(--onred);border-color:var(--red)}
 .btn-secondary{background:transparent;color:var(--red);border-color:var(--red)}
-.btn-ghost{background:transparent;color:var(--blue);border-color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--red);border-color:var(--red)}
 .hero{padding:56px 0 32px}
 .hero-in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
 .kicker{display:inline-block;margin:0 0 14px;padding:6px 12px;border:1px solid var(--outline);border-radius:999px;font-size:14px;font-weight:600}
@@ -90,7 +97,6 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .tabs a{padding:8px 14px;border:1.5px solid var(--outline);border-radius:999px;color:var(--text);text-decoration:none;font-weight:600;font-size:15px}
 .tabs a[aria-current]{background:var(--ink);color:var(--onink);border-color:var(--ink)}
-.draft{border:1.5px solid var(--ink);border-radius:14px;padding:12px 14px;font-size:14px;margin:18px 0 0}
 </style>
 </head>
 <body>
@@ -111,9 +117,8 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 
 <div class="wrap doc">
   <nav class="tabs" aria-label="Documents"><a href="/faast-wash/legal/terms">Terms</a><a href="/faast-wash/legal/privacy">Privacy</a><a href="/faast-wash/legal/safety">Safety</a><a href="/faast-wash/support" aria-current="page">Support</a></nav>
-  
   <h1>Support</h1>
-  <p class="muted">Faast Wash, operated by EMCIIX (Ontario, Canada) · Last updated October 1, 2026 · <span lang="fr-CA">Soutien : version française en préparation</span></p>
+  <p class="muted small">Faast Wash, operated by EMCIIX (Ontario, Canada) · Last updated October 1, 2026</p>
   <p>Questions, problems with a booking, or a safety concern? Email <a href="mailto:contact@emciix.com">contact@emciix.com</a>. We aim to reply within 2 business days (safety reports within 24 hours).</p>
   <section class="card"><h2>How does payment work?</h2><p>You pay the washer the agreed price directly (cash, e-Transfer or tap). Faast Wash only charges the owner a small booking fee when a booking is confirmed ($2.99, or $4.99 for a full detail; every 10th booking is fee-free).</p></section>
   <section class="card"><h2>Can I get the booking fee back?</h2><p>Yes if you cancel before the washer is on the way, if the washer cancels or doesn’t show up, or if a complaint is upheld. See the Terms of Service, section 4.</p></section>

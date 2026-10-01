@@ -13,28 +13,35 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Faast Wash">
+<meta property="og:locale" content="fr_CA">
 <meta property="og:title" content="Faast Wash · Le lave-auto qui vient à votre voiture">
 <meta property="og:description" content="Réservez un lavage là où votre voiture est garée, ou devenez laveur indépendant et gardez 100 % de votre prix. Frais de réservation de 2,99 $, chaque 10e réservation gratuite.">
 <meta property="og:url" content="https://emciix.ca/faast-wash/fr">
 <meta property="og:image" content="https://emciix.ca/faast-wash/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Faast Wash · Le lave-auto qui vient à votre voiture.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Faast Wash · Le lave-auto qui vient à votre voiture">
+<meta name="twitter:description" content="Réservez un lavage là où votre voiture est garée, ou devenez laveur indépendant et gardez 100 % de votre prix. Frais de réservation de 2,99 $, chaque 10e réservation gratuite.">
 <link rel="manifest" href="/faast-wash/manifest.webmanifest">
 <link rel="icon" href="/faast-wash/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/faast-wash/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Faast Wash">
 
-<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--blue:#1E5EFF;--onblue:#FFF;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--blue:#5B8CFF;--onblue:#0A0A0A;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
+<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--blue)}
+a{color:var(--text);text-underline-offset:2px}
 img{max-width:100%;height:auto}
 .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
-.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--blue);color:var(--onblue);padding:10px 14px;border-radius:10px;font-weight:700}
+.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--ink);color:var(--onink);padding:10px 14px;border-radius:10px;font-weight:700}
 .skip:focus{left:8px}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:8px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:8px}
 .muted{color:var(--muted)}.small{font-size:14px}
 .top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
 .top-in{display:flex;align-items:center;gap:16px;min-height:64px;padding-top:env(safe-area-inset-top)}
@@ -50,9 +57,9 @@ img{max-width:100%;height:auto}
 .btn:active{transform:scale(.98)}
 .btn:hover{opacity:.92}
 .btn-sm{min-height:40px;padding:8px 16px;font-size:15px;border-radius:12px}
-.btn-primary{background:var(--blue);color:var(--onblue)}
+.btn-primary{background:var(--red);color:var(--onred);border-color:var(--red)}
 .btn-secondary{background:transparent;color:var(--red);border-color:var(--red)}
-.btn-ghost{background:transparent;color:var(--blue);border-color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--red);border-color:var(--red)}
 .hero{padding:56px 0 32px}
 .hero-in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
 .kicker{display:inline-block;margin:0 0 14px;padding:6px 12px;border:1px solid var(--outline);border-radius:999px;font-size:14px;font-weight:600}
@@ -92,7 +99,6 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .tabs a{padding:8px 14px;border:1.5px solid var(--outline);border-radius:999px;color:var(--text);text-decoration:none;font-weight:600;font-size:15px}
 .tabs a[aria-current]{background:var(--ink);color:var(--onink);border-color:var(--ink)}
-.draft{border:1.5px solid var(--ink);border-radius:14px;padding:12px 14px;font-size:14px;margin:18px 0 0}
 </style>
 </head>
 <body>
@@ -118,15 +124,15 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
       <h1>Le lave-auto qui vient à votre voiture.</h1>
       <p class="lead">Indiquez où votre voiture est garée et ce dont elle a besoin. Des laveurs indépendants à proximité vous font des offres, vous choisissez, et ils viennent à vous. Vous payez le laveur directement.</p>
       <div class="ctas">
-        <a class="btn btn-primary" href="/faast-wash/app?demo=owner&amp;lang=fr">Essayer la démo</a>
-        <a class="btn btn-ghost" href="/faast-wash/app?demo=washer&amp;lang=fr">Essayer comme laveur</a>
+        <a class="btn btn-primary" href="/faast-wash/app/auth/sign-up?lang=fr">Commencer</a>
         <a class="btn btn-secondary" href="mailto:contact@emciix.com?subject=Liste%20d%E2%80%99attente%20Faast%20Wash&body=Ville%20%3A%0AJe%20suis%20(propri%C3%A9taire%20%2F%20laveur)%20%3A%0A">Rejoindre la liste d’attente</a>
       </div>
-      <p class="muted small">La démo fonctionne dans votre navigateur avec des données fictives. Rien n’est facturé.</p>
+      <p class="muted small">Inscription gratuite. Les propriétaires paient de petits frais de réservation seulement quand ils confirment un laveur. Les laveurs ne paient jamais de frais.</p>
+      <p class="small"><a href="/faast-wash/app/area?lang=fr">Voir la zone de lancement sur une carte →</a></p>
     </div>
     <div class="hero-shots" aria-hidden="false">
       <img class="phone p1" src="/faast-wash/img/app-washer.webp" width="360" height="779" alt="Écran laveur Faast Wash : carte des demandes à proximité dans le rayon de service" fetchpriority="high">
-      <img class="phone p2" src="/faast-wash/img/app-job.webp" width="360" height="779" alt="Écran de contrat Faast Wash : emplacement exact, distance et bouton Itinéraire" loading="lazy">
+      <img class="phone p2" src="/faast-wash/img/app-offers.webp" width="360" height="779" alt="Écran des offres Faast Wash : offres de laveurs vérifiés avec boutons Clavarder et Accepter" loading="lazy">
     </div>
   </div>
 </section>
@@ -134,8 +140,8 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
   <div class="wrap">
     <h2>Comment ça marche</h2>
     <div class="cols">
-      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-11 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-8z"/></svg> Pour les propriétaires</h3><ol class="steps"><li><h4>Publiez votre voiture</h4><p>Choisissez le service (extérieur, intérieur, esthétique complète, neige ou glace), ajoutez des photos et proposez un prix.</p></li><li><h4>Comparez les offres</h4><p>Des laveurs vérifiés à proximité acceptent votre prix ou font une contre-offre. Consultez les notes et clavardez avant de réserver.</p></li><li><h4>Réservez en quelques secondes</h4><p>Confirmez une offre. Votre emplacement exact n’est partagé qu’avec le laveur réservé.</p></li><li><h4>Suivez, payez, notez</h4><p>Suivez son arrivée en direct, recevez des photos avant et après, payez le laveur directement et notez-le.</p></li></ol><a class="btn btn-primary btn-sm" href="/faast-wash/app?demo=owner&amp;lang=fr">Essayer la démo</a></div>
-      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.7c-.2 0-5.7 6.2-5.7 10.6a5.7 5.7 0 0 0 11.4 0C17.7 8.9 12.2 2.7 12 2.7z"/></svg> Pour les laveurs</h3><ol class="steps"><li><h4>Vérifiez votre identité</h4><p>Une vérification rapide (pièce d’identité et égoportrait) protège tout le monde.</p></li><li><h4>Choisissez votre rayon</h4><p>Sélectionnez vos services et votre distance (3 à 25 km). Seules les demandes dans ce rayon s’affichent.</p></li><li><h4>Acceptez ou contre-offrez</h4><p>Acceptez le prix ou proposez le vôtre. Aucuns frais pour les laveurs.</p></li><li><h4>Itinéraire et paiement</h4><p>Ouvrez l’itinéraire dans Google Maps ou Plans d’Apple, faites le travail, gardez 100 % de votre prix.</p></li></ol><a class="btn btn-ghost btn-sm" href="/faast-wash/app?demo=washer&amp;lang=fr">Essayer comme laveur</a></div>
+      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-11 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-8z"/></svg> Pour les propriétaires</h3><ol class="steps"><li><h4>Publiez votre voiture</h4><p>Choisissez le service (extérieur, intérieur, esthétique complète, neige ou glace), ajoutez des photos et proposez un prix.</p></li><li><h4>Comparez les offres</h4><p>Des laveurs vérifiés à proximité acceptent votre prix ou font une contre-offre. Consultez les notes et clavardez avant de réserver.</p></li><li><h4>Réservez en quelques secondes</h4><p>Confirmez une offre. Votre emplacement exact n’est partagé qu’avec le laveur réservé.</p></li><li><h4>Suivez, payez, notez</h4><p>Suivez son arrivée en direct, recevez des photos avant et après, payez le laveur directement et notez-le.</p></li></ol><a class="btn btn-primary btn-sm" href="/faast-wash/app/auth/sign-up?lang=fr">Commencer</a></div>
+      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.7c-.2 0-5.7 6.2-5.7 10.6a5.7 5.7 0 0 0 11.4 0C17.7 8.9 12.2 2.7 12 2.7z"/></svg> Pour les laveurs</h3><ol class="steps"><li><h4>Vérifiez votre identité</h4><p>Une vérification rapide (pièce d’identité et égoportrait) protège tout le monde.</p></li><li><h4>Choisissez votre rayon</h4><p>Sélectionnez vos services et votre distance (3 à 25 km). Seules les demandes dans ce rayon s’affichent.</p></li><li><h4>Acceptez ou contre-offrez</h4><p>Acceptez le prix ou proposez le vôtre. Aucuns frais pour les laveurs.</p></li><li><h4>Itinéraire et paiement</h4><p>Ouvrez l’itinéraire dans Google Maps ou Plans d’Apple, faites le travail, gardez 100 % de votre prix.</p></li></ol><a class="btn btn-secondary btn-sm" href="/faast-wash/app/auth/sign-up?lang=fr">Devenir laveur</a></div>
     </div>
   </div>
 </section>
@@ -158,7 +164,7 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 <section class="band final">
   <div class="wrap final-in card">
     <div><h2>Vous voulez Faast Wash près de chez vous?</h2><p class="sub">Rejoignez la liste d’attente : nous vous écrirons quand les réservations ouvriront dans votre secteur.</p></div>
-    <div class="ctas"><a class="btn btn-secondary" href="mailto:contact@emciix.com?subject=Liste%20d%E2%80%99attente%20Faast%20Wash&body=Ville%20%3A%0AJe%20suis%20(propri%C3%A9taire%20%2F%20laveur)%20%3A%0A">Rejoindre la liste d’attente</a><a class="btn btn-primary" href="/faast-wash/app?demo=owner&amp;lang=fr">Essayer la démo</a></div>
+    <div class="ctas"><a class="btn btn-secondary" href="mailto:contact@emciix.com?subject=Liste%20d%E2%80%99attente%20Faast%20Wash&body=Ville%20%3A%0AJe%20suis%20(propri%C3%A9taire%20%2F%20laveur)%20%3A%0A">Rejoindre la liste d’attente</a><a class="btn btn-primary" href="/faast-wash/app/auth/sign-up?lang=fr">Commencer</a></div>
   </div>
 </section>
 </main>

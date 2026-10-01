@@ -36,8 +36,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Book a wash (demo)",
-      "url": "/faast-wash/app?demo=owner",
+      "name": "Get started",
+      "url": "/faast-wash/app/auth/sign-up",
       "icons": [
         {
           "src": "/faast-wash/icons/icon-192.png",
@@ -46,8 +46,8 @@
       ]
     },
     {
-      "name": "Washer (demo)",
-      "url": "/faast-wash/app?demo=washer",
+      "name": "Sign in",
+      "url": "/faast-wash/app/auth/sign-in",
       "icons": [
         {
           "src": "/faast-wash/icons/icon-192.png",

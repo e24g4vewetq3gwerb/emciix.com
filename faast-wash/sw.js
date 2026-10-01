@@ -1,7 +1,9 @@
 // Faast Wash service worker (scope /faast-wash; the site serves URLs without a trailing slash). Keeps the web app installable and usable on flaky
 // connections without serving stale code: content-hashed bundles are cache-first (they never change),
 // pages and everything else are network-first with the cached copy as an offline fallback.
-const CACHE = 'faast-wash-b849f5d-mupz2jdo';
+// v2 (2026-10-01): production build, demo removed. Every build gets a new cache name, and activate deletes
+// every older faast-wash-* cache (including the v1 demo bundles), so returning visitors get the new build.
+const CACHE = 'faast-wash-v2-7e14a7d-muq0n35q';
 const IMMUTABLE = /\/faast-wash\/app\/(_expo\/static|assets)\//;
 
 self.addEventListener('install', (e) => {

@@ -13,28 +13,35 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Faast Wash">
+<meta property="og:locale" content="en_CA">
 <meta property="og:title" content="Faast Wash · A car wash that comes to your car">
 <meta property="og:description" content="Book a car wash wherever your car is parked, or earn as an independent washer and keep 100% of your price. $2.99 booking fee, every 10th booking free.">
 <meta property="og:url" content="https://emciix.ca/faast-wash">
 <meta property="og:image" content="https://emciix.ca/faast-wash/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Faast Wash · A car wash that comes to your car.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Faast Wash · A car wash that comes to your car">
+<meta name="twitter:description" content="Book a car wash wherever your car is parked, or earn as an independent washer and keep 100% of your price. $2.99 booking fee, every 10th booking free.">
 <link rel="manifest" href="/faast-wash/manifest.webmanifest">
 <link rel="icon" href="/faast-wash/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/faast-wash/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Faast Wash">
 
-<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--blue:#1E5EFF;--onblue:#FFF;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--blue:#5B8CFF;--onblue:#0A0A0A;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
+<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--blue)}
+a{color:var(--text);text-underline-offset:2px}
 img{max-width:100%;height:auto}
 .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
-.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--blue);color:var(--onblue);padding:10px 14px;border-radius:10px;font-weight:700}
+.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--ink);color:var(--onink);padding:10px 14px;border-radius:10px;font-weight:700}
 .skip:focus{left:8px}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:8px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:8px}
 .muted{color:var(--muted)}.small{font-size:14px}
 .top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
 .top-in{display:flex;align-items:center;gap:16px;min-height:64px;padding-top:env(safe-area-inset-top)}
@@ -50,9 +57,9 @@ img{max-width:100%;height:auto}
 .btn:active{transform:scale(.98)}
 .btn:hover{opacity:.92}
 .btn-sm{min-height:40px;padding:8px 16px;font-size:15px;border-radius:12px}
-.btn-primary{background:var(--blue);color:var(--onblue)}
+.btn-primary{background:var(--red);color:var(--onred);border-color:var(--red)}
 .btn-secondary{background:transparent;color:var(--red);border-color:var(--red)}
-.btn-ghost{background:transparent;color:var(--blue);border-color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--red);border-color:var(--red)}
 .hero{padding:56px 0 32px}
 .hero-in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
 .kicker{display:inline-block;margin:0 0 14px;padding:6px 12px;border:1px solid var(--outline);border-radius:999px;font-size:14px;font-weight:600}
@@ -92,7 +99,6 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .tabs a{padding:8px 14px;border:1.5px solid var(--outline);border-radius:999px;color:var(--text);text-decoration:none;font-weight:600;font-size:15px}
 .tabs a[aria-current]{background:var(--ink);color:var(--onink);border-color:var(--ink)}
-.draft{border:1.5px solid var(--ink);border-radius:14px;padding:12px 14px;font-size:14px;margin:18px 0 0}
 </style>
 </head>
 <body>
@@ -118,15 +124,15 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
       <h1>A car wash that comes to your car.</h1>
       <p class="lead">Post where your car is parked and what it needs. Independent washers nearby send offers, you pick one, and they come to you. Pay your washer directly.</p>
       <div class="ctas">
-        <a class="btn btn-primary" href="/faast-wash/app?demo=owner">Try the demo</a>
-        <a class="btn btn-ghost" href="/faast-wash/app?demo=washer">Try it as a washer</a>
+        <a class="btn btn-primary" href="/faast-wash/app/auth/sign-up">Get started</a>
         <a class="btn btn-secondary" href="mailto:contact@emciix.com?subject=Faast%20Wash%20waitlist&body=City%3A%0AI%20am%20a%20(car%20owner%20%2F%20washer)%3A%0A">Join the waitlist</a>
       </div>
-      <p class="muted small">The demo runs in your browser with sample data. Nothing is charged.</p>
+      <p class="muted small">Free to join. Owners pay a small booking fee only when they confirm a washer. Washers never pay a fee.</p>
+      <p class="small"><a href="/faast-wash/app/area">See the launch area on a map →</a></p>
     </div>
     <div class="hero-shots" aria-hidden="false">
       <img class="phone p1" src="/faast-wash/img/app-washer.webp" width="360" height="779" alt="Faast Wash washer screen: map with nearby requests inside the service radius" fetchpriority="high">
-      <img class="phone p2" src="/faast-wash/img/app-job.webp" width="360" height="779" alt="Faast Wash job screen: exact spot, distance and a Navigate button" loading="lazy">
+      <img class="phone p2" src="/faast-wash/img/app-offers.webp" width="360" height="779" alt="Faast Wash offers screen: offers from verified washers with Chat and Accept buttons" loading="lazy">
     </div>
   </div>
 </section>
@@ -134,8 +140,8 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
   <div class="wrap">
     <h2>How it works</h2>
     <div class="cols">
-      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-11 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-8z"/></svg> For car owners</h3><ol class="steps"><li><h4>Post your car</h4><p>Pick the service (exterior, interior, full detail, snow or ice), add photos and suggest a price.</p></li><li><h4>Compare offers</h4><p>Nearby ID-verified washers accept your price or counter. See ratings and chat before you book.</p></li><li><h4>Book in seconds</h4><p>Confirm one offer. Your exact spot is shared only with the washer you booked.</p></li><li><h4>Track, pay, rate</h4><p>Follow their arrival live, get before and after photos, pay the washer directly and rate them.</p></li></ol><a class="btn btn-primary btn-sm" href="/faast-wash/app?demo=owner">Try the demo</a></div>
-      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.7c-.2 0-5.7 6.2-5.7 10.6a5.7 5.7 0 0 0 11.4 0C17.7 8.9 12.2 2.7 12 2.7z"/></svg> For washers</h3><ol class="steps"><li><h4>Verify your ID</h4><p>A quick ID and selfie check keeps owners and washers safe.</p></li><li><h4>Set your radius</h4><p>Choose your services and how far you travel (3 to 25 km). Only requests inside it show up.</p></li><li><h4>Accept or counter</h4><p>Take the price or send a counter offer. No fees for washers, ever.</p></li><li><h4>Navigate and get paid</h4><p>Open directions in Google Maps or Apple Maps, do the job, keep 100% of your price.</p></li></ol><a class="btn btn-ghost btn-sm" href="/faast-wash/app?demo=washer">Try it as a washer</a></div>
+      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m-11 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3M18.9 6c-.2-.6-.8-1-1.4-1h-11c-.7 0-1.2.4-1.4 1L3 12v8a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-8z"/></svg> For car owners</h3><ol class="steps"><li><h4>Post your car</h4><p>Pick the service (exterior, interior, full detail, snow or ice), add photos and suggest a price.</p></li><li><h4>Compare offers</h4><p>Nearby ID-verified washers accept your price or counter. See ratings and chat before you book.</p></li><li><h4>Book in seconds</h4><p>Confirm one offer. Your exact spot is shared only with the washer you booked.</p></li><li><h4>Track, pay, rate</h4><p>Follow their arrival live, get before and after photos, pay the washer directly and rate them.</p></li></ol><a class="btn btn-primary btn-sm" href="/faast-wash/app/auth/sign-up">Get started</a></div>
+      <div class="card"><h3><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M12 2.7c-.2 0-5.7 6.2-5.7 10.6a5.7 5.7 0 0 0 11.4 0C17.7 8.9 12.2 2.7 12 2.7z"/></svg> For washers</h3><ol class="steps"><li><h4>Verify your ID</h4><p>A quick ID and selfie check keeps owners and washers safe.</p></li><li><h4>Set your radius</h4><p>Choose your services and how far you travel (3 to 25 km). Only requests inside it show up.</p></li><li><h4>Accept or counter</h4><p>Take the price or send a counter offer. No fees for washers, ever.</p></li><li><h4>Navigate and get paid</h4><p>Open directions in Google Maps or Apple Maps, do the job, keep 100% of your price.</p></li></ol><a class="btn btn-secondary btn-sm" href="/faast-wash/app/auth/sign-up">Become a washer</a></div>
     </div>
   </div>
 </section>
@@ -158,7 +164,7 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 <section class="band final">
   <div class="wrap final-in card">
     <div><h2>Want Faast Wash in your area?</h2><p class="sub">Join the waitlist and we’ll let you know when booking opens near you.</p></div>
-    <div class="ctas"><a class="btn btn-secondary" href="mailto:contact@emciix.com?subject=Faast%20Wash%20waitlist&body=City%3A%0AI%20am%20a%20(car%20owner%20%2F%20washer)%3A%0A">Join the waitlist</a><a class="btn btn-primary" href="/faast-wash/app?demo=owner">Try the demo</a></div>
+    <div class="ctas"><a class="btn btn-secondary" href="mailto:contact@emciix.com?subject=Faast%20Wash%20waitlist&body=City%3A%0AI%20am%20a%20(car%20owner%20%2F%20washer)%3A%0A">Join the waitlist</a><a class="btn btn-primary" href="/faast-wash/app/auth/sign-up">Get started</a></div>
   </div>
 </section>
 </main>

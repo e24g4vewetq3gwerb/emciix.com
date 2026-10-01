@@ -11,28 +11,35 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Faast Wash">
+<meta property="og:locale" content="en_CA">
 <meta property="og:title" content="Terms of Service · Faast Wash">
 <meta property="og:description" content="These Terms govern your use of the Faast Wash app and website (&quot;Faast Wash&quot;). Faast Wash is operated by EMCIIX, a business based in Ontario, Canada (&quot;EMCII">
 <meta property="og:url" content="https://emciix.ca/faast-wash/legal/terms">
 <meta property="og:image" content="https://emciix.ca/faast-wash/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Faast Wash · A car wash that comes to your car.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Terms of Service · Faast Wash">
+<meta name="twitter:description" content="These Terms govern your use of the Faast Wash app and website (&quot;Faast Wash&quot;). Faast Wash is operated by EMCIIX, a business based in Ontario, Canada (&quot;EMCII">
 <link rel="manifest" href="/faast-wash/manifest.webmanifest">
 <link rel="icon" href="/faast-wash/icons/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/faast-wash/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Faast Wash">
 
-<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--blue:#1E5EFF;--onblue:#FFF;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--blue:#5B8CFF;--onblue:#0A0A0A;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
+<style>:root{color-scheme:light dark;--bg:#F5F5F5;--card:#FFF;--alt:#EBEBEB;--text:#0A0A0A;--muted:#595959;--border:#D4D4D4;--outline:#8A8A8A;--red:#D32F2F;--onred:#FFF;--ink:#0A0A0A;--onink:#FFF}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#121212;--alt:#1F1F1F;--text:#FFF;--muted:#A3A3A3;--border:#333;--outline:#6B6B6B;--red:#FF6B6B;--onred:#0A0A0A;--ink:#FFF;--onink:#0A0A0A}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:76px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--blue)}
+a{color:var(--text);text-underline-offset:2px}
 img{max-width:100%;height:auto}
 .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
-.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--blue);color:var(--onblue);padding:10px 14px;border-radius:10px;font-weight:700}
+.skip{position:absolute;left:-9999px;top:8px;z-index:20;background:var(--ink);color:var(--onink);padding:10px 14px;border-radius:10px;font-weight:700}
 .skip:focus{left:8px}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:8px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:8px}
 .muted{color:var(--muted)}.small{font-size:14px}
 .top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
 .top-in{display:flex;align-items:center;gap:16px;min-height:64px;padding-top:env(safe-area-inset-top)}
@@ -48,9 +55,9 @@ img{max-width:100%;height:auto}
 .btn:active{transform:scale(.98)}
 .btn:hover{opacity:.92}
 .btn-sm{min-height:40px;padding:8px 16px;font-size:15px;border-radius:12px}
-.btn-primary{background:var(--blue);color:var(--onblue)}
+.btn-primary{background:var(--red);color:var(--onred);border-color:var(--red)}
 .btn-secondary{background:transparent;color:var(--red);border-color:var(--red)}
-.btn-ghost{background:transparent;color:var(--blue);border-color:var(--blue)}
+.btn-ghost{background:transparent;color:var(--red);border-color:var(--red)}
 .hero{padding:56px 0 32px}
 .hero-in{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
 .kicker{display:inline-block;margin:0 0 14px;padding:6px 12px;border:1px solid var(--outline);border-radius:999px;font-size:14px;font-weight:600}
@@ -90,7 +97,6 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .tabs a{padding:8px 14px;border:1.5px solid var(--outline);border-radius:999px;color:var(--text);text-decoration:none;font-weight:600;font-size:15px}
 .tabs a[aria-current]{background:var(--ink);color:var(--onink);border-color:var(--ink)}
-.draft{border:1.5px solid var(--ink);border-radius:14px;padding:12px 14px;font-size:14px;margin:18px 0 0}
 </style>
 </head>
 <body>
@@ -111,13 +117,12 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.1;letter-spacing:-.8px;margin:0 
 
 <div class="wrap doc">
   <nav class="tabs" aria-label="Documents"><a href="/faast-wash/legal/terms" aria-current="page">Terms</a><a href="/faast-wash/legal/privacy">Privacy</a><a href="/faast-wash/legal/safety">Safety</a><a href="/faast-wash/support">Support</a></nav>
-  <p class="draft" role="note"><strong>DRAFT for legal review. This document describes how Faast Wash works today but has not yet been reviewed by a lawyer. It may change before launch.</strong><br><span lang="fr-CA">ÉBAUCHE à faire réviser. La version française officielle de ce document est en préparation; la version anglaise ci-dessous n’a pas encore été révisée par un avocat.</span></p>
   <h1>Terms of Service</h1>
-  <p class="muted">Faast Wash, operated by EMCIIX (Ontario, Canada) · Last updated October 1, 2026 · <span lang="fr-CA">Conditions d’utilisation : version française en préparation</span></p>
-  <p>These Terms govern your use of the Faast Wash app and website (&quot;Faast Wash&quot;). Faast Wash is operated by EMCIIX, a business based in Ontario, Canada (&quot;EMCIIX&quot;, &quot;we&quot;, &quot;us&quot;) [legal form, registered address and business number to be confirmed]. By creating an account or booking a wash you agree to these Terms.</p>
+  <p class="muted small">Faast Wash, operated by EMCIIX (Ontario, Canada) · Last updated October 1, 2026</p>
+  <p>These Terms govern your use of the Faast Wash app and website (&quot;Faast Wash&quot;). Faast Wash is operated by EMCIIX, a business based in Ontario, Canada (&quot;EMCIIX&quot;, &quot;we&quot;, &quot;us&quot;). By creating an account or booking a wash you agree to these Terms.</p>
   <section class="card"><h2>1. What Faast Wash is</h2><p>Faast Wash is a marketplace that connects car owners (&quot;Owners&quot;) with independent car washers (&quot;Washers&quot;) who come to where the car is parked.</p><p>EMCIIX is not a car-wash company and does not perform washes. Washers are independent businesses, not employees, agents or contractors of EMCIIX. The wash itself is a contract between the Owner and the Washer.</p></section>
   <section class="card"><h2>2. Accounts and eligibility</h2><p>You must be at least 18 years old and able to enter a binding contract in Ontario. Keep your login details private; you are responsible for activity on your account.</p><p>Washers must complete identity verification (ID document and selfie, processed by our verification provider) before they can go online or send offers, and confirm that they carry insurance appropriate for the work they do.</p></section>
-  <section class="card"><h2>3. Prices, payment and the booking fee</h2><p>Owners suggest a price; Washers can accept it or counter. The agreed wash price is paid by the Owner directly to the Washer (for example cash, Interac e-Transfer or tap), and Washers keep 100% of it. EMCIIX does not collect or hold the wash price.</p><p>When an Owner confirms a booking, EMCIIX charges the Owner a booking fee: currently $2.99 CAD, or $4.99 CAD for a full detail. Every 10th completed booking is fee-free. Washers are never charged a fee by EMCIIX.</p><p>Taxes: the booking fee is a taxable supply. Where EMCIIX is registered for GST/HST, 13% Ontario HST applies to the booking fee and will be shown on your receipt. [Confirm EMCIIX’s GST/HST registration status and number.] Washers are responsible for their own income tax and, if they are registrants (for example above the $30,000 small-supplier threshold), for charging and remitting GST/HST on their wash price.</p><p>Booking fees are processed by our payment provider (Stripe). Card details are handled by Stripe and are never stored by EMCIIX.</p></section>
+  <section class="card"><h2>3. Prices, payment and the booking fee</h2><p>Owners suggest a price; Washers can accept it or counter. The agreed wash price is paid by the Owner directly to the Washer (for example cash, Interac e-Transfer or tap), and Washers keep 100% of it. EMCIIX does not collect or hold the wash price.</p><p>When an Owner confirms a booking, EMCIIX charges the Owner a booking fee: currently $2.99 CAD, or $4.99 CAD for a full detail. Every 10th completed booking is fee-free. Washers are never charged a fee by EMCIIX.</p><p>Taxes: the booking fee is a taxable supply. Where EMCIIX is registered for GST/HST, 13% Ontario HST applies to the booking fee and will be shown on your receipt. Washers are responsible for their own income tax and, if they are registrants (for example above the $30,000 small-supplier threshold), for charging and remitting GST/HST on their wash price.</p><p>Booking fees are processed by our payment provider (Stripe). Card details are handled by Stripe and are never stored by EMCIIX.</p></section>
   <section class="card"><h2>4. Cancellations and refunds of the booking fee</h2><p>Owner cancels before the Washer is on the way: booking fee refunded. Owner cancels after the Washer is on the way: no refund.</p><p>Washer cancels, or does not arrive within 15 minutes of the estimated arrival time: booking fee refunded and the Washer receives a strike.</p><p>Disputes about the quality of a wash or damage are between the Owner and the Washer; you can report a problem in the app and we will review it, and we may refund the booking fee where a complaint is upheld. Your rights under the Ontario Consumer Protection Act, 2002 are not affected.</p></section>
   <section class="card"><h2>5. Your conduct</h2><p>Be honest, respectful and safe. Do not harass, threaten or discriminate against anyone (the Ontario Human Rights Code applies), post illegal or offensive content, misrepresent a vehicle or service, or use Faast Wash for anything other than arranging car washes.</p><p>Before a booking is confirmed, chat filters block phone numbers, emails, links and social handles so that bookings stay in the app.</p><p>Washers must only perform the services agreed, use products that are safe for the vehicle and the location, follow local by-laws, and not enter a vehicle without the Owner’s permission.</p></section>
   <section class="card"><h2>6. Ratings, reports and moderation</h2><p>Owners and Washers can rate each other after a job. You can report users or content and block people at any time. We review reports and may remove content, suspend or ban accounts that break these Terms or our Community &amp; Safety Guidelines.</p></section>

@@ -4,7 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Faast Wash</title>
-    <meta name="description" content="Faast Wash: book a car wash that comes to your car, or earn as an independent washer. Try the demo." />
+    <meta name="description" content="Faast Wash: book a car wash that comes to your car, or earn as an independent washer. Launching in Sault Ste. Marie, Ontario." />
+    <link rel="canonical" href="https://emciix.ca/faast-wash/app" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Faast Wash" />
+    <meta property="og:title" content="Faast Wash · A car wash that comes to your car" />
+    <meta property="og:description" content="Book a car wash wherever your car is parked, or earn as an independent washer and keep 100% of your price." />
+    <meta property="og:url" content="https://emciix.ca/faast-wash/app" />
+    <meta property="og:image" content="https://emciix.ca/faast-wash/img/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#F5F5F5" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <meta name="color-scheme" content="light dark" />
@@ -25,10 +35,10 @@
       #root { display: flex; height: 100%; flex: 1; }
       /* Keyboard users get a visible focus ring; mouse and touch don't. */
       :focus { outline: none; }
-      :focus-visible { outline: 3px solid #1E5EFF !important; outline-offset: 2px; border-radius: 8px; }
-      @media (prefers-color-scheme: dark) { :focus-visible { outline-color: #5B8CFF !important; } }
+      :focus-visible { outline: 3px solid #0A0A0A !important; outline-offset: 2px; border-radius: 8px; }
+      @media (prefers-color-scheme: dark) { :focus-visible { outline-color: #FFFFFF !important; } }
       @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-      .fw-skip { position: absolute; left: -9999px; top: 8px; z-index: 10; background: #1E5EFF; color: #fff; padding: 10px 14px; border-radius: 10px; font: 600 15px system-ui, sans-serif; }
+      .fw-skip { position: absolute; left: -9999px; top: 8px; z-index: 10; background: #0A0A0A; color: #fff; padding: 10px 14px; border-radius: 10px; font: 600 15px system-ui, sans-serif; }
       .fw-skip:focus { left: 8px; }
     </style>
   <meta name="theme-color" content="#0A0A0A">
@@ -45,6 +55,6 @@
         addEventListener('load', function () { navigator.serviceWorker.register('/faast-wash/sw.js', { scope: '/faast-wash' }).catch(function () {}); });
       }
     </script>
-  <script src="/faast-wash/app/_expo/static/js/web/entry-b1573f3b1005a0aa8412e8bac701e3a7.js" defer></script>
+  <script src="/faast-wash/app/_expo/static/js/web/entry-b3db468e2f4a42b6964cfa427c893418.js" defer></script>
 </body>
 </html>
