@@ -103,10 +103,6 @@ window.SITE = {
     ],
     links: [{ label: "See services & pricing", href: "/hire", primary: true }, { label: "See a demo site", href: "/demo/roofing" }]
   },
-  cityDemo: {
-    kicker: "Demo", title: "Built for your city",
-    text: "The same roofing demo site, rewritten for your town: headline, service area, address, FAQ and search data. Type your city and press Preview to see it live."
-  },
   gallery: [
     { title: "The portal", tag: "Web", img: "/assets/home/portal.webp", alt: "Screenshot of the EMCIIX starfield portal with planets", href: "/portal" },
     { title: "Rhythm game", tag: "Game", img: "/assets/home/game.webp", alt: "Screenshot of the rhythm game start screen with level list", href: "/game/play" },
@@ -346,17 +342,11 @@ html.mode-anim body, html.mode-anim body *, html.mode-anim body::before, html.mo
   transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease, opacity .35s ease, border-radius .35s ease, background .35s ease !important;
 }
 
-/* Built for your city: live, scaled preview of /demo/roofing (same-origin iframe, sandboxed, not interactive) */
-.city-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -4px 0 20px; max-width: 30rem; }
-.city-form input { flex: 1 1 12rem; min-width: 0; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--card-2); color: var(--ink); font: 500 1rem/1 var(--font); }
-.city-form input::placeholder { color: var(--dim); }
 .bframe { border: 1px solid var(--line-2); border-radius: var(--r); overflow: hidden; background: var(--card); box-shadow: 0 20px 60px rgba(0,0,0,.35); margin: 0 0 18px; }
 .bbar { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--line); background: var(--card-2); min-width: 0; }
 .bdots { display: inline-flex; gap: 6px; flex: none; }
 .bdots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-2); }
 .burl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 500 .78rem/1.6 var(--mono); color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 1px 12px; background: var(--card); }
-.bview { position: relative; overflow: hidden; height: 480px; background: #f6f5f2; }
-.bview iframe { position: absolute; left: 0; top: 0; width: 100%; height: 480px; border: 0; transform-origin: 0 0; pointer-events: none; background: #f6f5f2; }
 html[data-mode="alt"] .bframe, html[data-mode="global"] .bframe { box-shadow: var(--shadow); }
 
 /* Faast Wash worker preview (light screen, independent of the site look) */
@@ -570,7 +560,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
       '<svg class="th-right" viewBox="0 0 24 14" width="20" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 9.5c5-5.2 11.5-6.2 20-2.6"/><path d="M17.6 3.2l4.1 3.8-4.8 2.6"/></svg>' +
     '</span>' +
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
-    '<nav class="main" aria-label="Main"><a href="#faast">Faast Wash</a><a href="#city-demo">Your city</a><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
+    '<nav class="main" aria-label="Main"><a href="#faast">Faast Wash</a><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
     '<div class="head-r">' +
     '<a class="btn btn-ghost btn-sm head-cta" href="' + esc(H.primary.href) + '" aria-label="' + esc(H.primary.label) + '"><span class="lg">' + esc(H.primary.label) + '</span><span class="xs" aria-hidden="true">Portal</span></a></div></div></header>';
 
@@ -610,14 +600,6 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<div class="fw-blank"></div><div class="fw-blank tall"></div>' +
     '</div></div></div></div>' +
     '<div class="row"><a class="btn btn-primary" href="/faast-wash">Open Faast Wash</a></div></div></section>';
-
-  // Built for your city: first section right after the hero
-  var CD = S.cityDemo;
-  h += '<section class="block" id="city-demo" aria-labelledby="city-h"><div class="wrap">' + head(CD.kicker, CD.title, "city-h") + '<p class="sub">' + esc(CD.text) + '</p>' +
-    '<form class="city-form" id="city-form"><label class="sr-only" for="city-in">Your city</label><input id="city-in" type="text" maxlength="48" placeholder="Your City" aria-label="Your city: type a city to preview the demo" autocomplete="off" spellcheck="false" /><button class="btn btn-ghost btn-sm" type="submit">Preview</button></form>' +
-    '<div class="bframe" id="city-panel" role="group" aria-label="Demo site preview"><div class="bbar"><span class="bdots" aria-hidden="true"><i></i><i></i><i></i></span><span class="burl" id="city-url">emciix.com/demo/roofing</span></div>' +
-    '<div class="bview" id="city-view"><iframe id="city-frame" src="/demo/roofing?neutral=1" title="Live preview of the Northshore Roofing demo site" loading="lazy" sandbox="allow-scripts" referrerpolicy="same-origin" tabindex="-1" aria-hidden="true"></iframe></div></div>' +
-    '<div class="row"><a class="btn btn-primary" id="city-open" href="/demo/roofing?neutral=1">Open full demo</a></div></div></section>';
 
   h += '<div class="wrap cards">' + S.cards.map(function (c) {
     return '<article class="card info-card"><div class="ico">' + (I[c.icon] || "") + '</div><h3>' + esc(c.title) + '</h3><p>' + esc(c.text) + '</p><a href="' + esc(c.link.href) + '">' + esc(c.link.label) + ' →</a></article>';
@@ -750,46 +732,6 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
       if (label) label.textContent = on ? "Online" : "Offline";
       if (note) note.textContent = on ? "You're visible to owners nearby" : "You're hidden from owners nearby";
     });
-  })();
-
-  // ---------- Built for your city: city input + scaled live preview (default demo until a city is entered) ----------
-  (function () {
-    var frame = document.getElementById("city-frame"), view = document.getElementById("city-view"), form = document.getElementById("city-form"),
-      input = document.getElementById("city-in"), open = document.getElementById("city-open"), url = document.getElementById("city-url");
-    if (!frame || !form) return;
-    function clean(v) {   // same rules as the demo: letters, digits, spaces, . , ' - ( ), max 48
-      return String(v || "").replace(/[\u2018\u2019]/g, "'").replace(/[^\p{L}\p{M}\p{N} .,'()\-]/gu, "").replace(/\s+/g, " ").replace(/\s*,\s*/g, ", ")
-        .replace(/^[\s,]+|[\s,]+$/g, "").slice(0, 48).replace(/[\s,]+$/, "");
-    }
-    var cur = frame.getAttribute("src");
-    function show(city) {
-      var href = "/demo/roofing" + (city ? "?city=" + encodeURIComponent(city) : "?neutral=1");   // neutral (no city named) until a city is previewed
-      if (cur !== href) {   // swap in a fresh iframe: no race with a pending load, no extra history entries
-        cur = href;
-        var nf = frame.cloneNode(false);
-        nf.setAttribute("src", href);
-        frame.parentNode.replaceChild(nf, frame);
-        frame = nf;
-      }
-      open.setAttribute("href", href);
-      url.textContent = "emciix.com/demo/roofing" + (city ? "?city=" + city : "");   // address bar stays clean in neutral mode
-    }
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var c = clean(input.value);
-      input.value = c;
-      show(c);                 // empty = back to the neutral demo
-      if (!c) input.focus();
-    });
-    // Render the demo at a real viewport size (desktop, or phone on narrow screens) and scale it to fit the card.
-    function fit() {
-      var cw = view.clientWidth; if (!cw) return;
-      var vw = cw < 560 ? 390 : 1280, vh = cw < 560 ? 740 : 800, k = cw / vw;
-      frame.style.width = vw + "px"; frame.style.height = vh + "px"; frame.style.transform = "scale(" + k + ")";
-      view.style.height = Math.round(vh * k) + "px";
-    }
-    fit();
-    if (window.ResizeObserver) new ResizeObserver(fit).observe(view); else window.addEventListener("resize", fit);
   })();
 
   var ld = { "@context": "https://schema.org", "@graph": [
