@@ -148,7 +148,7 @@ if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileType
   });
 });
 
-// Faast Wash web version (built in e24g4vewetq3gwerb/faast-wash-web, copied here by its publish script):
+// Faast Wash web version (built in the Faast repo, apps/faast-wash; copied here by its web:publish script):
 // every file under faast-wash/ is served at /faast-wash/...; stale files from older builds are dropped below.
 function listFiles(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? listFiles(dir + "/" + e.name) : [dir + "/" + e.name]));
@@ -156,7 +156,7 @@ function listFiles(dir) {
 const FAAST_WASH_FILES = existsSync("faast-wash") ? listFiles("faast-wash") : [];
 for (const file of FAAST_WASH_FILES) PATCHES.push([file, "/" + file]);
 // Homepage Faast Wash section images (content-hashed names). They live outside faast-wash/ because the
-// faast-wash-web publish replaces that folder (which is how the old preview images were lost).
+// Faast web publish replaces that folder (which is how the old preview images were lost).
 if (existsSync("assets/home/faast-wash")) for (const file of listFiles("assets/home/faast-wash")) PATCHES.push([file, "/" + file]);
 
 const token = process.env.FIREBASE_TOKEN;
@@ -361,7 +361,7 @@ function noindexPreviews(config) {
   return config;
 }
 
-// Faast Wash routing + headers from scripts/faast-wash-hosting.json (source: faast-wash-web/hosting/hosting.json).
+// Faast Wash routing + headers from scripts/faast-wash-hosting.json (source: Faast apps/faast-wash/web/hosting.json).
 // Rewrites go first (first match wins; they only cover /faast-wash/app, the SPA). Headers go last because
 // Hosting applies the LAST matching header rule per key: the /faast-wash CSP and Permissions-Policy
 // (geolocation/camera for the app, OSM tiles, Firebase) replace the site-wide ones only under /faast-wash.
