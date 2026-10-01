@@ -2,8 +2,9 @@
 
 Not published to hosting (docs only).
 
-- **Source:** https://github.com/e24g4vewetq3gwerb/faast-wash-web (private).
-- **Build there:** `npm run build && npm run publish:emciix -- <this repo>`.
+- **Source:** the Faast repo, `apps/faast-wash` (one codebase for iOS, Android and web; the static landing/legal/support
+  site and scripts are in `apps/faast-wash/web/`, see its README). The old `faast-wash-web` repo is archived (read-only).
+- **Build there:** `npm run web:build && npm run web:publish -- <this repo>` (from `apps/faast-wash`).
 - That copies the build into `faast-wash/` and the routing/header rules into `scripts/faast-wash-hosting.json`. Commit and push both here.
 - Live at https://emciix.ca/faast-wash and https://emciix.com/faast-wash (same Hosting site). The site uses `trailingSlashBehavior: REMOVE`, so the build links to URLs without a trailing slash.
 
@@ -32,5 +33,12 @@ Remove the paths manually in a one-off run if ever needed.
 The first section of the emciix.com homepage (`#faast` in `index.html`) previews Faast Wash with production
 screens in `assets/home/faast-wash/` (content-hashed file names: `welcome-<hash>.webp`, `area-satellite-<hash>.webp`,
 `icon-<hash>.webp`; `scripts/patch-hosting.mjs` uploads every file there). Keep them out of `faast-wash/`: the
-faast-wash-web publish replaces that whole folder, which is how the earlier preview images (`faast-wash/img/preview-area-*.webp`)
+Faast web publish replaces that whole folder, which is how the earlier preview images (`faast-wash/img/preview-area-*.webp`)
 were deleted and showed as broken. To refresh, capture new screens, save them under a new hash and update the two `src`s.
+
+The section uses the app's light theme tokens (`apps/faast-wash/src/ui/theme.ts`): background `#F5F5F5`, white `#FFFFFF`
+cards with `#D4D4D4` borders, text `#0A0A0A` / muted `#595959`, red `#D32F2F` buttons (solid, plus a red outline
+secondary), and light-mode screens (`welcome-light-<hash>.webp`, `area-satellite-light-<hash>.webp`). It stays light
+in every site mode; the rest of the homepage keeps its own look. The CTA selectors are `.fwp a.fwp-go` / `.fwp a.fwp-wait`
+so the alt/global modes' `a { color }` rules don't recolour them. The older dark captures (`welcome-1d23b417`,
+`area-satellite-8f537de5`) are unused but kept so cached pages don't show broken images.
