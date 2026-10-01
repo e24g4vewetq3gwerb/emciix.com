@@ -148,16 +148,11 @@ if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileType
   });
 });
 
-// Faast Wash web version (built in the Faast repo, apps/faast-wash; copied here by its web:publish script):
-// every file under faast-wash/ is served at /faast-wash/...; stale files from older builds are dropped below.
-function listFiles(dir) {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? listFiles(dir + "/" + e.name) : [dir + "/" + e.name]));
-}
-const FAAST_WASH_FILES = existsSync("faast-wash") ? listFiles("faast-wash") : [];
-for (const file of FAAST_WASH_FILES) PATCHES.push([file, "/" + file]);
-// Homepage Faast Wash section images (content-hashed names). They live outside faast-wash/ because the
-// Faast web publish replaces that folder (which is how the old preview images were lost).
-if (existsSync("assets/home/faast-wash")) for (const file of listFiles("assets/home/faast-wash")) PATCHES.push([file, "/" + file]);
+// Faast Wash was removed (2026-10-01). Every /faast-wash/ file is dropped from the live version below; the only
+// file still shipped is faast-wash/sw.js, a kill-switch that unregisters returning visitors' old service worker.
+// Delete faast-wash/sw.js later and /faast-wash/ is gone completely.
+const FAAST_WASH_KILL_SW = "faast-wash/sw.js";
+if (existsSync(FAAST_WASH_KILL_SW)) PATCHES.push([FAAST_WASH_KILL_SW, "/" + FAAST_WASH_KILL_SW]);
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
@@ -239,11 +234,11 @@ for (const path of Object.keys(files)) {
   ].includes(bare)) delete files[path];
 }
 
-// Replace the whole /faast-wash/ tree with the current build (hashed bundles change name every build).
-if (FAAST_WASH_FILES.length) {
-  for (const path of Object.keys(files)) {
-    if (path.startsWith("/faast-wash/") || path.startsWith("faast-wash/")) delete files[path];
-  }
+// Faast Wash removed: drop every /faast-wash/ path (old builds, landing, app) from the copied live version.
+// Also the old homepage section images under /assets/home/faast-wash/.
+for (const path of Object.keys(files)) {
+  const bare = path.replace(/^\//, "");
+  if (bare.startsWith("faast-wash/") || bare.startsWith("assets/home/faast-wash/")) delete files[path];
 }
 
 const uploads = new Map();
@@ -361,18 +356,17 @@ function noindexPreviews(config) {
   return config;
 }
 
-// Faast Wash routing + headers from scripts/faast-wash-hosting.json (source: Faast apps/faast-wash/web/hosting.json).
-// Rewrites go first (first match wins; they only cover /faast-wash/app, the SPA). Headers go last because
-// Hosting applies the LAST matching header rule per key: the /faast-wash CSP and Permissions-Policy
-// (geolocation/camera for the app, OSM tiles, Firebase) replace the site-wide ones only under /faast-wash.
+// Faast Wash removed: strip every /faast-wash rewrite, redirect and header rule from the live config. While the
+// kill-switch sw.js ships, keep one header rule for it: no-cache, and Service-Worker-Allowed because the old
+// registration's scope (/faast-wash) is wider than the script's folder, so updates fail without it.
 function faastWash(config) {
   config = config || {};
-  if (!existsSync("scripts/faast-wash-hosting.json")) return config;
-  const fw = JSON.parse(readFileSync("scripts/faast-wash-hosting.json", "utf8"));
   const ours = (rule) => rule && typeof rule.glob === "string" && rule.glob.startsWith("/faast-wash");
-  config.rewrites = [...(fw.rewrites || []), ...(config.rewrites || []).filter((r) => !ours(r))];
-  config.headers = [...(config.headers || []).filter((h) => !ours(h)), ...(fw.headers || [])];
-  console.log("faast-wash", FAAST_WASH_FILES.length, "files,", (fw.rewrites || []).length, "rewrites,", (fw.headers || []).length, "header rules");
+  config.rewrites = (config.rewrites || []).filter((r) => !ours(r));
+  config.redirects = (config.redirects || []).filter((r) => !ours(r));
+  config.headers = (config.headers || []).filter((h) => !ours(h));
+  if (existsSync(FAAST_WASH_KILL_SW)) config.headers.push({ glob: "/faast-wash/sw.js", headers: { "Cache-Control": "no-cache", "Service-Worker-Allowed": "/faast-wash" } });
+  console.log("faast-wash removed: rules stripped,", existsSync(FAAST_WASH_KILL_SW) ? "kill-switch sw.js kept" : "no files");
   return config;
 }
 

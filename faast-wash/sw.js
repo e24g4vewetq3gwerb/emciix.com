@@ -1,27 +1,14 @@
-// Faast Wash service worker (scope /faast-wash; the site serves URLs without a trailing slash). Keeps the web app installable and usable on flaky
-// connections without serving stale code: content-hashed bundles are cache-first (they never change),
-// pages and everything else are network-first with the cached copy as an offline fallback.
-// v2 (2026-10-01): production build, demo removed. Every build gets a new cache name, and activate deletes
-// every older faast-wash-* cache (including the v1 demo bundles), so returning visitors get the new build.
-const CACHE = 'faast-wash-v2-6f01b51-muq31e3d';
-const IMMUTABLE = /\/faast-wash\/app\/(_expo\/static|assets)\//;
-
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/faast-wash', '/faast-wash/app'])).then(() => self.skipWaiting()));
-});
+// Faast Wash was removed from emciix (2026-10-01). This kill-switch replaces the old service worker
+// (scope /faast-wash) for returning visitors: it deletes the faast-wash-* caches, unregisters itself
+// and reloads any open /faast-wash tabs so they get the normal 404. No fetch handler, so nothing is intercepted.
+// Safe to delete after a few weeks (scripts/patch-hosting.mjs then drops /faast-wash/ entirely).
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith('faast-wash-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
-});
-self.addEventListener('fetch', (e) => {
-  const req = e.request;
-  const url = new URL(req.url);
-  if (req.method !== 'GET' || url.origin !== location.origin || !(url.pathname === '/faast-wash' || url.pathname.startsWith('/faast-wash/'))) return;
-  if (IMMUTABLE.test(url.pathname)) {
-    e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); } return res; })));
-    return;
-  }
-  e.respondWith(fetch(req).then((res) => {
-    if (res.ok && (req.mode === 'navigate' || url.pathname.endsWith('.webmanifest'))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
-    return res;
-  }).catch(() => caches.match(req).then((hit) => hit || (req.mode === 'navigate' && url.pathname.startsWith('/faast-wash/app') ? caches.match('/faast-wash/app') : caches.match('/faast-wash')))));
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((k) => k.startsWith('faast-wash-')).map((k) => caches.delete(k)));
+    await self.registration.unregister();
+    const tabs = await self.clients.matchAll({ type: 'window' });
+    tabs.forEach((c) => c.navigate(c.url).catch(() => {}));
+  })());
 });
