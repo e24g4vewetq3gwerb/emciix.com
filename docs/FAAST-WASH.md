@@ -26,3 +26,11 @@ Not published to hosting (docs only).
 The next patch run releases a version without the faast-wash rules. `faastWash()` returns early when the JSON file is missing, and the `/faast-wash/` files stay in the copied version.
 To also drop the files, keep the empty-folder case in mind: the path cleanup only runs when `faast-wash/` has files.
 Remove the paths manually in a one-off run if ever needed.
+
+## Homepage section
+
+The first section of the emciix.com homepage (`#faast` in `index.html`) previews Faast Wash with production
+screens in `assets/home/faast-wash/` (content-hashed file names: `welcome-<hash>.webp`, `area-satellite-<hash>.webp`,
+`icon-<hash>.webp`; `scripts/patch-hosting.mjs` uploads every file there). Keep them out of `faast-wash/`: the
+faast-wash-web publish replaces that whole folder, which is how the earlier preview images (`faast-wash/img/preview-area-*.webp`)
+were deleted and showed as broken. To refresh, capture new screens, save them under a new hash and update the two `src`s.

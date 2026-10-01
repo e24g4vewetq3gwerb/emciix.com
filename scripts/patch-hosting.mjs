@@ -155,6 +155,9 @@ function listFiles(dir) {
 }
 const FAAST_WASH_FILES = existsSync("faast-wash") ? listFiles("faast-wash") : [];
 for (const file of FAAST_WASH_FILES) PATCHES.push([file, "/" + file]);
+// Homepage Faast Wash section images (content-hashed names). They live outside faast-wash/ because the
+// faast-wash-web publish replaces that folder (which is how the old preview images were lost).
+if (existsSync("assets/home/faast-wash")) for (const file of listFiles("assets/home/faast-wash")) PATCHES.push([file, "/" + file]);
 
 const token = process.env.FIREBASE_TOKEN;
 if (!token) { console.error("Missing FIREBASE_TOKEN"); process.exit(1); }
