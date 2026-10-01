@@ -3,7 +3,7 @@
 // pages and everything else are network-first with the cached copy as an offline fallback.
 // v2 (2026-10-01): production build, demo removed. Every build gets a new cache name, and activate deletes
 // every older faast-wash-* cache (including the v1 demo bundles), so returning visitors get the new build.
-const CACHE = 'faast-wash-v2-66677c8-muq2an5r';
+const CACHE = 'faast-wash-v2-697e414-muq2pomo';
 const IMMUTABLE = /\/faast-wash\/app\/(_expo\/static|assets)\//;
 
 self.addEventListener('install', (e) => {
