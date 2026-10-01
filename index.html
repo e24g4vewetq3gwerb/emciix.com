@@ -343,41 +343,45 @@ html.mode-anim body, html.mode-anim body *, html.mode-anim body::before, html.mo
 }
 
 /* Faast Wash: first section on the homepage (production screens in /assets/home/faast-wash/, hashed names).
-   Kept outside /faast-wash/ because the faast-wash-web publish replaces that whole folder. */
+   Kept outside /faast-wash/ because the Faast web publish replaces that whole folder.
+   Colours are the app's light theme tokens (apps/faast-wash/src/ui/theme.ts in the Faast repo):
+   bg #F5F5F5, surface #FFFFFF, text #0A0A0A, textMuted #595959, border #D4D4D4, primary #D32F2F.
+   Light only, like the app's default look; the rest of emciix stays dark (the site has no prefers-color-scheme switch). */
 .fwp-sec { padding: 22px 0 8px; }
 @media (min-width: 720px) { .fwp-sec { padding: 40px 0 12px; } }
-.fwp { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr; gap: 26px; padding: 24px 20px 0; border: 1px solid rgba(255,255,255,.12); border-radius: 22px;
-  background: radial-gradient(120% 90% at 100% 0%, rgba(211,47,47,.28) 0%, rgba(211,47,47,0) 55%), linear-gradient(180deg, #111 0%, #070707 100%); color: #f4f3f0; box-shadow: 0 24px 70px rgba(0,0,0,.45); }
+.fwp { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr; gap: 26px; padding: 24px 20px 0; border: 1px solid #D4D4D4; border-radius: 22px;
+  background: #F5F5F5; color: #0A0A0A; color-scheme: light; box-shadow: 0 24px 70px rgba(0,0,0,.45); }
 @media (min-width: 900px) { .fwp { grid-template-columns: 1.1fr .9fr; gap: 28px; padding: 40px 40px 0 44px; align-items: end; } }
 .fwp-copy { padding-bottom: 4px; }
 @media (min-width: 900px) { .fwp-copy { padding-bottom: 40px; align-self: center; } }
-.fwp-tag { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 5px 12px 5px 10px; border-radius: 999px; border: 1px solid rgba(255,107,107,.45); color: #ff8a80; font: 600 .74rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+.fwp-tag { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 5px 12px 5px 10px; border-radius: 999px; border: 1px solid #D4D4D4; background: #FFFFFF; color: #0A0A0A; font: 600 .74rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
 @media (max-width: 420px) { .fwp-tag { letter-spacing: .06em; font-size: .68rem; } }
-.fwp-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #ff6b6b; box-shadow: 0 0 0 4px rgba(255,107,107,.18); }
+.fwp-tag::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #D32F2F; box-shadow: 0 0 0 4px rgba(211,47,47,.16); }
 .fwp-brand { display: flex; align-items: center; gap: 14px; margin: 0 0 10px; }
-.fwp-brand img { width: 56px; height: 56px; border-radius: 15px; flex: none; box-shadow: 0 0 0 1px rgba(255,255,255,.14); }
-.fwp-brand h2 { margin: 0; font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1; letter-spacing: -.035em; color: #fff; }
-.fwp-pitch { margin: 0 0 20px; font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.3; color: #e9e7e2; font-weight: 600; max-width: 30rem; }
-.fwp-feats { list-style: none; margin: 0 0 24px; padding: 0; display: grid; grid-template-columns: 1fr; gap: 10px 22px; }
+.fwp-brand img { width: 56px; height: 56px; border-radius: 15px; flex: none; }
+.fwp-brand h2 { margin: 0; font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1; letter-spacing: -.035em; color: #0A0A0A; }
+.fwp-pitch { margin: 0 0 20px; font-size: clamp(1.1rem, 2.4vw, 1.35rem); line-height: 1.3; color: #0A0A0A; font-weight: 600; max-width: 30rem; }
+.fwp-feats { list-style: none; margin: 0 0 24px; padding: 0; display: grid; grid-template-columns: 1fr; gap: 10px; }
 @media (min-width: 560px) { .fwp-feats { grid-template-columns: 1fr 1fr; } }
-.fwp-feats li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; color: #c9c7c1; font-size: .95rem; line-height: 1.38; }
-.fwp-feats li b { color: #fff; font-weight: 650; }
-.fwp-feats svg { width: 20px; height: 20px; margin-top: 1px; color: #ff6b6b; }
+.fwp-feats li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 12px 14px; background: #FFFFFF; border: 1px solid #D4D4D4; border-radius: 12px; color: #595959; font-size: .93rem; line-height: 1.38; }
+.fwp-feats li b { color: #0A0A0A; font-weight: 650; }
+.fwp-feats svg { width: 20px; height: 20px; margin-top: 1px; color: #0A0A0A; }
 .fwp-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
-.fwp-ctas a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 14px; font: 700 1rem/1 var(--font); text-decoration: none; }
-.fwp-go { background: #d32f2f; color: #fff; border: 1.5px solid #d32f2f; }
-.fwp-go:hover { background: #b71c1c; border-color: #b71c1c; }
-.fwp-wait { color: #ff8a80; border: 1.5px solid rgba(255,107,107,.7); background: transparent; }
-.fwp-wait:hover { background: rgba(255,107,107,.1); }
-.fwp-ctas a:focus-visible { outline: 3px solid #ff8a80; outline-offset: 3px; }
+.fwp-ctas a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 12px; font: 700 1rem/1 var(--font); text-decoration: none; }
+.fwp a.fwp-go { background: #D32F2F; color: #FFFFFF; border: 1.5px solid #D32F2F; }
+.fwp a.fwp-go:hover { background: #B71C1C; border-color: #B71C1C; }
+.fwp a.fwp-wait { color: #D32F2F; border: 1.5px solid #D32F2F; background: #FFFFFF; }
+.fwp a.fwp-wait:hover { background: #FDECEC; }
+.fwp-ctas a:focus-visible { outline: 3px solid #0A0A0A; outline-offset: 3px; }
 .fwp-shots { display: flex; justify-content: center; align-items: flex-end; gap: 4%; height: 320px; overflow: hidden; }
 @media (min-width: 560px) { .fwp-shots { height: 400px; } }
 @media (min-width: 900px) { .fwp-shots { height: 470px; } }
 .fwp-shots figure { margin: 0; flex: 0 0 44%; max-width: 230px; align-self: flex-start; transform: translateY(24px); }
 .fwp-shots figure + figure { transform: translateY(64px); }
-.fwp-shots img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 1039; border: 7px solid #1b1b1d; border-radius: 30px; background: #000; box-shadow: 0 20px 44px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08); }
+.fwp-shots img { display: block; width: 100%; height: auto; aspect-ratio: 480 / 1039; border: 7px solid #0A0A0A; border-radius: 30px; background: #F5F5F5; box-shadow: 0 18px 40px rgba(0,0,0,.18); }
 .fwp-shots figcaption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.fwp-note { margin: 14px 0 0; color: #8f8d87; font-size: .82rem; }
+.fwp-note { margin: 14px 0 0; color: #595959; font-size: .82rem; }
+@media (max-width: 559px) { .fwp-feats { gap: 8px; } .fwp-feats li { padding: 10px 12px; font-size: .9rem; } .fwp-ctas a { flex: 1 1 100%; } }
 
 /* ===== ALT MODE: light trades look (matches /demo/roofing) ===== */
 html[data-mode="alt"] {
@@ -566,8 +570,8 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<ul class="fwp-feats"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span><b>Book a wash where your car is parked</b>: at home, at work, anywhere in the zone.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v10H8l-4 4z"/><path d="M8 10h8M8 13h5"/></svg><span><b>Washers nearby send offers</b>: independent washers name their price, and you pick one.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></svg><span><b>Pay your washer directly</b>: a $2.99 booking fee, and every 10th booking is free.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span><b>Live map with satellite view</b>, plus one-tap Google Maps or Apple Maps navigation.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Sign in with Apple, Google or X</b>: no passwords, and no emails stored.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg><span><b>English and French</b>, following your device language.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="14" height="10" rx="1.5"/><path d="M6 19h6"/><rect x="17" y="8" width="5" height="11" rx="1.2"/></svg><span><b>Phone, tablet and desktop</b>, and installable as an app.</span></li></ul>' +
     '<div class="fwp-ctas"><a class="fwp-go" href="https://emciix.com/faast-wash">Open Faast Wash</a><a class="fwp-wait" href="mailto:contact@emciix.com?subject=Faast%20Wash%20waitlist">Join the waitlist</a></div>' +
     '<p class="fwp-note">Faast Wash connects car owners with independent washers. Opening first in Sault Ste. Marie, Ontario.</p></div>' +
-    '<div class="fwp-shots"><figure><img src="/assets/home/faast-wash/welcome-1d23b417.webp" width="480" height="1039" alt="Faast Wash welcome screen: A car wash that comes to your car, with Get started, Sign in and Join the waitlist" decoding="async" fetchpriority="high"><figcaption>Welcome screen</figcaption></figure>' +
-    '<figure><img src="/assets/home/faast-wash/area-satellite-8f537de5.webp" width="480" height="1039" alt="Faast Wash launch area on the satellite map: a dashed circle about 6 km around downtown Sault Ste. Marie" decoding="async" loading="lazy"><figcaption>Launch area, satellite view</figcaption></figure></div>' +
+    '<div class="fwp-shots"><figure><img src="/assets/home/faast-wash/welcome-light-2d71691c.webp" width="480" height="1039" alt="Faast Wash welcome screen: A car wash that comes to your car, with Get started, Sign in and Join the waitlist" decoding="async" fetchpriority="high"><figcaption>Welcome screen</figcaption></figure>' +
+    '<figure><img src="/assets/home/faast-wash/area-satellite-light-b5fafd7a.webp" width="480" height="1039" alt="Faast Wash launch area on the satellite map: a dashed circle about 6 km around downtown Sault Ste. Marie" decoding="async" loading="lazy"><figcaption>Launch area, satellite view</figcaption></figure></div>' +
     '</div></div></section>';
 
   h += '<div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
