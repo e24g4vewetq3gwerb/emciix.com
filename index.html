@@ -74,6 +74,16 @@ window.SITE = {
     { icon: "game", title: "Play", text: "41 levels, upgrades and synced ranks.", link: { label: "Play the game", href: "/game/play" } },
     { icon: "build", title: "Build", text: "Websites for small businesses, from $1,500.", link: { label: "Hire me", href: "/hire" } }
   ],
+  // Faast Wash block under the cards (same copy as the live /faast hero; links stay relative so each domain opens its own /faast).
+  faast: {
+    area: "Serving soon SSM, ON", title: "Car wash,", titleEm: "a tap away.",
+    text: "A washer comes to where your car is parked. Nearby washers send offers, you pick one and pay them directly.",
+    book: { label: "Book a wash", href: "/faast" }, signin: { label: "Sign in", href: "/faast#signin" },
+    note: "Sign in with your email or phone number.",
+    facts: [["100%", "of the price goes to your washer"], ["Offers", "washers set the price, you pick one"], ["Serving soon", "SSM, ON"]],
+    film: { poster: "/covers/faast-multiverse.jpg", hd: "/video/faast-multiverse-720.mp4", sd: "/video/faast-multiverse-480.mp4", len: "1:10",
+      label: "The Multiverse Car Wash, short film", play: "Play The Multiverse Car Wash, short film (1 minute 10 seconds, with sound)" }
+  },
   music: {
     kicker: "Music", title: "Velc air",
     text: "Original songs about job hunts, too many tabs, phones and staying up late shipping things. Fly through them in the portal, or watch on YouTube.",
@@ -223,6 +233,45 @@ section.block + .cards { padding-top: 32px; }
 .info-card a { margin-top: 12px; font-weight: 600; font-size: .95rem; }
 .ico { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; border: 1px solid var(--line-2); margin-bottom: 14px; color: var(--gold); }
 .ico svg { width: 20px; height: 20px; }
+
+/* Faast Wash block (navy, same look as the /faast hero). Own classes so the look switch leaves it navy. */
+.fx-sec { padding-bottom: 44px; }
+.fx { position: relative; overflow: hidden; border-radius: 24px; color: #fff; padding: 28px 20px;
+  --fx-navy: #071A3D; --fx-navy-2: #0D2A5E; --fx-aqua: #3CF0F2; --fx-red: #E0322F;
+  --fx-display: "Avenir Next", "Segoe UI Variable Display", "SF Pro Display", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: radial-gradient(700px 420px at 90% -10%, rgba(60,240,242,.26), transparent 60%), radial-gradient(600px 420px at -10% 110%, rgba(20,99,255,.45), transparent 60%), linear-gradient(160deg, var(--fx-navy) 0%, var(--fx-navy-2) 100%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08); display: grid; gap: 26px; }
+@media (min-width: 720px) { .fx { padding: 44px 40px; } }
+@media (min-width: 960px) { .fx { grid-template-columns: 1.05fr .95fr; align-items: center; gap: 40px; padding: 56px 52px; } }
+.fx-chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); font-size: .85rem; font-weight: 600; color: #DDF8FF; margin: 0; }
+.fx-chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--fx-aqua); box-shadow: 0 0 0 4px rgba(60,240,242,.2); }
+.fx .fx-h { margin: 16px 0 0; color: #fff; font: 800 clamp(2.1rem, 6.4vw, 3.5rem)/1.04 var(--fx-display); letter-spacing: -.03em; max-width: none; }
+.fx .fx-h em { font-style: normal; background: linear-gradient(90deg, var(--fx-aqua), #9FD4FF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fx-lede { margin: 14px 0 0; font-size: clamp(1rem, 2.4vw, 1.15rem); color: rgba(255,255,255,.84); max-width: 38ch; }
+.fx-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.fx-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 999px; font: 650 1rem/1 var(--font); text-decoration: none; white-space: nowrap; }
+.fx-btn-book { background: var(--fx-red); color: #fff; box-shadow: 0 6px 16px rgba(224,50,47,.3); }
+.fx-btn-book:hover { background: #B9201E; }
+.fx-btn-in { background: rgba(255,255,255,.1); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
+.fx-btn-in:hover { background: rgba(255,255,255,.18); }
+.fx a:focus-visible, .fx button:focus-visible { outline: 3px solid var(--fx-aqua); outline-offset: 3px; }
+.fx-note { margin: 12px 0 0; font-size: .88rem; color: rgba(255,255,255,.7); }
+.fx-facts { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-width: 560px; }
+.fx-facts li { padding: 14px; border-radius: 12px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); }
+.fx-facts strong { display: block; font: 800 1.25rem/1.1 var(--fx-display); letter-spacing: -.02em; color: #fff; }
+.fx-facts span { display: block; margin-top: 4px; font-size: .8rem; line-height: 1.35; color: rgba(255,255,255,.76); }
+@media (max-width: 420px) { .fx-facts li { padding: 12px 10px; } .fx-facts strong { font-size: 1.05rem; } }
+.fx-film { width: 100%; aspect-ratio: 16 / 10; border-radius: 20px; overflow: hidden; background: var(--fx-navy); border: 1px solid rgba(255,255,255,.14); box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+.fx-film video { width: 100%; height: 100%; display: block; background: #000; }
+.fx-play { position: relative; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: var(--fx-navy); display: block; }
+.fx-play img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+.fx-play:hover img { transform: scale(1.02); }
+.fx-pbtn { position: absolute; left: 50%; top: 50%; width: 72px; height: 72px; margin: -36px 0 0 -36px; border-radius: 50%; display: grid; place-items: center; background: var(--fx-red); color: #fff; box-shadow: 0 10px 30px -6px rgba(0,0,0,.6), 0 0 0 7px rgba(255,255,255,.25); }
+.fx-pbtn svg { margin-left: 4px; }
+.fx-play:hover .fx-pbtn { background: #B9201E; }
+.fx-len { position: absolute; right: 10px; top: 10px; background: rgba(0,0,0,.72); color: #fff; font-size: .78rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+@media (max-width: 599px) { .fx-film { border-radius: 16px; } .fx-pbtn { width: 62px; height: 62px; margin: -31px 0 0 -31px; } }
+@media (prefers-reduced-motion: reduce) { .fx-play img { transition: none; } }
 
 /* Sections */
 section.block { padding: 48px 0; border-top: 1px solid var(--line); }
@@ -541,6 +590,19 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     return '<article class="card info-card"><div class="ico">' + (I[c.icon] || "") + '</div><h3>' + esc(c.title) + '</h3><p>' + esc(c.text) + '</p><a href="' + esc(c.link.href) + '">' + esc(c.link.label) + ' →</a></article>';
   }).join("") + '</div>';
 
+  var X = S.faast;
+  h += '<section class="wrap fx-sec" id="faast" aria-labelledby="faast-h"><div class="fx"><div>' +
+    '<p class="fx-chip"><i aria-hidden="true"></i>' + esc(X.area) + '</p>' +
+    '<h2 class="fx-h" id="faast-h">' + esc(X.title) + ' <em>' + esc(X.titleEm) + '</em></h2>' +
+    '<p class="fx-lede">' + esc(X.text) + '</p>' +
+    '<div class="fx-cta"><a class="fx-btn fx-btn-book" href="' + esc(X.book.href) + '">' + esc(X.book.label) + '</a><a class="fx-btn fx-btn-in" href="' + esc(X.signin.href) + '">' + esc(X.signin.label) + '</a></div>' +
+    '<p class="fx-note">' + esc(X.note) + '</p>' +
+    '<ul class="fx-facts">' + X.facts.map(function (f) { return '<li><strong>' + esc(f[0]) + '</strong><span>' + esc(f[1]) + '</span></li>'; }).join("") + '</ul></div>' +
+    '<div class="fx-film" id="fx-film" role="group" aria-label="' + esc(X.film.label) + '"><button type="button" class="fx-play" id="fx-play" aria-label="' + esc(X.film.play) + '" title="' + esc(X.film.label) + '">' +
+    '<img src="' + esc(X.film.poster) + '" alt="" loading="lazy" decoding="async" width="1280" height="720" />' +
+    '<span class="fx-pbtn" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l10.9-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/></svg></span>' +
+    '<span class="fx-len" aria-hidden="true">' + esc(X.film.len) + '</span></button></div></div></section>';
+
   var M = S.music;
   h += '<section class="block" id="music" aria-labelledby="music-h"><div class="wrap split"><div>' + head(M.kicker, M.title, "music-h") +
     '<p class="sub">' + esc(M.text) + '</p>' + ticks(M.points) + links(M.links) + '</div>' +
@@ -588,6 +650,22 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
   h += '<nav class="mbar" aria-label="Quick actions">' + S.mobileBar.map(function (l) { return link(l); }).join("") + '</nav>';
 
   document.getElementById("app").innerHTML = h;
+
+  // Faast film: nothing loads until tapped (lazy poster; the <video> is created on tap, 480p on small screens).
+  (function () {
+    var play = document.getElementById("fx-play"), frame = document.getElementById("fx-film"), F = S.faast.film;
+    if (!play || !frame) return;
+    play.addEventListener("click", function () {
+      var w = Math.min(window.innerWidth, screen.width || window.innerWidth);
+      var v = document.createElement("video");
+      v.controls = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "none"; v.poster = F.poster;
+      v.setAttribute("controlslist", "nodownload"); v.setAttribute("aria-label", F.label); v.title = F.label;
+      v.src = w < 700 ? F.sd : F.hd;
+      frame.innerHTML = ""; frame.appendChild(v);
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+      try { v.focus({ preventScroll: true }); } catch (e) {}
+    });
+  })();
 
   // ---------- look switch: dark (gold) -> alt (light trades) -> global (neutral blue) -> dark ----------
   var MODES = ["dark", "alt", "global"];
