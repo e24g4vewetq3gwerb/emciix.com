@@ -131,7 +131,7 @@ if (playIndex) PATCHES.push([playIndex, "/game/play/index.html"]);
   if (existsSync(p)) PATCHES.push([p, "/" + p]);
 });
 if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
-["hire/index.html","hire/og.png","demo/roofing/index.html","assets/home/og.png","assets/home/portal.webp","assets/home/game.webp","assets/home/roofing.webp","assets/home/hire.webp","starslip/privacy.html","starslip/support.html","video/faast-multiverse-720.mp4","video/faast-multiverse-480.mp4","covers/faast-multiverse.jpg","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json"].forEach((file) => {
+["hire/index.html","hire/og.png","demo/roofing/index.html","assets/home/og.png","assets/home/portal.webp","assets/home/game.webp","assets/home/roofing.webp","assets/home/hire.webp","starslip/privacy.html","starslip/support.html","video/faast-multiverse-720.mp4","video/faast-multiverse-480.mp4","covers/faast-multiverse.jpg","covers/faast-og.jpg","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
 // Private lead previews: every demo/p/<slug>-<random>/index.html (never linked; noindex meta + X-Robots-Tag below).
@@ -368,7 +368,8 @@ function noindexPreviews(config) {
   return config;
 }
 
-// Faast Wash removed: strip every /faast-wash rewrite, redirect and header rule from the live config. While the
+// Faast Wash removed: strip every old /faast-wash rewrite, redirect and header rule from the live config, then add
+// 301 redirects to /faast. While the
 // kill-switch sw.js ships, keep one header rule for it: no-cache, and Service-Worker-Allowed because the old
 // registration's scope (/faast-wash) is wider than the script's folder, so updates fail without it.
 function faastWash(config) {
@@ -378,7 +379,10 @@ function faastWash(config) {
   config.redirects = (config.redirects || []).filter((r) => !ours(r));
   config.headers = (config.headers || []).filter((h) => !ours(h));
   if (existsSync(FAAST_WASH_KILL_SW)) config.headers.push({ glob: "/faast-wash/sw.js", headers: { "Cache-Control": "no-cache", "Service-Worker-Allowed": "/faast-wash" } });
-  console.log("faast-wash removed: rules stripped,", existsSync(FAAST_WASH_KILL_SW) ? "kill-switch sw.js kept" : "no files");
+  // Every old /faast-wash link goes to /faast for good (301). Redirects run before static files, so
+  // /faast-wash/sw.js is left out on purpose (extglob !(sw.js)) and keeps serving the kill-switch.
+  for (const glob of ["/faast-wash", "/faast-wash/", "/faast-wash/!(sw.js)", "/faast-wash/*/**"]) config.redirects.push({ glob, statusCode: 301, location: "/faast" });
+  console.log("faast-wash removed: rules stripped, 301 -> /faast,", existsSync(FAAST_WASH_KILL_SW) ? "kill-switch sw.js kept" : "no files");
   return config;
 }
 
