@@ -304,10 +304,13 @@ function widenConnect(config) {
   const extras = {
     "connect-src": ["https://api.fxtwitter.com", "https://invidious.f5.si", "https://invidious.darkness.services", "https://emciix-playlist.vercel.app", "https://emciix-yt-views.vercel.app", "https://raw.githubusercontent.com", "https://api.github.com", "https://ntfy.sh", "https://noembed.com", "https://api.rss2json.com", "https://api.microlink.io", "https://r.jina.ai", "https://www.google.com", "https://www.recaptcha.net", "https://firebaseappcheck.googleapis.com", "https://content-firebaseappcheck.googleapis.com",
       // Firebase Auth, Firestore (emciix-com + need-inc-app), Storage avatars, Installations
-      "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://firestore.googleapis.com", "https://firebasestorage.googleapis.com", "https://firebaseinstallations.googleapis.com"],
+      "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://firestore.googleapis.com", "https://firebasestorage.googleapis.com", "https://firebaseinstallations.googleapis.com",
+      // Cloudflare Web Analytics beacon reports
+      "https://cloudflareinsights.com"],
     // reCAPTCHA Enterprise + Firebase App Check
     // apis.google.com + the authDomain iframe power Firebase Auth popup/redirect sign-in
-    "script-src": ["https://www.google.com", "https://www.gstatic.com", "https://www.recaptcha.net", "https://apis.google.com"],
+    // Cloudflare Web Analytics beacon (auto-injected by the Cloudflare proxy on emciix.ca/.com; posts to /cdn-cgi/rum)
+    "script-src": ["https://www.google.com", "https://www.gstatic.com", "https://www.recaptcha.net", "https://apis.google.com", "https://static.cloudflareinsights.com"],
     "frame-src": ["https://www.google.com", "https://www.recaptcha.net", "https://emciix-com.firebaseapp.com"],
     // Storage avatar download URLs and X profile photos
     "img-src": ["https://*.ggpht.com", "https://*.licdn.com", "https://*.fbcdn.net", "https://*.googleusercontent.com", "https://i.ytimg.com", "https://firebasestorage.googleapis.com", "https://pbs.twimg.com", "https://abs.twimg.com"],
