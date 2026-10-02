@@ -209,38 +209,6 @@ h1 .soft { color: var(--dim); }
   .moon { position: absolute; right: -6px; top: 18px; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f4f3f0, #8f8d88 70%, #2a2a2a); box-shadow: 0 0 0 1.5px rgba(255,255,255,.7); }
 }
 @media (min-width: 720px) { .hero { padding-top: 84px; padding-bottom: 60px; } }
-.flip-bar { margin: 0 0 16px; }
-.hero[data-face="faast"] .planet { display: none; }
-.fp { border: 1px solid var(--line-2); border-radius: 18px; overflow: hidden; background: #fff; color: #142033; text-align: left; max-width: 420px; }
-.fp a { color: inherit; text-decoration: none; }
-.fp-bar { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 8px 10px; background: #fff; }
-.fp-logo { display: inline-flex; align-items: center; gap: 6px; font-weight: 750; color: #1565c0; white-space: nowrap; }
-.fp-logo svg { width: 22px; height: 26px; }
-.fp-tabs { display: flex; gap: 4px; min-width: 0; overflow: auto; font-size: .78rem; font-weight: 650; color: #5c6b7a; }
-.fp-tabs b { background: #eceff3; color: #142033; border-radius: 999px; padding: 4px 8px; font-weight: 700; }
-.fp-tabs span { padding: 4px 6px; }
-.fp-me { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; border: 0; background: transparent; color: #142033; display: grid; place-items: center; cursor: pointer; flex: none; }
-.fp-me[aria-expanded="true"] { background: #e8eef6; }
-.fp-me svg { width: 20px; height: 20px; }
-.fp-hero { position: relative; padding: 22px 18px 0; background: linear-gradient(180deg, #0c4cb3 0%, #1565d8 55%, #1a74e8 100%); color: #fff; }
-.fp-badge { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 12px; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,.14); font-size: .78rem; }
-.fp-badge i { width: 8px; height: 8px; border-radius: 50%; background: #3ddcff; }
-.fp-hero h2 { margin: 0 0 10px; color: #fff; font-size: clamp(1.7rem, 6vw, 2.15rem); line-height: 1.05; letter-spacing: -.03em; max-width: 12ch; }
-.fp-hero .fp-lead { margin: 0 0 16px; color: rgba(255,255,255,.92); font-size: .98rem; max-width: 28em; }
-.fp-book, .fp-signin { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 999px; font-weight: 750; margin: 0 0 10px; }
-.fp-book { background: #e23b3b; color: #fff; }
-.fp-signin { border: 1.5px solid rgba(255,255,255,.85); color: #fff; }
-.fp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0 8px; font-size: .78rem; }
-.fp-stats b { display: block; font-size: 1rem; }
-.fp-car { display: block; width: min(280px, 86%); margin: 8px auto 0; }
-.fp-bubble { position: absolute; z-index: 2; left: 12px; right: 12px; top: 8px; background: #fff; color: #142033; border-radius: 16px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,.22); border-left: 4px solid #2e7d32; }
-.fp-bubble[hidden] { display: none; }
-.fp-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.fp-ava { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: #f3f5f8; border: 1px solid #e3e7ee; }
-.fp-bubble h3 { margin: 0 0 6px; font-size: 1.02rem; letter-spacing: 0; }
-.fp-bubble p, .fp-bubble .muted { margin: 0 0 12px; color: #5c6b7a; font-size: .9rem; }
-.fp-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.fp-actions button { border: 0; background: #eef1f5; color: #142033; border-radius: 999px; min-height: 36px; padding: 0 12px; font: 650 .82rem/1 var(--font); cursor: pointer; }
 
 /* Cards row */
 .cards { display: grid; gap: 14px; grid-template-columns: 1fr; padding-bottom: 44px; }
@@ -563,24 +531,10 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
 
   h += '<main id="main">';
 
-  h += '<div class="wrap hero" id="hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
-    '<div class="flip-bar"><button type="button" class="btn btn-ghost btn-sm" id="hero-flip" aria-pressed="false" aria-controls="hero-emc hero-faast">Faast app</button></div>' +
-    '<div id="hero-emc">' + heroCopy(H, H.local || H) +
-    '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + '</div></div>' +
-    '<div id="hero-faast" hidden><div class="fp"><div class="fp-bar"><span class="fp-logo"><svg viewBox="0 0 24 28" aria-hidden="true"><path fill="#1565c0" d="M12 1.5c-.4 0-7 8-7 13.2a7 7 0 0 0 14 0C19 9.5 12.4 1.5 12 1.5z"/><path fill="#fff" d="M7.2 16.2h9.6l-1-3.2H8.2zM8 17.2a1.3 1.3 0 1 0 .1 0zm8 0a1.3 1.3 0 1 0 .1 0z"/></svg>Faast Wash</span>' +
-    '<span class="fp-tabs" aria-hidden="true"><b>Book</b><span>Wash</span><span>Map</span><span>Washers</span><span>Support</span></span>' +
-    '<button type="button" class="fp-me" id="fp-me" aria-expanded="false" aria-controls="fp-bubble" aria-label="Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 19.2a7 7 0 0 1 14 0"/></svg></button></div>' +
-    '<div class="fp-hero"><div class="fp-bubble" id="fp-bubble" hidden><div class="fp-user"><span class="fp-ava" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14h16l-1.5-4H5.5z"/><circle cx="7.5" cy="16.5" r="1.4"/><circle cx="16.5" cy="16.5" r="1.4"/></svg></span><div><b id="fp-role">Washer</b><div class="muted">Signed in with Google</div></div></div>' +
-    '<h3>Faast Wash is launching soon — you’re on the list</h3><p>You’re signed in and your spot is saved. Booking, offers and chat open at launch in Sault Ste. Marie. Your handle stays on this device.</p>' +
-    '<div class="fp-actions"><button type="button" id="fp-switch">Switch to Car owner</button><button type="button">Settings</button><button type="button" id="fp-out">Sign out</button></div></div>' +
-    '<p class="fp-badge"><i></i>Launching soon in Sault Ste. Marie</p><h2>A car wash that comes to your car.</h2>' +
-    '<p class="fp-lead">Independent washers near you send offers. Pick one, pay them directly, and watch them arrive on the map.</p>' +
-    '<a class="fp-book" href="/faast">Book a wash</a><a class="fp-signin" href="/faast">Sign in</a>' +
-    '<div class="fp-stats"><div><b>$2.99</b>booking fee</div><div><b>Every 10th</b>booking is free</div><div><b>100%</b>of the price goes to your washer</div></div>' +
-    '<svg class="fp-car" viewBox="0 0 320 150" aria-hidden="true"><ellipse cx="70" cy="128" rx="36" ry="8" fill="rgba(0,0,0,.15)"/><ellipse cx="230" cy="132" rx="50" ry="8" fill="rgba(0,0,0,.15)"/>' +
-    '<circle cx="168" cy="46" r="22" fill="rgba(255,255,255,.9)"/><circle cx="214" cy="34" r="16" fill="rgba(255,255,255,.75)"/><circle cx="128" cy="38" r="12" fill="#d7f7ff"/>' +
-    '<path fill="#e23b3b" d="M28 96c8-28 36-40 70-44 28-4 48-22 78-24 34-2 70 10 92 28 8 6 16 20 14 32l-6 16H40z"/>' +
-    '<path fill="#8fd4ff" d="M118 62c18-8 34-10 52-4 8 10 6 18-6 22-22 4-40-4-46-18z"/><circle cx="86" cy="112" r="16" fill="#1b2430"/><circle cx="230" cy="112" r="16" fill="#1b2430"/><circle cx="86" cy="112" r="6" fill="#d5d8de"/><circle cx="230" cy="112" r="6" fill="#d5d8de"/></svg></div></div></div></div>';
+  h += '<div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
+    heroCopy(H, H.local || H) +
+    '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + link({ label: "Faast Wash", href: "/faast" }, "btn-text") + '</div>' +
+    '</div>';
 
 
   h += '<div class="wrap cards">' + S.cards.map(function (c) {
@@ -702,33 +656,6 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
       reveal(false);
       window.addEventListener("load", function () { reveal(false); });
     }
-  })();
-
-  (function () {
-    var btn = document.getElementById("hero-flip"), emc = document.getElementById("hero-emc"), faast = document.getElementById("hero-faast"), hero = document.getElementById("hero");
-    if (btn && emc && faast) btn.addEventListener("click", function () {
-      var on = btn.getAttribute("aria-pressed") !== "true";
-      btn.setAttribute("aria-pressed", on ? "true" : "false");
-      btn.textContent = on ? "EMCIIX" : "Faast app";
-      emc.hidden = on;
-      faast.hidden = !on;
-      if (hero) hero.setAttribute("data-face", on ? "faast" : "emc");
-    });
-    var me = document.getElementById("fp-me"), bubble = document.getElementById("fp-bubble"), role = document.getElementById("fp-role"), sw = document.getElementById("fp-switch"), out = document.getElementById("fp-out");
-    if (me && bubble) me.addEventListener("click", function () {
-      var open = bubble.hasAttribute("hidden");
-      if (open) bubble.removeAttribute("hidden"); else bubble.setAttribute("hidden", "");
-      me.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    if (sw && role) sw.addEventListener("click", function () {
-      var washer = role.textContent.indexOf("Washer") === 0;
-      role.textContent = washer ? "Car owner" : "Washer";
-      sw.textContent = washer ? "Switch to Washer" : "Switch to Car owner";
-    });
-    if (out && bubble && me) out.addEventListener("click", function () {
-      bubble.setAttribute("hidden", "");
-      me.setAttribute("aria-expanded", "false");
-    });
   })();
 
   var ld = { "@context": "https://schema.org", "@graph": [
