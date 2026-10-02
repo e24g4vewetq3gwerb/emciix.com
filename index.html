@@ -176,6 +176,9 @@ nav.main a:hover { color: var(--ink); }
 .head-r { display: flex; align-items: center; gap: 8px; flex: none; }
 .head-cta .xs { display: none; }
 @media (max-width: 419px) { .head-cta .lg { display: none; } .head-cta .xs { display: inline; } }
+/* Faast + Portal side by side on small phones: tighter buttons so the wordmark keeps "by Need" on one line. */
+.brand small { white-space: nowrap; }
+@media (max-width: 419px) { .head .wrap { gap: 8px; } .head-r { gap: 6px; } .head-r .btn-sm { padding: 0 12px; } .brand { gap: 7px; } }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px; font: 600 1rem/1 var(--font); text-decoration: none; border: 1px solid var(--line-2); color: var(--ink); background: transparent; white-space: nowrap; }
@@ -519,6 +522,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<a class="brand" href="/">' + esc(S.brand.name) + ' <small>by ' + esc(S.brand.by) + '</small></a></div>' +
     '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
     '<div class="head-r">' +
+    '<a class="btn btn-ghost btn-sm head-faast" href="/faast" aria-label="Faast Wash: car wash that comes to you">Faast</a>' +
     '<a class="btn btn-ghost btn-sm head-cta" href="' + esc(H.primary.href) + '" aria-label="' + esc(H.primary.label) + '"><span class="lg">' + esc(H.primary.label) + '</span><span class="xs" aria-hidden="true">Portal</span></a></div></div></header>';
 
   h += '<main id="main">';
