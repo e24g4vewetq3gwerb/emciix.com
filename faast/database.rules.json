@@ -279,6 +279,12 @@
         "availability": {
           ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 200"
         },
+        "selfie": {
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().length >= 8 && newData.val().length <= 200 && newData.val().beginsWith('storage:washerChecks/' + $uid + '/selfie'))"
+        },
+        "insurance": {
+          ".validate": "!newData.exists() || (newData.isString() && newData.val().length >= 8 && newData.val().length <= 200 && newData.val().beginsWith('storage:washerChecks/' + $uid + '/insurance'))"
+        },
         "status": {
           ".validate": "newData.val() == 'pending' || newData.val() == 'rejected' || (newData.val() == 'approved' && (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))"
         },

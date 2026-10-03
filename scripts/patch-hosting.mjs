@@ -570,3 +570,26 @@ if (existsSync(FAAST_RULES)) {
   if (!res.ok) throw new Error("Faast database rules " + res.status + " " + text.slice(0, 500));
   console.log("faast database rules released");
 }
+
+// Faast Storage rules: selfie and insurance photos (faast/storage.rules).
+const FAAST_STORAGE = "faast/storage.rules";
+if (existsSync(FAAST_STORAGE)) {
+  const project = "projects/emciix-com";
+  const content = readFileSync(FAAST_STORAGE, "utf8");
+  const created = await api(access, "POST", "https://firebaserules.googleapis.com/v1/" + project + "/rulesets", {
+    source: { files: [{ name: "storage.rules", content }] },
+  });
+  const releases = await api(access, "GET", "https://firebaserules.googleapis.com/v1/" + project + "/releases");
+  const release = (releases.releases || []).find((item) => String(item.name || "").includes("firebase.storage"));
+  if (release) {
+    await api(access, "PATCH", "https://firebaserules.googleapis.com/v1/" + release.name + "?updateMask=rulesetName", {
+      release: { name: release.name, rulesetName: created.name },
+    });
+  } else {
+    await api(access, "POST", "https://firebaserules.googleapis.com/v1/" + project + "/releases", {
+      name: project + "/releases/firebase.storage/emciix-com.firebasestorage.app",
+      rulesetName: created.name,
+    });
+  }
+  console.log("faast storage rules released");
+}

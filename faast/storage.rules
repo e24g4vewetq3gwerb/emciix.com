@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// Faast Wash Storage rules. Images only.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isImage(maxMb) { return request.resource.contentType.matches('image/(jpeg|png|webp)') && request.resource.size < maxMb * 1024 * 1024; }
+    function job(jobId) { return firestore.get(/databases/(default)/documents/jobs/$(jobId)).data; }
+    // Admins: the admin panel account (by UID) and the owner's verified Google account.
+    function isAdmin() {
+      return request.auth != null && (request.auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'
+        || (request.auth.token.get('email', '') == 'n.nafis98@gmail.com' && request.auth.token.get('email_verified', false) == true));
+    }
+
+    // Government ID photos are not collected. A selfie and an insurance certificate are, for the admin review only.
+    match /washerIds/{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    match /washerChecks/{uid}/{file} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow create, update: if request.auth != null && request.auth.uid == uid && isImage(8)
+        && (file == 'selfie.jpg' || file == 'insurance.jpg');
+    }
+
+    // Photos a customer attaches to a request ("what needs cleaning"). Any signed-in user may view them.
+    match /requestPhotos/{uid}/{file} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == uid && isImage(6);
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Before/after photos on Realtime Database bookings: the washer writes in their own folder; signed-in users
+    // with the (unguessable) path from the booking can view them.
+    match /jobPhotos/{uid}/{bookingId}/{file} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.auth.uid == uid && isImage(6);
+    }
+
+    // Firestore-era job photos (kept for the native app).
+    match /jobs/{jobId}/{phase}/{file} {
+      allow read: if request.auth != null && (job(jobId).ownerId == request.auth.uid || job(jobId).washerId == request.auth.uid);
+      allow create: if request.auth != null && job(jobId).washerId == request.auth.uid && isImage(6)
+        && ((phase == 'before' && job(jobId).status == 'arrived') || (phase == 'after' && job(jobId).status == 'washing'));
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
