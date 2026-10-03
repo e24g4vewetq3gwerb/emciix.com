@@ -11,7 +11,7 @@ service firebase.storage {
         || (request.auth.token.get('email', '') == 'n.nafis98@gmail.com' && request.auth.token.get('email_verified', false) == true));
     }
 
-    // Government ID photos are not collected. A selfie and an insurance certificate are, for the admin review only.
+    // Faast never takes, collects or stores ID photos or selfies. Only an optional insurance-certificate photo, for the admin review.
     match /washerIds/{allPaths=**} {
       allow read, write: if false;
     }
@@ -19,7 +19,8 @@ service firebase.storage {
     match /washerChecks/{uid}/{file} {
       allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
       allow create, update: if request.auth != null && request.auth.uid == uid && isImage(8)
-        && (file == 'selfie.jpg' || file == 'insurance.jpg');
+        && file == 'insurance.jpg';
+      allow delete: if request.auth != null && (request.auth.uid == uid || isAdmin());
     }
 
     // Photos a customer attaches to a request ("what needs cleaning"). Any signed-in user may view them.
