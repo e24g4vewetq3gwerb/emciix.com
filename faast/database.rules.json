@@ -459,7 +459,7 @@
           }
         },
         "access": {
-          ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 500"
+          ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 500"
         },
         "notes": {
           ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 500"
