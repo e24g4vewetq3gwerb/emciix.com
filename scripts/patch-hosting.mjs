@@ -555,3 +555,18 @@ async function lockPayoutEmail() {
   console.log("payout privacy rules released");
 }
 try { await lockPayoutEmail(); } catch (err) { console.log("payout privacy skipped", String(err.message || err).slice(0, 400)); }
+
+// Faast Realtime Database rules (faast/database.rules.json, copied by faast-page on publish).
+// Hosting is already live above; this is what lets a washer go online across the whole city.
+const FAAST_RULES = "faast/database.rules.json";
+if (existsSync(FAAST_RULES)) {
+  const rules = readFileSync(FAAST_RULES);
+  const res = await fetch("https://emciix-com-default-rtdb.firebaseio.com/.settings/rules.json", {
+    method: "PUT",
+    headers: { Authorization: "Bearer " + access, "Content-Type": "application/json" },
+    body: rules,
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error("Faast database rules " + res.status + " " + text.slice(0, 500));
+  console.log("faast database rules released");
+}
