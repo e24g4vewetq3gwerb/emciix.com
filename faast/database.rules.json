@@ -187,7 +187,7 @@
       ".read": "auth != null",
       "$uid": {
         ".write": "auth != null && auth.uid == $uid && (!newData.exists() || ((root.child('washers').child(auth.uid).child('status').val() == 'approved' || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))) && ((root.child('config').child('verifiedAuth').val() != true || (auth.token.email_verified == true && auth.token.phone_number != null)) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))))",
-        ".validate": "newData.hasChildren(['lat', 'lng', 'at']) && (((newData.child('lat').val() - 46.5136) * 111.32) * ((newData.child('lat').val() - 46.5136) * 111.32) + ((newData.child('lng').val() + 84.3358) * 76.6085) * ((newData.child('lng').val() + 84.3358) * 76.6085) <= 508.5025)",
+        ".validate": "newData.hasChildren(['lat', 'lng', 'at']) && ((((newData.child('lat').val() - 46.5136) * 111.32) * ((newData.child('lat').val() - 46.5136) * 111.32) + ((newData.child('lng').val() + 84.3358) * 76.6085) * ((newData.child('lng').val() + 84.3358) * 76.6085) <= 508.5025) && (newData.child('lat').val()) >= 46.49351)",
         "lat": {
           ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90"
         },
@@ -342,7 +342,7 @@
           ".validate": "(data.exists() && (newData.val() == data.val() || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))) || (!data.exists() && newData.isString() && newData.val().length >= 3 && newData.val().length <= 40)"
         },
         "approx": {
-          ".validate": "newData.hasChildren(['lat', 'lng']) && ((!data.exists() && (((newData.child('lat').val() - 46.5136) * 111.32) * ((newData.child('lat').val() - 46.5136) * 111.32) + ((newData.child('lng').val() + 84.3358) * 76.6085) * ((newData.child('lng').val() + 84.3358) * 76.6085) <= 531.3025)) || (data.exists() && newData.child('lat').val() == data.child('lat').val() && newData.child('lng').val() == data.child('lng').val()) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))",
+          ".validate": "newData.hasChildren(['lat', 'lng']) && ((!data.exists() && ((((newData.child('lat').val() - 46.5136) * 111.32) * ((newData.child('lat').val() - 46.5136) * 111.32) + ((newData.child('lng').val() + 84.3358) * 76.6085) * ((newData.child('lng').val() + 84.3358) * 76.6085) <= 531.3025) && (newData.child('lat').val()) >= 46.48902)) || (data.exists() && newData.child('lat').val() == data.child('lat').val() && newData.child('lng').val() == data.child('lng').val()) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))",
           "lat": {
             ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90"
           },
@@ -453,7 +453,7 @@
           ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 200"
         },
         "exact": {
-          ".validate": "newData.hasChildren(['lat', 'lng']) && (((newData.child('lat').val() - 46.5136) * 111.32) * ((newData.child('lat').val() - 46.5136) * 111.32) + ((newData.child('lng').val() + 84.3358) * 76.6085) * ((newData.child('lng').val() + 84.3358) * 76.6085) <= 486.2025)",
+          ".validate": "newData.hasChildren(['lat', 'lng']) && ((((newData.child('lat').val() - 46.5136) * 111.32) * ((newData.child('lat').val() - 46.5136) * 111.32) + ((newData.child('lng').val() + 84.3358) * 76.6085) * ((newData.child('lng').val() + 84.3358) * 76.6085) <= 486.2025) && (newData.child('lat').val()) >= 46.49800)",
           "lat": {
             ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90"
           },
@@ -465,7 +465,7 @@
           }
         },
         "access": {
-          ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 500"
+          ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 500"
         },
         "notes": {
           ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 500"
@@ -483,7 +483,7 @@
         ".read": "auth != null && (auth != null && root.child('bookings').child($bid).child('customerId').val() == auth.uid || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))",
         "$wid": {
           ".read": "auth != null && auth.uid == $wid",
-          ".write": "auth != null && newData.exists() && ((root.child('config').child('verifiedAuth').val() != true || (auth.token.email_verified == true && auth.token.phone_number != null)) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))) && ((auth.uid == $wid && (root.child('config').child('bookingOpen').val() == true || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))) && root.child('washers').child(auth.uid).child('status').val() == 'approved' && (root.child('bookings').child($bid).child('status').val() == 'requested' || root.child('bookings').child($bid).child('status').val() == 'offered') && root.child('bookings').child($bid).child('customerId').val() != auth.uid && (((root.child('bookings').child($bid).child('approx').child('lat').val() - 46.5136) * 111.32) * ((root.child('bookings').child($bid).child('approx').child('lat').val() - 46.5136) * 111.32) + ((root.child('bookings').child($bid).child('approx').child('lng').val() + 84.3358) * 76.6085) * ((root.child('bookings').child($bid).child('approx').child('lng').val() + 84.3358) * 76.6085) <= 531.3025)) || (auth != null && root.child('bookings').child($bid).child('customerId').val() == auth.uid && data.exists()) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))",
+          ".write": "auth != null && newData.exists() && ((root.child('config').child('verifiedAuth').val() != true || (auth.token.email_verified == true && auth.token.phone_number != null)) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))) && ((auth.uid == $wid && (root.child('config').child('bookingOpen').val() == true || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))) && root.child('washers').child(auth.uid).child('status').val() == 'approved' && (root.child('bookings').child($bid).child('status').val() == 'requested' || root.child('bookings').child($bid).child('status').val() == 'offered') && root.child('bookings').child($bid).child('customerId').val() != auth.uid && ((((root.child('bookings').child($bid).child('approx').child('lat').val() - 46.5136) * 111.32) * ((root.child('bookings').child($bid).child('approx').child('lat').val() - 46.5136) * 111.32) + ((root.child('bookings').child($bid).child('approx').child('lng').val() + 84.3358) * 76.6085) * ((root.child('bookings').child($bid).child('approx').child('lng').val() + 84.3358) * 76.6085) <= 531.3025) && (root.child('bookings').child($bid).child('approx').child('lat').val()) >= 46.48902)) || (auth != null && root.child('bookings').child($bid).child('customerId').val() == auth.uid && data.exists()) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')))",
           ".validate": "newData.hasChildren(['price', 'kind', 'at', 'status'])",
           "price": {
             ".validate": "(auth.uid == $wid && newData.isNumber() && newData.val() >= 500 && newData.val() <= 100000) || newData.val() == data.val()"
@@ -547,7 +547,7 @@
               ".validate": "newData.val() == auth.uid"
             },
             "text": {
-              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 1000"
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 1000 && ((root.child('bookings').child($bid).child('washerId').val() == $wid && (root.child('bookings').child($bid).child('status').val() == 'accepted' || root.child('bookings').child($bid).child('status').val() == 'on_the_way' || root.child('bookings').child($bid).child('status').val() == 'washing' || root.child('bookings').child($bid).child('status').val() == 'done')) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2')) || (!newData.val().toLowerCase().contains('@') && !newData.val().toLowerCase().contains('http') && !newData.val().toLowerCase().contains('www.') && !newData.val().matches(/.*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*[0-9].*/)))"
             },
             "at": {
               ".validate": "newData.val() == now"
