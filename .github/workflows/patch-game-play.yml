@@ -46,6 +46,7 @@ on:
       - need/wide.css
       - delta.html
       - starslip/**
+      - roadtoamillion/**
       - hire/**
       - demo/**
       - assets/home/**
