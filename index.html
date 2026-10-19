@@ -136,6 +136,22 @@ footer h2{font-size:1rem;color:var(--text);margin:0 0 8px}footer ul{list-style:n
 .tour .row{justify-content:space-between}
 .welcome{background:var(--panel);border:1.5px solid var(--gold2);border-radius:14px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:20px}
 .welcome[hidden]{display:none}
+
+.pm{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(0,0,0,.78);padding:20px}
+.pm[hidden]{display:none}
+.pm-box{width:min(1100px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#0d0d12;border:2px solid var(--gold);border-radius:20px;display:grid;grid-template-columns:1.6fr 1fr;animation:pmIn .2s ease-out}
+@keyframes pmIn{from{opacity:0;transform:translateY(12px)}}
+.pm-stage{position:relative;min-height:420px;background:#000;border-radius:18px 0 0 18px;overflow:hidden}
+.pm-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pm-stage .ph{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}
+.pm-side{padding:22px;display:flex;flex-direction:column;gap:14px}
+.pm-side h2{margin:0;font-size:1.4rem}.pm-side h3{margin:4px 0 0;font-size:1.05rem;color:var(--gold)}
+.pm-side ol,.pm-side ul{margin:0;padding-left:1.2em;color:var(--text)}.pm-side li{margin:4px 0}
+.pm-note{background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.95rem;color:var(--muted)}
+.pm-note strong{color:var(--text)}
+.pm-x{position:absolute;top:10px;right:10px;z-index:2}
+.pm-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+@media (max-width:820px){.pm{padding:0}.pm-box{width:100%;height:100%;max-height:none;border-radius:0;border:0;grid-template-columns:1fr;grid-template-rows:auto 1fr}.pm-stage{min-height:52vh;border-radius:0}}
 /* settings */
 html.a-contrast{--bg:#000;--panel:#000;--panel2:#000;--line:#fff;--text:#fff;--muted:#fff;--gold:#ffe066}
 html.a-contrast .qcard p,html.a-contrast .work p{color:#fff}
@@ -179,7 +195,7 @@ html.a-paused *,html.a-paused *::before,html.a-paused *::after{animation-play-st
       <div class="row" id="hero-actions">
         <a class="btn btn-primary" href="/game/play">▶ Play the game</a>
         <a class="btn btn-secondary" href="/hire">Hire me for a website</a>
-        <a class="btn btn-secondary" href="/portal">Enter the portal</a>
+        <button class="btn btn-secondary" type="button" data-portal-open aria-haspopup="dialog">Try the portal</button>
         <a class="btn btn-secondary" href="/templates/car-wash">Car wash template</a>
       </div>
       <div class="welcome" id="welcome" hidden role="region" aria-label="New here?">
@@ -220,7 +236,7 @@ html.a-paused *,html.a-paused *::before,html.a-paused *::after{animation-play-st
         </article>
         <article class="work">
           <div class="shot"><img src="/assets/home/portal.webp" alt="Screenshot of the EMCIIX starfield portal with planets" loading="lazy" width="640" height="400"></div>
-          <div class="body"><span class="tag">Web</span><h3>The portal</h3><p>A steerable starfield with a planet launcher for apps and links. Works offline.</p><div class="row"><a class="btn btn-secondary" href="/portal">Open the portal</a></div></div>
+          <div class="body"><span class="tag">Web</span><h3>The portal</h3><p>A steerable starfield with a planet launcher for apps and links. Works offline.</p><div class="row"><button class="btn btn-primary" type="button" data-portal-open aria-haspopup="dialog">Try it here</button><a class="btn btn-ghost" href="/portal">Open full portal</a></div></div>
         </article>
         <article class="work">
           <div class="shot"><img src="/covers/car-wash-template.jpg" alt="Car wash booking template shown on a phone and desktop" loading="lazy" width="640" height="400"></div>
@@ -239,8 +255,8 @@ html.a-paused *,html.a-paused *::before,html.a-paused *::after{animation-play-st
           <div class="body"><span class="tag">iOS app</span><h3>Starslip</h3><p>A warp-speed starfield app with a planet launcher and a bundled rhythm game. Coming to the App Store.</p><div class="row"><a class="btn btn-secondary" href="/starslip/support">Support</a><a class="btn btn-ghost" href="/starslip/privacy">Privacy</a></div></div>
         </article>
         <article class="work">
-          <div class="shot art" aria-hidden="true">Road to a Million</div>
-          <div class="body"><span class="tag">In development</span><h3>Road to a Million</h3><p>An offline money-growth game and savings planner, designed for foldable phones.</p><div class="row"><a class="btn btn-ghost" href="/roadtoamillion/privacy">Privacy policy</a></div></div>
+          <div class="shot"><img src="/roadtoamillion/img/1-progress.webp" alt="Road to a Million home screen showing net worth, a progress ring and the Next month button" loading="lazy" width="640" height="400" style="object-position:top"></div>
+          <div class="body"><span class="tag">In development · TestFlight beta</span><h3>Road to a Million</h3><p>A free, offline money game: grow 1,000 into 1,000,000, one month at a time.</p><div class="row"><a class="btn btn-primary" href="/roadtoamillion">Explore the game</a><a class="btn btn-ghost" href="/roadtoamillion/privacy">Privacy</a></div></div>
         </article>
       </div>
     </div>
@@ -304,6 +320,35 @@ html.a-paused *,html.a-paused *::before,html.a-paused *::after{animation-play-st
   <div class="row" style="margin-top:14px"><button class="btn btn-ghost" type="button" id="a11y-reset">Reset</button><button class="btn btn-primary" type="button" id="a11y-close">Done</button></div>
 </div>
 
+
+<div class="pm" id="pm" hidden>
+  <div class="pm-box" role="dialog" aria-modal="true" aria-labelledby="pm-title" aria-describedby="pm-desc">
+    <div class="pm-stage" id="pm-stage"><div class="ph">Loading the portal…</div></div>
+    <div class="pm-side">
+      <div class="pm-head"><h2 id="pm-title">Try the portal</h2><button class="btn btn-ghost" type="button" id="pm-close" aria-label="Close portal preview">✕ Close</button></div>
+      <p id="pm-desc" style="margin:0;color:var(--muted)">A live preview of emciix.com/portal: a starfield you can fly through, with planets that open links.</p>
+      <h3>How to try it</h3>
+      <ol>
+        <li>Click or tap inside the preview first so it gets your keys and sound.</li>
+        <li><strong>Steer:</strong> arrow keys or W A S D. Hold <kbd>Space</kbd> to boost.</li>
+        <li><strong>Mouse or touch:</strong> press and drag across the stars to steer.</li>
+        <li><strong>Planets:</strong> click or tap a planet to open its link (the game, music or X).</li>
+        <li><strong>Sound:</strong> a soft engine hum starts after your first click, tap or key press. Turn your volume up to hear it.</li>
+        <li>Phones: use the full portal for the best fit. Any current Chrome, Edge, Safari or Firefox works.</li>
+      </ol>
+      <h3>Where the data comes from</h3>
+      <div class="pm-note">
+        <ul>
+          <li><strong>The starfield, planets and sound</strong> are drawn and generated in your browser from files on emciix.com. The sound is synthesized; no audio is downloaded.</li>
+          <li><strong>Your settings and any planets you add</strong> are saved only in this browser (local storage).</li>
+          <li><strong>The call box</strong> loads a shared list of recent calls from emciix.com, GitHub (raw.githubusercontent.com) and ntfy.sh. If you enter an X handle or a YouTube channel or link, the portal looks up public info through api.fxtwitter.com, YouTube feeds (via api.rss2json.com), Invidious servers and noembed.com, then <strong>posts the handle, name and a short post snippet to a public ntfy.sh feed that other visitors can see</strong>. Don't enter anything private.</li>
+          <li>No account, no sign-in, and nothing is recorded unless you press the record button, which saves a video only to your device.</li>
+        </ul>
+      </div>
+      <div class="row"><a class="btn btn-primary" href="/portal">Open full portal</a></div>
+    </div>
+  </div>
+</div>
 <div class="tour-ring" id="tour-ring" hidden aria-hidden="true"></div>
 <div class="tour" id="tour" role="dialog" aria-modal="false" aria-labelledby="tour-title" aria-describedby="tour-text" hidden>
   <div class="step" id="tour-step" aria-live="polite"></div>
@@ -356,6 +401,21 @@ html.a-paused *,html.a-paused *::before,html.a-paused *::after{animation-play-st
   document.getElementById("a11y-reset").addEventListener("click",function(){st={};save();apply()});
   pan.addEventListener("change",function(e){var k=e.target.dataset.k;if(k){st[k]=e.target.checked;save();apply()}});
   pan.addEventListener("click",function(e){var s=e.target.closest("[data-size]");if(s){st.size=s.dataset.size;save();apply()}});
+
+  // portal preview modal
+  var PM=document.getElementById("pm"),PS=document.getElementById("pm-stage"),pmPrev=null;
+  function pmFocusables(){return [].slice.call(PM.querySelectorAll('a[href],button:not([disabled]),iframe,[tabindex]:not([tabindex="-1"])'))}
+  function pmOpen(){pmPrev=document.activeElement;PM.hidden=false;document.body.style.overflow="hidden";
+    if(!PS.querySelector("iframe")){var f=document.createElement("iframe");f.src="/portal";f.title="Live preview of the EMCIIX portal";f.loading="lazy";f.setAttribute("allow","autoplay; fullscreen");f.addEventListener("load",function(){var ph=PS.querySelector(".ph");if(ph)ph.remove()});PS.appendChild(f)}
+    document.getElementById("pm-close").focus()}
+  function pmClose(){PM.hidden=true;document.body.style.overflow="";if(pmPrev&&pmPrev.focus)pmPrev.focus()}
+  [].forEach.call(document.querySelectorAll("[data-portal-open]"),function(b){b.addEventListener("click",pmOpen)});
+  document.getElementById("pm-close").addEventListener("click",pmClose);
+  PM.addEventListener("click",function(e){if(e.target===PM)pmClose()});
+  PM.addEventListener("keydown",function(e){if(e.key==="Escape"){e.stopPropagation();pmClose();return}
+    if(e.key==="Tab"){var f=pmFocusables(),a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+  window.addEventListener("message",function(){});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!PM.hidden)pmClose()},true);
 
   // tour
   var STEPS=[

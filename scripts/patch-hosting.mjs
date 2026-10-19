@@ -134,6 +134,9 @@ if (universeCss) PATCHES.push([universeCss, "/game/play/game.css"]);
 ["hire/index.html","hire/og.png","demo/roofing/index.html","assets/home/og.png","assets/home/portal.webp","assets/home/game.webp","assets/home/roofing.webp","assets/home/hire.webp","starslip/privacy.html","starslip/support.html","roadtoamillion/privacy.html","templates/car-wash/index.html","video/car-wash-template.mp4","covers/car-wash-template.jpg","favicon.svg","favicon.ico","apple-touch-icon.png","assets/brand/emciix-orb-v1.svg","assets/brand/emciix-orb-v1.ico","assets/brand/emciix-orb-mask-v1.svg","assets/brand/apple-touch-icon-v1.png","assets/brand/icon-192-v1.png","assets/brand/icon-512-v1.png","assets/brand/site-v1.webmanifest","video/no-room-for-me.mp4","video/no-room.html","video/tell-me-more.mp4","video/the-bot-can-wait.mp4","video/the-bot-can-wait-short.mp4","video/tell-me-more.html","media/drive-map.json","covers/no-room-for-me.jpg","covers/tell-me-more.jpg","covers/tell-me-more.webp","assets/refresh-planet.png","assets/need-mark.png","calls/ledger.json","game/play/levels/tabs-i-cant-close/audio/tabs-i-cant-close.mp3","game/play/levels/tabs-i-cant-close/chart.json","game/play/levels/tabs-i-cant-close/lyrics.json","game/play/levels/no-room-for-me/audio/no-room-for-me.mp3","game/play/levels/no-room-for-me/chart.json","game/play/levels/no-room-for-me/lyrics.json","game/play/levels/glitch-by-glitch/audio/glitch-by-glitch.mp3","game/play/levels/glitch-by-glitch/chart.json","game/play/levels/glitch-by-glitch/lyrics.json","game/play/levels/watch-it-brppp/audio/watch-it-brppp.mp3","game/play/levels/watch-it-brppp/chart.json","game/play/levels/watch-it-brppp/lyrics.json","game/play/levels/starslip/audio/starslip.mp3","game/play/levels/starslip/chart.json","game/play/levels/starslip/lyrics.json"].forEach((file) => {
   if (existsSync(file)) PATCHES.push([file, "/" + file]);
 });
+// Road to a Million product page + its web screenshots.
+if (existsSync("roadtoamillion/index.html")) PATCHES.push(["roadtoamillion/index.html", "/roadtoamillion/index.html"]);
+if (existsSync("roadtoamillion/img")) for (const f of readdirSync("roadtoamillion/img")) if (/\.(webp|jpg|png)$/.test(f)) PATCHES.push(["roadtoamillion/img/" + f, "/roadtoamillion/img/" + f]);
 // Private lead previews: every demo/p/<slug>-<random>/index.html (never linked; noindex meta + X-Robots-Tag below).
 if (existsSync("demo/p")) for (const dir of readdirSync("demo/p", { withFileTypes: true })) {
   const file = "demo/p/" + dir.name + "/index.html";
@@ -415,11 +418,16 @@ function faastPage(config) {
 // /templates/car-wash: the "Request to buy" form posts to the Realtime Database REST API (templateRequests, see
 // faast/database.rules.json), so this page alone may connect to emciix-com-default-rtdb.firebaseio.com.
 function templatePages(config) {
-  const ours = (rule) => rule && typeof rule.glob === "string" && rule.glob.startsWith("/templates/");
+  const ours = (rule) => rule && typeof rule.glob === "string" && (rule.glob.startsWith("/templates/") || rule.glob.startsWith("/roadtoamillion"));
   config.headers = (config.headers || []).filter((h) => !ours(h));
   if (existsSync("templates/car-wash/index.html")) {
     const csp = "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self' data:; connect-src 'self' https://emciix-com-default-rtdb.firebaseio.com https://cloudflareinsights.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests";
     for (const glob of ["/templates/car-wash", "/templates/car-wash/**"]) config.headers.push({ glob, headers: { "Content-Security-Policy": csp, "Cache-Control": "public, max-age=0, must-revalidate" } });
+  }
+  // /roadtoamillion: the "Request licensing info" form uses the same templateRequests backend (source "roadtoamillion/licensing").
+  if (existsSync("roadtoamillion/index.html")) {
+    const csp = "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self' data:; connect-src 'self' https://emciix-com-default-rtdb.firebaseio.com https://cloudflareinsights.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests";
+    for (const glob of ["/roadtoamillion", "/roadtoamillion/", "/roadtoamillion/index.html"]) config.headers.push({ glob, headers: { "Content-Security-Policy": csp, "Cache-Control": "public, max-age=0, must-revalidate" } });
   }
   console.log("template pages:", config.headers.filter(ours).length, "header rules");
   return config;
