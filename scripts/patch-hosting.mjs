@@ -302,7 +302,8 @@ async function pruneStorage() {
   }
   console.log("versions", versions.length, "deleted", n);
 }
-await pruneStorage();
+const PREVIEW_CHANNEL = (process.env.PREVIEW_CHANNEL || "").trim();
+if (!PREVIEW_CHANNEL) await pruneStorage();
 
 
 function widenConnect(config) {
@@ -445,6 +446,18 @@ for (const hash of required) {
   if (!res.ok) throw new Error("Upload failed " + res.status);
 }
 await api(access, "PATCH", "https://firebasehosting.googleapis.com/v1beta1/" + newVersion + "?updateMask=status", { status: "FINALIZED" });
+if (PREVIEW_CHANNEL) {
+  // Preview mode: release to a Hosting preview channel only. Live channel and all rules stay untouched.
+  try {
+    await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels?channelId=" + encodeURIComponent(PREVIEW_CHANNEL), { ttl: "1209600s" });
+  } catch (err) {
+    if (!/409|ALREADY_EXISTS/.test(String(err.message || err))) throw err;
+  }
+  await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/" + encodeURIComponent(PREVIEW_CHANNEL) + "/releases?versionName=" + encodeURIComponent(newVersion), {});
+  const ch = await api(access, "GET", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/" + encodeURIComponent(PREVIEW_CHANNEL));
+  console.log("preview released:", ch.url);
+  process.exit(0);
+}
 await api(access, "POST", "https://firebasehosting.googleapis.com/v1beta1/sites/" + siteId + "/channels/live/releases?versionName=" + encodeURIComponent(newVersion), {});
 console.log("released ok");
 
