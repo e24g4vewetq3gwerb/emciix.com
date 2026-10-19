@@ -53,6 +53,9 @@ on:
       - downloads/**
       - faast-wash/**
       - faast/**
+      - templates/**
+      - video/car-wash-template.mp4
+      - covers/car-wash-template.jpg
       - scripts/faast-hosting.json
       - .github/workflows/patch-game-play.yml
 

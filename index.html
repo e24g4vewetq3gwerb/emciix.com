@@ -74,15 +74,15 @@ window.SITE = {
     { icon: "game", title: "Play", text: "41 levels, upgrades and synced ranks.", link: { label: "Play the game", href: "/game/play" } },
     { icon: "build", title: "Build", text: "Websites for small businesses, from $1,500.", link: { label: "Hire me", href: "/hire" } }
   ],
-  // Faast Wash block under the cards (same copy as the live /faast hero; links stay relative so each domain opens its own /faast).
+  // Car wash template promo under the cards (the old Faast Wash block was archived 2026-10-19).
   faast: {
-    area: "Serving soon · Sault Ste. Marie, ON", title: "Car wash,", titleEm: "a tap away.",
-    text: "A washer comes to where your car is parked. Nearby washers send offers, you pick one and pay them directly.",
-    book: { label: "Book a wash", href: "/faast" }, signin: { label: "Sign in", href: "/faast#signin" },
-    note: "Sign in with your email or phone number.",
-    facts: [["100%", "of the price goes to your washer"], ["Offers", "washers set the price, you pick one"], ["Serving soon", "Sault Ste. Marie, ON"]],
-    film: { poster: "/covers/faast-multiverse.jpg", hd: "/video/faast-multiverse-720.mp4", sd: "/video/faast-multiverse-480.mp4", len: "1:10",
-      label: "The Multiverse Car Wash, short film", play: "Play The Multiverse Car Wash, short film (1 minute 10 seconds, with sound)" }
+    area: "White-label template", title: "Car wash app,", titleEm: "ready to launch.",
+    text: "Customer booking, washer offers, live job status, chat and an admin dashboard. Your brand and service area in one config file.",
+    book: { label: "Request to buy", href: "/templates/car-wash#request" }, signin: { label: "See features", href: "/templates/car-wash" },
+    note: "Watch the full walkthrough, inside and out.",
+    facts: [["3 apps", "customer, washer and admin"], ["1 file", "brand, colours and area"], ["2:25", "full walkthrough"]],
+    film: { poster: "/covers/car-wash-template.jpg", hd: "/video/car-wash-template.mp4", sd: "/video/car-wash-template.mp4", len: "2:25",
+      label: "Car Wash Booking App template walkthrough", play: "Play the Car Wash Booking App template walkthrough (2 minutes 25 seconds)" }
   },
   music: {
     kicker: "Music", title: "Velc air",
@@ -577,14 +577,14 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
     '<a class="brand" href="/">' + esc(S.brand.name) + '</a></div>' +
     '<nav class="main" aria-label="Main"><a href="#music">Music</a><a href="#game">Game</a><a href="#starslip">Starslip</a><a href="#hire">Hire</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>' +
     '<div class="head-r">' +
-    '<a class="btn btn-ghost btn-sm head-faast" href="/faast" aria-label="Faast Wash: car wash that comes to you">Faast</a>' +
+    '<a class="btn btn-ghost btn-sm head-faast" href="/templates/car-wash" aria-label="Car wash app template">Templates</a>' +
     '<a class="btn btn-ghost btn-sm head-cta" href="' + esc(H.primary.href) + '" aria-label="' + esc(H.primary.label) + '"><span class="lg">' + esc(H.primary.label) + '</span><span class="xs" aria-hidden="true">Portal</span></a></div></div></header>';
 
   h += '<main id="main">';
 
   h += '<div class="wrap hero"><div class="planet" aria-hidden="true"><span class="moon"></span></div>' +
     heroCopy(H, H.local || H) +
-    '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + link({ label: "Faast Wash", href: "/faast" }, "btn-text") + '</div>' +
+    '<div class="row">' + link(H.primary, "btn-primary") + link(H.secondary, "btn-ghost") + link(H.tertiary, "btn-text") + link({ label: "Car wash template", href: "/templates/car-wash" }, "btn-text") + '</div>' +
     '</div>';
 
 
@@ -593,7 +593,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
   }).join("") + '</div>';
 
   var X = S.faast;
-  h += '<section class="wrap fx-sec" id="faast" aria-labelledby="faast-h"><div class="fx"><div>' +
+  h += '<section class="wrap fx-sec" id="templates" aria-labelledby="faast-h"><div class="fx"><div>' +
     '<p class="fx-chip"><i aria-hidden="true"></i>' + esc(X.area) + '</p>' +
     '<h2 class="fx-h" id="faast-h">' + esc(X.title) + ' <em>' + esc(X.titleEm) + '</em></h2>' +
     '<p class="fx-lede">' + esc(X.text) + '</p>' +
@@ -653,7 +653,7 @@ html[data-mode="global"] .mbar .btn-ghost { background: #fff; color: var(--ink);
 
   document.getElementById("app").innerHTML = h;
 
-  // Faast film: nothing loads until tapped (lazy poster; the <video> is created on tap, 480p on small screens).
+  // Template film: nothing loads until tapped (lazy poster; the <video> is created on tap, 480p on small screens).
   (function () {
     var play = document.getElementById("fx-play"), frame = document.getElementById("fx-film"), F = S.faast.film;
     if (!play || !frame) return;

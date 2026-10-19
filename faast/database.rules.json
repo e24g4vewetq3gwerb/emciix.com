@@ -825,6 +825,46 @@
         ".read": "(auth != null && auth.uid == $uid) || (auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))",
         ".write": false
       }
+    },
+    "templateRequests": {
+      ".read": "(auth != null && ((auth.token.email == 'n.nafis98@gmail.com' && auth.token.email_verified == true) || auth.uid == 'ghYqJ9V6gCWGdA70MLQE1XKZbWg2'))",
+      "$rid": {
+        ".write": "!data.exists() && newData.exists() && $rid.matches(/^[A-Za-z0-9_-]{12,40}$/)",
+        ".validate": "newData.hasChildren(['name', 'email', 'message', 'createdAt']) && newData.parent().parent().child('templateRequestsMeta').child('last').val() == now",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 100"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().length >= 5 && newData.val().length <= 200 && newData.val().matches(/^[^@ ]+@[^@ ]+[.][^@ ]+$/)"
+        },
+        "business": {
+          ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 150"
+        },
+        "message": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 2000"
+        },
+        "source": {
+          ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 60"
+        },
+        "test": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdAt": {
+          ".validate": "newData.val() == now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "templateRequestsMeta": {
+      "last": {
+        ".write": "newData.exists()",
+        ".validate": "newData.val() == now && (!data.exists() || now - data.val() >= 20000)"
+      },
+      "$other": {
+        ".validate": false
+      }
     }
   }
 }
