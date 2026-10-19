@@ -1,0 +1,24 @@
+name: Home remodel preview (not live)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - remodel-preview
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Release to Firebase preview channel
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PREVIEW_CHANNEL: home-remodel
+        run: node scripts/patch-hosting.mjs
