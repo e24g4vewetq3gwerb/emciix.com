@@ -21,8 +21,7 @@ a{color:var(--gold)}a:hover{color:#fff}
 /* header */
 header.top{position:sticky;top:0;z-index:40;background:rgba(7,7,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:18px;min-height:66px}
-.logo{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;font-weight:800;letter-spacing:.06em;font-size:1.15rem}
-.logo i{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#ffe9b0,#d9b24a 40%,#8a6a1c 75%);box-shadow:0 0 0 1.5px #fff}
+.logo{display:flex;align-items:center;min-height:44px;color:var(--text);text-decoration:none;font-weight:800;letter-spacing:.06em;font-size:1.15rem}
 nav.main ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
 nav.main a{display:block;padding:8px 12px;border-radius:8px;color:var(--text);text-decoration:none;font-weight:600;font-size:.98rem}
 nav.main a:hover{background:var(--panel2);color:var(--gold)}
@@ -43,11 +42,6 @@ h1{font-size:clamp(2.4rem,7vw,4.4rem);line-height:1.05;letter-spacing:-.02em;mar
 h1 .accent{color:var(--gold)}
 .lede{font-size:clamp(1.15rem,2.4vw,1.35rem);color:var(--text);max-width:36rem;margin:0 0 30px}
 .hero-copy{position:relative;z-index:2}
-.planet{position:absolute;right:30px;top:80px;width:270px;height:270px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 34% 30%,#ffe9b0 0%,#d9b24a 34%,#8a6a1c 68%,#1e1604 100%);box-shadow:0 0 0 2px rgba(255,255,255,.85),0 0 60px rgba(242,212,138,.28);animation:float 9s ease-in-out infinite}
-.planet::after{content:"";position:absolute;inset:-5%;border-radius:50%;border:2px solid rgba(255,255,255,.55)}
-.moon{position:absolute;right:-6px;top:18px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4f3f0,#8f8d88 70%,#2a2a2a);box-shadow:0 0 0 1.5px rgba(255,255,255,.7)}
-@keyframes float{50%{transform:translateY(-14px)}}
-@media (max-width:1039px){.planet{width:120px;height:120px;top:24px;right:-20px;opacity:.55}.moon{width:24px;height:24px}}
 .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:44px}
 .qcard{display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:16px;background:var(--panel);border:1.5px solid var(--line);color:var(--text);text-decoration:none}
 .qcard:hover{border-color:var(--gold)}
@@ -145,7 +139,7 @@ form.req input:focus-visible,form.req select:focus-visible,form.req textarea:foc
 <body>
 <a class="skip" href="#main">Skip to main content</a>
 <header class="top" role="banner"><div class="wrap">
-  <a class="logo" href="/" aria-label="EMCIIX home"><i aria-hidden="true"></i>EMCIIX</a>
+  <a class="logo" href="/" aria-label="EMCIIX home">EMCIIX</a>
   <nav class="main" id="nav" aria-label="Main"><ul>
     <li><a href="#features">Features</a></li><li><a href="#modes">Modes</a></li><li><a href="#schools">For schools</a></li><li><a href="#faq">FAQ</a></li><li><a href="/">Home</a></li>
   </ul></nav>
