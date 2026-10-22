@@ -111,6 +111,7 @@
     "#start-overlay #start-btn.start-action-btn{background:#241028!important}",
     "#start-overlay .btn-secondary.start-action-btn{background:#06222a!important}",
     ".corner-blob{position:fixed!important;top:max(10px,env(safe-area-inset-top))!important;right:max(10px,env(safe-area-inset-right))!important;left:auto!important;bottom:auto!important;z-index:60!important;pointer-events:none!important}",
+    "#start-overlay{padding-top:calc(max(10px,env(safe-area-inset-top)) + 46px)!important}",
   ].join("");
   document.head.appendChild(plate);
 
